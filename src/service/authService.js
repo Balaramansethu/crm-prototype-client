@@ -1,28 +1,31 @@
-import axiosInstance from "@/utils/axiosInstance"
+import { axiosPublicInstance } from "@/utils/axios/axiosPublicInstance"
 
 export async function signupService(data) {
     try {
-        const res = await axiosInstance.post("/auth/signup", data)
-        return res.data.data 
+        const res = await axiosPublicInstance.post("/auth/signup", data)
+        const user = res.data.data || res.data.error
+        return user
     } catch (err) {
-        throw err.response?.data || { message: "Signup failed" }
+        throw err
     }
 }
 
 export async function loginService(data) {
     try {
-        const res = await axiosInstance.post("/auth/login", data)
-        return res.data.data
+        const res = await axiosPublicInstance.post("/auth/login", data)
+        const user = res.data.data || res.data.error
+        if (!user) throw new Error("Invalid user response")
+        return user
     } catch (err) {
-        throw err.response?.data || { message: "Login failed" }
+        throw err
     }
 }
 
 export async function logoutService() {
     try {
-        await axiosInstance.post("/auth/logout")
+        await axiosPublicInstance.post("/auth/logout")
         return true
     } catch (err) {
-        throw err.response?.data || { message: "Logout failed" }
+        throw err
     }
 }

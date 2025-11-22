@@ -6,6 +6,7 @@ import {
 } from "@/service/authService"
 import { useUserStore } from "@/store/userStore"
 
+
 export function useSignup() {
     const setUser = useUserStore((s) => s.setUser)
 
@@ -13,7 +14,7 @@ export function useSignup() {
         mutationFn: signupService,
         onSuccess: (user) => {
             setUser(user)
-        },
+        }
     })
 }
 
@@ -24,7 +25,7 @@ export function useLogin() {
         mutationFn: loginService,
         onSuccess: (user) => {
             setUser(user)
-        },
+        }
     })
 }
 
