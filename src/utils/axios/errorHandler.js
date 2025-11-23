@@ -29,8 +29,8 @@ export class ErrorHandler {
             return this.handleNetworkError(showToast)
         }
 
-        // Auth error (401)
-        if (AUTH_ERROR_CODES.includes(errorCode) || statusCode === 401) {
+        // Auth error (409)
+        if (AUTH_ERROR_CODES.includes(errorCode)) {
             return this.handleAuthError(
                 errorMessage,
                 navigate,
@@ -39,8 +39,20 @@ export class ErrorHandler {
             )
         }
 
-        // Auth error (409)
-        if (AUTH_ERROR_CODES.includes(errorCode) || statusCode === 409) {
+        // Conflict (409) 
+        if (statusCode === 409) {
+            if (showToast) {
+                toast.error(errorMessage, {
+                    description: "Try Login or use another email to proceed",
+                    duration: 3000,
+                })
+            }
+
+            return { type: "conflict_error", handled: true }
+        }
+
+        // Auth error (401)
+        if (AUTH_ERROR_CODES.includes(errorCode) || statusCode === 401) {
             return this.handleAuthError(
                 errorMessage,
                 navigate,
@@ -88,14 +100,6 @@ export class ErrorHandler {
                 description: "Please try again",
                 duration: 2000,
             })
-        }
-
-        // Conflict (409) — only show toast, do NOT redirect
-        if (statusCode === 409) {
-            if (showToast) {
-                toast.error(errorMessage)
-            }
-            return { type: "conflict_error", handled: true }
         }
 
         setTimeout(() => {
