@@ -1,0 +1,81 @@
+export const ERROR_CODES = {
+    // Validation Errors
+    VALIDATION_ERROR: "1001",
+    INVALID_EMAIL_FORMAT: "1002",
+    INVALID_PASSWORD_FORMAT: "1003",
+    MISSING_REQUIRED_FIELDS: "1004",
+
+    // Authentication Errors
+    AUTH_TOKEN_MISSING: "2001",
+    ACCESS_TOKEN_MISSING: "2002",
+    ACCESS_TOKEN_EXPIRED: "2003",
+    ACCESS_TOKEN_INVALID: "2004",
+    REFRESH_TOKEN_MISSING: "2005",
+    REFRESH_TOKEN_EXPIRED: "2006",
+    REFRESH_TOKEN_INVALID: "2007",
+    INVALID_CREDENTIALS: "2008",
+    INVALID_PASSWORD: "2009",
+    SESSION_EXPIRED: "2010",
+
+    // Authorization Errors
+    INSUFFICIENT_PERMISSIONS: "3001",
+    FORBIDDEN_ACCESS: "3002",
+    ROLE_NOT_ALLOWED: "3003",
+
+    // User/Resource Errors
+    USER_NOT_FOUND: "4001",
+    EMAIL_ALREADY_EXISTS: "4002",
+    INVALID_EMAIL: "4003",
+    ORGANIZATION_NOT_FOUND: "4004",
+    TENANT_NOT_FOUND: "4005",
+
+    // Server Errors
+    SERVER_ERROR: "5001",
+    DATABASE_ERROR: "5002",
+    TOKEN_GENERATION_FAILED: "5003",
+    EXTERNAL_SERVICE_ERROR: "5004",
+}
+
+// User-friendly error messages
+export const ERROR_MESSAGES = {
+    [ERROR_CODES.VALIDATION_ERROR]: "Please check your input",
+    [ERROR_CODES.INVALID_EMAIL_FORMAT]: "Please enter a valid email address",
+    [ERROR_CODES.INVALID_PASSWORD_FORMAT]:
+        "Password does not meet requirements",
+    [ERROR_CODES.AUTH_TOKEN_MISSING]: "Session expired. Please log in again",
+    [ERROR_CODES.ACCESS_TOKEN_EXPIRED]: "Your session has expired",
+    [ERROR_CODES.ACCESS_TOKEN_INVALID]: "Invalid session. Please log in again",
+    [ERROR_CODES.REFRESH_TOKEN_EXPIRED]: "Session expired. Please log in again",
+    [ERROR_CODES.INVALID_CREDENTIALS]: "Invalid email or password",
+    [ERROR_CODES.INVALID_PASSWORD]: "Incorrect password",
+    [ERROR_CODES.INSUFFICIENT_PERMISSIONS]:
+        "You don't have permission to access this",
+    [ERROR_CODES.USER_NOT_FOUND]: "Account not found",
+    [ERROR_CODES.EMAIL_ALREADY_EXISTS]: "This email is already registered",
+    [ERROR_CODES.ORGANIZATION_NOT_FOUND]: "Organization not found",
+    [ERROR_CODES.SERVER_ERROR]: "Something went wrong. Please try again",
+    [ERROR_CODES.INVALID_EMAIL]: "Email address not found",
+}
+
+// Errors that should redirect to login
+export const AUTH_ERROR_CODES = [
+    ERROR_CODES.AUTH_TOKEN_MISSING,
+    ERROR_CODES.ACCESS_TOKEN_MISSING,
+    ERROR_CODES.ACCESS_TOKEN_EXPIRED,
+    ERROR_CODES.ACCESS_TOKEN_INVALID,
+    ERROR_CODES.REFRESH_TOKEN_EXPIRED,
+    ERROR_CODES.REFRESH_TOKEN_INVALID,
+    ERROR_CODES.SESSION_EXPIRED,
+    ERROR_CODES.USER_NOT_FOUND,
+]
+
+// Field-specific error codes
+export const FIELD_ERROR_CODES = [
+    ERROR_CODES.VALIDATION_ERROR,
+    ERROR_CODES.INVALID_EMAIL_FORMAT,
+    ERROR_CODES.INVALID_PASSWORD_FORMAT,
+    ERROR_CODES.EMAIL_ALREADY_EXISTS,
+    ERROR_CODES.INVALID_EMAIL,
+    ERROR_CODES.INVALID_PASSWORD,
+    ERROR_CODES.INVALID_CREDENTIALS,
+]

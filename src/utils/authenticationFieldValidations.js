@@ -1,81 +1,117 @@
+export const validateEmail = (email) => {
+    if (!email) {
+        return "*email is required"
+    }
+
+    email = email.trim()
+
+    if (!email.includes("@")) {
+        return "*Just @ is missing."
+    }
+
+    if (email.startsWith("@")) {
+        return "*Email must contain characters before @"
+    }
+
+    if (email.endsWith("@")) {
+        return "*Email must contain characters after @"
+    }
+
+    const [name, domain] = email.split("@")
+
+    if (!name) {
+        return "*Email must contain characters before @"
+    }
+
+    if (!domain) {
+        return "*Email must contain characters after @"
+    }
+
+    if (!domain.includes(".")) {
+        return "*Email domain must contain a dot (.)"
+    }
+
+    const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
+
+    if (!emailPattern.test(email)) {
+        return "*Please enter a valid email address."
+    }
+
+    return ""
+}
+
+function validateRequiredLength(fieldName, value, min, max) {
+    if (!value?.trim()) {
+        return `${fieldName} is a mandatory field`
+    }
+    if (min !== undefined && value.length < min) {
+        return `${fieldName} length must be greater than ${min - 1}`
+    }
+    if (max !== undefined && value.length > max) {
+        return `${fieldName} length must be less than ${max}`
+    }
+    return ""
+}
+
+function validateLettersOnly(value, fieldName) {
+    if (!/^[a-zA-Z\s]+$/.test(value)) {
+        return `${fieldName} must contain only letters and spaces`
+    }
+    return ""
+}
+
+function validatePasswordRules(password) {
+    if (!/[a-z]/.test(password)) {
+        return "Password must contain at least one lowercase letter"
+    }
+    if (!/[A-Z]/.test(password)) {
+        return "Password must contain at least one uppercase letter"
+    }
+    if (!/\d/.test(password)) {
+        return "Password must contain at least one number"
+    }
+    if (!/[ !"#$%&'()*+,-./:;<=>?@[\\\]^_`{|}~]/.test(password)) {
+        return "Password must contain at least one special character"
+    }
+    return ""
+}
+
 export function validateSignupFields(form) {
     const errors = {}
 
-    // First Name
-    if (!form.firstName?.trim()) {
-        errors.firstName = "First name is required."
-    } else if (form.firstName.length < 2) {
-        errors.firstName = "Minimum 2 characters required."
-    } else if (form.firstName.length > 25) {
-        errors.firstName = "Maximum 25 characters allowed."
-    }
+    let err = validateRequiredLength("First name", form.firstName, 2, 25)
+    if (!err) err = validateLettersOnly(form.firstName, "First name")
+    if (err) errors.firstName = err
 
-    // Last Name
-    if (!form.lastName?.trim()) {
-        errors.lastName = "Last name is required."
-    } else if (form.lastName.length < 1) {
-        errors.lastName = "Minimum 1 character required."
-    } else if (form.lastName.length > 25) {
-        errors.lastName = "Maximum 25 characters allowed."
-    }
+    err = validateRequiredLength("Last name", form.lastName, 1, 25)
+    if (!err) err = validateLettersOnly(form.lastName, "Last name")
+    if (err) errors.lastName = err
 
-    // Email
-    if (!form.email?.trim()) {
-        errors.email = "Email is required."
-    } else if (!/\S+@\S+\.\S+/.test(form.email)) {
-        errors.email = "Enter a valid email address."
-    }
+    err = validateEmail(form.email)
+    if (err) errors.email = err
 
-    // Password
-    if (!form.password) {
-        errors.password = "Password is required."
-    } else if (form.password.length < 8) {
-        errors.password = "Minimum 8 characters required."
-    } else if (form.password.length > 25) {
-        errors.password = "Maximum 25 characters allowed."
-    }
+    err = validateRequiredLength("Password", form.password, 8, 25)
+    if (!err) err = validatePasswordRules(form.password)
+    if (err) errors.password = err
 
-    // Confirm Password
     if (form.confirmPassword !== form.password) {
-        errors.confirmPassword = "Passwords do not match."
-    }
-
-    // Role Validation
-    const allowedRoles = ["super_admin", "admin", "employee"]
-    if (!allowedRoles.includes(form.role)) {
-        errors.role = "Invalid role selected."
+        errors.confirmPassword = "Passwords do not match"
     }
 
     return errors
 }
 
-export function mapBackendErrorToField(errorCode, message) {
-    const fieldErrors = {}
+export function validateLoginFields(form) {
+    const errors = {}
 
-    switch (errorCode) {
-        case "invalid_email":
-            fieldErrors.email = message
-            break
+    // EMAIL (your custom validator)
+    const emailErr = validateEmail(form.email)
+    if (emailErr) errors.email = emailErr
 
-        case "email_exists":
-            fieldErrors.email = message
-            break
+    // PASSWORD
+    let err = validateRequiredLength("Password", form.password, 8, 25)
+    if (!err) err = validatePasswordRules(form.password)
+    if (err) errors.password = err
 
-        case "invalid_password":
-            fieldErrors.password = message
-            break
-
-        case "organization_not_found":
-            fieldErrors.email = message
-            break
-
-        case "validation_error":
-            fieldErrors.general = message
-            break
-
-        default:
-            fieldErrors.general = message || "Something went wrong"
-    }
-
-    return fieldErrors
+    return errors
 }

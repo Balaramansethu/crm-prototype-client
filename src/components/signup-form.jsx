@@ -15,6 +15,7 @@ import {
     FieldLabel,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
+import { Link } from "react-router-dom"
 import { validateSignupFields } from "@/utils/authenticationFieldValidations"
 
 export function SignupForm({ className, onSubmit, loading, ...props }) {
@@ -165,6 +166,10 @@ export function SignupForm({ className, onSubmit, loading, ...props }) {
                                         ? "Creating Account..."
                                         : "Create Account"}
                                 </Button>
+                                <FieldDescription>
+                                    Have an account?{" "}
+                                    <Link to="/login">Login</Link>
+                                </FieldDescription>
                             </Field>
                         </FieldGroup>
                     </form>

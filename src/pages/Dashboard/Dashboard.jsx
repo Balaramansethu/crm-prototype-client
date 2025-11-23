@@ -15,9 +15,9 @@ import {
     CardTitle,
 } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
+import { toast } from "sonner"
 import { LogOut, User, Mail, Shield, Loader2 } from "lucide-react"
 
 export default function Dashboard() {
@@ -25,50 +25,48 @@ export default function Dashboard() {
     const logout = useLogout()
     const navigate = useNavigate()
 
+    const [error, setError] = useState(null)
     const [dashData, setDashData] = useState(null)
     const [adminData, setAdminData] = useState(null)
     const [superData, setSuperData] = useState(null)
-    const [error, setError] = useState(null)
-      const [loadingUser, setLoadingUser] = useState(false)
-  const [loadingAdmin, setLoadingAdmin] = useState(false)
-  const [loadingSuper, setLoadingSuper] = useState(false)
+    const [loadingUser, setLoadingUser] = useState(false)
+    const [loadingAdmin, setLoadingAdmin] = useState(false)
+    const [loadingSuper, setLoadingSuper] = useState(false)
 
-    const handleDashboard = async () => {
-        try {
-            setLoadingUser(true)
-            setError(null)
-            const res = await fetchDashboard()
-            setDashData(res)
-        } catch (err) {
-            setError(err.response?.data?.message || "Something went wrong")
-        } finally {
-            setLoadingUser(false)
-        }
-    }
+    const handleDashboard = () =>
+        fetchDashboardData(fetchDashboard, setDashData, setLoadingUser)
 
-    const handleAdminDashboard = async () => {
-        try {
-            setLoadingAdmin(true)
-            setError(null)
-            const res = await fetchAdminDashboard()
-            setAdminData(res)
-        } catch (err) {
-            setError(err.response?.data?.message || "Something went wrong")
-        } finally {
-            setLoadingAdmin(false)
-        }
-    }
+    const handleAdminDashboard = () =>
+        fetchDashboardData(fetchAdminDashboard, setAdminData, setLoadingAdmin)
 
-    const handleSuperAdminDashboard = async () => {
+    const handleSuperAdminDashboard = () =>
+        fetchDashboardData(
+            fetchSuperAdminDashboard,
+            setSuperData,
+            setLoadingSuper,
+        )
+
+    const fetchDashboardData = async (serviceFn, setStateFn, setLoadingFn) => {
         try {
-            setLoadingSuper(true)
-            setError(null)
-            const res = await fetchSuperAdminDashboard()
-            setSuperData(res)
+            setLoadingFn(true)
+
+            const res = await serviceFn()
+            setStateFn(res)
         } catch (err) {
-            setError(err.response?.data?.message || "Something went wrong")
+            const message =
+                err?.response?.data?.message || "Something went wrong"
+            const status = err?.response?.status
+
+            toast.error(message, {
+                description: "Failed to load dashboard data",
+                duration: 4000,
+            })
+
+            if (status === 401) {
+                navigate("/login")
+            }
         } finally {
-            setLoadingSuper(false)
+            setLoadingFn(false)
         }
     }
 
@@ -212,13 +210,6 @@ export default function Dashboard() {
                         </div>
                     </CardContent>
                 </Card>
-
-                {/* Error Display */}
-                {error && (
-                    <Alert variant="destructive">
-                        <AlertDescription>{error}</AlertDescription>
-                    </Alert>
-                )}
 
                 {/* User Dashboard Data */}
                 {dashData && (
