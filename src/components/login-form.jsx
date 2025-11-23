@@ -1,5 +1,6 @@
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
+import { Eye, EyeOff } from "lucide-react"
 import {
     Card,
     CardContent,
@@ -22,6 +23,7 @@ export function LoginForm({ onSubmit, loading, className, ...props }) {
         email: "",
         password: "",
     })
+    const [showPassword, setShowPassword] = useState(false)
 
     const [errors, setErrors] = useState({})
 
@@ -82,14 +84,36 @@ export function LoginForm({ onSubmit, loading, className, ...props }) {
                                 <FieldLabel htmlFor="password">
                                     Password
                                 </FieldLabel>
-                                <Input
-                                    id="password"
-                                    type="password"
-                                    value={form.password}
-                                    onChange={handleChange}
-                                />
+
+                                <div className="relative">
+                                    <Input
+                                        id="password"
+                                        type={
+                                            showPassword ? "text" : "password"
+                                        }
+                                        value={form.password}
+                                        onChange={handleChange}
+                                        className="pr-10"
+                                    />
+
+                                    {/* Toggle Icon */}
+                                    <button
+                                        type="button"
+                                        onClick={() =>
+                                            setShowPassword((prev) => !prev)
+                                        }
+                                        className="absolute right-2 top-2.5 text-gray-500 hover:text-black"
+                                    >
+                                        {showPassword ? (
+                                            <EyeOff className="h-5 w-5" />
+                                        ) : (
+                                            <Eye className="h-5 w-5" />
+                                        )}
+                                    </button>
+                                </div>
+
                                 {errors.password && (
-                                    <p className="text-red-500 text-sm">
+                                    <p className="text-red-500 text-sm mt-1">
                                         {errors.password}
                                     </p>
                                 )}

@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { Link } from "react-router-dom"
+import { Eye, EyeOff } from "lucide-react"
 import { validateSignupFields } from "@/utils/authenticationFieldValidations"
 
 export function SignupForm({ className, onSubmit, loading, ...props }) {
@@ -29,6 +30,8 @@ export function SignupForm({ className, onSubmit, loading, ...props }) {
     })
 
     const [errors, setErrors] = useState({})
+    const [showPassword, setShowPassword] = useState(false)
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false)
 
     const handleChange = (e) => {
         setForm({ ...form, [e.target.id]: e.target.value })
@@ -123,36 +126,87 @@ export function SignupForm({ className, onSubmit, loading, ...props }) {
                             </Field>
 
                             {/* PASSWORDS */}
+                            {/* PASSWORDS */}
                             <Field className="grid grid-cols-2 gap-4">
+                                {/* PASSWORD */}
                                 <Field>
                                     <FieldLabel htmlFor="password">
                                         Password
                                     </FieldLabel>
-                                    <Input
-                                        id="password"
-                                        type="password"
-                                        value={form.password}
-                                        onChange={handleChange}
-                                    />
+
+                                    <div className="relative">
+                                        <Input
+                                            id="password"
+                                            type={
+                                                showPassword
+                                                    ? "text"
+                                                    : "password"
+                                            }
+                                            value={form.password}
+                                            onChange={handleChange}
+                                            className="pr-10"
+                                        />
+
+                                        <button
+                                            type="button"
+                                            onClick={() =>
+                                                setShowPassword((prev) => !prev)
+                                            }
+                                            className="absolute right-2 top-2.5 text-gray-500 hover:text-black"
+                                        >
+                                            {showPassword ? (
+                                                <EyeOff className="h-5 w-5" />
+                                            ) : (
+                                                <Eye className="h-5 w-5" />
+                                            )}
+                                        </button>
+                                    </div>
+
                                     {errors.password && (
-                                        <p className="text-red-500 text-sm">
+                                        <p className="text-red-500 text-sm mt-1">
                                             {errors.password}
                                         </p>
                                     )}
                                 </Field>
 
+                                {/* CONFIRM PASSWORD */}
                                 <Field>
                                     <FieldLabel htmlFor="confirmPassword">
                                         Confirm Password
                                     </FieldLabel>
-                                    <Input
-                                        id="confirmPassword"
-                                        type="password"
-                                        value={form.confirmPassword}
-                                        onChange={handleChange}
-                                    />
+
+                                    <div className="relative">
+                                        <Input
+                                            id="confirmPassword"
+                                            type={
+                                                showConfirmPassword
+                                                    ? "text"
+                                                    : "password"
+                                            }
+                                            value={form.confirmPassword}
+                                            onChange={handleChange}
+                                            className="pr-10"
+                                        />
+
+                                        <button
+                                            type="button"
+                                            onClick={() =>
+                                                setShowConfirmPassword(
+                                                    (prev) => !prev,
+                                                )
+                                            }
+                                            className="absolute right-2 top-2.5 text-gray-500 hover:text-black"
+                                        >
+                                            {showConfirmPassword ? (
+                                                <EyeOff className="h-5 w-5" />
+                                            ) : (
+                                                <Eye className="h-5 w-5" />
+                                            )}
+                                        </button>
+                                    </div>
+
                                     {errors.confirmPassword && (
-                                        <p className="text-red-500 text-sm">
+                                        <p className="text-red-500 text-sm mt-1">
                                             {errors.confirmPassword}
                                         </p>
                                     )}
