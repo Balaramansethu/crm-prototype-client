@@ -24,13 +24,6 @@ export class ErrorHandler {
         const errorType = errorData?.error
         const statusCode = error?.response?.status
 
-        console.error("Error Handler:", {
-            errorCode,
-            errorMessage,
-            errorType,
-            statusCode,
-        })
-
         // Network error
         if (this.isNetworkError(error)) {
             return this.handleNetworkError(showToast)
@@ -38,6 +31,16 @@ export class ErrorHandler {
 
         // Auth error (401)
         if (AUTH_ERROR_CODES.includes(errorCode) || statusCode === 401) {
+            return this.handleAuthError(
+                errorMessage,
+                navigate,
+                showToast,
+                customRedirect,
+            )
+        }
+
+        // Auth error (409)
+        if (AUTH_ERROR_CODES.includes(errorCode) || statusCode === 409) {
             return this.handleAuthError(
                 errorMessage,
                 navigate,
@@ -82,9 +85,17 @@ export class ErrorHandler {
     static handleAuthError(errorMessage, navigate, showToast, customRedirect) {
         if (showToast) {
             toast.error(errorMessage, {
-                description: "Redirecting to login...",
+                description: "Please try again",
                 duration: 2000,
             })
+        }
+
+        // Conflict (409) — only show toast, do NOT redirect
+        if (statusCode === 409) {
+            if (showToast) {
+                toast.error(errorMessage)
+            }
+            return { type: "conflict_error", handled: true }
         }
 
         setTimeout(() => {
