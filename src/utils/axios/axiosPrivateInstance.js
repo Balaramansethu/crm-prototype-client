@@ -8,6 +8,15 @@ const axiosPrivateInstance = axios.create({
     withCredentials: true,
 })
 
+axiosPrivateInstance.interceptors.request.use(
+    (config) => {
+        const token = useUserStore.getState().user?.accessToken
+        if (token) config.headers["Authorization"] = `Bearer ${token}`
+        return config
+    },
+    (error) => Promise.reject(error),
+)
+
 axiosPrivateInstance.interceptors.response.use(
     (res) => res,
     async (error) => {
@@ -51,27 +60,5 @@ axiosPrivateInstance.interceptors.response.use(
     }
 )
 
-
-axiosPrivateInstance.interceptors.response.use(
-    (res) => res,
-    async (error) => {
-        const originalReq = error.config
-
-        if (error.response?.data?.errorCode === "2003" && !originalReq._retry) {
-            originalReq._retry = true
-
-            try {
-                await axiosPrivateInstance.post("/auth/refresh", {})
-                return axiosPrivateInstance(originalReq)
-            } catch (err) {
-                toast.error("Session expired, please login to continue.")
-                useUserStore.getState().clearUser()
-                window.location.href = "/login"
-            }
-        }
-
-        return Promise.reject(error)
-    },
-)
 
 export { axiosPrivateInstance }
