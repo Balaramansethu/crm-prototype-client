@@ -22,32 +22,11 @@ axiosPrivateInstance.interceptors.response.use(
     async (error) => {
         const originalReq = error.config
 
-        // Token expired
         if (error.response?.data?.errorCode === "2003" && !originalReq._retry) {
             originalReq._retry = true
 
             try {
-                // request new token
-                const refreshRes = await axios.post(
-                    BASE_URL + "/auth/refresh",
-                    {},
-                    { withCredentials: true }
-                )
-
-                const newToken = refreshRes.data?.accessToken
-
-                if (!newToken) throw new Error("No new token returned")
-
-                // update Zustand user
-                const store = useUserStore.getState()
-                store.setUser({
-                    ...store.user,
-                    accessToken: newToken,
-                })
-
-                // retry original request WITH NEW TOKEN
-                originalReq.headers["Authorization"] = `Bearer ${newToken}`
-
+                await axiosPrivateInstance.post("/auth/refresh", {})
                 return axiosPrivateInstance(originalReq)
             } catch (err) {
                 toast.error("Session expired, please login to continue.")
@@ -57,8 +36,7 @@ axiosPrivateInstance.interceptors.response.use(
         }
 
         return Promise.reject(error)
-    }
+    },
 )
-
 
 export { axiosPrivateInstance }
