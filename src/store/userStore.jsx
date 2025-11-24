@@ -7,11 +7,14 @@ export const useUserStore = create(
             user: null,
 
             setUser: (user) => set({ user }),
-            clearUser: () => set({ user: null }),
+            clearUser: () => {
+                set({ user: null })
+                sessionStorage.removeItem("crm-user")
+            },
         }),
         {
-            name: "crm-user", // key in localStorage
-            getStorage: () => localStorage,
+            name: "crm-user", 
+            getStorage: () => sessionStorage,
         },
     ),
 )
