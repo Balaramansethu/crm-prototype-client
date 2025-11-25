@@ -6,12 +6,14 @@ import ProtectedRoute from "@/components/ProtectedRoute"
 
 import SignupPage from "@/pages/SignupPage/SignupPage"
 import LoginPage from "@/pages/LoginPage/LoginPage"
-import Dashboard from "@/pages/Dashboard/Dashboard"
+
+import DashboardPage from "@/pages/Dashboard/Dashboard" 
 import Unauthorized from "@/components/unauthorized"
 
 export default function AppRoutes() {
     return (
         <Routes>
+
             {/* PUBLIC ROUTES */}
             <Route element={<PublicLayout />}>
                 <Route path="/" element={<SignupPage />} />
@@ -21,25 +23,38 @@ export default function AppRoutes() {
 
             {/* PRIVATE ROUTES */}
             <Route element={<ProtectedRoute />}>
-                {/* Employee */}
-                <Route element={<ProtectedRoute roles={["employee"]} />}>
-                    <Route path="/dashboard" element={<Dashboard />} />
-                </Route>
+                <Route element={<PrivateLayout />}>
 
-                {/* Admin */}
-                <Route element={<ProtectedRoute roles={["admin"]} />}>
-                    <Route path="/dashboard/admin" element={<Dashboard />} />
-                </Route>
+                    {/* EMPLOYEE */}
+                    <Route
+                        path="/dashboard"
+                        element={
+                            <ProtectedRoute roles={["employee", "admin", "super_admin"]} />
+                        }
+                    >
+                        <Route index element={<DashboardPage />} />
+                    </Route>
 
-                {/* Super Admin */}
-                <Route element={<ProtectedRoute roles={["super_admin"]} />}>
+                    {/* ADMIN */}
+                    <Route
+                        path="/dashboard/admin"
+                        element={<ProtectedRoute roles={["admin", "super_admin"]} />}
+                    >
+                        <Route index element={<DashboardPage />} />
+                    </Route>
+
+                    {/* SUPER ADMIN */}
                     <Route
                         path="/dashboard/super-admin"
-                        element={<Dashboard />}
-                    />
+                        element={<ProtectedRoute roles={["super_admin"]} />}
+                    >
+                        <Route index element={<DashboardPage />} />
+                    </Route>
+
                 </Route>
             </Route>
 
+            {/* UNAUTHORIZED PAGE */}
             <Route path="/unauthorized" element={<Unauthorized />} />
         </Routes>
     )

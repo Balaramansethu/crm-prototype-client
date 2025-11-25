@@ -118,10 +118,17 @@
         @apply bg-background text-foreground;
     }
 }
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.4s ease-in-out;
+}
 
 
-/* Disable built-in password reveal buttons (Chrome, Edge, Safari, Firefox) */
-input[type="password"]::-ms-reveal,
+/* input[type="password"]::-ms-reveal,
 input[type="password"]::-ms-clear {
     display: none !important;
 }
@@ -138,4 +145,4 @@ input[type="password"]::-webkit-credentials-auto-fill-button {
 
 input[type="password"] {
     -webkit-text-security: disc !important;
-}
+}  */

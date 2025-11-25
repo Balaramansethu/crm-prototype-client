@@ -23,8 +23,16 @@ import {
     useSidebar,
 } from "@/components/ui/sidebar"
 
-export function NavUser({ user }) {
+import { useUserStore } from "@/store/userStore"
+import { useLogout } from "@/hooks/useAuthHooks"
+
+export function NavUser() {
     const { isMobile } = useSidebar()
+    const user = useUserStore((s) => s.user)
+    const logout = useLogout()
+
+    // Generate initials
+    const initials = `${user?.firstName?.[0] || ""}${user?.lastName?.[0] || ""}`.toUpperCase()
 
     return (
         <SidebarMenu>
@@ -35,26 +43,35 @@ export function NavUser({ user }) {
                             size="lg"
                             className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
                         >
+                            {/* Avatar */}
                             <Avatar className="h-8 w-8 rounded-lg grayscale">
-                                <AvatarImage
-                                    src={user.avatar}
-                                    alt={user.name}
-                                />
-                                <AvatarFallback className="rounded-lg">
-                                    CN
-                                </AvatarFallback>
+                                {user?.profileImage ? (
+                                    <AvatarImage
+                                        src={user.profileImage}
+                                        alt={`${user.firstName} ${user.lastName}`}
+                                    />
+                                ) : (
+                                    <AvatarFallback className="rounded-lg">
+                                        {initials}
+                                    </AvatarFallback>
+                                )}
                             </Avatar>
+
+                            {/* User Details */}
                             <div className="grid flex-1 text-left text-sm leading-tight">
                                 <span className="truncate font-medium">
-                                    {user.name}
+                                    {user?.firstName} {user?.lastName}
                                 </span>
                                 <span className="text-muted-foreground truncate text-xs">
-                                    {user.email}
+                                    {user?.email}
                                 </span>
                             </div>
+
                             <IconDotsVertical className="ml-auto size-4" />
                         </SidebarMenuButton>
                     </DropdownMenuTrigger>
+
+                    {/* Dropdown Content */}
                     <DropdownMenuContent
                         className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
                         side={isMobile ? "bottom" : "right"}
@@ -64,41 +81,34 @@ export function NavUser({ user }) {
                         <DropdownMenuLabel className="p-0 font-normal">
                             <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                                 <Avatar className="h-8 w-8 rounded-lg">
-                                    <AvatarImage
-                                        src={user.avatar}
-                                        alt={user.name}
-                                    />
-                                    <AvatarFallback className="rounded-lg">
-                                        CN
-                                    </AvatarFallback>
+                                    {user?.profileImage ? (
+                                        <AvatarImage
+                                            src={user.profileImage}
+                                            alt={`${user.firstName} ${user.lastName}`}
+                                        />
+                                    ) : (
+                                        <AvatarFallback className="rounded-lg">
+                                            {initials}
+                                        </AvatarFallback>
+                                    )}
                                 </Avatar>
                                 <div className="grid flex-1 text-left text-sm leading-tight">
                                     <span className="truncate font-medium">
-                                        {user.name}
+                                        {user?.firstName} {user?.lastName}
                                     </span>
                                     <span className="text-muted-foreground truncate text-xs">
-                                        {user.email}
+                                        {user?.email}
                                     </span>
                                 </div>
                             </div>
                         </DropdownMenuLabel>
+
                         <DropdownMenuSeparator />
-                        <DropdownMenuGroup>
-                            <DropdownMenuItem>
-                                <IconUserCircle />
-                                Account
-                            </DropdownMenuItem>
-                            <DropdownMenuItem>
-                                <IconCreditCard />
-                                Billing
-                            </DropdownMenuItem>
-                            <DropdownMenuItem>
-                                <IconNotification />
-                                Notifications
-                            </DropdownMenuItem>
-                        </DropdownMenuGroup>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem>
+
+                        {/* LOGOUT */}
+                        <DropdownMenuItem
+                            onClick={() => logout.mutate(null)}
+                        >
                             <IconLogout />
                             Log out
                         </DropdownMenuItem>
