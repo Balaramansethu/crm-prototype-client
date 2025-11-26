@@ -16,7 +16,7 @@ import {
     IconSettings,
     IconUsers,
 } from "@tabler/icons-react"
-
+import LanguageToggle from "@/components/LanguageToggle"
 import { useNavigate, useLocation } from "react-router-dom"
 import { useUserStore } from "@/store/userStore"
 
@@ -24,6 +24,8 @@ import { NavDocuments } from "@/components/nav-documents"
 import { NavMain } from "@/components/nav-main"
 import { NavSecondary } from "@/components/nav-secondary"
 import { NavUser } from "@/components/nav-user"
+import { useTranslation } from "react-i18next"
+
 
 import {
     Sidebar,
@@ -35,29 +37,37 @@ import {
     SidebarMenuItem,
 } from "@/components/ui/sidebar"
 
-
 export function AppSidebar({ ...props }) {
     const user = useUserStore((s) => s.user)
     const navigate = useNavigate()
     const location = useLocation()
+    const { t } = useTranslation()
+
 
     return (
+        <div dir="ltr">
         <Sidebar collapsible="offcanvas" {...props}>
             {/* HEADER */}
             <SidebarHeader>
                 <SidebarMenu>
                     <SidebarMenuItem>
+                        {/* ✅ ONLY ONE CHILD FOR asChild */}
                         <SidebarMenuButton
                             asChild
                             className="data-[slot=sidebar-menu-button]:!p-1.5"
                         >
-                            <a href="#">
+                            <a href="#" className="flex items-center gap-2">
                                 <IconInnerShadowTop className="!size-5" />
                                 <span className="text-base font-semibold">
                                     CRM Tool
                                 </span>
                             </a>
                         </SidebarMenuButton>
+
+                        {/* ✅ LanguageToggle MUST BE OUTSIDE asChild */}
+                        <div className="mt-2 px-2">
+                            <LanguageToggle />
+                        </div>
                     </SidebarMenuItem>
                 </SidebarMenu>
             </SidebarHeader>
@@ -71,8 +81,8 @@ export function AppSidebar({ ...props }) {
                             isActive={location.pathname === "/dashboard"}
                             onClick={() => navigate("/dashboard")}
                         >
-                            <IconDashboard className="mr-2 h-4 w-4" />
-                            Employee Dashboard
+                            <IconDashboard className="me-2 h-4 w-4" />
+                            {t("employeeDashboard")}
                         </SidebarMenuButton>
                     </SidebarMenuItem>
 
@@ -84,8 +94,9 @@ export function AppSidebar({ ...props }) {
                                 }
                                 onClick={() => navigate("/dashboard/admin")}
                             >
-                                <IconUsers className="mr-2 h-4 w-4" />
-                                Admin Dashboard
+                                <IconUsers className="me-2 h-4 w-4" />
+                                {t("adminDashboard")}
+
                             </SidebarMenuButton>
                         </SidebarMenuItem>
                     )}
@@ -101,8 +112,8 @@ export function AppSidebar({ ...props }) {
                                     navigate("/dashboard/super-admin")
                                 }
                             >
-                                <IconListDetails className="mr-2 h-4 w-4" />
-                                Super Admin Dashboard
+                                <IconListDetails className="me-2 h-4 w-4" />
+                                {t("superAdminDashboard")}
                             </SidebarMenuButton>
                         </SidebarMenuItem>
                     )}
@@ -112,7 +123,7 @@ export function AppSidebar({ ...props }) {
                 <NavMain
                     items={[
                         {
-                            title: "Overview",
+                            title: t("overview"),
                             url: "#",
                             icon: IconDashboard,
                         },
@@ -121,10 +132,10 @@ export function AppSidebar({ ...props }) {
 
                 <NavDocuments
                     items={[
-                        { name: "Data Library", icon: IconDatabase, url: "#" },
-                        { name: "Reports", icon: IconReport, url: "#" },
+                        { name: t("dataLibrary"), icon: IconDatabase, url: "#" },
+                        { name: t("reports"), icon: IconReport, url: "#" },
                         {
-                            name: "Word Assistant",
+                            name: t("wordAssistant"),
                             icon: IconFileWord,
                             url: "#",
                         },
@@ -134,9 +145,9 @@ export function AppSidebar({ ...props }) {
                 <NavSecondary
                     className="mt-auto"
                     items={[
-                        { title: "Settings", icon: IconSettings, url: "#" },
-                        { title: "Help", icon: IconHelp, url: "#" },
-                        { title: "Search", icon: IconSearch, url: "#" },
+                        { title: t("settings"), icon: IconSettings, url: "#" },
+                        { title: t("help"), icon: IconHelp, url: "#" },
+                        { title: t("search"), icon: IconSearch, url: "#" },
                     ]}
                 />
             </SidebarContent>
@@ -151,6 +162,6 @@ export function AppSidebar({ ...props }) {
                     }}
                 />
             </SidebarFooter>
-        </Sidebar>
+        </Sidebar> </div>
     )
 }

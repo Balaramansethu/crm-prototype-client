@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import { useUserStore } from "@/store/userStore"
 import { useLogout } from "@/hooks/useAuthHooks"
 import { useNavigate } from "react-router-dom"
+import { useTranslation } from "react-i18next"
 
 import {
   fetchDashboard,
@@ -13,7 +14,6 @@ import { AppSidebar } from "@/components/app-sidebar"
 import { SiteHeader } from "@/components/site-header"
 import { SectionCards } from "@/components/section-cards"
 import { ChartAreaInteractive } from "@/components/chart-area-interactive"
-import { DataTable } from "@/components/data-table"
 
 import {
   SidebarInset,
@@ -34,46 +34,42 @@ import { Separator } from "@/components/ui/separator"
 import { Loader2, LogOut, User, Mail, Shield } from "lucide-react"
 import { toast } from "sonner"
 
-// import data from "./data.json"
-
 export default function DashboardPage() {
   const user = useUserStore((s) => s.user)
   const logout = useLogout()
   const navigate = useNavigate()
+  const { t } = useTranslation()
 
   const [loading, setLoading] = useState(true)
   const [dashboardData, setDashboardData] = useState(null)
 
-  // ROLE-BASED FETCH
-const fetchForRoute = async () => {
-  setLoading(true)
-  try {
-    let response
+  const fetchForRoute = async () => {
+    setLoading(true)
+    try {
+      let response
+      if (location.pathname === "/dashboard/super-admin") {
+        response = await fetchSuperAdminDashboard()
+      } else if (location.pathname === "/dashboard/admin") {
+        response = await fetchAdminDashboard()
+      } else {
+        response = await fetchDashboard()
+      }
+      setDashboardData(response)
+    } catch (err) {
+      const message =
+        err?.response?.data?.message || t("somethingWrong")
+      toast.error(message)
 
-    if (location.pathname === "/dashboard/super-admin") {
-      response = await fetchSuperAdminDashboard()
-    } else if (location.pathname === "/dashboard/admin") {
-      response = await fetchAdminDashboard()
-    } else {
-      response = await fetchDashboard()
+      if (err?.response?.status === 401) navigate("/login")
+    } finally {
+      setLoading(false)
     }
-
-    setDashboardData(response)
-  } catch (err) {
-    const message = err?.response?.data?.message || "Something went wrong"
-    toast.error(message)
-
-    if (err?.response?.status === 401) navigate("/login")
-  } finally {
-    setLoading(false)
   }
-}
 
-useEffect(() => {
-  fetchForRoute()
-}, [location.pathname])
+  useEffect(() => {
+    fetchForRoute()
+  }, [location.pathname])
 
-  // CARD RENDERING
   const renderCards = () => {
     const cards = dashboardData?.data?.cards || dashboardData?.error?.cards
     if (!cards) return null
@@ -86,15 +82,16 @@ useEffect(() => {
         : ""
 
     return (
+      
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-2 mt-4">
         {cards.map((card, index) => (
           <Card key={index} className={borderColor}>
             <CardHeader>
-              <CardTitle>{card.title}</CardTitle>
+              <CardTitle>{t(card.title) || card.title}</CardTitle>
             </CardHeader>
             <CardContent>
               <CardDescription className="text-base">
-                {card.description}
+                {t(card.description) || card.description}
               </CardDescription>
             </CardContent>
           </Card>
@@ -104,13 +101,12 @@ useEffect(() => {
   }
 
   return (
+    <div dir="ltr">
     <SidebarProvider
-      style={
-        {
-          "--sidebar-width": "calc(var(--spacing) * 72)",
-          "--header-height": "calc(var(--spacing) * 12)",
-        }
-      }
+      style={{
+        "--sidebar-width": "calc(var(--spacing) * 72)",
+        "--header-height": "calc(var(--spacing) * 12)",
+      }}
     >
       <AppSidebar variant="inset" />
 
@@ -120,39 +116,44 @@ useEffect(() => {
         <div className="flex flex-1 flex-col">
           <div className="@container/main flex flex-1 flex-col gap-2">
 
-            {/* =================== PROFILE INFO =================== */}
+            {/* ================= PROFILE INFO ================= */}
             <div className="px-4 lg:px-6 py-4">
               <Card>
                 <CardHeader className="flex justify-between">
                   <div>
                     <CardTitle>
                       {user.role === "super_admin"
-                        ? "Super Admin Dashboard"
+                        ? t("superAdminDashboard")
                         : user.role === "admin"
-                        ? "Admin Dashboard"
-                        : "User Dashboard"}
+                        ? t("adminDashboard")
+                        : t("userDashboard")}
                     </CardTitle>
+
                     <CardDescription>
-                      Welcome back, {user.firstName}!
+                      {t("welcomeBack", { name: user.firstName })}
                     </CardDescription>
                   </div>
 
                   <Button
                     variant="outline"
                     onClick={() =>
-                      logout.mutate(null, { onSuccess: () => navigate("/login") })
+                      logout.mutate(null, {
+                        onSuccess: () => navigate("/login"),
+                      })
                     }
                   >
-                    <LogOut className="mr-2 h-4 w-4" /> Logout
+                    <LogOut className="me-2 h-4 w-4" />
+                    {t("logout")}
                   </Button>
                 </CardHeader>
 
                 <CardContent className="space-y-4">
+
                   {/* NAME */}
-                  <div className="flex items-center space-x-4">
+                  <div className="flex items-center space-x-reverse space-x-4">
                     <User className="h-5 w-5 text-muted-foreground" />
                     <div>
-                      <p className="text-sm font-medium">Name</p>
+                      <p className="text-sm font-medium">{t("name")}</p>
                       <p className="text-sm text-muted-foreground">
                         {user.firstName} {user.lastName}
                       </p>
@@ -162,10 +163,10 @@ useEffect(() => {
                   <Separator />
 
                   {/* EMAIL */}
-                  <div className="flex items-center space-x-4">
+                  <div className="flex items-center space-x-reverse space-x-4">
                     <Mail className="h-5 w-5 text-muted-foreground" />
                     <div>
-                      <p className="text-sm font-medium">Email</p>
+                      <p className="text-sm font-medium">{t("email")}</p>
                       <p className="text-sm text-muted-foreground">
                         {user.email}
                       </p>
@@ -175,19 +176,19 @@ useEffect(() => {
                   <Separator />
 
                   {/* ROLE */}
-                  <div className="flex items-center space-x-4">
+                  <div className="flex items-center space-x-reverse space-x-4">
                     <Shield className="h-5 w-5 text-muted-foreground" />
                     <div className="flex items-center gap-2">
-                      <p className="text-sm font-medium">Role</p>
+                      <p className="text-sm font-medium">{t("role")}</p>
                       <Badge variant="secondary">{user.role}</Badge>
                     </div>
                   </div>
+
                 </CardContent>
               </Card>
             </div>
-            
 
-            {/* =================== DASHBOARD SECTIONS =================== */}
+            {/* ================= DASHBOARD SECTIONS ================= */}
             <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
 
               <SectionCards />
@@ -196,20 +197,14 @@ useEffect(() => {
                 <ChartAreaInteractive />
               </div>
 
-              {/* DATA TABLE */}
-              {/* <DataTable data={data} /> */}
-
-              {/* LOADING */}
               {loading && (
                 <div className="flex justify-center py-10">
                   <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
                 </div>
               )}
 
-              {/* ROLE-BASED CARDS */}
               <div className="animate-fadeIn mt-4 px-4 lg:px-6">
-              {!loading && dashboardData && renderCards()}
-
+                {!loading && dashboardData && renderCards()}
               </div>
 
             </div>
@@ -217,5 +212,6 @@ useEffect(() => {
         </div>
       </SidebarInset>
     </SidebarProvider>
+    </div>
   )
 }

@@ -1,0 +1,70 @@
+{
+  "login": "Login",
+  "loginDescription": "Enter your credentials to access CRM",
+  "email": "Email",
+  "password": "Password",
+  "emailPlaceholder": "m@example.com",
+  "loggingIn": "Logging in...",
+  "noAccount": "Don't have an account?",
+  "signup": "Signup",
+   "superAdminDashboard": "Super Admin Dashboard",
+  "adminDashboard": "Admin Dashboard",
+  "userDashboard": "User Dashboard",
+  "welcomeBack": "Welcome back, {{name}}!",
+  "logout": "Logout",
+  "name": "Name",
+  "role": "Role",
+  "somethingWrong": "Something went wrong",
+  "employeeDashboard": "Employee Dashboard",
+  "quickCreate": "Quick Create",
+  "overview": "Overview",
+  "documents": "Documents",
+  "dataLibrary": "Data Library",
+  "reports": "Reports",
+  "wordAssistant": "Word Assistant",
+  "more": "More",
+  "settings": "Settings",
+  "help": "Help",
+  "search": "Search",
+  "totalRevenue": "Total Revenue",
+  "newCustomers": "New Customers",
+  "activeAccounts": "Active Accounts",
+  "growthRate": "Growth Rate",
+
+  "trendingUpThisMonth": "Trending up this month",
+  "visitorsLast6Months": "Visitors for the last 6 months",
+
+  "downThisPeriod": "Down {{percent}} this period",
+  "acquisitionNeedsAttention": "Acquisition needs attention",
+
+  "strongUserRetention": "Strong user retention",
+  "engagementExceedTargets": "Engagement exceed targets",
+
+  "steadyPerformanceIncrease": "Steady performance increase",
+  "meetsGrowthProjections": "Meets growth projections",
+
+  "totalVisitors": "Total Visitors",
+  "totalLast3Months": "Total for the last 3 months",
+
+  "last3Months": "Last 3 months",
+  "last30Days": "Last 30 days",
+  "last7Days": "Last 7 days",
+  "card1Title": "Card 1",
+  "card1Desc": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+  "card2Title": "Card 2",
+  "card2Desc": "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+  "card3Title": "Card 3",
+  "card3Desc": "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.",
+   "Card 1": "Card 1",
+  "Card 2": "Card 2",
+  "Card 3": "Card 3",
+
+  "Lorem ipsum dolor sit amet, consectetur adipiscing elit.": 
+    "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+
+  "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.": 
+    "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+
+  "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.": 
+    "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris."
+}
