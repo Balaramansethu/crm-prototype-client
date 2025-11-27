@@ -46,6 +46,21 @@
   "may": "May",
   "jun": "June",
   "jul": "July",
+  "createAccount": "Create your account",
+  "createAccountDesc": "Fill the form to register into CRM",
+
+  "firstName": "First Name",
+  "firstNamePlaceholder": "John",
+
+  "lastName": "Last Name",
+  "lastNamePlaceholder": "Doe",
+
+  "confirmPassword": "Confirm Password",
+
+  "createAccountBtn": "Create Account",
+
+  "haveAccount": "Have an account?",
+  "loginLink": "Login",
 
   "trendingUpThisMonth": "Trending up this month",
   "visitorsLast6Months": "Visitors for the last 6 months",

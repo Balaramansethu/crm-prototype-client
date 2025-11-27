@@ -17,6 +17,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { Link } from "react-router-dom"
 import { Eye, EyeOff } from "lucide-react"
+import { useTranslation } from "react-i18next"
 import { validateSignupFields } from "@/utils/authenticationFieldValidations"
 
 export function SignupForm({ className, onSubmit, loading, ...props }) {
@@ -28,6 +29,8 @@ export function SignupForm({ className, onSubmit, loading, ...props }) {
         confirmPassword: "",
         role: "employee",
     })
+    const { t, i18n } = useTranslation()
+    const isRTL = i18n.language === "ar"
 
     const [errors, setErrors] = useState({})
     const [showPassword, setShowPassword] = useState(false)
@@ -63,10 +66,10 @@ export function SignupForm({ className, onSubmit, loading, ...props }) {
             <Card>
                 <CardHeader className="text-center">
                     <CardTitle className="text-xl">
-                        Create your account
+                        {t("createAccount")}
                     </CardTitle>
                     <CardDescription>
-                        Fill the form to register into CRM
+                        {t("createAccountDesc")}
                     </CardDescription>
                 </CardHeader>
 
@@ -76,7 +79,7 @@ export function SignupForm({ className, onSubmit, loading, ...props }) {
                             {/* FIRST NAME */}
                             <Field>
                                 <FieldLabel htmlFor="firstName">
-                                    First Name
+                                    {t("firstName")}
                                 </FieldLabel>
                                 <Input
                                     id="firstName"
@@ -94,7 +97,7 @@ export function SignupForm({ className, onSubmit, loading, ...props }) {
                             {/* LAST NAME */}
                             <Field>
                                 <FieldLabel htmlFor="lastName">
-                                    Last Name
+                                    {t("lastName")}
                                 </FieldLabel>
                                 <Input
                                     id="lastName"
@@ -111,7 +114,7 @@ export function SignupForm({ className, onSubmit, loading, ...props }) {
 
                             {/* EMAIL */}
                             <Field>
-                                <FieldLabel htmlFor="email">Email</FieldLabel>
+                                <FieldLabel htmlFor="email">{t("email")}</FieldLabel>
                                 <Input
                                     id="email"
                                     value={form.email}
@@ -126,12 +129,11 @@ export function SignupForm({ className, onSubmit, loading, ...props }) {
                             </Field>
 
                             {/* PASSWORDS */}
-                            {/* PASSWORDS */}
                             <Field className="grid grid-cols-2 gap-4">
                                 {/* PASSWORD */}
                                 <Field>
                                     <FieldLabel htmlFor="password">
-                                        Password
+                                        {t("password")}
                                     </FieldLabel>
 
                                     <div className="relative">
@@ -172,7 +174,7 @@ export function SignupForm({ className, onSubmit, loading, ...props }) {
                                 {/* CONFIRM PASSWORD */}
                                 <Field>
                                     <FieldLabel htmlFor="confirmPassword">
-                                        Confirm Password
+                                        {t("confirmPassword")}
                                     </FieldLabel>
 
                                     <div className="relative">
@@ -217,12 +219,12 @@ export function SignupForm({ className, onSubmit, loading, ...props }) {
                             <Field>
                                 <Button type="submit" disabled={loading}>
                                     {loading
-                                        ? "Creating Account..."
-                                        : "Create Account"}
+                                        ? t("creatingAccount")
+                                        : t("createAccountBtn")}
                                 </Button>
                                 <FieldDescription>
-                                    Have an account?{" "}
-                                    <Link to="/login">Login</Link>
+                                    {t("haveAccount")}{" "}
+                                    <Link to="/login">{t("loginLink")}</Link>
                                 </FieldDescription>
                             </Field>
                         </FieldGroup>

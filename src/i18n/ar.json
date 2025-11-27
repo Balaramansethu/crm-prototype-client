@@ -43,6 +43,21 @@
   "may": "مايو",
   "jun": "يونيو",
   "jul": "يوليو",
+  "createAccount": "إنشاء حساب",
+  "createAccountDesc": "املأ النموذج للتسجيل في نظام إدارة علاقات العملاء",
+
+  "firstName": "الاسم الأول",
+  "firstNamePlaceholder": "أحمد",
+
+  "lastName": "اسم العائلة",
+  "lastNamePlaceholder": "محمد",
+
+  "confirmPassword": "تأكيد كلمة المرور",
+
+  "createAccountBtn": "إنشاء حساب",
+
+  "haveAccount": "لديك حساب؟",
+  "loginLink": "تسجيل الدخول",
 
 
   "trendingUpThisMonth": "اتجاه تصاعدي هذا الشهر",
