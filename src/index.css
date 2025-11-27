@@ -128,6 +128,45 @@
 }
 
 
+html[dir="rtl"] {
+  direction: rtl;
+}
+
+body.rtl {
+  direction: rtl;
+  text-align: right;
+}
+
+body.ltr {
+  direction: ltr;
+  text-align: left;
+}
+
+
+body.rtl input,
+body.rtl textarea,
+body.rtl select {
+  text-align: right;
+}
+
+
+body.rtl [data-radix-popper-content-wrapper] {
+  direction: rtl;
+  text-align: right;
+}
+
+
+body.rtl table {
+  direction: rtl;
+  text-align: right;
+}
+
+
+
+
+
+
+
 /* input[type="password"]::-ms-reveal,
 input[type="password"]::-ms-clear {
     display: none !important;

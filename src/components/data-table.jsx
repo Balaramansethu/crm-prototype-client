@@ -45,6 +45,7 @@ import { toast } from "sonner"
 import { z } from "zod"
 
 import { useIsMobile } from "@/hooks/use-mobile"
+import { useTranslation } from "react-i18next"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import {
@@ -53,6 +54,7 @@ import {
     ChartTooltipContent,
 } from "@/components/ui/chart"
 import { Checkbox } from "@/components/ui/checkbox"
+
 import {
     Drawer,
     DrawerClose,
@@ -100,6 +102,7 @@ export const schema = z.object({
     limit: z.string(),
     reviewer: z.string(),
 })
+
 
 // Create a separate component for the drag handle
 function DragHandle({ id }) {
@@ -664,12 +667,12 @@ export function DataTable({ data: initialData }) {
 }
 
 const chartData = [
-    { month: "January", desktop: 186, mobile: 80 },
-    { month: "February", desktop: 305, mobile: 200 },
-    { month: "March", desktop: 237, mobile: 120 },
-    { month: "April", desktop: 73, mobile: 190 },
-    { month: "May", desktop: 209, mobile: 130 },
-    { month: "June", desktop: 214, mobile: 140 },
+        { month: t("jan"), desktop: 186, mobile: 80 },
+        { month: t("feb"), desktop: 305, mobile: 200 },
+        { month: t("mar"), desktop: 237, mobile: 120 },
+        { month: t("apr"), desktop: 73, mobile: 190 },
+        { month: t("may"), desktop: 209, mobile: 130 },
+        { month: t("jun"), desktop: 214, mobile: 140 },
 ]
 
 const chartConfig = {
@@ -685,6 +688,7 @@ const chartConfig = {
 }
 
 function TableCellViewer({ item }) {
+      const { t } = useTranslation()
     const isMobile = useIsMobile()
 
     return (
@@ -722,6 +726,7 @@ function TableCellViewer({ item }) {
                                         tickLine={false}
                                         axisLine={false}
                                         tickMargin={8}
+                                        reversed={i18n.language === "ar"}
                                         tickFormatter={(value) =>
                                             value.slice(0, 3)
                                         }

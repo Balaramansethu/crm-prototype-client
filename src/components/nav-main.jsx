@@ -1,4 +1,5 @@
 import { IconCirclePlusFilled, IconMail } from "@tabler/icons-react"
+import { useTranslation } from "react-i18next"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -9,7 +10,11 @@ import {
     SidebarMenuItem,
 } from "@/components/ui/sidebar"
 
+
 export function NavMain({ items }) {
+
+    const { t } = useTranslation()
+
     return (
         <SidebarGroup>
             <SidebarGroupContent className="flex flex-col gap-2">
@@ -19,7 +24,7 @@ export function NavMain({ items }) {
                             tooltip="Quick Create"
                         >
                             <IconCirclePlusFilled />
-                            <span>Quick Create</span>
+                            <span>{t("quickCreate")}</span>
                         </SidebarMenuButton>
                         <Button
                             size="icon"

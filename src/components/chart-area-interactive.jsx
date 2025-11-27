@@ -25,6 +25,7 @@ import {
     SelectValue,
 } from "@/components/ui/select"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
+import { useTranslation } from "react-i18next"
 
 export const description = "An interactive area chart"
 
@@ -139,6 +140,7 @@ const chartConfig = {
 }
 
 export function ChartAreaInteractive() {
+    const { t, i18n } = useTranslation()
     const isMobile = useIsMobile()
     const [timeRange, setTimeRange] = React.useState("90d")
 
@@ -165,12 +167,16 @@ export function ChartAreaInteractive() {
     return (
         <Card className="@container/card">
             <CardHeader>
-                <CardTitle>Total Visitors</CardTitle>
+                <CardTitle className="ltr:text-left rtl:text-right">
+                    {t("totalVisitors")}
+                </CardTitle>
                 <CardDescription>
                     <span className="hidden @[540px]/card:block">
-                        Total for the last 3 months
+                        {t("totalLast3Months")}
                     </span>
-                    <span className="@[540px]/card:hidden">Last 3 months</span>
+                    <span className="@[540px]/card:hidden">
+                        {t("last3Months")}
+                    </span>
                 </CardDescription>
                 <CardAction>
                     <ToggleGroup
@@ -181,13 +187,13 @@ export function ChartAreaInteractive() {
                         className="hidden *:data-[slot=toggle-group-item]:!px-4 @[767px]/card:flex"
                     >
                         <ToggleGroupItem value="90d">
-                            Last 3 months
+                            {t("last3Months")}
                         </ToggleGroupItem>
                         <ToggleGroupItem value="30d">
-                            Last 30 days
+                            {t("last30Days")}
                         </ToggleGroupItem>
                         <ToggleGroupItem value="7d">
-                            Last 7 days
+                            {t("last7Days")}
                         </ToggleGroupItem>
                     </ToggleGroup>
                     <Select value={timeRange} onValueChange={setTimeRange}>
@@ -200,13 +206,13 @@ export function ChartAreaInteractive() {
                         </SelectTrigger>
                         <SelectContent className="rounded-xl">
                             <SelectItem value="90d" className="rounded-lg">
-                                Last 3 months
+                                {t("last3Months")}
                             </SelectItem>
                             <SelectItem value="30d" className="rounded-lg">
-                                Last 30 days
+                                {t("last30Days")}
                             </SelectItem>
                             <SelectItem value="7d" className="rounded-lg">
-                                Last 7 days
+                                {t("last7Days")}
                             </SelectItem>
                         </SelectContent>
                     </Select>
@@ -237,6 +243,7 @@ export function ChartAreaInteractive() {
                                     stopOpacity={0.1}
                                 />
                             </linearGradient>
+
                             <linearGradient
                                 id="fillMobile"
                                 x1="0"
@@ -256,37 +263,42 @@ export function ChartAreaInteractive() {
                                 />
                             </linearGradient>
                         </defs>
+
                         <CartesianGrid vertical={false} />
+
                         <XAxis
                             dataKey="date"
                             tickLine={false}
                             axisLine={false}
                             tickMargin={8}
                             minTickGap={32}
+                            reversed={i18n.language === "ar"}
                             tickFormatter={(value) => {
                                 const date = new Date(value)
-                                return date.toLocaleDateString("en-US", {
-                                    month: "short",
-                                    day: "numeric",
-                                })
+                                return date.toLocaleDateString(
+                                    i18n.language === "ar" ? "ar-EG" : "en-US",
+                                    { month: "short", day: "numeric" },
+                                )
                             }}
                         />
+
                         <ChartTooltip
                             cursor={false}
                             content={
                                 <ChartTooltipContent
-                                    labelFormatter={(value) => {
-                                        return new Date(
-                                            value,
-                                        ).toLocaleDateString("en-US", {
-                                            month: "short",
-                                            day: "numeric",
-                                        })
-                                    }}
                                     indicator="dot"
+                                    labelFormatter={(value) =>
+                                        new Date(value).toLocaleDateString(
+                                            i18n.language === "ar"
+                                                ? "ar-EG"
+                                                : "en-US",
+                                            { month: "short", day: "numeric" },
+                                        )
+                                    }
                                 />
                             }
                         />
+
                         <Area
                             dataKey="mobile"
                             type="natural"
@@ -294,6 +306,7 @@ export function ChartAreaInteractive() {
                             stroke="var(--color-mobile)"
                             stackId="a"
                         />
+
                         <Area
                             dataKey="desktop"
                             type="natural"

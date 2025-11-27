@@ -30,6 +30,20 @@
   "newCustomers": "عملاء جدد",
   "activeAccounts": "الحسابات النشطة",
   "growthRate": "معدل النمو",
+  "datasack": "حزمة البيانات",
+  "last": "الماضي",
+  "months": "الأشهر",
+  "days": "الأيام",
+  "for": "لـ",
+  "the": "الـ",
+  "jan": "يناير",
+  "feb": "فبراير",
+  "mar": "مارس",
+  "apr": "أبريل",
+  "may": "مايو",
+  "jun": "يونيو",
+  "jul": "يوليو",
+
 
   "trendingUpThisMonth": "اتجاه تصاعدي هذا الشهر",
   "visitorsLast6Months": "الزوار خلال آخر 6 أشهر",
@@ -45,7 +59,7 @@
 
   "totalVisitors": "إجمالي الزوار",
   "totalLast3Months": "الإجمالي خلال آخر 3 أشهر",
-
+  "crmTool": "أداة إدارة علاقات العملاء",
   "last3Months": "آخر 3 أشهر",
   "last30Days": "آخر 30 يوم",
   "last7Days": "آخر 7 أيام",
@@ -66,5 +80,9 @@
     "نص توضيحي لعرض تفاصيل البطاقة.",
 
   "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.": 
-    "هذا وصف تجريبي لمحتوى البطاقة."
+    "هذا وصف تجريبي لمحتوى البطاقة.",
+    
+    "open": "فتح",
+    "share": "مشاركة",
+    "delete": "حذف"
 }
