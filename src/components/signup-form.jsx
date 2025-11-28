@@ -68,9 +68,7 @@ export function SignupForm({ className, onSubmit, loading, ...props }) {
                     <CardTitle className="text-xl">
                         {t("createAccount")}
                     </CardTitle>
-                    <CardDescription>
-                        {t("createAccountDesc")}
-                    </CardDescription>
+                    <CardDescription>{t("createAccountDesc")}</CardDescription>
                 </CardHeader>
 
                 <CardContent>
@@ -114,7 +112,9 @@ export function SignupForm({ className, onSubmit, loading, ...props }) {
 
                             {/* EMAIL */}
                             <Field>
-                                <FieldLabel htmlFor="email">{t("email")}</FieldLabel>
+                                <FieldLabel htmlFor="email">
+                                    {t("email")}
+                                </FieldLabel>
                                 <Input
                                     id="email"
                                     value={form.email}

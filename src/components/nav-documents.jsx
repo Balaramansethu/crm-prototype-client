@@ -25,7 +25,6 @@ import {
 } from "@/components/ui/sidebar"
 import { useTranslation } from "react-i18next"
 
-
 export function NavDocuments({ items }) {
     const { isMobile } = useSidebar()
     const { t } = useTranslation()

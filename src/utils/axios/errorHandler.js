@@ -39,7 +39,7 @@ export class ErrorHandler {
             )
         }
 
-        // Conflict (409) 
+        // Conflict (409)
         if (statusCode === 409) {
             if (showToast) {
                 toast.error(errorMessage, {

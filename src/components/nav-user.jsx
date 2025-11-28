@@ -32,7 +32,8 @@ export function NavUser() {
     const logout = useLogout()
 
     // Generate initials
-    const initials = `${user?.firstName?.[0] || ""}${user?.lastName?.[0] || ""}`.toUpperCase()
+    const initials =
+        `${user?.firstName?.[0] || ""}${user?.lastName?.[0] || ""}`.toUpperCase()
 
     return (
         <SidebarMenu>
@@ -106,9 +107,7 @@ export function NavUser() {
                         <DropdownMenuSeparator />
 
                         {/* LOGOUT */}
-                        <DropdownMenuItem
-                            onClick={() => logout.mutate(null)}
-                        >
+                        <DropdownMenuItem onClick={() => logout.mutate(null)}>
                             <IconLogout />
                             Log out
                         </DropdownMenuItem>

@@ -10,9 +10,7 @@ import {
     SidebarMenuItem,
 } from "@/components/ui/sidebar"
 
-
 export function NavMain({ items }) {
-
     const { t } = useTranslation()
 
     return (
@@ -20,9 +18,7 @@ export function NavMain({ items }) {
             <SidebarGroupContent className="flex flex-col gap-2">
                 <SidebarMenu>
                     <SidebarMenuItem className="flex items-center gap-2">
-                        <SidebarMenuButton
-                            tooltip="Quick Create"
-                        >
+                        <SidebarMenuButton tooltip="Quick Create">
                             <IconCirclePlusFilled />
                             <span>{t("quickCreate")}</span>
                         </SidebarMenuButton>

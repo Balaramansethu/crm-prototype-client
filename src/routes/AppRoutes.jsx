@@ -7,13 +7,12 @@ import ProtectedRoute from "@/components/ProtectedRoute"
 import SignupPage from "@/pages/SignupPage/SignupPage"
 import LoginPage from "@/pages/LoginPage/LoginPage"
 
-import DashboardPage from "@/pages/Dashboard/Dashboard" 
+import DashboardPage from "@/pages/Dashboard/Dashboard"
 import Unauthorized from "@/components/unauthorized"
 
 export default function AppRoutes() {
     return (
         <Routes>
-
             {/* PUBLIC ROUTES */}
             <Route element={<PublicLayout />}>
                 <Route path="/" element={<SignupPage />} />
@@ -24,12 +23,13 @@ export default function AppRoutes() {
             {/* PRIVATE ROUTES */}
             <Route element={<ProtectedRoute />}>
                 <Route element={<PrivateLayout />}>
-
                     {/* EMPLOYEE */}
                     <Route
                         path="/dashboard"
                         element={
-                            <ProtectedRoute roles={["employee", "admin", "super_admin"]} />
+                            <ProtectedRoute
+                                roles={["employee", "admin", "super_admin"]}
+                            />
                         }
                     >
                         <Route index element={<DashboardPage />} />
@@ -38,7 +38,9 @@ export default function AppRoutes() {
                     {/* ADMIN */}
                     <Route
                         path="/dashboard/admin"
-                        element={<ProtectedRoute roles={["admin", "super_admin"]} />}
+                        element={
+                            <ProtectedRoute roles={["admin", "super_admin"]} />
+                        }
                     >
                         <Route index element={<DashboardPage />} />
                     </Route>
@@ -50,7 +52,6 @@ export default function AppRoutes() {
                     >
                         <Route index element={<DashboardPage />} />
                     </Route>
-
                 </Route>
             </Route>
 

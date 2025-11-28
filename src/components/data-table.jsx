@@ -103,7 +103,6 @@ export const schema = z.object({
     reviewer: z.string(),
 })
 
-
 // Create a separate component for the drag handle
 function DragHandle({ id }) {
     const { attributes, listeners } = useSortable({
@@ -667,12 +666,12 @@ export function DataTable({ data: initialData }) {
 }
 
 const chartData = [
-        { month: t("jan"), desktop: 186, mobile: 80 },
-        { month: t("feb"), desktop: 305, mobile: 200 },
-        { month: t("mar"), desktop: 237, mobile: 120 },
-        { month: t("apr"), desktop: 73, mobile: 190 },
-        { month: t("may"), desktop: 209, mobile: 130 },
-        { month: t("jun"), desktop: 214, mobile: 140 },
+    { month: t("jan"), desktop: 186, mobile: 80 },
+    { month: t("feb"), desktop: 305, mobile: 200 },
+    { month: t("mar"), desktop: 237, mobile: 120 },
+    { month: t("apr"), desktop: 73, mobile: 190 },
+    { month: t("may"), desktop: 209, mobile: 130 },
+    { month: t("jun"), desktop: 214, mobile: 140 },
 ]
 
 const chartConfig = {
@@ -688,7 +687,7 @@ const chartConfig = {
 }
 
 function TableCellViewer({ item }) {
-      const { t } = useTranslation()
+    const { t } = useTranslation()
     const isMobile = useIsMobile()
 
     return (

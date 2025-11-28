@@ -45,7 +45,12 @@ export function AppSidebar({ ...props }) {
     const isRTL = i18n.language === "ar"
 
     return (
-        <Sidebar collapsible="offcanvas" {...props} dir={isRTL ? "rtl" : "ltr"}>
+        <Sidebar
+            collapsible="offcanvas"
+            {...props}
+            dir={isRTL ? "rtl" : "ltr"}
+            className={isRTL ? "rtl" : "ltr"}
+        >
             {/* HEADER */}
             <SidebarHeader>
                 <SidebarMenu>
@@ -54,10 +59,7 @@ export function AppSidebar({ ...props }) {
                             asChild
                             className="data-[slot=sidebar-menu-button]:!p-1.5"
                         >
-                            <a
-                                href="#"
-                                className="flex items-center gap-2 [dir='rtl']:flex-row-reverse"
-                            >
+                            <a href="#" className="flex items-center gap-2">
                                 <IconInnerShadowTop className="!size-5" />
                                 <span className="text-base font-semibold">
                                     {t("crmTool")}
@@ -65,7 +67,9 @@ export function AppSidebar({ ...props }) {
                             </a>
                         </SidebarMenuButton>
 
-                        <div className="mt-2 px-2 ltr:text-left rtl:text-right">
+                        <div
+                            className={`mt-2 px-2 ${isRTL ? "text-right" : "text-left"}`}
+                        >
                             <LanguageToggle />
                         </div>
                     </SidebarMenuItem>
@@ -79,10 +83,10 @@ export function AppSidebar({ ...props }) {
                         <SidebarMenuButton
                             isActive={location.pathname === "/dashboard"}
                             onClick={() => navigate("/dashboard")}
-                            className="flex items-center gap-2 [dir='rtl']:flex-row-reverse"
+                            className="flex items-center gap-2"
                         >
                             <IconDashboard className="h-4 w-4" />
-                            {t("employeeDashboard")}
+                            <span>{t("employeeDashboard")}</span>
                         </SidebarMenuButton>
                     </SidebarMenuItem>
 
@@ -93,10 +97,10 @@ export function AppSidebar({ ...props }) {
                                     location.pathname === "/dashboard/admin"
                                 }
                                 onClick={() => navigate("/dashboard/admin")}
-                                className="flex items-center gap-2 [dir='rtl']:flex-row-reverse"
+                                className="flex items-center gap-2"
                             >
                                 <IconUsers className="h-4 w-4" />
-                                {t("adminDashboard")}
+                                <span>{t("adminDashboard")}</span>
                             </SidebarMenuButton>
                         </SidebarMenuItem>
                     )}
@@ -111,10 +115,10 @@ export function AppSidebar({ ...props }) {
                                 onClick={() =>
                                     navigate("/dashboard/super-admin")
                                 }
-                                className="flex items-center gap-2 [dir='rtl']:flex-row-reverse"
+                                className="flex items-center gap-2"
                             >
                                 <IconListDetails className="h-4 w-4" />
-                                {t("superAdminDashboard")}
+                                <span>{t("superAdminDashboard")}</span>
                             </SidebarMenuButton>
                         </SidebarMenuItem>
                     )}
@@ -160,7 +164,7 @@ export function AppSidebar({ ...props }) {
             </SidebarContent>
 
             {/* FOOTER USER CARD */}
-            <SidebarFooter className="ltr:text-left rtl:text-right">
+            <SidebarFooter className={isRTL ? "text-right" : "text-left"}>
                 <NavUser
                     user={{
                         name: `${user.firstName} ${user.lastName}`,

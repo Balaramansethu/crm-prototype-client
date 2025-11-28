@@ -13,7 +13,7 @@ export const useUserStore = create(
             },
         }),
         {
-            name: "crm-user", 
+            name: "crm-user",
             getStorage: () => sessionStorage,
         },
     ),

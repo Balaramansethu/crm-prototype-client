@@ -21,14 +21,12 @@ export default function Unauthorized() {
 
             <h1 className="text-3xl font-bold">Unauthorized Access</h1>
             <p className="text-muted-foreground mt-2 max-w-md">
-                You do not have permission to view this page.  
-                If you believe this is an error, contact your administrator.
+                You do not have permission to view this page. If you believe
+                this is an error, contact your administrator.
             </p>
 
             <div className="mt-6 flex gap-3">
-                <Button onClick={goToCorrectDashboard}>
-                    Go to Dashboard
-                </Button>
+                <Button onClick={goToCorrectDashboard}>Go to Dashboard</Button>
             </div>
         </div>
     )

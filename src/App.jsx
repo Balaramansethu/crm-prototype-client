@@ -7,34 +7,35 @@ import i18n from "@/i18n.js"
 const queryClient = new QueryClient()
 
 export default function App() {
+    useEffect(() => {
+        const applyDir = (lang) => {
+            document.documentElement.setAttribute(
+                "dir",
+                lang === "ar" ? "rtl" : "ltr",
+            )
+            document.documentElement.setAttribute("lang", lang)
+            document.body.className = lang === "ar" ? "rtl" : "ltr"
+        }
 
-  useEffect(() => {
-  const applyDir = (lang) => {
-    document.documentElement.setAttribute("dir", lang === "ar" ? "rtl" : "ltr")
-    document.documentElement.setAttribute("lang", lang)
-    document.body.className = lang === "ar" ? "rtl" : "ltr"
-  }
+        const savedLang = localStorage.getItem("lang") || "en"
+        i18n.changeLanguage(savedLang)
+        applyDir(savedLang)
 
-  const savedLang = localStorage.getItem("lang") || "en"
-  i18n.changeLanguage(savedLang)
-  applyDir(savedLang)
+        i18n.on("languageChanged", applyDir)
 
-  i18n.on("languageChanged", applyDir)
+        return () => i18n.off("languageChanged", applyDir)
+    }, [])
 
-  return () => i18n.off("languageChanged", applyDir)
-}, [])
+    const currentLang = i18n.language || "en"
 
-
-  const currentLang = i18n.language || "en"
-
-  return (
-    <QueryClientProvider client={queryClient}>
-      <AppRoutes />
-      <Toaster
-        position={currentLang === "ar" ? "top-left" : "top-right"}
-        richColors
-        closeButton
-      />
-    </QueryClientProvider>
-  )
+    return (
+        <QueryClientProvider client={queryClient}>
+            <AppRoutes />
+            <Toaster
+                position={currentLang === "ar" ? "top-left" : "top-right"}
+                richColors
+                closeButton
+            />
+        </QueryClientProvider>
+    )
 }
