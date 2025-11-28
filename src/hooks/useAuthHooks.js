@@ -1,5 +1,6 @@
 import { useMutation, useQuery } from "@tanstack/react-query"
 import { useNavigate } from "react-router-dom"
+import { useTranslation } from "react-i18next"
 import { toast } from "sonner"
 import {
     loginService,
@@ -17,14 +18,15 @@ import {
 
 export function useSignup() {
     const navigate = useNavigate()
+    const { t } = useTranslation() 
     const setUser = useUserStore((s) => s.setUser)
 
     return useMutation({
         mutationFn: signupService,
         onSuccess: (user) => {
             setUser(user)
-            toast.success("Account created successfully!", {
-                description: "Welcome aboard!",
+            toast.success(t("signupSuccessTitle"), {
+                description: t("signupSuccessDesc"),
                 duration: 2000,
             })
         },
@@ -38,14 +40,15 @@ export function useSignup() {
 
 export function useLogin() {
     const navigate = useNavigate()
+    const { t } = useTranslation() 
     const setUser = useUserStore((s) => s.setUser)
 
     return useMutation({
         mutationFn: loginService,
         onSuccess: (user) => {
             setUser(user)
-            toast.success("Welcome back!", {
-                description: "Login successful",
+            toast.success(t("loginSuccessTitle"), {
+                description: t("loginSuccessDesc"),
                 duration: 2000,
             })
         },
@@ -59,13 +62,14 @@ export function useLogin() {
 
 export function useLogout() {
     const navigate = useNavigate()
+    const { t } = useTranslation() 
     const clearUser = useUserStore((s) => s.clearUser)
 
     return useMutation({
         mutationFn: logoutService,
         onSuccess: () => {
             clearUser()
-            toast.success("Logged out successfully")
+            toast.success(t("logoutSuccess"))
             navigate("/login", { replace: true })
         },
         onError: (error) => {

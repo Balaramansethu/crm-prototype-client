@@ -48,6 +48,11 @@
     "jul": "July",
     "createAccount": "Create your account",
     "createAccountDesc": "Fill the form to register into CRM",
+    "signupSuccessTitle": "Account created successfully!",
+    "signupSuccessDesc": "Welcome aboard!",
+    "loginSuccessTitle": "Welcome back!",
+    "loginSuccessDesc": "Login successful",
+    "logoutSuccess": "Logged out successfully",
 
     "firstName": "First Name",
     "firstNamePlaceholder": "John",

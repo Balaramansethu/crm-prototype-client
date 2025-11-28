@@ -45,6 +45,11 @@
     "jul": "يوليو",
     "createAccount": "إنشاء حساب",
     "createAccountDesc": "املأ النموذج للتسجيل في نظام إدارة علاقات العملاء",
+    "signupSuccessTitle": "تم إنشاء الحساب بنجاح",
+    "signupSuccessDesc": "مرحبًا بك معنا",
+    "loginSuccessTitle": "مرحبًا بعودتك",
+    "loginSuccessDesc": "تم تسجيل الدخول بنجاح",
+    "logoutSuccess": "تم تسجيل الخروج بنجاح",
 
     "firstName": "الاسم الأول",
     "firstNamePlaceholder": "أحمد",
