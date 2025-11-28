@@ -23,6 +23,7 @@ import {
     useSidebar,
 } from "@/components/ui/sidebar"
 
+import { useTranslation } from "react-i18next"
 import { useUserStore } from "@/store/userStore"
 import { useLogout } from "@/hooks/useAuthHooks"
 
@@ -30,6 +31,7 @@ export function NavUser() {
     const { isMobile } = useSidebar()
     const user = useUserStore((s) => s.user)
     const logout = useLogout()
+    const { t } = useTranslation()
 
     // Generate initials
     const initials =
@@ -109,7 +111,7 @@ export function NavUser() {
                         {/* LOGOUT */}
                         <DropdownMenuItem onClick={() => logout.mutate(null)}>
                             <IconLogout />
-                            Log out
+                            {t("logout")}
                         </DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>
