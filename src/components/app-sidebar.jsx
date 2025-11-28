@@ -78,7 +78,7 @@ export function AppSidebar({ ...props }) {
 
             {/* CONTENT */}
             <SidebarContent>
-                <SidebarMenu className="mb-4">
+                <SidebarMenu className="mb-1">
                     <SidebarMenuItem>
                         <SidebarMenuButton
                             isActive={location.pathname === "/dashboard"}
@@ -154,7 +154,7 @@ export function AppSidebar({ ...props }) {
 
                 {/* SECONDARY */}
                 <NavSecondary
-                    className="mt-auto"
+                    className="mt-2"
                     items={[
                         { title: t("settings"), icon: IconSettings, url: "#" },
                         { title: t("help"), icon: IconHelp, url: "#" },
