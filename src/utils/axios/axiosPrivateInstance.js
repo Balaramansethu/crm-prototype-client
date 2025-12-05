@@ -22,7 +22,11 @@ axiosPrivateInstance.interceptors.response.use(
     async (error) => {
         const originalReq = error.config
 
-        if (error.response?.data?.errorCode === "2003" && !originalReq._retry) {
+        if (
+            (error.response?.data?.errorCode === "2003" ||
+                error.response?.status === 401) &&
+            !originalReq._retry
+        ) {
             originalReq._retry = true
 
             try {

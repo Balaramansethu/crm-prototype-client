@@ -8,6 +8,8 @@ import SignupPage from "@/pages/SignupPage/SignupPage"
 import LoginPage from "@/pages/LoginPage/LoginPage"
 
 import DashboardPage from "@/pages/Dashboard/Dashboard"
+import LeadsPage from "@/pages/LeadsPage/LeadsPage"
+import CreateLeadPage from "@/pages/LeadsPage/CreateLeadPage"
 import Unauthorized from "@/components/unauthorized"
 
 export default function AppRoutes() {
@@ -23,6 +25,19 @@ export default function AppRoutes() {
             {/* PRIVATE ROUTES */}
             <Route element={<ProtectedRoute />}>
                 <Route element={<PrivateLayout />}>
+
+                {/* LEADS PAGE (Employee + Admin + Super Admin) */}
+                    <Route
+                        path="/leads"
+                        element={
+                            <ProtectedRoute
+                                roles={["employee", "admin", "super_admin"]}
+                            />
+                        }
+                    >
+                        <Route index element={<LeadsPage />} />
+                        <Route path="new" element={<CreateLeadPage />} />
+                    </Route>
                     {/* EMPLOYEE */}
                     <Route
                         path="/dashboard"

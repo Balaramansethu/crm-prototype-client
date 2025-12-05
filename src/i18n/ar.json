@@ -50,32 +50,22 @@
     "loginSuccessTitle": "مرحبًا بعودتك",
     "loginSuccessDesc": "تم تسجيل الدخول بنجاح",
     "logoutSuccess": "تم تسجيل الخروج بنجاح",
-
     "firstName": "الاسم الأول",
     "firstNamePlaceholder": "أحمد",
-
     "lastName": "اسم العائلة",
     "lastNamePlaceholder": "محمد",
-
     "confirmPassword": "تأكيد كلمة المرور",
-
     "createAccountBtn": "إنشاء حساب",
-
     "haveAccount": "لديك حساب؟",
     "loginLink": "تسجيل الدخول",
-
     "trendingUpThisMonth": "اتجاه تصاعدي هذا الشهر",
     "visitorsLast6Months": "الزوار خلال آخر 6 أشهر",
-
     "downThisPeriod": "انخفاض {{percent}} خلال هذه الفترة",
     "acquisitionNeedsAttention": "الاستحواذ يحتاج إلى اهتمام",
-
     "strongUserRetention": "احتفاظ قوي بالمستخدمين",
     "engagementExceedTargets": "التفاعل يتجاوز الأهداف",
-
     "steadyPerformanceIncrease": "تحسن ثابت في الأداء",
     "meetsGrowthProjections": "يلبي توقعات النمو",
-
     "totalVisitors": "إجمالي الزوار",
     "totalLast3Months": "الإجمالي خلال آخر 3 أشهر",
     "crmTool": "أداة إدارة علاقات العملاء",
@@ -91,14 +81,17 @@
     "Card 1": "البطاقة 1",
     "Card 2": "البطاقة 2",
     "Card 3": "البطاقة 3",
-
     "Lorem ipsum dolor sit amet, consectetur adipiscing elit.": "هذا نص تجريبي يستخدم في التصميم.",
-
     "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.": "نص توضيحي لعرض تفاصيل البطاقة.",
-
     "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.": "هذا وصف تجريبي لمحتوى البطاقة.",
-
     "open": "فتح",
     "share": "مشاركة",
-    "delete": "حذف"
+    "delete": "حذف",
+    "leads": "العملاء المحتملين",
+    "createLead": "إنشاء عميل محتمل",
+    "leadName": "اسم العميل",
+    "company": "الشركة",
+    "phone": "الهاتف",
+    "saveLead": "حفظ العميل المحتمل",
+    "cancel": "إلغاء"
 }

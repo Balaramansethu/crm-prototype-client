@@ -53,32 +53,22 @@
     "loginSuccessTitle": "Welcome back!",
     "loginSuccessDesc": "Login successful",
     "logoutSuccess": "Logged out successfully",
-
     "firstName": "First Name",
     "firstNamePlaceholder": "John",
-
     "lastName": "Last Name",
     "lastNamePlaceholder": "Doe",
-
     "confirmPassword": "Confirm Password",
-
     "createAccountBtn": "Create Account",
-
     "haveAccount": "Have an account?",
     "loginLink": "Login",
-
     "trendingUpThisMonth": "Trending up this month",
     "visitorsLast6Months": "Visitors for the last 6 months",
-
     "downThisPeriod": "Down {{percent}} this period",
     "acquisitionNeedsAttention": "Acquisition needs attention",
-
     "strongUserRetention": "Strong user retention",
     "engagementExceedTargets": "Engagement exceed targets",
-
     "steadyPerformanceIncrease": "Steady performance increase",
     "meetsGrowthProjections": "Meets growth projections",
-
     "totalVisitors": "Total Visitors",
     "totalLast3Months": "Total for the last 3 months",
     "crmTool": "CRM Tool",
@@ -94,10 +84,14 @@
     "Card 1": "Card 1",
     "Card 2": "Card 2",
     "Card 3": "Card 3",
-
     "Lorem ipsum dolor sit amet, consectetur adipiscing elit.": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-
     "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.": "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-
-    "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.": "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris."
+    "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.": "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.",
+    "leads": "Leads",
+    "createLead": "Create Lead",
+    "leadName": "Lead Name",
+    "company": "Company",
+    "phone": "Phone",
+    "saveLead": "Save Lead",
+    "cancel": "Cancel"
 }
