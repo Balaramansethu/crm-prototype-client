@@ -2,27 +2,27 @@ import { axiosPrivateInstance } from "@/utils/axios/axiosPrivateInstance"
 
 export async function fetchDashboard() {
     try {
-        const res = await axiosPrivateInstance.get("/dashboard")
-        return res.data
-    } catch (err) {
-        throw err
+        const response = await axiosPrivateInstance.get("/dashboard")
+        return response.data
+    } catch (error) {
+        throw error
     }
 }
 
 export async function fetchAdminDashboard() {
     try {
-        const res = await axiosPrivateInstance.get("/dashboard/admin")
-        return res.data
-    } catch (err) {
-        throw err
+        const response = await axiosPrivateInstance.get("/dashboard/admin")
+        return response.data
+    } catch (error) {
+        throw error
     }
 }
 
 export async function fetchSuperAdminDashboard() {
     try {
-        const res = await axiosPrivateInstance.get("/dashboard/super-admin")
-        return res.data
-    } catch (err) {
-        throw err
+        const response = await axiosPrivateInstance.get("/dashboard/super-admin")
+        return response.data
+    } catch (error) {
+        throw error
     }
 }

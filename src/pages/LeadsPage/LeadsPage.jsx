@@ -1,13 +1,14 @@
 import { Button } from "@/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { useTranslation } from "react-i18next"
-import { useLeadsStore } from "@/store/leadsStore"
 import { useNavigate } from "react-router-dom"
+import { useLeads } from "@/hooks/useLeads"
+import { Loader2 } from "lucide-react"
 
 export default function LeadsPage() {
     const { t } = useTranslation()
     const navigate = useNavigate()
-    const leads = useLeadsStore((state) => state.leads)
+    const { data: leads = [], isLoading } = useLeads()
 
     return (
         <div className="@container/main flex flex-1 flex-col gap-2">
@@ -24,21 +25,42 @@ export default function LeadsPage() {
                     <Table>
                         <TableHeader>
                             <TableRow>
-                                <TableHead>{t("leadName")}</TableHead>
+                                <TableHead>{t("contact")}</TableHead>
                                 <TableHead>{t("company")}</TableHead>
                                 <TableHead>{t("email")}</TableHead>
                                 <TableHead>{t("phone")}</TableHead>
+                                <TableHead>{t("status")}</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                            {leads.map((lead) => (
-                                <TableRow key={lead.id}>
-                                    <TableCell>{lead.name}</TableCell>
-                                    <TableCell>{lead.company}</TableCell>
-                                    <TableCell>{lead.email}</TableCell>
-                                    <TableCell>{lead.phone}</TableCell>
+                            {isLoading ? (
+                                <TableRow>
+                                    <TableCell colSpan={5} className="h-24 text-center">
+                                        <div className="flex justify-center">
+                                            <Loader2 className="h-6 w-6 animate-spin" />
+                                        </div>
+                                    </TableCell>
                                 </TableRow>
-                            ))}
+                            ) : leads.length === 0 ? (
+                                <TableRow>
+                                    <TableCell colSpan={5} className="h-24 text-center">
+                                        No leads found.
+                                    </TableCell>
+                                </TableRow>
+                            ) : (
+                                leads.map((lead) => (
+                                    <TableRow key={lead._id || lead.id}>
+                                        <TableCell className="font-medium">{lead.contact}</TableCell>
+                                        <TableCell>{lead.company}</TableCell>
+                                        <TableCell>{lead.email}</TableCell>
+                                        <TableCell dir="ltr" className="text-start">
+                                            {lead.phone?.extension ? `${lead.phone.extension} ` : ""}
+                                            {lead.phone?.number}
+                                        </TableCell>
+                                        <TableCell>{t(lead.status) || lead.status}</TableCell>
+                                    </TableRow>
+                                ))
+                            )}
                         </TableBody>
                     </Table>
                 </div>

@@ -93,5 +93,15 @@
     "company": "Company",
     "phone": "Phone",
     "saveLead": "Save Lead",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "contact": "Contact Name",
+    "extension": "Ext.",
+    "source": "Source",
+    "followUp": "Follow Up Date",
+    "status": "Status",
+    "selectStatus": "Select a status",
+    "new": "New",
+    "contacted": "Contacted",
+    "qualified": "Qualified",
+    "lost": "Lost"
 }

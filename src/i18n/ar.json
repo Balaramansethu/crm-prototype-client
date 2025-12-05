@@ -93,5 +93,15 @@
     "company": "الشركة",
     "phone": "الهاتف",
     "saveLead": "حفظ العميل المحتمل",
-    "cancel": "إلغاء"
+    "cancel": "إلغاء",
+    "contact": "اسم جهة الاتصال",
+    "extension": "تحويلة",
+    "source": "المصدر",
+    "followUp": "تاريخ المتابعة",
+    "status": "الحالة",
+    "selectStatus": "اختر الحالة",
+    "new": "جديد",
+    "contacted": "تم الاتصال",
+    "qualified": "مؤهل",
+    "lost": "خسارة"
 }
