@@ -10,6 +10,7 @@ import LoginPage from "@/pages/LoginPage/LoginPage"
 import DashboardPage from "@/pages/Dashboard/Dashboard"
 import LeadsPage from "@/pages/LeadsPage/LeadsPage"
 import CreateLeadPage from "@/pages/LeadsPage/CreateLeadPage"
+import NotFoundPage from "@/pages/NotFoundPage/NotFoundPage"
 import Unauthorized from "@/components/unauthorized"
 
 export default function AppRoutes() {
@@ -71,6 +72,8 @@ export default function AppRoutes() {
 
             {/* UNAUTHORIZED PAGE */}
             <Route path="/unauthorized" element={<Unauthorized />} />
+            {/* 404 PAGE */}
+            <Route path="*" element={<NotFoundPage />} />
         </Routes>
     )
 }

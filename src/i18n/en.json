@@ -127,5 +127,8 @@
     "phoneRequired": "Phone number is required",
     "phoneTooShort": "Phone number is too short",
     "leadCreatedSuccess": "Lead created successfully",
-    "sourcePlaceholder": "e.g. Website, Referred by friend"
+    "sourcePlaceholder": "e.g. Website, Referred by friend",
+    "pageNotFound": "Page Not Found",
+    "pageNotFoundDesc": "We're sorry, the page you requested could not be found.",
+    "goHome": "Go Home"
 }
