@@ -2,10 +2,20 @@ import { useNavigate } from "react-router-dom"
 import { useTranslation } from "react-i18next"
 import NotFoundImage from "@/assets/404.png"
 import { Button } from "@/components/ui/button"
+import { useUserStore } from "@/store/userStore"
 
 export default function NotFoundPage() {
     const navigate = useNavigate()
     const { t } = useTranslation()
+    const user = useUserStore((s) => s.user)
+
+    const goToCorrectDashboard = () => {
+        if (!user) return navigate("/login")
+
+        if (user.role === "super_admin") navigate("/dashboard/super-admin")
+        else if (user.role === "admin") navigate("/dashboard/admin")
+        else navigate("/dashboard")
+    }
 
     return (
         <div className="flex flex-col items-center justify-center min-h-screen bg-background p-4 text-center relative overflow-hidden">
@@ -25,7 +35,7 @@ export default function NotFoundPage() {
              <p className="text-muted-foreground mb-8 max-w-md text-lg z-10">
                 {t("pageNotFoundDesc")}
             </p>
-            <Button onClick={() => navigate("/")} size="lg" className="z-10">
+            <Button onClick={goToCorrectDashboard} size="lg" className="z-10">
                 {t("goHome")}
             </Button>
         </div>
