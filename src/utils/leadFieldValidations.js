@@ -1,8 +1,10 @@
-
-import { validateEmail, validateRequiredLength } from "./authenticationFieldValidations"
+import {
+    validateEmail,
+    validateRequiredLength,
+} from "./authenticationFieldValidations"
 
 function validateField(fieldName, value, min, max) {
-    if (!value?.trim()) return "" 
+    if (!value?.trim()) return ""
     return validateRequiredLength(fieldName, value, min, max)
 }
 
@@ -23,23 +25,21 @@ export function validateLeadFields(form) {
         if (err) errors.source = err
     }
 
-
     if (!form.phoneNumber?.trim()) {
-
-         errors.phoneNumber = "Phone number is required"
+        errors.phoneNumber = "Phone number is required"
     } else if (form.phoneNumber.length < 8) {
-         errors.phoneNumber = "Phone number must be at least 8 digits"
+        errors.phoneNumber = "Phone number must be at least 8 digits"
     }
 
-    const validStatuses = ["new", "qualified", "contacted", "done"] 
-    
+    const validStatuses = ["new", "qualified", "contacted", "done"]
+
     if (!form.status) {
         errors.status = "Status is required"
     } else if (!validStatuses.includes(form.status)) {
         errors.status = "Invalid status selected"
     }
     if (form.followUp && isNaN(new Date(form.followUp).getTime())) {
-         errors.followUp = "Invalid date"
+        errors.followUp = "Invalid date"
     }
 
     return errors

@@ -25,8 +25,7 @@ export default function AppRoutes() {
             {/* PRIVATE ROUTES */}
             <Route element={<ProtectedRoute />}>
                 <Route element={<PrivateLayout />}>
-
-                {/* LEADS PAGE (Employee + Admin + Super Admin) */}
+                    {/* LEADS PAGE (Employee + Admin + Super Admin) */}
                     <Route
                         path="/leads"
                         element={

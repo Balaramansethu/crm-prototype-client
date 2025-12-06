@@ -18,7 +18,7 @@ import {
 
 export function useSignup() {
     const navigate = useNavigate()
-    const { t } = useTranslation() 
+    const { t } = useTranslation()
     const setUser = useUserStore((s) => s.setUser)
 
     return useMutation({
@@ -40,7 +40,7 @@ export function useSignup() {
 
 export function useLogin() {
     const navigate = useNavigate()
-    const { t } = useTranslation() 
+    const { t } = useTranslation()
     const setUser = useUserStore((s) => s.setUser)
 
     return useMutation({
@@ -62,7 +62,7 @@ export function useLogin() {
 
 export function useLogout() {
     const navigate = useNavigate()
-    const { t } = useTranslation() 
+    const { t } = useTranslation()
     const clearUser = useUserStore((s) => s.clearUser)
 
     return useMutation({

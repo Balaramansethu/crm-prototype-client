@@ -81,7 +81,7 @@ export function AppSidebar({ ...props }) {
             {/* CONTENT */}
             <SidebarContent>
                 <SidebarMenu className="mb-1 pl-2">
-                        <SidebarMenuItem>
+                    <SidebarMenuItem>
                         <SidebarMenuButton
                             isActive={location.pathname === "/dashboard/leads"}
                             onClick={() => navigate("/leads")}

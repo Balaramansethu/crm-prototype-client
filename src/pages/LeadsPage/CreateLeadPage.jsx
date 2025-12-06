@@ -79,7 +79,9 @@ export default function CreateLeadPage() {
                 email: data.email,
                 status: data.status,
                 source: data.source,
-                followUp: data.followUp ? format(data.followUp, "dd-MM-yyyy") : null,
+                followUp: data.followUp
+                    ? format(data.followUp, "dd-MM-yyyy")
+                    : null,
                 owner: user?._id || user?.id,
             }
 
@@ -88,7 +90,8 @@ export default function CreateLeadPage() {
             navigate("/leads")
         } catch (error) {
             console.error(error)
-            const message = error?.response?.data?.message || t("somethingWrong")
+            const message =
+                error?.response?.data?.message || t("somethingWrong")
             toast.error(message)
         } finally {
             setLoading(false)
@@ -98,16 +101,24 @@ export default function CreateLeadPage() {
     return (
         <div className="@container/main flex flex-1 flex-col gap-2">
             <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6 px-4 lg:px-6">
-                
                 {/* HEADER / BREADCRUMB-LIKE */}
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                     <span className="hover:text-foreground cursor-pointer" onClick={() => navigate("/leads")}>{t("leads")}</span>
-                     <ChevronRight className="h-4 w-4" />
-                     <span className="text-foreground font-medium">{t("createLead")}</span>
+                    <span
+                        className="hover:text-foreground cursor-pointer"
+                        onClick={() => navigate("/leads")}
+                    >
+                        {t("leads")}
+                    </span>
+                    <ChevronRight className="h-4 w-4" />
+                    <span className="text-foreground font-medium">
+                        {t("createLead")}
+                    </span>
                 </div>
 
                 <div className="flex items-center justify-between">
-                    <h1 className="text-2xl font-semibold">{t("createLead")}</h1>
+                    <h1 className="text-2xl font-semibold">
+                        {t("createLead")}
+                    </h1>
                 </div>
 
                 <div className="rounded-md border bg-white p-6 max-w-2xl">
@@ -154,7 +165,13 @@ export default function CreateLeadPage() {
                                     <FormItem>
                                         <FormLabel>{t("email")}</FormLabel>
                                         <FormControl>
-                                            <Input type="email" {...field} placeholder={t("emailPlaceholder")} />
+                                            <Input
+                                                type="email"
+                                                {...field}
+                                                placeholder={t(
+                                                    "emailPlaceholder",
+                                                )}
+                                            />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -168,9 +185,14 @@ export default function CreateLeadPage() {
                                     name="phoneExtension"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>{t("extension")}</FormLabel>
+                                            <FormLabel>
+                                                {t("extension")}
+                                            </FormLabel>
                                             <FormControl>
-                                                <Input {...field} placeholder="+966" />
+                                                <Input
+                                                    {...field}
+                                                    placeholder="+966"
+                                                />
                                             </FormControl>
                                             <FormMessage />
                                         </FormItem>
@@ -199,17 +221,32 @@ export default function CreateLeadPage() {
                                     render={({ field }) => (
                                         <FormItem>
                                             <FormLabel>{t("status")}</FormLabel>
-                                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                            <Select
+                                                onValueChange={field.onChange}
+                                                defaultValue={field.value}
+                                            >
                                                 <FormControl>
                                                     <SelectTrigger>
-                                                        <SelectValue placeholder={t("selectStatus")} />
+                                                        <SelectValue
+                                                            placeholder={t(
+                                                                "selectStatus",
+                                                            )}
+                                                        />
                                                     </SelectTrigger>
                                                 </FormControl>
                                                 <SelectContent>
-                                                    <SelectItem value="new">{t("new")}</SelectItem>
-                                                    <SelectItem value="qualified">{t("qualified")}</SelectItem>
-                                                    <SelectItem value="contacted">{t("contacted")}</SelectItem>
-                                                    <SelectItem value="done">{t("done")}</SelectItem>
+                                                    <SelectItem value="new">
+                                                        {t("new")}
+                                                    </SelectItem>
+                                                    <SelectItem value="qualified">
+                                                        {t("qualified")}
+                                                    </SelectItem>
+                                                    <SelectItem value="contacted">
+                                                        {t("contacted")}
+                                                    </SelectItem>
+                                                    <SelectItem value="done">
+                                                        {t("done")}
+                                                    </SelectItem>
                                                 </SelectContent>
                                             </Select>
                                             <FormMessage />
@@ -223,7 +260,12 @@ export default function CreateLeadPage() {
                                         <FormItem>
                                             <FormLabel>{t("source")}</FormLabel>
                                             <FormControl>
-                                                <Input {...field} placeholder={t("sourcePlaceholder")} />
+                                                <Input
+                                                    {...field}
+                                                    placeholder={t(
+                                                        "sourcePlaceholder",
+                                                    )}
+                                                />
                                             </FormControl>
                                             <FormMessage />
                                         </FormItem>
@@ -231,36 +273,42 @@ export default function CreateLeadPage() {
                                 />
                             </div>
 
-<FormField
-    control={form.control}
-    name="followUp"
-    render={({ field }) => (
-        <FormItem className="flex flex-col">
-            <FormLabel>{t("followUp")}</FormLabel>
-            <FormControl>
-                <DatePicker
-                    selected={field.value}
-                    onChange={(date) => field.onChange(date)}
-                    placeholderText="DD-MM-YYYY"
-                    dateFormat="dd-MM-yyyy" 
-                    className="w-full h-10 px-3 rounded-md border border-input bg-background text-sm"
-                    wrapperClassName="w-full"
-                    showPopperArrow={false}
-                />
-            </FormControl>
-            <FormMessage />
-        </FormItem>
-    )}
-/>
-
-                            
+                            <FormField
+                                control={form.control}
+                                name="followUp"
+                                render={({ field }) => (
+                                    <FormItem className="flex flex-col">
+                                        <FormLabel>{t("followUp")}</FormLabel>
+                                        <FormControl>
+                                            <DatePicker
+                                                selected={field.value}
+                                                onChange={(date) =>
+                                                    field.onChange(date)
+                                                }
+                                                placeholderText="DD-MM-YYYY"
+                                                dateFormat="dd-MM-yyyy"
+                                                className="w-full h-10 px-3 rounded-md border border-input bg-background text-sm"
+                                                wrapperClassName="w-full"
+                                                showPopperArrow={false}
+                                            />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
 
                             <div className="flex justify-end gap-2 mt-4">
-                                <Button type="button" variant="outline" onClick={() => navigate("/leads")}>
+                                <Button
+                                    type="button"
+                                    variant="outline"
+                                    onClick={() => navigate("/leads")}
+                                >
                                     {t("cancel")}
                                 </Button>
                                 <Button type="submit" disabled={loading}>
-                                    {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                                    {loading && (
+                                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                    )}
                                     {t("saveLead")}
                                 </Button>
                             </div>

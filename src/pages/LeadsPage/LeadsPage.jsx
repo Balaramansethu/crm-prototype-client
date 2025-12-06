@@ -21,17 +21,17 @@ import {
     SelectValue,
 } from "@/components/ui/select"
 import { format } from "date-fns"
-import { 
-    Loader2, 
-    Plus, 
-    ArrowUpDown, 
-    ChevronLeft, 
-    ChevronRight, 
-    X, 
+import {
+    Loader2,
+    Plus,
+    ArrowUpDown,
+    ChevronLeft,
+    ChevronRight,
+    X,
     Search,
     Filter,
     Globe,
-    User
+    User,
 } from "lucide-react"
 import DatePicker from "react-datepicker"
 import "react-datepicker/dist/react-datepicker.css"
@@ -94,21 +94,32 @@ export default function LeadsPage() {
     }
 
     const renderSortIcon = (field) => {
-        if (sort !== field) return <ArrowUpDown className="ml-2 h-3 w-3 opacity-30" />
-        return <ArrowUpDown className={`ml-2 h-3 w-3 text-primary ${order === "desc" ? "rotate-180" : ""}`} />
+        if (sort !== field)
+            return <ArrowUpDown className="ml-2 h-3 w-3 opacity-30" />
+        return (
+            <ArrowUpDown
+                className={`ml-2 h-3 w-3 text-primary ${order === "desc" ? "rotate-180" : ""}`}
+            />
+        )
     }
 
-    const hasActiveFilters = contact || company || (status && status !== "all") || source || followUp
+    const hasActiveFilters =
+        contact || company || (status && status !== "all") || source || followUp
 
     return (
         <div className="flex flex-1 flex-col gap-6 p-6">
             {/* Header */}
             <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-2xl font-bold tracking-tight">{t("leads")}</h1>
+                    <h1 className="text-2xl font-bold tracking-tight">
+                        {t("leads")}
+                    </h1>
                     {/* Optional subtitle if needed */}
                 </div>
-                <Button onClick={() => navigate("/leads/new")} className="shadow-sm">
+                <Button
+                    onClick={() => navigate("/leads/new")}
+                    className="shadow-sm"
+                >
                     <Plus className="h-4 w-4" />
                     {t("createLead")}
                 </Button>
@@ -116,7 +127,6 @@ export default function LeadsPage() {
 
             {/* Main Content Card */}
             <div className="flex flex-col rounded-xl border bg-card text-card-foreground shadow-sm">
-                
                 {/* Filter Toolbar */}
                 <div className="flex flex-col gap-4 border-b p-4 lg:flex-row lg:items-center lg:justify-between">
                     <div className="flex flex-1 flex-col gap-3 lg:flex-row lg:items-center">
@@ -159,19 +169,36 @@ export default function LeadsPage() {
                                 <SelectTrigger className="h-9 bg-muted/50 focus:bg-background border-input">
                                     <div className="flex items-center gap-2">
                                         <Filter className="h-3.5 w-3.5 text-gray-500" />
-                                        <span className={cn("truncate", status && status !== "all" ? "text-black" : "text-gray-500")}>
-                                            {status && status !== "all" 
-                                                ? (t(status) || status) 
+                                        <span
+                                            className={cn(
+                                                "truncate",
+                                                status && status !== "all"
+                                                    ? "text-black"
+                                                    : "text-gray-500",
+                                            )}
+                                        >
+                                            {status && status !== "all"
+                                                ? t(status) || status
                                                 : t("status")}
                                         </span>
                                     </div>
                                 </SelectTrigger>
                                 <SelectContent>
-                                    <SelectItem value="all">{t("all")}</SelectItem>
-                                    <SelectItem value="new">{t("new")}</SelectItem>
-                                    <SelectItem value="qualified">{t("qualified")}</SelectItem>
-                                    <SelectItem value="contacted">{t("contacted")}</SelectItem>
-                                    <SelectItem value="done">{t("done")}</SelectItem>
+                                    <SelectItem value="all">
+                                        {t("all")}
+                                    </SelectItem>
+                                    <SelectItem value="new">
+                                        {t("new")}
+                                    </SelectItem>
+                                    <SelectItem value="qualified">
+                                        {t("qualified")}
+                                    </SelectItem>
+                                    <SelectItem value="contacted">
+                                        {t("contacted")}
+                                    </SelectItem>
+                                    <SelectItem value="done">
+                                        {t("done")}
+                                    </SelectItem>
                                 </SelectContent>
                             </Select>
                         </div>
@@ -183,7 +210,14 @@ export default function LeadsPage() {
                                 onChange={(date) => {
                                     if (date) {
                                         // Create date at local noon to avoid timezone shifts
-                                        const newDate = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 12, 0, 0)
+                                        const newDate = new Date(
+                                            date.getFullYear(),
+                                            date.getMonth(),
+                                            date.getDate(),
+                                            12,
+                                            0,
+                                            0,
+                                        )
                                         setFollowUp(newDate)
                                     } else {
                                         setFollowUp(null)
@@ -201,10 +235,10 @@ export default function LeadsPage() {
 
                     {/* Clear Filters - Only show if active */}
                     {hasActiveFilters && (
-                        <Button 
-                            variant="ghost" 
-                            onClick={clearFilters} 
-                            size="sm" 
+                        <Button
+                            variant="ghost"
+                            onClick={clearFilters}
+                            size="sm"
                             className="h-9 px-3 text-black hover:text-black shrink-0"
                         >
                             <X className="mr-2 h-3.5 w-3.5" />
@@ -218,7 +252,7 @@ export default function LeadsPage() {
                     <Table>
                         <TableHeader className="bg-muted/30">
                             <TableRow>
-                                <TableHead 
+                                <TableHead
                                     className="cursor-pointer hover:bg-muted/50 transition-colors w-[150px] pl-4"
                                     onClick={() => handleSort("contact")}
                                 >
@@ -227,7 +261,7 @@ export default function LeadsPage() {
                                         {renderSortIcon("contact")}
                                     </div>
                                 </TableHead>
-                                <TableHead 
+                                <TableHead
                                     className="cursor-pointer hover:bg-muted/50 transition-colors"
                                     onClick={() => handleSort("company")}
                                 >
@@ -236,7 +270,7 @@ export default function LeadsPage() {
                                         {renderSortIcon("company")}
                                     </div>
                                 </TableHead>
-                                 <TableHead 
+                                <TableHead
                                     className="cursor-pointer hover:bg-muted/50 transition-colors hidden md:table-cell"
                                     onClick={() => handleSort("source")}
                                 >
@@ -245,7 +279,7 @@ export default function LeadsPage() {
                                         {renderSortIcon("source")}
                                     </div>
                                 </TableHead>
-                                <TableHead 
+                                <TableHead
                                     className="cursor-pointer hover:bg-muted/50 transition-colors hidden lg:table-cell"
                                     onClick={() => handleSort("email")}
                                 >
@@ -257,7 +291,7 @@ export default function LeadsPage() {
                                 <TableHead className="hidden xl:table-cell text-xs font-bold uppercase tracking-wider text-black">
                                     {t("phone")}
                                 </TableHead>
-                                <TableHead 
+                                <TableHead
                                     className="cursor-pointer hover:bg-muted/50 transition-colors"
                                     onClick={() => handleSort("status")}
                                 >
@@ -266,7 +300,7 @@ export default function LeadsPage() {
                                         {renderSortIcon("status")}
                                     </div>
                                 </TableHead>
-                                 <TableHead 
+                                <TableHead
                                     className="cursor-pointer hover:bg-muted/50 transition-colors hidden md:table-cell"
                                     onClick={() => handleSort("followUp")}
                                 >
@@ -280,53 +314,98 @@ export default function LeadsPage() {
                         <TableBody>
                             {isLoading ? (
                                 <TableRow>
-                                    <TableCell colSpan={7} className="h-40 text-center">
+                                    <TableCell
+                                        colSpan={7}
+                                        className="h-40 text-center"
+                                    >
                                         <div className="flex flex-col items-center justify-center gap-2 text-black">
                                             <Loader2 className="h-6 w-6 animate-spin text-black" />
-                                            <span className="text-sm">{t("loadingLeads")}</span>
+                                            <span className="text-sm">
+                                                {t("loadingLeads")}
+                                            </span>
                                         </div>
                                     </TableCell>
                                 </TableRow>
                             ) : isError ? (
                                 <TableRow>
-                                    <TableCell colSpan={7} className="h-40 text-center text-red-600 font-bold">
+                                    <TableCell
+                                        colSpan={7}
+                                        className="h-40 text-center text-red-600 font-bold"
+                                    >
                                         {t("failedToLoadLeads")}
                                     </TableCell>
                                 </TableRow>
                             ) : leads.length === 0 ? (
                                 <TableRow>
-                                    <TableCell colSpan={7} className="h-40 text-center text-black">
+                                    <TableCell
+                                        colSpan={7}
+                                        className="h-40 text-center text-black"
+                                    >
                                         {t("noLeadsFound")}
                                     </TableCell>
                                 </TableRow>
                             ) : (
                                 leads.map((lead) => (
-                                    <TableRow key={lead._id || lead.id || Math.random()} className="hover:bg-muted/30 text-black">
-                                        <TableCell className="font-bold text-black pl-4">{lead.contact}</TableCell>
-                                        <TableCell className="text-black">{lead.company}</TableCell>
-                                        <TableCell className="hidden md:table-cell text-black text-sm">{lead.source}</TableCell>
-                                        <TableCell className="hidden lg:table-cell text-black text-sm">{lead.email}</TableCell>
+                                    <TableRow
+                                        key={
+                                            lead._id || lead.id || Math.random()
+                                        }
+                                        className="hover:bg-muted/30 text-black"
+                                    >
+                                        <TableCell className="font-bold text-black pl-4">
+                                            {lead.contact}
+                                        </TableCell>
+                                        <TableCell className="text-black">
+                                            {lead.company}
+                                        </TableCell>
+                                        <TableCell className="hidden md:table-cell text-black text-sm">
+                                            {lead.source}
+                                        </TableCell>
+                                        <TableCell className="hidden lg:table-cell text-black text-sm">
+                                            {lead.email}
+                                        </TableCell>
                                         <TableCell className="hidden xl:table-cell text-sm text-black font-mono">
                                             <span dir="ltr">
-                                                {lead.phone?.extension ? `${lead.phone.extension} ` : ""}
+                                                {lead.phone?.extension
+                                                    ? `${lead.phone.extension} `
+                                                    : ""}
                                                 {lead.phone?.number}
                                             </span>
                                         </TableCell>
                                         <TableCell>
-                                            <div className={cn(
-                                                "inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-bold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
-                                                // Keep colored badges but ensure text is readable
-                                                lead.status === 'new' && "bg-blue-100 text-blue-900",
-                                                lead.status === 'contacted' && "bg-yellow-100 text-yellow-900",
-                                                lead.status === 'qualified' && "bg-green-100 text-green-900",
-                                                lead.status === 'lost' && "bg-gray-100 text-gray-900",
-                                                !['new', 'contacted', 'qualified', 'lost'].includes(lead.status) && "bg-secondary text-black"
-                                            )}>
+                                            <div
+                                                className={cn(
+                                                    "inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-bold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
+                                                    // Keep colored badges but ensure text is readable
+                                                    lead.status === "new" &&
+                                                        "bg-blue-100 text-blue-900",
+                                                    lead.status ===
+                                                        "contacted" &&
+                                                        "bg-yellow-100 text-yellow-900",
+                                                    lead.status ===
+                                                        "qualified" &&
+                                                        "bg-green-100 text-green-900",
+                                                    lead.status === "lost" &&
+                                                        "bg-gray-100 text-gray-900",
+                                                    ![
+                                                        "new",
+                                                        "contacted",
+                                                        "qualified",
+                                                        "lost",
+                                                    ].includes(lead.status) &&
+                                                        "bg-secondary text-black",
+                                                )}
+                                            >
                                                 {t(lead.status) || lead.status}
                                             </div>
                                         </TableCell>
                                         <TableCell className="hidden md:table-cell text-sm text-black">
-                                            {lead.followUp ? format(new Date(lead.followUp), "dd-MM-yyyy") : "-"}
+                                            {lead.followUp
+                                                ? format(
+                                                      new Date(lead.followUp),
+                                                      "dd-MM-yyyy",
+                                                  )
+                                                : "-"}
                                         </TableCell>
                                     </TableRow>
                                 ))
@@ -339,33 +418,46 @@ export default function LeadsPage() {
                 {!isLoading && leads.length > 0 && (
                     <div className="flex items-center justify-between border-t p-4">
                         <div className="text-sm text-black">
-                             {t("showingLeads", { 
-                                start: ((page - 1) * limit) + 1, 
-                                end: Math.min(page * limit, info.total), 
-                                total: info.total 
+                            {t("showingLeads", {
+                                start: (page - 1) * limit + 1,
+                                end: Math.min(page * limit, info.total),
+                                total: info.total,
                             })}
                         </div>
                         <div className="flex items-center space-x-2">
                             <Button
                                 variant="outline"
                                 size="sm"
-                                onClick={() => setPage((p) => Math.max(1, p - 1))}
+                                onClick={() =>
+                                    setPage((p) => Math.max(1, p - 1))
+                                }
                                 disabled={page === 1}
                                 className="h-8 w-8 p-0"
                             >
-                                {isRTL ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
+                                {isRTL ? (
+                                    <ChevronRight className="h-4 w-4" />
+                                ) : (
+                                    <ChevronLeft className="h-4 w-4" />
+                                )}
                             </Button>
-                             <div className="text-sm font-medium min-w-[3rem] text-center text-black">
+                            <div className="text-sm font-medium min-w-[3rem] text-center text-black">
                                 {page} / {info.totalPages || 1}
                             </div>
                             <Button
                                 variant="outline"
                                 size="sm"
                                 onClick={() => setPage((p) => p + 1)}
-                                disabled={!info.hasMoreRecords && page >= (info.totalPages || 1)}
+                                disabled={
+                                    !info.hasMoreRecords &&
+                                    page >= (info.totalPages || 1)
+                                }
                                 className="h-8 w-8 p-0"
                             >
-                                {isRTL ? <ChevronLeft className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
+                                {isRTL ? (
+                                    <ChevronLeft className="h-4 w-4" />
+                                ) : (
+                                    <ChevronRight className="h-4 w-4" />
+                                )}
                             </Button>
                         </div>
                     </div>
