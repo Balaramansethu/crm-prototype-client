@@ -72,17 +72,24 @@ export default function CreateLeadPage() {
             const payload = {
                 company: data.company,
                 contact: data.contact,
-                phone: {
-                    extension: data.phoneExtension,
-                    number: data.phoneNumber,
-                },
                 email: data.email,
                 status: data.status,
-                source: data.source,
-                followUp: data.followUp
-                    ? format(data.followUp, "dd-MM-yyyy")
-                    : null,
                 owner: user?._id || user?.id,
+            }
+
+            if (data.source && data.source.trim() !== "") {
+                payload.source = data.source
+            }
+
+            if (data.followUp) {
+                payload.followUp = format(data.followUp, "dd-MM-yyyy")
+            }
+
+            if (data.phoneNumber && data.phoneNumber.trim() !== "") {
+                payload.phone = {
+                    number: data.phoneNumber,
+                    extension: data.phoneExtension || "",
+                }
             }
 
             await createLead(payload)
