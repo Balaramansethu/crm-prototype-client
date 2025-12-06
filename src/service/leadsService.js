@@ -9,9 +9,9 @@ export async function createLead(leadData) {
     }
 }
 
-export async function fetchLeads() {
+export async function fetchLeads(params = {}) {
     try {
-        const response = await axiosPrivateInstance.get("/leads")
+        const response = await axiosPrivateInstance.get("/leads", { params })
         return response.data
     } catch (error) {
         throw error

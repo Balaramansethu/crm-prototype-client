@@ -66,16 +66,16 @@ export default function CreateLeadPage() {
                 email: data.email,
                 status: data.status,
                 source: data.source,
-                followUp: data.followUp ? new Date(data.followUp).toISOString() : null,
+                followUp: data.followUp ? format(data.followUp, "yyyy-MM-dd") : null,
                 owner: user?._id || user?.id,
             }
 
             await createLead(payload)
-            toast.success(t("leadCreatedSuccess") || "Lead created successfully")
+            toast.success(t("leadCreatedSuccess"))
             navigate("/leads")
         } catch (error) {
             console.error(error)
-            const message = error?.response?.data?.message || t("somethingWrong") || "Something went wrong"
+            const message = error?.response?.data?.message || t("somethingWrong")
             toast.error(message)
         } finally {
             setLoading(false)
@@ -107,7 +107,7 @@ export default function CreateLeadPage() {
                             <FormField
                                 control={form.control}
                                 name="contact"
-                                rules={{ required: "Contact name is required" }}
+                                rules={{ required: t("contactRequired") }}
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>{t("contact")}</FormLabel>
@@ -123,7 +123,7 @@ export default function CreateLeadPage() {
                             <FormField
                                 control={form.control}
                                 name="company"
-                                rules={{ required: "Company name is required" }}
+                                rules={{ required: t("companyRequired") }}
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>{t("company")}</FormLabel>
@@ -140,10 +140,10 @@ export default function CreateLeadPage() {
                                 control={form.control}
                                 name="email"
                                 rules={{
-                                    required: "Email is required",
+                                    required: t("emailRequired"),
                                     pattern: {
                                         value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                                        message: "Invalid email address",
+                                        message: t("emailInvalid"),
                                     },
                                 }}
                                 render={({ field }) => (
@@ -176,10 +176,10 @@ export default function CreateLeadPage() {
                                     control={form.control}
                                     name="phoneNumber"
                                     rules={{
-                                        required: "Phone number is required",
+                                        required: t("phoneRequired"),
                                         minLength: {
                                             value: 8,
-                                            message: "Too short",
+                                            message: t("phoneTooShort"),
                                         },
                                     }}
                                     render={({ field }) => (
@@ -226,7 +226,7 @@ export default function CreateLeadPage() {
                                         <FormItem>
                                             <FormLabel>{t("source")}</FormLabel>
                                             <FormControl>
-                                                <Input {...field} placeholder="e.g. Website, Exhibition" />
+                                                <Input {...field} placeholder={t("sourcePlaceholder")} />
                                             </FormControl>
                                             <FormMessage />
                                         </FormItem>
@@ -260,7 +260,7 @@ export default function CreateLeadPage() {
 
                             <div className="flex justify-end gap-2 mt-4">
                                 <Button type="button" variant="outline" onClick={() => navigate("/leads")}>
-                                    {t("cancel") || "Cancel"}
+                                    {t("cancel")}
                                 </Button>
                                 <Button type="submit" disabled={loading}>
                                     {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}

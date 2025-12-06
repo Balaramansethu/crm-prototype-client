@@ -1,12 +1,13 @@
 import { useQuery } from "@tanstack/react-query"
 import { fetchLeads } from "@/service/leadsService"
 
-export const useLeads = () => {
+export const useLeads = (params = {}) => {
     return useQuery({
-        queryKey: ["leads"],
+        queryKey: ["leads", params],
         queryFn: async () => {
-            const response = await fetchLeads()
-            return response.data || []
+            const response = await fetchLeads(params)
+            return response.data
         },
+        keepPreviousData: true,
     })
 }
