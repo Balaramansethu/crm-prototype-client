@@ -53,32 +53,22 @@
     "loginSuccessTitle": "Welcome back!",
     "loginSuccessDesc": "Login successful",
     "logoutSuccess": "Logged out successfully",
-
     "firstName": "First Name",
     "firstNamePlaceholder": "John",
-
     "lastName": "Last Name",
     "lastNamePlaceholder": "Doe",
-
     "confirmPassword": "Confirm Password",
-
     "createAccountBtn": "Create Account",
-
     "haveAccount": "Have an account?",
     "loginLink": "Login",
-
     "trendingUpThisMonth": "Trending up this month",
     "visitorsLast6Months": "Visitors for the last 6 months",
-
     "downThisPeriod": "Down {{percent}} this period",
     "acquisitionNeedsAttention": "Acquisition needs attention",
-
     "strongUserRetention": "Strong user retention",
     "engagementExceedTargets": "Engagement exceed targets",
-
     "steadyPerformanceIncrease": "Steady performance increase",
     "meetsGrowthProjections": "Meets growth projections",
-
     "totalVisitors": "Total Visitors",
     "totalLast3Months": "Total for the last 3 months",
     "crmTool": "CRM Tool",
@@ -94,10 +84,48 @@
     "Card 1": "Card 1",
     "Card 2": "Card 2",
     "Card 3": "Card 3",
-
     "Lorem ipsum dolor sit amet, consectetur adipiscing elit.": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-
     "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.": "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-
-    "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.": "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris."
+    "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.": "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.",
+    "leads": "Leads",
+    "createLead": "Create Lead",
+    "leadName": "Lead Name",
+    "company": "Company",
+    "phone": "Phone",
+    "saveLead": "Save Lead",
+    "cancel": "Cancel",
+    "contact": "Contact Name",
+    "extension": "Ext.",
+    "source": "Source",
+    "followUp": "Follow Up Date",
+    "status": "Status",
+    "selectStatus": "Select a status",
+    "new": "New",
+    "contacted": "Contacted",
+    "qualified": "Qualified",
+    "done": "Done",
+    "lost": "Lost",
+    "proposal": "Proposal",
+    "negotiation": "Negotiation",
+    "won": "Won",
+    "all": "All",
+    "filterByCompany": "Filter by company...",
+    "filterByContact": "Filter by contact...",
+    "filterBySource": "Filter by source...",
+    "clearFilters": "Clear Filters",
+    "loadingLeads": "Loading leads...",
+    "failedToLoadLeads": "Failed to load leads. Please try again.",
+    "noLeadsFound": "No leads found matching your criteria.",
+    "showingLeads": "Showing {{start}} to {{end}} of {{total}} leads",
+    "pageIndicator": "Page {{page}} of {{totalPages}}",
+    "previous": "Previous",
+    "next": "Next",
+    "contactRequired": "Contact name is required",
+    "companyRequired": "Company name is required",
+    "emailRequired": "Email is required",
+    "emailInvalid": "Invalid email address",
+    "phoneRequired": "Phone number is required",
+    "phoneTooShort": "Phone number is too short",
+    "leadCreatedSuccess": "Lead created successfully",
+    "sourcePlaceholder": "e.g. Website, Referred by friend"
 }

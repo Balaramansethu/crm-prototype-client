@@ -12,22 +12,13 @@ import {
 } from "@/components/ui/card"
 
 export function SectionCards() {
-    const { t, i18n } = useTranslation()
-    const isRTL = i18n.language === "ar"
-
-    const headerAlign = isRTL ? "text-right" : "text-left"
-    const footerAlign =
-        "flex flex-col gap-1.5 text-sm " +
-        (isRTL ? "items-end text-right" : "items-start text-left")
-    const rowDir = isRTL ? "flex-row-reverse" : "flex-row"
+    const { t } = useTranslation()
 
     return (
         <div className="*:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card grid grid-cols-1 gap-4 px-4 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:shadow-xs lg:px-6 @xl/main:grid-cols-2 @5xl/main:grid-cols-4">
             {/* ---------- Card 1 ---------- */}
             <Card className="@container/card">
-                <CardHeader
-                    className={`flex items-start justify-between ${headerAlign}`}
-                >
+                <CardHeader className="flex items-start justify-between text-start">
                     <div>
                         <CardDescription>{t("totalRevenue")}</CardDescription>
                         <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
@@ -38,7 +29,7 @@ export function SectionCards() {
                     <CardAction>
                         <Badge
                             variant="outline"
-                            className={`flex items-center gap-1 ${rowDir}`}
+                            className="flex items-center gap-1"
                         >
                             <IconTrendingUp className="size-4" />
                             +12.5%
@@ -46,10 +37,8 @@ export function SectionCards() {
                     </CardAction>
                 </CardHeader>
 
-                <CardFooter className={footerAlign}>
-                    <div
-                        className={`line-clamp-1 flex items-center gap-2 font-medium ${rowDir}`}
-                    >
+                <CardFooter className="flex flex-col gap-1.5 text-sm items-start text-start">
+                    <div className="line-clamp-1 flex items-center gap-2 font-medium">
                         {t("trendingUpThisMonth")}
                         <IconTrendingUp className="size-4" />
                     </div>
@@ -62,9 +51,7 @@ export function SectionCards() {
 
             {/* ---------- Card 2 ---------- */}
             <Card className="@container/card">
-                <CardHeader
-                    className={`flex items-start justify-between ${headerAlign}`}
-                >
+                <CardHeader className="flex items-start justify-between text-start">
                     <div>
                         <CardDescription>{t("newCustomers")}</CardDescription>
                         <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
@@ -75,7 +62,7 @@ export function SectionCards() {
                     <CardAction>
                         <Badge
                             variant="outline"
-                            className={`flex items-center gap-1 ${rowDir}`}
+                            className="flex items-center gap-1"
                         >
                             <IconTrendingDown className="size-4" />
                             -20%
@@ -83,10 +70,8 @@ export function SectionCards() {
                     </CardAction>
                 </CardHeader>
 
-                <CardFooter className={footerAlign}>
-                    <div
-                        className={`line-clamp-1 flex items-center gap-2 font-medium ${rowDir}`}
-                    >
+                <CardFooter className="flex flex-col gap-1.5 text-sm items-start text-start">
+                    <div className="line-clamp-1 flex items-center gap-2 font-medium">
                         {t("downThisPeriod", { percent: "20%" })}
                         <IconTrendingDown className="size-4" />
                     </div>
@@ -99,9 +84,7 @@ export function SectionCards() {
 
             {/* ---------- Card 3 ---------- */}
             <Card className="@container/card">
-                <CardHeader
-                    className={`flex items-start justify-between ${headerAlign}`}
-                >
+                <CardHeader className="flex items-start justify-between text-start">
                     <div>
                         <CardDescription>{t("activeAccounts")}</CardDescription>
                         <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
@@ -112,7 +95,7 @@ export function SectionCards() {
                     <CardAction>
                         <Badge
                             variant="outline"
-                            className={`flex items-center gap-1 ${rowDir}`}
+                            className="flex items-center gap-1"
                         >
                             <IconTrendingUp className="size-4" />
                             +12.5%
@@ -120,10 +103,8 @@ export function SectionCards() {
                     </CardAction>
                 </CardHeader>
 
-                <CardFooter className={footerAlign}>
-                    <div
-                        className={`line-clamp-1 flex items-center gap-2 font-medium ${rowDir}`}
-                    >
+                <CardFooter className="flex flex-col gap-1.5 text-sm items-start text-start">
+                    <div className="line-clamp-1 flex items-center gap-2 font-medium">
                         {t("strongUserRetention")}
                         <IconTrendingUp className="size-4" />
                     </div>
@@ -136,9 +117,7 @@ export function SectionCards() {
 
             {/* ---------- Card 4 ---------- */}
             <Card className="@container/card">
-                <CardHeader
-                    className={`flex items-start justify-between ${headerAlign}`}
-                >
+                <CardHeader className="flex items-start justify-between text-start">
                     <div>
                         <CardDescription>{t("growthRate")}</CardDescription>
                         <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
@@ -149,7 +128,7 @@ export function SectionCards() {
                     <CardAction>
                         <Badge
                             variant="outline"
-                            className={`flex items-center gap-1 ${rowDir}`}
+                            className="flex items-center gap-1"
                         >
                             <IconTrendingUp className="size-4" />
                             +4.5%
@@ -157,10 +136,8 @@ export function SectionCards() {
                     </CardAction>
                 </CardHeader>
 
-                <CardFooter className={footerAlign}>
-                    <div
-                        className={`line-clamp-1 flex items-center gap-2 font-medium ${rowDir}`}
-                    >
+                <CardFooter className="flex flex-col gap-1.5 text-sm items-start text-start">
+                    <div className="line-clamp-1 flex items-center gap-2 font-medium">
                         {t("steadyPerformanceIncrease")}
                         <IconTrendingUp className="size-4" />
                     </div>

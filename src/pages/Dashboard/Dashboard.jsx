@@ -10,12 +10,8 @@ import {
     fetchSuperAdminDashboard,
 } from "@/service/dashboardService"
 
-import { AppSidebar } from "@/components/app-sidebar"
-import { SiteHeader } from "@/components/site-header"
 import { SectionCards } from "@/components/section-cards"
 import { ChartAreaInteractive } from "@/components/chart-area-interactive"
-
-import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
 
 import {
     Card,
@@ -98,41 +94,24 @@ export default function DashboardPage() {
     }
 
     return (
-        <div dir={isRTL ? "rtl" : "ltr"}>
-            <SidebarProvider
-                style={{
-                    "--sidebar-width": "calc(var(--spacing) * 72)",
-                    "--header-height": "calc(var(--spacing) * 12)",
-                }}
-            >
-                <AppSidebar variant="inset" side={isRTL ? "right" : "left"} />
+        <div className="@container/main flex flex-1 flex-col gap-2">
+            <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
+                <SectionCards />
 
-                <SidebarInset>
-                    <SiteHeader />
+                <div className="px-4 lg:px-6">
+                    <ChartAreaInteractive />
+                </div>
 
-                    <div className="flex flex-1 flex-col">
-                        <div className="@container/main flex flex-1 flex-col gap-2">
-                            <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
-                                <SectionCards />
-
-                                <div className="px-4 lg:px-6">
-                                    <ChartAreaInteractive />
-                                </div>
-
-                                {loading && (
-                                    <div className="flex justify-center py-10">
-                                        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
-                                    </div>
-                                )}
-
-                                <div className="animate-fadeIn mt-4 px-4 lg:px-6">
-                                    {!loading && dashboardData && renderCards()}
-                                </div>
-                            </div>
-                        </div>
+                {loading && (
+                    <div className="flex justify-center py-10">
+                        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
                     </div>
-                </SidebarInset>
-            </SidebarProvider>
+                )}
+
+                <div className="animate-fadeIn mt-4 px-4 lg:px-6">
+                    {!loading && dashboardData && renderCards()}
+                </div>
+            </div>
         </div>
     )
 }

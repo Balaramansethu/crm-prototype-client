@@ -40,7 +40,7 @@ export const validateEmail = (email) => {
     return ""
 }
 
-function validateRequiredLength(fieldName, value, min, max) {
+export function validateRequiredLength(fieldName, value, min, max) {
     if (!value?.trim()) {
         return `${fieldName} is a mandatory field`
     }
@@ -53,14 +53,14 @@ function validateRequiredLength(fieldName, value, min, max) {
     return ""
 }
 
-function validateLettersOnly(value, fieldName) {
+export function validateLettersOnly(value, fieldName) {
     if (!/^[a-zA-Z\s]+$/.test(value)) {
         return `${fieldName} must contain only letters and spaces`
     }
     return ""
 }
 
-function validatePasswordRules(password) {
+export function validatePasswordRules(password) {
     if (!/[a-z]/.test(password)) {
         return "Password must contain at least one lowercase letter"
     }

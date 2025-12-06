@@ -68,7 +68,9 @@ export function AppSidebar({ ...props }) {
                         </SidebarMenuButton>
 
                         <div
-                            className={`mt-2 px-2 ${isRTL ? "text-right" : "text-left"}`}
+                            className={`mt-2 px-2 ${
+                                isRTL ? "text-right" : "text-left"
+                            }`}
                         >
                             <LanguageToggle />
                         </div>
@@ -78,7 +80,17 @@ export function AppSidebar({ ...props }) {
 
             {/* CONTENT */}
             <SidebarContent>
-                <SidebarMenu className="mb-1">
+                <SidebarMenu className="mb-1 pl-2">
+                    <SidebarMenuItem>
+                        <SidebarMenuButton
+                            isActive={location.pathname === "/dashboard/leads"}
+                            onClick={() => navigate("/leads")}
+                            className="flex items-center gap-2"
+                        >
+                            <IconListDetails className="h-4 w-4" />
+                            <span>{t("leads")}</span>
+                        </SidebarMenuButton>
+                    </SidebarMenuItem>
                     <SidebarMenuItem>
                         <SidebarMenuButton
                             isActive={location.pathname === "/dashboard"}
