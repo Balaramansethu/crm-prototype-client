@@ -75,7 +75,13 @@ export function AppSidebar({ ...props }) {
                             <LanguageToggle />
                         </div>
                     </SidebarMenuItem>
-                    <SidebarMenuItem>
+                </SidebarMenu>
+            </SidebarHeader>
+
+            {/* CONTENT */}
+            <SidebarContent>
+                <SidebarMenu className="mb-1 pl-2">
+                        <SidebarMenuItem>
                         <SidebarMenuButton
                             isActive={location.pathname === "/dashboard/leads"}
                             onClick={() => navigate("/leads")}
@@ -85,12 +91,6 @@ export function AppSidebar({ ...props }) {
                             <span>{t("leads")}</span>
                         </SidebarMenuButton>
                     </SidebarMenuItem>
-                </SidebarMenu>
-            </SidebarHeader>
-
-            {/* CONTENT */}
-            <SidebarContent>
-                <SidebarMenu className="mb-1">
                     <SidebarMenuItem>
                         <SidebarMenuButton
                             isActive={location.pathname === "/dashboard"}

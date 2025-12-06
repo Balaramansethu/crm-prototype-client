@@ -53,9 +53,11 @@ export default function LeadsPage() {
                                         <TableCell className="font-medium">{lead.contact}</TableCell>
                                         <TableCell>{lead.company}</TableCell>
                                         <TableCell>{lead.email}</TableCell>
-                                        <TableCell dir="ltr" className="text-start">
-                                            {lead.phone?.extension ? `${lead.phone.extension} ` : ""}
-                                            {lead.phone?.number}
+                                        <TableCell>
+                                            <span dir="ltr">
+                                                {lead.phone?.extension ? `${lead.phone.extension} ` : ""}
+                                                {lead.phone?.number}
+                                            </span>
                                         </TableCell>
                                         <TableCell>{t(lead.status) || lead.status}</TableCell>
                                     </TableRow>

@@ -6,8 +6,6 @@ export const useLeads = () => {
         queryKey: ["leads"],
         queryFn: async () => {
             const response = await fetchLeads()
-            // The API response has the format: { data: [...] }
-            // We return the inner array directly
             return response.data || []
         },
     })
