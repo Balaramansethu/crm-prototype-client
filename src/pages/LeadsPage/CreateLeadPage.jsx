@@ -28,6 +28,7 @@ import { format } from "date-fns"
 import { useTranslation } from "react-i18next"
 import { useForm } from "react-hook-form"
 import { useNavigate } from "react-router-dom"
+import { validateLeadFields } from "@/utils/leadFieldValidations"
 import { CalendarIcon, ChevronRight, Loader2 } from "lucide-react"
 import { createLead } from "@/service/leadsService"
 import { useUserStore } from "@/store/userStore"
@@ -54,6 +55,18 @@ export default function CreateLeadPage() {
     })
 
     const onSubmit = async (data) => {
+        // Custom Validation
+        const validationErrors = validateLeadFields(data)
+        if (Object.keys(validationErrors).length > 0) {
+            Object.keys(validationErrors).forEach((key) => {
+                form.setError(key, {
+                    type: "manual",
+                    message: validationErrors[key],
+                })
+            })
+            return
+        }
+
         setLoading(true)
         try {
             const payload = {
@@ -66,7 +79,7 @@ export default function CreateLeadPage() {
                 email: data.email,
                 status: data.status,
                 source: data.source,
-                followUp: data.followUp ? format(data.followUp, "yyyy-MM-dd") : null,
+                followUp: data.followUp ? format(data.followUp, "dd-MM-yyyy") : null,
                 owner: user?._id || user?.id,
             }
 
@@ -107,7 +120,6 @@ export default function CreateLeadPage() {
                             <FormField
                                 control={form.control}
                                 name="contact"
-                                rules={{ required: t("contactRequired") }}
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>{t("contact")}</FormLabel>
@@ -123,7 +135,6 @@ export default function CreateLeadPage() {
                             <FormField
                                 control={form.control}
                                 name="company"
-                                rules={{ required: t("companyRequired") }}
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>{t("company")}</FormLabel>
@@ -139,13 +150,6 @@ export default function CreateLeadPage() {
                             <FormField
                                 control={form.control}
                                 name="email"
-                                rules={{
-                                    required: t("emailRequired"),
-                                    pattern: {
-                                        value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                                        message: t("emailInvalid"),
-                                    },
-                                }}
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>{t("email")}</FormLabel>
@@ -175,13 +179,6 @@ export default function CreateLeadPage() {
                                 <FormField
                                     control={form.control}
                                     name="phoneNumber"
-                                    rules={{
-                                        required: t("phoneRequired"),
-                                        minLength: {
-                                            value: 8,
-                                            message: t("phoneTooShort"),
-                                        },
-                                    }}
                                     render={({ field }) => (
                                         <FormItem>
                                             <FormLabel>{t("phone")}</FormLabel>
@@ -210,9 +207,9 @@ export default function CreateLeadPage() {
                                                 </FormControl>
                                                 <SelectContent>
                                                     <SelectItem value="new">{t("new")}</SelectItem>
-                                                    <SelectItem value="contacted">{t("contacted")}</SelectItem>
                                                     <SelectItem value="qualified">{t("qualified")}</SelectItem>
-                                                    <SelectItem value="lost">{t("lost")}</SelectItem>
+                                                    <SelectItem value="contacted">{t("contacted")}</SelectItem>
+                                                    <SelectItem value="done">{t("done")}</SelectItem>
                                                 </SelectContent>
                                             </Select>
                                             <FormMessage />
@@ -244,8 +241,8 @@ export default function CreateLeadPage() {
                 <DatePicker
                     selected={field.value}
                     onChange={(date) => field.onChange(date)}
-                    placeholderText="YYYY-MM-DD"
-                    dateFormat="yyyy-MM-dd" 
+                    placeholderText="DD-MM-YYYY"
+                    dateFormat="dd-MM-yyyy" 
                     className="w-full h-10 px-3 rounded-md border border-input bg-background text-sm"
                     wrapperClassName="w-full"
                     showPopperArrow={false}

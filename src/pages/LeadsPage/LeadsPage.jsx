@@ -109,7 +109,7 @@ export default function LeadsPage() {
                     {/* Optional subtitle if needed */}
                 </div>
                 <Button onClick={() => navigate("/leads/new")} className="shadow-sm">
-                    <Plus className="mr-2 h-4 w-4" />
+                    <Plus className="h-4 w-4" />
                     {t("createLead")}
                 </Button>
             </div>
@@ -169,12 +169,9 @@ export default function LeadsPage() {
                                 <SelectContent>
                                     <SelectItem value="all">{t("all")}</SelectItem>
                                     <SelectItem value="new">{t("new")}</SelectItem>
-                                    <SelectItem value="contacted">{t("contacted")}</SelectItem>
                                     <SelectItem value="qualified">{t("qualified")}</SelectItem>
-                                    <SelectItem value="proposal">{t("proposal")}</SelectItem>
-                                    <SelectItem value="negotiation">{t("negotiation")}</SelectItem>
-                                    <SelectItem value="won">{t("won")}</SelectItem>
-                                    <SelectItem value="lost">{t("lost")}</SelectItem>
+                                    <SelectItem value="contacted">{t("contacted")}</SelectItem>
+                                    <SelectItem value="done">{t("done")}</SelectItem>
                                 </SelectContent>
                             </Select>
                         </div>
@@ -193,7 +190,7 @@ export default function LeadsPage() {
                                     }
                                 }}
                                 placeholderText={t("followUp")}
-                                dateFormat="yyyy-MM-dd"
+                                dateFormat="dd-MM-yyyy"
                                 className="w-full h-9 px-3 rounded-md border border-input bg-muted/50 text-sm focus:bg-background transition-colors text-black placeholder:text-gray-500"
                                 wrapperClassName="w-full"
                                 showPopperArrow={false}
@@ -328,8 +325,8 @@ export default function LeadsPage() {
                                                 {t(lead.status) || lead.status}
                                             </div>
                                         </TableCell>
-                                         <TableCell className="hidden md:table-cell text-sm text-black">
-                                            {lead.followUp ? new Date(lead.followUp).toLocaleDateString() : "-"}
+                                        <TableCell className="hidden md:table-cell text-sm text-black">
+                                            {lead.followUp ? format(new Date(lead.followUp), "dd-MM-yyyy") : "-"}
                                         </TableCell>
                                     </TableRow>
                                 ))
