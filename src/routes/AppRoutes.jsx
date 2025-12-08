@@ -6,6 +6,7 @@ import ProtectedRoute from "@/components/ProtectedRoute"
 
 import SignupPage from "@/pages/SignupPage/SignupPage"
 import LoginPage from "@/pages/LoginPage/LoginPage"
+import OrganizationRegisterPage from "@/pages/OrganizationRegisterPage/OrganizationRegisterPage"
 
 import DashboardPage from "@/pages/Dashboard/Dashboard"
 import LeadsPage from "@/pages/LeadsPage/LeadsPage"
@@ -21,6 +22,7 @@ export default function AppRoutes() {
                 <Route path="/" element={<SignupPage />} />
                 <Route path="/signup" element={<SignupPage />} />
                 <Route path="/login" element={<LoginPage />} />
+                <Route path="/register-organization" element={<OrganizationRegisterPage />} />
             </Route>
 
             {/* PRIVATE ROUTES */}
