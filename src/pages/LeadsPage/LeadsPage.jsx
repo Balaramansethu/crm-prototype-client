@@ -22,6 +22,12 @@ import {
 } from "@/components/ui/select"
 import { format } from "date-fns"
 import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import {
     Loader2,
     Plus,
     ArrowUpDown,
@@ -32,10 +38,15 @@ import {
     Filter,
     Globe,
     User,
+    MoreHorizontal,
+    Edit,
+    Trash2
 } from "lucide-react"
 import DatePicker from "react-datepicker"
 import "react-datepicker/dist/react-datepicker.css"
 import { cn } from "@/lib/utils"
+import { deleteLead } from "@/service/leadsService"
+import { toast } from "sonner"
 
 export default function LeadsPage() {
     const { t, i18n } = useTranslation()
@@ -59,7 +70,7 @@ export default function LeadsPage() {
     const debouncedSource = useDebounce(source, 500)
 
     // Fetch data
-    const { data, isLoading, isError } = useLeads({
+    const { data, isLoading, isError, refetch } = useLeads({
         page,
         limit,
         sort,
@@ -73,6 +84,21 @@ export default function LeadsPage() {
 
     const leads = data?.leads || []
     const info = data?.info || { total: 0, totalPages: 1 }
+
+    const handleDeleteLead = async (id) => {
+        if (!window.confirm(t("confirmDeleteLead"))) return
+
+        try {
+            await deleteLead(id)
+            toast.success(t("leadDeletedSuccess"))
+            refetch()
+        } catch (error) {
+            console.error(error)
+            toast.error(t("failedToDeleteLead"))
+        }
+    }
+
+
 
     // Handlers
     const handleSort = (field) => {
@@ -309,13 +335,14 @@ export default function LeadsPage() {
                                         {renderSortIcon("followUp")}
                                     </div>
                                 </TableHead>
+                                <TableHead className="w-[50px]"></TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
                             {isLoading ? (
                                 <TableRow>
                                     <TableCell
-                                        colSpan={7}
+                                        colSpan={8}
                                         className="h-40 text-center"
                                     >
                                         <div className="flex flex-col items-center justify-center gap-2 text-black">
@@ -329,7 +356,7 @@ export default function LeadsPage() {
                             ) : isError ? (
                                 <TableRow>
                                     <TableCell
-                                        colSpan={7}
+                                        colSpan={8}
                                         className="h-40 text-center text-red-600 font-bold"
                                     >
                                         {t("failedToLoadLeads")}
@@ -338,7 +365,7 @@ export default function LeadsPage() {
                             ) : leads.length === 0 ? (
                                 <TableRow>
                                     <TableCell
-                                        colSpan={7}
+                                        colSpan={8}
                                         className="h-40 text-center text-black"
                                     >
                                         {t("noLeadsFound")}
@@ -406,6 +433,47 @@ export default function LeadsPage() {
                                                       "dd-MM-yyyy",
                                                   )
                                                 : "-"}
+                                        </TableCell>
+                                        <TableCell>
+                                            <DropdownMenu dir={isRTL ? "rtl" : "ltr"}>
+                                                <DropdownMenuTrigger asChild>
+                                                    <Button
+                                                        variant="ghost"
+                                                        className="h-8 w-8 p-0"
+                                                    >
+                                                        <span className="sr-only">
+                                                            {t("openMenu")}
+                                                        </span>
+                                                        <MoreHorizontal className="h-4 w-4" />
+                                                    </Button>
+                                                </DropdownMenuTrigger>
+                                                <DropdownMenuContent
+                                                    align={isRTL ? "start" : "end"}
+                                                >
+                                                    <DropdownMenuItem
+                                                        onClick={() =>
+                                                            navigate(
+                                                                `/leads/edit/${lead._id || lead.id}`,
+                                                            )
+                                                        }
+                                                    >
+                                                        <Edit className="mr-2 h-4 w-4" />
+                                                        {t("edit")}
+                                                    </DropdownMenuItem>
+                                                    <DropdownMenuItem
+                                                        onClick={() =>
+                                                            handleDeleteLead(
+                                                                lead._id ||
+                                                                    lead.id,
+                                                            )
+                                                        }
+                                                        className="text-red-600 focus:text-red-600"
+                                                    >
+                                                        <Trash2 className="mr-2 h-4 w-4" />
+                                                        {t("delete")}
+                                                    </DropdownMenuItem>
+                                                </DropdownMenuContent>
+                                            </DropdownMenu>
                                         </TableCell>
                                     </TableRow>
                                 ))

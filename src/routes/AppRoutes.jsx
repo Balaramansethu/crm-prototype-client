@@ -11,6 +11,7 @@ import OrganizationRegisterPage from "@/pages/OrganizationRegisterPage/Organizat
 import DashboardPage from "@/pages/Dashboard/Dashboard"
 import LeadsPage from "@/pages/LeadsPage/LeadsPage"
 import CreateLeadPage from "@/pages/LeadsPage/CreateLeadPage"
+import EditLeadPage from "@/pages/LeadsPage/EditLeadPage"
 import NotFoundPage from "@/pages/NotFoundPage/NotFoundPage"
 import Unauthorized from "@/components/unauthorized"
 
@@ -39,6 +40,7 @@ export default function AppRoutes() {
                     >
                         <Route index element={<LeadsPage />} />
                         <Route path="new" element={<CreateLeadPage />} />
+                        <Route path="edit/:id" element={<EditLeadPage />} />
                     </Route>
                     {/* EMPLOYEE */}
                     <Route

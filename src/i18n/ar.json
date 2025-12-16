@@ -130,5 +130,14 @@
     "sourcePlaceholder": "مثال: موقع إلكتروني، توصية من صديق",
     "pageNotFound": "الصفحة غير موجودة",
     "pageNotFoundDesc": "نأسف، الصفحة التي طلبتها غير موجودة.",
-    "goHome": "العودة للرئيسية"
+    "goHome": "العودة للرئيسية",
+    "editLead": "تعديل العميل المحتمل",
+    "saveChanges": "حفظ التغييرات",
+    "leadUpdatedSuccess": "تم تحديث بيانات العميل بنجاح",
+    "failedToLoadLead": "فشل تحميل بيانات العميل",
+    "confirmDeleteLead": "هل أنت متأكد من حذف هذا العميل المحتمل؟",
+    "leadDeletedSuccess": "تم حذف العميل المحتمل بنجاح",
+    "failedToDeleteLead": "فشل حذف العميل المحتمل",
+    "openMenu": "فتح القائمة",
+    "edit": "تعديل"
 }

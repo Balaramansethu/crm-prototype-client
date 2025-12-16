@@ -130,5 +130,14 @@
     "sourcePlaceholder": "e.g. Website, Referred by friend",
     "pageNotFound": "Page Not Found",
     "pageNotFoundDesc": "We're sorry, the page you requested could not be found.",
-    "goHome": "Go Home"
+    "goHome": "Go Home",
+    "editLead": "Edit Lead",
+    "saveChanges": "Save Changes",
+    "leadUpdatedSuccess": "Lead updated successfully",
+    "failedToLoadLead": "Failed to load lead details",
+    "confirmDeleteLead": "Are you sure you want to delete this lead?",
+    "leadDeletedSuccess": "Lead deleted successfully",
+    "failedToDeleteLead": "Failed to delete lead",
+    "openMenu": "Open menu",
+    "edit": "Edit"
 }
