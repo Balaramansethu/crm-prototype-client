@@ -7,9 +7,6 @@ import {
     FormLabel,
     FormMessage,
 } from "@/components/ui/form"
-import DatePicker from "react-datepicker"
-import "react-datepicker/dist/react-datepicker.css"
-import { cn } from "@/lib/utils"
 import { Input } from "@/components/ui/input"
 import {
     Select,
@@ -18,69 +15,85 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
-import { useTranslation } from "react-i18next"
-import { useForm } from "react-hook-form"
-import { validateLeadFields } from "@/utils/leadFieldValidations"
-import { Loader2 } from "lucide-react"
-import { useEffect } from "react"
-import { useNavigate } from "react-router-dom"
+import DatePicker from "react-datepicker"
+import "react-datepicker/dist/react-datepicker.css"
 
-export default function LeadForm({ initialData, onSubmit, loading, submitLabel, title }) {
+import { cn } from "@/lib/utils"
+import { validateLeadFields } from "@/utils/leadFieldValidations"
+
+import { Loader2 } from "lucide-react"
+import { useForm } from "react-hook-form"
+import { useTranslation } from "react-i18next"
+import { useNavigate } from "react-router-dom"
+import { useMemo } from "react"
+
+/**
+ * Production-grade Lead Form
+ */
+export default function LeadForm({
+    initialData,
+    onSubmit,
+    loading = false,
+    submitLabel,
+}) {
     const { t, i18n } = useTranslation()
     const navigate = useNavigate()
-    const isRTL = i18n.dir() === "rtl"
+
+    const isRTL = useMemo(() => i18n.dir() === "rtl", [i18n])
+
+    /**
+     * Default Values
+     * Memoized to avoid unnecessary form reinitialization
+     */
+    const defaultValues = useMemo(
+        () => ({
+            company: initialData?.company ?? "",
+            contact: initialData?.contact ?? "",
+            phoneExtension: initialData?.phone?.extension ?? "",
+            phoneNumber: initialData?.phone?.number ?? "",
+            email: initialData?.email ?? "",
+            status: initialData?.status ?? "new",
+            source: initialData?.source ?? "",
+            followUp: initialData?.followUp
+                ? new Date(initialData.followUp)
+                : undefined,
+        }),
+        [initialData],
+    )
 
     const form = useForm({
-        defaultValues: {
-            company: initialData?.company || "",
-            contact: initialData?.contact || "",
-            phoneExtension: initialData?.phone?.extension || "",
-            phoneNumber: initialData?.phone?.number || "",
-            email: initialData?.email || "",
-            status: initialData?.status || "new",
-            source: initialData?.source || "",
-            followUp: initialData?.followUp ? new Date(initialData.followUp) : undefined,
-        },
+        defaultValues,
+        mode: "onBlur",
     })
 
-    useEffect(() => {
-        if (initialData) {
-            form.reset({
-                company: initialData.company || "",
-                contact: initialData.contact || "",
-                phoneExtension: initialData.phone?.extension || "",
-                phoneNumber: initialData.phone?.number || "",
-                email: initialData.email || "",
-                status: initialData.status || "new",
-                source: initialData.source || "",
-                followUp: initialData.followUp ? new Date(initialData.followUp) : undefined,
-            })
-        }
-    }, [initialData, form])
-
+    /**
+     * Submit Handler
+     */
     const handleSubmit = (data) => {
-        // Custom Validation
         const validationErrors = validateLeadFields(data)
+
         if (Object.keys(validationErrors).length > 0) {
-            Object.keys(validationErrors).forEach((key) => {
+            Object.entries(validationErrors).forEach(([key, message]) => {
                 form.setError(key, {
                     type: "manual",
-                    message: validationErrors[key],
+                    message,
                 })
             })
             return
         }
+
         onSubmit(data)
     }
 
     return (
-        <div className="flex flex-1 flex-col gap-2">
-            <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6 px-4 lg:px-6">
-                <div className="rounded-md border bg-white p-6 max-w-2xl">
+        <div className="flex flex-1 flex-col">
+            <div className="px-4 py-6 lg:px-6">
+                <div className="max-w-2xl rounded-md border bg-white p-6">
                     <Form {...form}>
                         <form
                             onSubmit={form.handleSubmit(handleSubmit)}
                             className="grid gap-6"
+                            noValidate
                         >
                             {/* Contact Name */}
                             <FormField
@@ -90,7 +103,12 @@ export default function LeadForm({ initialData, onSubmit, loading, submitLabel, 
                                     <FormItem>
                                         <FormLabel>{t("contact")}</FormLabel>
                                         <FormControl>
-                                            <Input {...field} className={isRTL ? "text-right" : "text-left"} />
+                                            <Input
+                                                {...field}
+                                                className={
+                                                    isRTL ? "text-right" : ""
+                                                }
+                                            />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -105,7 +123,12 @@ export default function LeadForm({ initialData, onSubmit, loading, submitLabel, 
                                     <FormItem>
                                         <FormLabel>{t("company")}</FormLabel>
                                         <FormControl>
-                                            <Input {...field} className={isRTL ? "text-right" : "text-left"} />
+                                            <Input
+                                                {...field}
+                                                className={
+                                                    isRTL ? "text-right" : ""
+                                                }
+                                            />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -121,10 +144,14 @@ export default function LeadForm({ initialData, onSubmit, loading, submitLabel, 
                                         <FormLabel>{t("email")}</FormLabel>
                                         <FormControl>
                                             <Input
-                                                type="email"
                                                 {...field}
-                                                placeholder={t("emailPlaceholder")}
-                                                className={isRTL ? "text-right" : "text-left"}
+                                                type="email"
+                                                placeholder={t(
+                                                    "emailPlaceholder",
+                                                )}
+                                                className={
+                                                    isRTL ? "text-right" : ""
+                                                }
                                             />
                                         </FormControl>
                                         <FormMessage />
@@ -132,7 +159,7 @@ export default function LeadForm({ initialData, onSubmit, loading, submitLabel, 
                                 )}
                             />
 
-                            {/* Phone (Extension + Number) */}
+                            {/* Phone */}
                             <div className="grid grid-cols-[100px_1fr] gap-4">
                                 <FormField
                                     control={form.control}
@@ -145,14 +172,15 @@ export default function LeadForm({ initialData, onSubmit, loading, submitLabel, 
                                             <FormControl>
                                                 <Input
                                                     {...field}
+                                                    dir="ltr"
                                                     placeholder="+966"
-                                                    dir="ltr" // Always LTR for phone extension
                                                 />
                                             </FormControl>
                                             <FormMessage />
                                         </FormItem>
                                     )}
                                 />
+
                                 <FormField
                                     control={form.control}
                                     name="phoneNumber"
@@ -168,7 +196,7 @@ export default function LeadForm({ initialData, onSubmit, loading, submitLabel, 
                                 />
                             </div>
 
-                            {/* Status and Source */}
+                            {/* Status & Source */}
                             <div className="grid grid-cols-2 gap-4">
                                 <FormField
                                     control={form.control}
@@ -177,35 +205,47 @@ export default function LeadForm({ initialData, onSubmit, loading, submitLabel, 
                                         <FormItem>
                                             <FormLabel>{t("status")}</FormLabel>
                                             <Select
-                                                onValueChange={field.onChange}
                                                 value={field.value}
+                                                onValueChange={field.onChange}
                                             >
                                                 <FormControl>
-                                                    <SelectTrigger className={isRTL ? "text-right" : "text-left"}>
+                                                    <SelectTrigger
+                                                        className={
+                                                            isRTL
+                                                                ? "text-right"
+                                                                : ""
+                                                        }
+                                                    >
                                                         <SelectValue
-                                                            placeholder={t("selectStatus")}
+                                                            placeholder={t(
+                                                                "selectStatus",
+                                                            )}
                                                         />
                                                     </SelectTrigger>
                                                 </FormControl>
-                                                <SelectContent dir={isRTL ? "rtl" : "ltr"}>
-                                                    <SelectItem value="new">
-                                                        {t("new")}
-                                                    </SelectItem>
-                                                    <SelectItem value="qualified">
-                                                        {t("qualified")}
-                                                    </SelectItem>
-                                                    <SelectItem value="contacted">
-                                                        {t("contacted")}
-                                                    </SelectItem>
-                                                    <SelectItem value="done">
-                                                        {t("done")}
-                                                    </SelectItem>
+                                                <SelectContent
+                                                    dir={isRTL ? "rtl" : "ltr"}
+                                                >
+                                                    {[
+                                                        "new",
+                                                        "qualified",
+                                                        "contacted",
+                                                        "done",
+                                                    ].map((status) => (
+                                                        <SelectItem
+                                                            key={status}
+                                                            value={status}
+                                                        >
+                                                            {t(status)}
+                                                        </SelectItem>
+                                                    ))}
                                                 </SelectContent>
                                             </Select>
                                             <FormMessage />
                                         </FormItem>
                                     )}
                                 />
+
                                 <FormField
                                     control={form.control}
                                     name="source"
@@ -215,8 +255,14 @@ export default function LeadForm({ initialData, onSubmit, loading, submitLabel, 
                                             <FormControl>
                                                 <Input
                                                     {...field}
-                                                    placeholder={t("sourcePlaceholder")}
-                                                    className={isRTL ? "text-right" : "text-left"}
+                                                    placeholder={t(
+                                                        "sourcePlaceholder",
+                                                    )}
+                                                    className={
+                                                        isRTL
+                                                            ? "text-right"
+                                                            : ""
+                                                    }
                                                 />
                                             </FormControl>
                                             <FormMessage />
@@ -230,19 +276,17 @@ export default function LeadForm({ initialData, onSubmit, loading, submitLabel, 
                                 control={form.control}
                                 name="followUp"
                                 render={({ field }) => (
-                                    <FormItem className="flex flex-col">
+                                    <FormItem>
                                         <FormLabel>{t("followUp")}</FormLabel>
                                         <FormControl>
                                             <DatePicker
                                                 selected={field.value}
-                                                onChange={(date) =>
-                                                    field.onChange(date)
-                                                }
+                                                onChange={field.onChange}
                                                 placeholderText="DD-MM-YYYY"
                                                 dateFormat="dd-MM-yyyy"
                                                 className={cn(
-                                                    "w-full h-10 px-3 rounded-md border border-input bg-background text-sm",
-                                                    isRTL ? "text-right" : "text-left"
+                                                    "h-10 w-full rounded-md border px-3 text-sm",
+                                                    isRTL ? "text-right" : "",
                                                 )}
                                                 wrapperClassName="w-full"
                                                 showPopperArrow={false}
@@ -253,7 +297,8 @@ export default function LeadForm({ initialData, onSubmit, loading, submitLabel, 
                                 )}
                             />
 
-                            <div className="flex justify-end gap-2 mt-4">
+                            {/* Actions */}
+                            <div className="flex justify-end gap-2 pt-4">
                                 <Button
                                     type="button"
                                     variant="outline"
@@ -261,9 +306,13 @@ export default function LeadForm({ initialData, onSubmit, loading, submitLabel, 
                                 >
                                     {t("cancel")}
                                 </Button>
-                                <Button 
-                                    type="submit" 
-                                    disabled={loading || (initialData && !form.formState.isDirty)}
+
+                                <Button
+                                    type="submit"
+                                    disabled={
+                                        loading ||
+                                        (initialData && !form.formState.isDirty)
+                                    }
                                 >
                                     {loading && (
                                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -278,5 +327,3 @@ export default function LeadForm({ initialData, onSubmit, loading, submitLabel, 
         </div>
     )
 }
-
-

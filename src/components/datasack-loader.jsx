@@ -8,7 +8,7 @@ export function DatasackLoader({ onComplete }) {
         const completeTimer = setTimeout(() => {
             if (onComplete) onComplete()
         }, 700)
-        
+
         return () => {
             clearTimeout(timer)
             clearTimeout(completeTimer)

@@ -12,7 +12,7 @@ export default function LoginPage() {
 
     const handleRedirect = () => {
         if (!user) return
-        
+
         if (user.role === "super_admin") {
             navigate("/dashboard/super-admin", { replace: true })
         } else if (user.role === "admin") {

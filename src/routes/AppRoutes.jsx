@@ -23,7 +23,10 @@ export default function AppRoutes() {
                 <Route path="/" element={<SignupPage />} />
                 <Route path="/signup" element={<SignupPage />} />
                 <Route path="/login" element={<LoginPage />} />
-                <Route path="/register-organization" element={<OrganizationRegisterPage />} />
+                <Route
+                    path="/register-organization"
+                    element={<OrganizationRegisterPage />}
+                />
             </Route>
 
             {/* PRIVATE ROUTES */}

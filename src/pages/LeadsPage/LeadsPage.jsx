@@ -40,7 +40,7 @@ import {
     User,
     MoreHorizontal,
     Edit,
-    Trash2
+    Trash2,
 } from "lucide-react"
 import DatePicker from "react-datepicker"
 import "react-datepicker/dist/react-datepicker.css"
@@ -97,8 +97,6 @@ export default function LeadsPage() {
             toast.error(t("failedToDeleteLead"))
         }
     }
-
-
 
     // Handlers
     const handleSort = (field) => {
@@ -435,7 +433,9 @@ export default function LeadsPage() {
                                                 : "-"}
                                         </TableCell>
                                         <TableCell>
-                                            <DropdownMenu dir={isRTL ? "rtl" : "ltr"}>
+                                            <DropdownMenu
+                                                dir={isRTL ? "rtl" : "ltr"}
+                                            >
                                                 <DropdownMenuTrigger asChild>
                                                     <Button
                                                         variant="ghost"
@@ -448,7 +448,9 @@ export default function LeadsPage() {
                                                     </Button>
                                                 </DropdownMenuTrigger>
                                                 <DropdownMenuContent
-                                                    align={isRTL ? "start" : "end"}
+                                                    align={
+                                                        isRTL ? "start" : "end"
+                                                    }
                                                 >
                                                     <DropdownMenuItem
                                                         onClick={() =>

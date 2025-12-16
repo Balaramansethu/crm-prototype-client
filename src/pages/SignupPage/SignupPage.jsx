@@ -1,4 +1,3 @@
-
 import { useEffect } from "react"
 import { useSignup } from "@/hooks/useAuthHooks"
 import { useNavigate } from "react-router-dom"

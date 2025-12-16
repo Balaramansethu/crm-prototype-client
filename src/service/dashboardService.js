@@ -20,7 +20,9 @@ export async function fetchAdminDashboard() {
 
 export async function fetchSuperAdminDashboard() {
     try {
-        const response = await axiosPrivateInstance.get("/dashboard/super-admin",)
+        const response = await axiosPrivateInstance.get(
+            "/dashboard/super-admin",
+        )
         return response.data
     } catch (error) {
         throw error

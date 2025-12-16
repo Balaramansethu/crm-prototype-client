@@ -79,7 +79,11 @@ export default function CreateLeadPage() {
 
             {/* Form Component */}
             <div className="-mt-8">
-                <LeadForm onSubmit={onSubmit} loading={loading} submitLabel={t("saveLead")} />
+                <LeadForm
+                    onSubmit={onSubmit}
+                    loading={loading}
+                    submitLabel={t("saveLead")}
+                />
             </div>
         </div>
     )

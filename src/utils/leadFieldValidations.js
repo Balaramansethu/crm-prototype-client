@@ -25,10 +25,10 @@ export function validateLeadFields(form) {
         if (err) errors.source = err
     }
 
- if (form.phoneNumber?.trim() && form.phoneNumber.length < 8) {
+    if (form.phoneNumber?.trim() && form.phoneNumber.length < 8) {
         errors.phoneNumber = "Phone number must be at least 8 digits"
     }
-    
+
     const validStatuses = ["new", "qualified", "contacted", "done"]
 
     if (!form.status) {
