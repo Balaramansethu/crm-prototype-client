@@ -32,18 +32,17 @@ export default function LeadForm({ initialData, onSubmit, loading, submitLabel, 
 
     const form = useForm({
         defaultValues: {
-            company: "",
-            contact: "",
-            phoneExtension: "",
-            phoneNumber: "",
-            email: "",
-            status: "new",
-            source: "",
-            followUp: undefined,
+            company: initialData?.company || "",
+            contact: initialData?.contact || "",
+            phoneExtension: initialData?.phone?.extension || "",
+            phoneNumber: initialData?.phone?.number || "",
+            email: initialData?.email || "",
+            status: initialData?.status || "new",
+            source: initialData?.source || "",
+            followUp: initialData?.followUp ? new Date(initialData.followUp) : undefined,
         },
     })
 
-    // Reset form when initialData changes
     useEffect(() => {
         if (initialData) {
             form.reset({
@@ -77,16 +76,6 @@ export default function LeadForm({ initialData, onSubmit, loading, submitLabel, 
     return (
         <div className="flex flex-1 flex-col gap-2">
             <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6 px-4 lg:px-6">
-                 {/* No header here, parent component handles layouts/breadcrumbs usually, 
-                     but if we want to follow exact style of CreateLeadPage which had it inside:
-                     we can keep the form pure and let the page handle the wrapper, 
-                     OR we can put the wrapper here. 
-                     The user asked for DRY. The header structure might differ slightly (Edit vs Create titles).
-                     I'll stick to just the Form part in this component to be most flexible, 
-                     but the wrapper styling in CreateLeadPage was nice. 
-                     I will replicate the white box container here.
-                 */}
-                
                 <div className="rounded-md border bg-white p-6 max-w-2xl">
                     <Form {...form}>
                         <form
@@ -189,7 +178,6 @@ export default function LeadForm({ initialData, onSubmit, loading, submitLabel, 
                                             <FormLabel>{t("status")}</FormLabel>
                                             <Select
                                                 onValueChange={field.onChange}
-                                                defaultValue={field.value}
                                                 value={field.value}
                                             >
                                                 <FormControl>
