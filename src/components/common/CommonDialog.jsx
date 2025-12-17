@@ -1,0 +1,153 @@
+
+import React from "react"
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+} from "@/components/ui/dialog"
+import { Button } from "@/components/ui/button"
+import { Loader2, AlertTriangle, CheckCircle, XCircle, Info, Trash2 } from "lucide-react"
+import { cn } from "@/lib/utils"
+import { useTranslation } from "react-i18next"
+
+/**
+ * A reusable dialog component that supports different variants (default, destructive, success, warning).
+ *
+ * @param {Object} props
+ * @param {boolean} props.open - Controls the visibility of the dialog.
+ * @param {function} props.onOpenChange - Callback when open status changes.
+ * @param {string} props.title - Dialog title.
+ * @param {string} props.description - Dialog description text.
+ * @param {string} [props.variant="default"] - "default" | "destructive" | "success" | "warning" | "info"
+ * @param {string} [props.confirmText="Confirm"] - Text for the confirmation button.
+ * @param {string} [props.cancelText="Cancel"] - Text for the cancel button.
+ * @param {function} props.onConfirm - Callback when confirm button is clicked.
+ * @param {boolean} [props.isLoading=false] - Shows loading state on confirm button.
+ * @param {boolean} [props.hideCancel=false] - Whether to hide the cancel button.
+ */
+export function CommonDialog({
+    open,
+    onOpenChange,
+    title,
+    description,
+    variant = "default",
+    confirmText = "Confirm",
+    cancelText = "Cancel",
+    onConfirm,
+    isLoading = false,
+    hideCancel = false,
+}) {
+    const { i18n } = useTranslation()
+    const isRTL = i18n.dir() === "rtl"
+
+    const getVariantStyles = () => {
+        switch (variant) {
+            case "destructive":
+                return {
+                    icon: <Trash2 className="h-6 w-6 text-red-600" />,
+                    buttonVariant: "destructive",
+                    headerColor: "text-black", // Title color in image is black/dark
+                    isCentered: true,
+                }
+            case "success":
+                return {
+                    icon: <CheckCircle className="h-6 w-6 text-green-600" />,
+                    buttonVariant: "default", // or a custom success variant if available
+                    headerColor: "text-green-600",
+                }
+            case "warning":
+                return {
+                    icon: <AlertTriangle className="h-6 w-6 text-yellow-600" />,
+                    buttonVariant: "secondary",
+                    headerColor: "text-yellow-600",
+                }
+            case "info":
+                return {
+                    icon: <Info className="h-6 w-6 text-blue-600" />,
+                    buttonVariant: "default",
+                    headerColor: "text-blue-600",
+                }
+            case "default":
+            default:
+                return {
+                    icon: null,
+                    buttonVariant: "default",
+                    headerColor: "",
+                    isCentered: false,
+                }
+        }
+    }
+
+    const { icon, buttonVariant, headerColor, isCentered } = getVariantStyles()
+
+    return (
+        <Dialog open={open} onOpenChange={onOpenChange}>
+            <DialogContent className={cn("sm:max-w-[425px]", isCentered && "sm:max-w-[400px]")} dir={isRTL ? "rtl" : "ltr"}>
+                <DialogHeader>
+                    {isCentered ? (
+                         <div className="flex flex-col items-center text-center gap-2">
+                            {icon && (
+                                <div className="mb-2 flex h-16 w-16 items-center justify-center rounded-full bg-red-100">
+                                    {icon}
+                                </div>
+                            )}
+                            <DialogTitle className={cn("text-xl font-bold", headerColor)}>
+                                {title}
+                            </DialogTitle>
+                             {description && (
+                                <DialogDescription className="text-center text-muted-foreground">
+                                    {description}
+                                </DialogDescription>
+                            )}
+                        </div>
+                    ) : (
+                        <div className="flex items-center gap-4 text-start">
+                            {icon && <div className="flex-shrink-0">{icon}</div>}
+                            <div className="flex flex-col gap-1">
+                                <DialogTitle className={cn("text-start", headerColor)}>
+                                    {title}
+                                </DialogTitle>
+                                {description && (
+                                    <DialogDescription className="text-start">
+                                        {description}
+                                    </DialogDescription>
+                                )}
+                            </div>
+                        </div>
+                    )}
+                </DialogHeader>
+
+                <DialogFooter className={cn("mt-6", isCentered ? "grid grid-cols-2 gap-3 sm:space-x-0" : "")}>
+                    {!hideCancel && (
+                        <Button
+                            variant="outline"
+                            onClick={() => onOpenChange(false)}
+                            disabled={isLoading}
+                            className="w-full"
+                        >
+                            {cancelText}
+                        </Button>
+                    )}
+                    <Button
+                        variant={buttonVariant}
+                        onClick={onConfirm}
+                        disabled={isLoading}
+                        className="w-full"
+                    >
+                        {isLoading ? (
+                            <>
+                                <Loader2 className={cn("h-4 w-4 animate-spin", isRTL ? "ml-2" : "mr-2")} />
+                                {confirmText}
+                            </>
+                        ) : (
+                            confirmText
+                        )}
+                    </Button>
+                </DialogFooter>
+            </DialogContent>
+        </Dialog>
+    )
+}

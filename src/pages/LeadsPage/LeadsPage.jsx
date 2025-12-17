@@ -47,6 +47,7 @@ import "react-datepicker/dist/react-datepicker.css"
 import { cn } from "@/lib/utils"
 import { deleteLead } from "@/service/leadsService"
 import { toast } from "sonner"
+import { CommonDialog } from "@/components/common/CommonDialog"
 
 export default function LeadsPage() {
     const { t, i18n } = useTranslation()
@@ -63,6 +64,11 @@ export default function LeadsPage() {
     const [status, setStatus] = useState("")
     const [source, setSource] = useState("")
     const [followUp, setFollowUp] = useState()
+
+    // Delete confirmation state
+    const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
+    const [leadToDelete, setLeadToDelete] = useState(null)
+    const [isDeleting, setIsDeleting] = useState(false)
 
     // Debounce search inputs
     const debouncedContact = useDebounce(contact, 500)
@@ -85,16 +91,26 @@ export default function LeadsPage() {
     const leads = data?.leads || []
     const info = data?.info || { total: 0, totalPages: 1 }
 
-    const handleDeleteLead = async (id) => {
-        if (!window.confirm(t("confirmDeleteLead"))) return
+    const handleDeleteClick = (id) => {
+        setLeadToDelete(id)
+        setDeleteDialogOpen(true)
+    }
 
+    const confirmDelete = async () => {
+        if (!leadToDelete) return
+
+        setIsDeleting(true)
         try {
-            await deleteLead(id)
+            await deleteLead(leadToDelete)
             toast.success(t("leadDeletedSuccess"))
             refetch()
+            setDeleteDialogOpen(false)
+            setLeadToDelete(null)
         } catch (error) {
             console.error(error)
             toast.error(t("failedToDeleteLead"))
+        } finally {
+            setIsDeleting(false)
         }
     }
 
@@ -138,7 +154,6 @@ export default function LeadsPage() {
                     <h1 className="text-2xl font-bold tracking-tight">
                         {t("leads")}
                     </h1>
-                    {/* Optional subtitle if needed */}
                 </div>
                 <Button
                     onClick={() => navigate("/leads/new")}
@@ -464,9 +479,8 @@ export default function LeadsPage() {
                                                     </DropdownMenuItem>
                                                     <DropdownMenuItem
                                                         onClick={() =>
-                                                            handleDeleteLead(
-                                                                lead._id ||
-                                                                    lead.id,
+                                                            handleDeleteClick(
+                                                                lead._id
                                                             )
                                                         }
                                                         className="text-red-600 focus:text-red-600"
@@ -533,6 +547,17 @@ export default function LeadsPage() {
                     </div>
                 )}
             </div>
+
+            <CommonDialog
+                open={deleteDialogOpen}
+                onOpenChange={setDeleteDialogOpen}
+                title={t("confirmDeleteLead")}
+                variant="destructive"
+                confirmText={isDeleting ? t("deleting") : t("delete")}
+                cancelText={t("cancel")}
+                onConfirm={confirmDelete}
+                isLoading={isDeleting}
+            />
         </div>
     )
 }

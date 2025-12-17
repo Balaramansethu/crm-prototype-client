@@ -27,9 +27,7 @@ import { useTranslation } from "react-i18next"
 import { useNavigate } from "react-router-dom"
 import { useMemo } from "react"
 
-/**
- * Production-grade Lead Form
- */
+
 export default function LeadForm({
     initialData,
     onSubmit,
@@ -41,10 +39,7 @@ export default function LeadForm({
 
     const isRTL = useMemo(() => i18n.dir() === "rtl", [i18n])
 
-    /**
-     * Default Values
-     * Memoized to avoid unnecessary form reinitialization
-     */
+
     const defaultValues = useMemo(
         () => ({
             company: initialData?.company ?? "",
@@ -66,9 +61,7 @@ export default function LeadForm({
         mode: "onBlur",
     })
 
-    /**
-     * Submit Handler
-     */
+
     const handleSubmit = (data) => {
         const validationErrors = validateLeadFields(data)
 
