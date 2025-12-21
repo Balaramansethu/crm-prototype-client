@@ -12,6 +12,9 @@ import DashboardPage from "@/pages/Dashboard/Dashboard"
 import LeadsPage from "@/pages/LeadsPage/LeadsPage"
 import CreateLeadPage from "@/pages/LeadsPage/CreateLeadPage"
 import EditLeadPage from "@/pages/LeadsPage/EditLeadPage"
+import CallLogsPage from "@/pages/CallLogsPage/CallLogsPage"
+import CreateCallLogPage from "@/pages/CallLogsPage/CreateCallLogPage"
+import EditCallLogPage from "@/pages/CallLogsPage/EditCallLogPage"
 import NotFoundPage from "@/pages/NotFoundPage/NotFoundPage"
 import Unauthorized from "@/components/unauthorized"
 
@@ -44,6 +47,20 @@ export default function AppRoutes() {
                         <Route index element={<LeadsPage />} />
                         <Route path="new" element={<CreateLeadPage />} />
                         <Route path="edit/:id" element={<EditLeadPage />} />
+                    </Route>
+
+                    {/* CALL LOGS */}
+                    <Route
+                        path="/call-logs"
+                        element={
+                            <ProtectedRoute
+                                roles={["employee", "admin", "super_admin"]}
+                            />
+                        }
+                    >
+                         <Route index element={<CallLogsPage />} />
+                         <Route path="new" element={<CreateCallLogPage />} />
+                         <Route path="edit/:id" element={<EditCallLogPage />} />
                     </Route>
                     {/* EMPLOYEE */}
                     <Route

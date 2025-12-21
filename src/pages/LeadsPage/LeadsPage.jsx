@@ -47,7 +47,7 @@ import "react-datepicker/dist/react-datepicker.css"
 import { cn } from "@/lib/utils"
 import { deleteLead } from "@/service/leadsService"
 import { toast } from "sonner"
-import { CommonDialog } from "@/components/common/CommonDialog"
+import CommonDialog from "@/components/common/CommonDialog"
 
 export default function LeadsPage() {
     const { t, i18n } = useTranslation()

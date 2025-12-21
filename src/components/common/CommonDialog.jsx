@@ -28,7 +28,7 @@ import { useTranslation } from "react-i18next"
  * @param {boolean} [props.isLoading=false] - Shows loading state on confirm button.
  * @param {boolean} [props.hideCancel=false] - Whether to hide the cancel button.
  */
-export function CommonDialog({
+export default function CommonDialog({
     open,
     onOpenChange,
     title,

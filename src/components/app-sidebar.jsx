@@ -11,6 +11,7 @@ import {
     IconHelp,
     IconInnerShadowTop,
     IconListDetails,
+    IconPhone,
     IconReport,
     IconSearch,
     IconSettings,
@@ -83,12 +84,22 @@ export function AppSidebar({ ...props }) {
                 <SidebarMenu className="mb-1 pl-2">
                     <SidebarMenuItem>
                         <SidebarMenuButton
-                            isActive={location.pathname === "/dashboard/leads"}
+                            isActive={location.pathname === "/leads"}
                             onClick={() => navigate("/leads")}
                             className="flex items-center gap-2"
                         >
                             <IconListDetails className="h-4 w-4" />
                             <span>{t("leads")}</span>
+                        </SidebarMenuButton>
+                    </SidebarMenuItem>
+                    <SidebarMenuItem>
+                        <SidebarMenuButton
+                            isActive={location.pathname === "/call-logs"}
+                            onClick={() => navigate("/call-logs")}
+                            className="flex items-center gap-2"
+                        >
+                            <IconPhone className="h-4 w-4" />
+                            <span>{t("callLogs")}</span>
                         </SidebarMenuButton>
                     </SidebarMenuItem>
                     <SidebarMenuItem>
