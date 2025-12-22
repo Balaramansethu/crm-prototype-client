@@ -10,6 +10,7 @@ import {
     FormMessage,
 } from "@/components/ui/form"
 import { Textarea } from "@/components/ui/textarea"
+import { Input } from "@/components/ui/input"
 import {
     Select,
     SelectContent,
@@ -20,7 +21,7 @@ import {
 import { useForm } from "react-hook-form"
 import { useTranslation } from "react-i18next"
 import { useNavigate } from "react-router-dom"
-import { useMemo } from "react"
+import { useMemo, useState, useEffect } from "react"
 import { Loader2 } from "lucide-react"
 import DatePicker from "react-datepicker"
 import "react-datepicker/dist/react-datepicker.css"
@@ -39,6 +40,12 @@ export default function CallLogForm({ onSubmit, loading = false, initialData = n
     const { data } = useLeads({ limit: 100 })
     const leads = data?.leads || []
 
+    // State to track selected lead details
+    const [selectedLeadDetails, setSelectedLeadDetails] = useState({
+        company: "",
+        phone: ""
+    })
+
     const defaultValues = useMemo(() => ({
         lead: initialData?.lead?._id || initialData?.lead || "",
         outcome: initialData?.outcome || "intrested",
@@ -51,7 +58,7 @@ export default function CallLogForm({ onSubmit, loading = false, initialData = n
     })
 
     // Reset form when initialData changes (important for edit page loading behavior)
-    React.useEffect(() => {
+    useEffect(() => {
         if (initialData) {
             form.reset({
                 lead: initialData.lead?._id || initialData.lead || "",
@@ -59,8 +66,36 @@ export default function CallLogForm({ onSubmit, loading = false, initialData = n
                 followUp: initialData.followUp ? new Date(initialData.followUp) : null,
                 remarks: initialData.remarks || "",
             })
+            // Set initial lead details if editing
+            if (initialData.lead) {
+                setSelectedLeadDetails({
+                    company: initialData.lead.company || "",
+                    phone: initialData.lead.phone?.number 
+                        ? `${initialData.lead.phone.extension || ""} ${initialData.lead.phone.number}`.trim()
+                        : initialData.lead.phone || ""
+                })
+            }
         }
     }, [initialData, form])
+
+    // Handle lead selection change
+    const handleLeadChange = (leadId) => {
+        form.setValue("lead", leadId)
+        const selectedLead = leads.find(lead => (lead._id || lead.id) === leadId)
+        if (selectedLead) {
+            setSelectedLeadDetails({
+                company: selectedLead.company || "",
+                phone: selectedLead.phone?.number 
+                    ? `${selectedLead.phone.extension || ""} ${selectedLead.phone.number}`.trim()
+                    : selectedLead.phone || ""
+            })
+            if (selectedLead.followUp) {
+                form.setValue("followUp", new Date(selectedLead.followUp))
+            }
+        } else {
+            setSelectedLeadDetails({ company: "", phone: "" })
+        }
+    }
 
     const handleSubmit = (data) => {
         // Basic validation
@@ -90,7 +125,7 @@ export default function CallLogForm({ onSubmit, loading = false, initialData = n
                                 render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>{t("leadName") || "Lead"}</FormLabel>
-                                        <Select onValueChange={field.onChange} value={field.value}>
+                                        <Select onValueChange={handleLeadChange} value={field.value}>
                                             <FormControl>
                                                 <SelectTrigger className={isRTL ? "text-right" : ""}>
                                                     <SelectValue placeholder={t("selectLead") || "Select a lead"} />
@@ -108,6 +143,35 @@ export default function CallLogForm({ onSubmit, loading = false, initialData = n
                                     </FormItem>
                                 )}
                             />
+
+                            {/* Company Name - Auto-populated and disabled */}
+                            <FormItem>
+                                <FormLabel>{t("company") || "Company"}</FormLabel>
+                                <FormControl>
+                                    <Input 
+                                        value={selectedLeadDetails.company}
+                                        disabled
+                                        readOnly
+                                        className={cn("bg-muted !cursor-not-allowed", isRTL ? "text-right" : "")}
+                                        placeholder={t("selectLeadFirst") || "Select a lead first"}
+                                    />
+                                </FormControl>
+                            </FormItem>
+
+                            {/* Phone Number - Auto-populated and disabled */}
+                            <FormItem>
+                                <FormLabel>{t("phone") || "Phone"}</FormLabel>
+                                <FormControl>
+                                    <Input 
+                                        value={selectedLeadDetails.phone}
+                                        disabled
+                                        readOnly
+                                        dir="ltr"
+                                        className="bg-muted !cursor-not-allowed"
+                                        placeholder={t("selectLeadFirst") || "Select a lead first"}
+                                    />
+                                </FormControl>
+                            </FormItem>
 
                             {/* Outcome */}
                             <FormField

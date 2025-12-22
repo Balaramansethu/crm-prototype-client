@@ -1,5 +1,5 @@
 
-import React from "react"
+import { useState } from "react"
 import { useTranslation } from "react-i18next"
 import { useCallLogs } from "@/hooks/useCallLogs"
 import { format } from "date-fns"
@@ -24,9 +24,9 @@ export default function CallLogsPage() {
     const user = useUserStore((s) => s.user)
     const { data: callLogs, isLoading: isLoadingLogs, refetch } = useCallLogs()
     
-    const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false)
-    const [logToDelete, setLogToDelete] = React.useState(null)
-    const [isDeleting, setIsDeleting] = React.useState(false)
+    const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
+    const [logToDelete, setLogToDelete] = useState(null)
+    const [isDeleting, setIsDeleting] = useState(false)
 
     const handleDeleteClick = (id) => {
         setLogToDelete(id)
@@ -71,8 +71,8 @@ export default function CallLogsPage() {
         if (!outcome) return "bg-gray-100 text-gray-700"
         const lower = outcome.toLowerCase()
         // Note: Database uses 'intrested' (typo) instead of 'interested'
-        if (lower === 'intrested' || lower === 'interested') return "bg-green-100 text-green-700"
-        if (lower === 'not_intrested' || lower === 'not_interested') return "bg-red-100 text-red-700"
+        if (lower === 'interested' || lower === 'interested') return "bg-green-100 text-green-700"
+        if (lower === 'not_interested' || lower === 'not_interested') return "bg-red-100 text-red-700"
         if (lower === 'contacted') return "bg-blue-100 text-blue-700"
         if (lower === 'callback') return "bg-blue-100 text-blue-700"
         if (lower === 'done') return "bg-gray-100 text-gray-700"

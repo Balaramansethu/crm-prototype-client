@@ -160,5 +160,6 @@
     "confirmDeleteCallLog": "Are you sure you want to delete this call log? This action cannot be undone.",
     "callLogDeletedSuccess": "Call log deleted successfully",
     "failedToDeleteCallLog": "Failed to delete call log",
-    "remarks": "Remarks"
+    "remarks": "Remarks",
+    "selectLeadFirst": "Select a lead first"
 }

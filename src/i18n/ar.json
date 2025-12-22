@@ -160,5 +160,6 @@
     "confirmDeleteCallLog": "هل أنت متأكد من حذف هذا السجل؟ لا يمكن التراجع عن هذا الإجراء.",
     "callLogDeletedSuccess": "تم حذف سجل المكالمات بنجاح",
     "failedToDeleteCallLog": "فشل حذف سجل المكالمات",
-    "remarks": "ملاحظات"
+    "remarks": "ملاحظات",
+    "selectLeadFirst": "اختر عميل أولاً"
 }
