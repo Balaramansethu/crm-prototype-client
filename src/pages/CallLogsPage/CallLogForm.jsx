@@ -48,7 +48,7 @@ export default function CallLogForm({ onSubmit, loading = false, initialData = n
 
     const defaultValues = useMemo(() => ({
         lead: initialData?.lead?._id || initialData?.lead || "",
-        outcome: initialData?.outcome || "intrested",
+        outcome: initialData?.outcome || "interested",
         followUp: initialData?.followUp ? new Date(initialData.followUp) : null,
         remarks: initialData?.remarks || "",
     }), [initialData])
@@ -62,7 +62,7 @@ export default function CallLogForm({ onSubmit, loading = false, initialData = n
         if (initialData) {
             form.reset({
                 lead: initialData.lead?._id || initialData.lead || "",
-                outcome: initialData.outcome || "intrested",
+                outcome: initialData.outcome || "interested",
                 followUp: initialData.followUp ? new Date(initialData.followUp) : null,
                 remarks: initialData.remarks || "",
             })
@@ -187,12 +187,12 @@ export default function CallLogForm({ onSubmit, loading = false, initialData = n
                                                 </SelectTrigger>
                                             </FormControl>
                                             <SelectContent dir={isRTL ? "rtl" : "ltr"}>
-                                                <SelectItem value="intrested">
+                                                <SelectItem value="interested">
                                                     <span className={cn("inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-bold bg-green-100 text-green-700")}>
                                                         {t("interested") || "Interested"}
                                                     </span>
                                                 </SelectItem>
-                                                <SelectItem value="not_intrested">
+                                                <SelectItem value="not_interested">
                                                     <span className={cn("inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-bold bg-red-100 text-red-700")}>
                                                         {t("not_interested") || "Not Interested"}
                                                     </span>

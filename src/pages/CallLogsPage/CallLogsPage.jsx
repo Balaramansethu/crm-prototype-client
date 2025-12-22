@@ -70,7 +70,6 @@ export default function CallLogsPage() {
     const getBadgeColor = (outcome) => {
         if (!outcome) return "bg-gray-100 text-gray-700"
         const lower = outcome.toLowerCase()
-        // Note: Database uses 'intrested' (typo) instead of 'interested'
         if (lower === 'interested' || lower === 'interested') return "bg-green-100 text-green-700"
         if (lower === 'not_interested' || lower === 'not_interested') return "bg-red-100 text-red-700"
         if (lower === 'contacted') return "bg-blue-100 text-blue-700"
@@ -83,8 +82,8 @@ export default function CallLogsPage() {
         if (!outcome) return '-'
         const lower = outcome.toLowerCase()
         // Map database values to translation keys
-        if (lower === 'intrested' || lower === 'interested') return t('interested')
-        if (lower === 'not_intrested' || lower === 'not_interested') return t('not_interested')
+        if (lower === 'interested' || lower === 'interested') return t('interested')
+        if (lower === 'not_interested' || lower === 'not_interested') return t('not_interested')
         if (lower === 'contacted') return t('contacted')
         if (lower === 'done') return t('done')
         // Fallback: capitalize first letter and replace underscores
