@@ -220,16 +220,18 @@ export default function LeadForm({
                                                     dir={isRTL ? "rtl" : "ltr"}
                                                 >
                                                     {[
-                                                        "new",
-                                                        "qualified",
-                                                        "contacted",
-                                                        "done",
+                                                        { value: "new", color: "bg-blue-100 text-blue-900" },
+                                                        { value: "qualified", color: "bg-green-100 text-green-900" },
+                                                        { value: "contacted", color: "bg-yellow-100 text-yellow-900" },
+                                                        { value: "done", color: "bg-gray-100 text-gray-900" },
                                                     ].map((status) => (
                                                         <SelectItem
-                                                            key={status}
-                                                            value={status}
+                                                            key={status.value}
+                                                            value={status.value}
                                                         >
-                                                            {t(status)}
+                                                            <span className={cn("inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-bold", status.color)}>
+                                                                {t(status.value)}
+                                                            </span>
                                                         </SelectItem>
                                                     ))}
                                                 </SelectContent>
@@ -275,6 +277,7 @@ export default function LeadForm({
                                             <DatePicker
                                                 selected={field.value}
                                                 onChange={field.onChange}
+                                                minDate={new Date()}
                                                 placeholderText="DD-MM-YYYY"
                                                 dateFormat="dd-MM-yyyy"
                                                 className={cn(

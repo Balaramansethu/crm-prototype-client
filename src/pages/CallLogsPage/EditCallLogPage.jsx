@@ -1,7 +1,7 @@
 
 import { useTranslation } from "react-i18next"
 import { useNavigate, useParams } from "react-router-dom"
-import { ChevronRight } from "lucide-react"
+import { ChevronRight, Loader2 } from "lucide-react"
 import { updateCallLog, getCallLogById } from "@/service/callLogsService"
 import { toast } from "sonner"
 import { useState, useEffect } from "react"
@@ -67,7 +67,11 @@ export default function EditCallLogPage() {
     }
 
     if (fetching) {
-         return <div className="p-8">Loading...</div>
+        return (
+            <div className="flex flex-1 items-center justify-center h-full min-h-[50vh]">
+                <Loader2 className="h-8 w-8 animate-spin text-primary" />
+            </div>
+        )
     }
 
     return (

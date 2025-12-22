@@ -123,10 +123,26 @@ export default function CallLogForm({ onSubmit, loading = false, initialData = n
                                                 </SelectTrigger>
                                             </FormControl>
                                             <SelectContent dir={isRTL ? "rtl" : "ltr"}>
-                                                <SelectItem value="intrested">{t("interested") || "Interested"}</SelectItem>
-                                                <SelectItem value="not_intrested">{t("not_interested") || "Not Interested"}</SelectItem>
-                                                <SelectItem value="contacted">{t("contacted") || "Contacted"}</SelectItem>
-                                                <SelectItem value="done">{t("done") || "Done"}</SelectItem>
+                                                <SelectItem value="intrested">
+                                                    <span className={cn("inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-bold bg-green-100 text-green-700")}>
+                                                        {t("interested") || "Interested"}
+                                                    </span>
+                                                </SelectItem>
+                                                <SelectItem value="not_intrested">
+                                                    <span className={cn("inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-bold bg-red-100 text-red-700")}>
+                                                        {t("not_interested") || "Not Interested"}
+                                                    </span>
+                                                </SelectItem>
+                                                <SelectItem value="contacted">
+                                                    <span className={cn("inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-bold bg-blue-100 text-blue-700")}>
+                                                        {t("contacted") || "Contacted"}
+                                                    </span>
+                                                </SelectItem>
+                                                <SelectItem value="done">
+                                                    <span className={cn("inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-bold bg-gray-100 text-gray-700")}>
+                                                        {t("done") || "Done"}
+                                                    </span>
+                                                </SelectItem>
                                             </SelectContent>
                                         </Select>
                                         <FormMessage />
@@ -145,6 +161,7 @@ export default function CallLogForm({ onSubmit, loading = false, initialData = n
                                             <DatePicker
                                                 selected={field.value}
                                                 onChange={field.onChange}
+                                                minDate={new Date()}
                                                 placeholderText="DD-MM-YYYY"
                                                 dateFormat="dd-MM-yyyy"
                                                 className={cn(

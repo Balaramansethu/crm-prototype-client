@@ -6,6 +6,7 @@ import { format } from "date-fns"
 import { Loader2, Phone, Calendar, Plus, MoreHorizontal, Pencil } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useNavigate } from "react-router-dom"
+import { useUserStore } from "@/store/userStore"
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -20,6 +21,7 @@ import { Trash2 } from "lucide-react"
 export default function CallLogsPage() {
     const { t } = useTranslation()
     const navigate = useNavigate()
+    const user = useUserStore((s) => s.user)
     const { data: callLogs, isLoading: isLoadingLogs, refetch } = useCallLogs()
     
     const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false)
@@ -160,13 +162,15 @@ export default function CallLogsPage() {
                                                                 <Pencil className="mr-2 h-4 w-4" />
                                                                 {t("edit")}
                                                             </DropdownMenuItem>
-                                                            <DropdownMenuItem 
-                                                                onClick={() => handleDeleteClick(log._id || log.id)}
-                                                                className="text-destructive focus:text-destructive"
-                                                            >
-                                                                <Trash2 className="mr-2 h-4 w-4" />
-                                                                {t("delete")}
-                                                            </DropdownMenuItem>
+                                                            {user.role !== "employee" && (
+                                                                <DropdownMenuItem 
+                                                                    onClick={() => handleDeleteClick(log._id || log.id)}
+                                                                    className="text-destructive focus:text-destructive"
+                                                                >
+                                                                    <Trash2 className="mr-2 h-4 w-4" />
+                                                                    {t("delete")}
+                                                                </DropdownMenuItem>
+                                                            )}
                                                         </DropdownMenuContent>
                                                     </DropdownMenu>
                                                 </div>

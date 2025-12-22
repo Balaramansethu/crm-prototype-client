@@ -2,6 +2,7 @@ import { useState } from "react"
 import { useTranslation } from "react-i18next"
 import { useNavigate } from "react-router-dom"
 import { useLeads } from "@/hooks/useLeads"
+import { useUserStore } from "@/store/userStore"
 import { useDebounce } from "@/hooks/useDebounce"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -52,6 +53,7 @@ import CommonDialog from "@/components/common/CommonDialog"
 export default function LeadsPage() {
     const { t, i18n } = useTranslation()
     const navigate = useNavigate()
+    const user = useUserStore((s) => s.user)
     const isRTL = i18n.dir() === "rtl"
 
     // State for filters and pagination
@@ -262,6 +264,7 @@ export default function LeadsPage() {
                                         setFollowUp(null)
                                     }
                                 }}
+                                minDate={new Date()}
                                 placeholderText={t("followUp")}
                                 dateFormat="dd-MM-yyyy"
                                 className="w-full h-9 px-3 rounded-md border border-input bg-muted/50 text-sm focus:bg-background transition-colors text-black placeholder:text-gray-500"
@@ -477,17 +480,19 @@ export default function LeadsPage() {
                                                         <Edit className="mr-2 h-4 w-4" />
                                                         {t("edit")}
                                                     </DropdownMenuItem>
-                                                    <DropdownMenuItem
-                                                        onClick={() =>
-                                                            handleDeleteClick(
-                                                                lead._id
-                                                            )
-                                                        }
-                                                        className="text-red-600 focus:text-red-600"
-                                                    >
-                                                        <Trash2 className="mr-2 h-4 w-4" />
-                                                        {t("delete")}
-                                                    </DropdownMenuItem>
+                                                    {user.role !== "employee" && (
+                                                        <DropdownMenuItem
+                                                            onClick={() =>
+                                                                handleDeleteClick(
+                                                                    lead._id
+                                                                )
+                                                            }
+                                                            className="text-red-600 focus:text-red-600"
+                                                        >
+                                                            <Trash2 className="mr-2 h-4 w-4" />
+                                                            {t("delete")}
+                                                        </DropdownMenuItem>
+                                                    )}
                                                 </DropdownMenuContent>
                                             </DropdownMenu>
                                         </TableCell>
