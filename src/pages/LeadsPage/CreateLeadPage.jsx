@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useLocation } from "react-router-dom"
 import { ChevronRight } from "lucide-react"
 import { createLead } from "@/service/leadsService"
 import { useUserStore } from "@/store/userStore"
@@ -11,6 +11,7 @@ import LeadForm from "./LeadForm"
 export default function CreateLeadPage() {
     const { t } = useTranslation()
     const navigate = useNavigate()
+    const location = useLocation()
     const user = useUserStore((state) => state.user)
     const [loading, setLoading] = useState(false)
 
@@ -40,9 +41,21 @@ export default function CreateLeadPage() {
                 }
             }
 
-            await createLead(payload)
+            const createdLead = await createLead(payload)
             toast.success(t("leadCreatedSuccess"))
-            navigate("/leads")
+            
+            const searchParams = new URLSearchParams(location.search)
+            const returnTo = searchParams.get("returnTo")
+
+            if (returnTo) {
+                const leadId = createdLead._id  || createdLead.lead?._id || createdLead.data?._id
+                // Append newLeadId to the return URL
+                // Check if returnTo already has params
+                const separator = returnTo.includes('?') ? '&' : '?'
+                navigate(`${returnTo}${separator}newLeadId=${leadId}`)
+            } else {
+                navigate("/leads")
+            }
         } catch (error) {
             console.error(error)
             const message =

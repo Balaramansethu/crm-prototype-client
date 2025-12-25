@@ -161,5 +161,6 @@
     "callLogDeletedSuccess": "Call log deleted successfully",
     "failedToDeleteCallLog": "Failed to delete call log",
     "remarks": "Remarks",
-    "selectLeadFirst": "Select a lead first"
+    "selectLeadFirst": "Select a lead first",
+    "createNewLead": "Create New Lead"
 }

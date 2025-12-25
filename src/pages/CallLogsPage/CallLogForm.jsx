@@ -20,19 +20,21 @@ import {
 } from "@/components/ui/select"
 import { useForm } from "react-hook-form"
 import { useTranslation } from "react-i18next"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useLocation } from "react-router-dom"
 import { useMemo, useState, useEffect } from "react"
-import { Loader2 } from "lucide-react"
+import { Loader2, Plus } from "lucide-react"
 import DatePicker from "react-datepicker"
 import "react-datepicker/dist/react-datepicker.css"
 import { cn } from "@/lib/utils"
 // We need a way to select a lead. For now, we will use a simple Select populated by fetching leads.
 // In a real large-scale app, this should be an async searchable combobox.
 import { useLeads } from "@/hooks/useLeads"
+import { getLeadById } from "@/service/leadsService"
 
 export default function CallLogForm({ onSubmit, loading = false, initialData = null }) {
     const { t, i18n } = useTranslation()
     const navigate = useNavigate()
+    const location = useLocation()
     const isRTL = i18n.dir() === "rtl"
 
     // Fetch leads for the dropdown
@@ -45,6 +47,14 @@ export default function CallLogForm({ onSubmit, loading = false, initialData = n
         company: "",
         phone: ""
     })
+    const [extraLead, setExtraLead] = useState(null)
+    
+    // Combine leads with extraLead if it exists and isn't already in the list
+    const displayLeads = useMemo(() => {
+        if (!extraLead) return leads
+        if (leads.find(l => (l._id) === (extraLead._id))) return leads
+        return [extraLead, ...leads]
+    }, [leads, extraLead])
 
     const defaultValues = useMemo(() => ({
         lead: initialData?.lead?._id || initialData?.lead || "",
@@ -57,6 +67,73 @@ export default function CallLogForm({ onSubmit, loading = false, initialData = n
         defaultValues,
     })
 
+    // Update details helper
+    const updateLeadDetails = (leadId) => {
+         // Look in displayLeads or fallback to leads/extraLead logic
+         // Since updateLeadDetails is called from render or effects, best to use the latest data we have.
+         // But `leads` is in scope. `displayLeads` is in scope (if we move this function after displayLeads def).
+         // I'll assume displayLeads is defined before this function.
+         
+         const allLeads = extraLead ? [extraLead, ...leads] : leads
+         const selectedLead = allLeads.find(lead => (lead._id) === leadId)
+         
+         if (selectedLead) {
+             setSelectedLeadDetails({
+                 company: selectedLead.company || "",
+                 phone: selectedLead.phone?.number 
+                     ? `${selectedLead.phone.extension || ""} ${selectedLead.phone.number}`.trim()
+                     : selectedLead.phone || ""
+             })
+             if (selectedLead.followUp) {
+                 form.setValue("followUp", new Date(selectedLead.followUp))
+             }
+         } else {
+             setSelectedLeadDetails({ company: "", phone: "" })
+         }
+    }
+
+    // Handle new lead from URL check
+    useEffect(() => {
+        const searchParams = new URLSearchParams(location.search)
+        const newLeadId = searchParams.get("newLeadId")
+
+        if (newLeadId) {
+            // Check if the lead is in the current list or extraLead
+            const allLeads = extraLead ? [extraLead, ...leads] : leads
+            const leadExists = allLeads.find(l => (l._id) === newLeadId)
+            
+            if (leadExists) {
+                // Determine current form value
+                const currentLead = form.getValues("lead")
+                // Update if ID changed OR if details are missing (and should be there)
+                if (currentLead !== newLeadId || !selectedLeadDetails.company) {
+                    form.setValue("lead", newLeadId)
+                    updateLeadDetails(newLeadId)
+                }
+            } else {
+                // Lead not in list (maybe due to pagination limit), fetch it explicitly
+                // Prevent duplicate fetching if we already finding it (though leadExists check handles that)
+                getLeadById(newLeadId).then(data => {
+                     const l = data.lead || data
+                     if (l) {
+                         setExtraLead(l)
+                         form.setValue("lead", newLeadId)
+                         // Manual set details for immediate feedback
+                         setSelectedLeadDetails({
+                            company: l.company || "",
+                            phone: l.phone?.number 
+                                ? `${l.phone.extension || ""} ${l.phone.number}`.trim()
+                                : l.phone || ""
+                        })
+                        if (l.followUp) {
+                            form.setValue("followUp", new Date(l.followUp))
+                        }
+                     }
+                }).catch(err => console.error("Failed to fetch new lead", err))
+            }
+        }
+    }, [location.search, leads, form, extraLead, selectedLeadDetails.company])
+
     // Reset form when initialData changes (important for edit page loading behavior)
     useEffect(() => {
         if (initialData) {
@@ -68,33 +145,31 @@ export default function CallLogForm({ onSubmit, loading = false, initialData = n
             })
             // Set initial lead details if editing
             if (initialData.lead) {
-                setSelectedLeadDetails({
-                    company: initialData.lead.company || "",
-                    phone: initialData.lead.phone?.number 
-                        ? `${initialData.lead.phone.extension || ""} ${initialData.lead.phone.number}`.trim()
-                        : initialData.lead.phone || ""
-                })
+                if (typeof initialData.lead === 'object') {
+                    setSelectedLeadDetails({
+                        company: initialData.lead.company || "",
+                        phone: initialData.lead.phone?.number 
+                            ? `${initialData.lead.phone.extension || ""} ${initialData.lead.phone.number}`.trim()
+                            : initialData.lead.phone || ""
+                    })
+                } else {
+                    // It's an ID, try to find in leads
+                     updateLeadDetails(initialData.lead)
+                }
             }
         }
-    }, [initialData, form])
+    }, [initialData, form, leads])
 
     // Handle lead selection change
     const handleLeadChange = (leadId) => {
-        form.setValue("lead", leadId)
-        const selectedLead = leads.find(lead => (lead._id || lead.id) === leadId)
-        if (selectedLead) {
-            setSelectedLeadDetails({
-                company: selectedLead.company || "",
-                phone: selectedLead.phone?.number 
-                    ? `${selectedLead.phone.extension || ""} ${selectedLead.phone.number}`.trim()
-                    : selectedLead.phone || ""
-            })
-            if (selectedLead.followUp) {
-                form.setValue("followUp", new Date(selectedLead.followUp))
-            }
-        } else {
-            setSelectedLeadDetails({ company: "", phone: "" })
+        if (leadId === "CREATE_NEW_LEAD") {
+            const returnUrl = encodeURIComponent(location.pathname)
+            navigate(`/leads/new?returnTo=${returnUrl}`)
+            return
         }
+
+        form.setValue("lead", leadId)
+        updateLeadDetails(leadId)
     }
 
     const handleSubmit = (data) => {
@@ -132,7 +207,13 @@ export default function CallLogForm({ onSubmit, loading = false, initialData = n
                                                 </SelectTrigger>
                                             </FormControl>
                                             <SelectContent dir={isRTL ? "rtl" : "ltr"}>
-                                                {leads.map((lead) => (
+                                                <SelectItem value="CREATE_NEW_LEAD" className="text-primary font-medium focus:bg-primary/10 cursor-pointer">
+                                                    <div className="flex items-center gap-2">
+                                                        <Plus className="h-4 w-4" />
+                                                        {t("createNewLead") || "Create Lead"}
+                                                    </div>
+                                                </SelectItem>
+                                                {displayLeads.map((lead) => (
                                                     <SelectItem key={lead._id || lead.id} value={lead._id || lead.id}>
                                                         {lead.contact} ({lead.company})
                                                     </SelectItem>

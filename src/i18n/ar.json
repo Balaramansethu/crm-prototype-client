@@ -161,5 +161,6 @@
     "callLogDeletedSuccess": "تم حذف سجل المكالمات بنجاح",
     "failedToDeleteCallLog": "فشل حذف سجل المكالمات",
     "remarks": "ملاحظات",
-    "selectLeadFirst": "اختر عميل أولاً"
+    "selectLeadFirst": "اختر عميل أولاً",
+    "createNewLead": "إنشاء عميل جديد"
 }
