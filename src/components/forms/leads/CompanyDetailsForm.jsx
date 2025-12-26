@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next"
 /**
  * Company Details Form Section
  * Handles company-level information in a Lead form.
- * 
+ *
  * @param {Object} props
  * @param {Object} props.control - React Hook Form control object
  */

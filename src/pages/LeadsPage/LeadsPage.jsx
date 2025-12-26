@@ -480,11 +480,12 @@ export default function LeadsPage() {
                                                         <Edit className="mr-2 h-4 w-4" />
                                                         {t("edit")}
                                                     </DropdownMenuItem>
-                                                    {user.role !== "employee" && (
+                                                    {user.role !==
+                                                        "employee" && (
                                                         <DropdownMenuItem
                                                             onClick={() =>
                                                                 handleDeleteClick(
-                                                                    lead._id
+                                                                    lead._id,
                                                                 )
                                                             }
                                                             className="text-red-600 focus:text-red-600"

@@ -32,7 +32,7 @@ import { getLeadById } from "@/service/leadsService"
 /**
  * Call Log Form Component
  * Handles both create and edit modes for call logs.
- * 
+ *
  * @param {Object} props
  * @param {function} props.onSubmit - Form submission handler
  * @param {boolean} [props.loading=false] - Loading state
@@ -70,10 +70,12 @@ export default function CallLogForm({
         () => ({
             lead: initialData?.lead?._id || initialData?.lead || "",
             outcome: initialData?.outcome || "interested",
-            followUp: initialData?.followUp ? new Date(initialData.followUp) : null,
+            followUp: initialData?.followUp
+                ? new Date(initialData.followUp)
+                : null,
             remarks: initialData?.remarks || "",
         }),
-        [initialData]
+        [initialData],
     )
 
     const form = useForm({
@@ -137,7 +139,9 @@ export default function CallLogForm({
                             }
                         }
                     })
-                    .catch((err) => console.error("Failed to fetch new lead", err))
+                    .catch((err) =>
+                        console.error("Failed to fetch new lead", err),
+                    )
             }
         }
     }, [location.search, leads, form, extraLead, selectedLeadDetails.company])
@@ -148,7 +152,9 @@ export default function CallLogForm({
             form.reset({
                 lead: initialData.lead?._id || initialData.lead || "",
                 outcome: initialData.outcome || "interested",
-                followUp: initialData.followUp ? new Date(initialData.followUp) : null,
+                followUp: initialData.followUp
+                    ? new Date(initialData.followUp)
+                    : null,
                 remarks: initialData.remarks || "",
             })
 
@@ -210,10 +216,19 @@ export default function CallLogForm({
                         render={({ field }) => (
                             <FormItem>
                                 <FormLabel>{t("leadName")}</FormLabel>
-                                <Select onValueChange={handleLeadChange} value={field.value}>
+                                <Select
+                                    onValueChange={handleLeadChange}
+                                    value={field.value}
+                                >
                                     <FormControl>
-                                        <SelectTrigger className={isRTL ? "text-right" : ""}>
-                                            <SelectValue placeholder={t("selectLead")} />
+                                        <SelectTrigger
+                                            className={
+                                                isRTL ? "text-right" : ""
+                                            }
+                                        >
+                                            <SelectValue
+                                                placeholder={t("selectLead")}
+                                            />
                                         </SelectTrigger>
                                     </FormControl>
                                     <SelectContent dir={isRTL ? "rtl" : "ltr"}>
@@ -251,7 +266,7 @@ export default function CallLogForm({
                                 readOnly
                                 className={cn(
                                     "bg-muted !cursor-not-allowed",
-                                    isRTL ? "text-right" : ""
+                                    isRTL ? "text-right" : "",
                                 )}
                                 placeholder={t("selectLeadFirst")}
                             />
@@ -280,19 +295,31 @@ export default function CallLogForm({
                         render={({ field }) => (
                             <FormItem>
                                 <FormLabel>{t("outcome")}</FormLabel>
-                                <Select onValueChange={field.onChange} value={field.value}>
+                                <Select
+                                    onValueChange={field.onChange}
+                                    value={field.value}
+                                >
                                     <FormControl>
-                                        <SelectTrigger className={isRTL ? "text-right" : ""}>
-                                            <SelectValue placeholder={t("selectOutcome")} />
+                                        <SelectTrigger
+                                            className={
+                                                isRTL ? "text-right" : ""
+                                            }
+                                        >
+                                            <SelectValue
+                                                placeholder={t("selectOutcome")}
+                                            />
                                         </SelectTrigger>
                                     </FormControl>
                                     <SelectContent dir={isRTL ? "rtl" : "ltr"}>
                                         {CALL_OUTCOME_OPTIONS.map((option) => (
-                                            <SelectItem key={option.value} value={option.value}>
+                                            <SelectItem
+                                                key={option.value}
+                                                value={option.value}
+                                            >
                                                 <span
                                                     className={cn(
                                                         "inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-bold",
-                                                        option.color
+                                                        option.color,
                                                     )}
                                                 >
                                                     {t(option.value)}
@@ -324,7 +351,10 @@ export default function CallLogForm({
                                 <FormControl>
                                     <Textarea
                                         {...field}
-                                        className={cn("min-h-[100px]", isRTL ? "text-right" : "")}
+                                        className={cn(
+                                            "min-h-[100px]",
+                                            isRTL ? "text-right" : "",
+                                        )}
                                         placeholder={t("enterRemarks")}
                                     />
                                 </FormControl>
@@ -343,8 +373,13 @@ export default function CallLogForm({
                             {t("cancel")}
                         </Button>
 
-                        <Button type="submit" disabled={loading || !form.formState.isDirty}>
-                            {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                        <Button
+                            type="submit"
+                            disabled={loading || !form.formState.isDirty}
+                        >
+                            {loading && (
+                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            )}
                             {t("saveCallLog")}
                         </Button>
                     </div>

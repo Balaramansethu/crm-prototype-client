@@ -12,7 +12,7 @@ import { useTranslation } from "react-i18next"
 
 /**
  * Reusable form date picker field with RTL support.
- * 
+ *
  * @param {Object} props
  * @param {Object} props.control - React Hook Form control object
  * @param {string} props.name - Field name for the form
@@ -51,7 +51,7 @@ export default function FormDatePicker({
                             dateFormat={dateFormat}
                             className={cn(
                                 "h-10 w-full rounded-md border px-3 text-sm",
-                                isRTL ? "text-right" : ""
+                                isRTL ? "text-right" : "",
                             )}
                             wrapperClassName="w-full"
                             showPopperArrow={false}

@@ -8,7 +8,10 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { FormInput, FormSelect, FormDatePicker } from "@/components/form-fields"
-import { LEAD_STATUS_OPTIONS, LEAD_PRIORITY_OPTIONS } from "@/constants/formOptions"
+import {
+    LEAD_STATUS_OPTIONS,
+    LEAD_PRIORITY_OPTIONS,
+} from "@/constants/formOptions"
 import { Trash2 } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { cn } from "@/lib/utils"
@@ -16,7 +19,7 @@ import { cn } from "@/lib/utils"
 /**
  * Contact Person Form Section
  * Handles individual contact person information in a Lead form.
- * 
+ *
  * @param {Object} props
  * @param {Object} props.control - React Hook Form control object
  * @param {number} props.index - Contact index in the array
@@ -35,10 +38,12 @@ export default function ContactPersonForm({
     return (
         <div className="relative rounded-lg border p-6 bg-gray-50/50">
             {/* Header with title and delete button */}
-            <div className={cn(
-                "flex items-center justify-between mb-4",
-                isRTL ? "flex-row-reverse" : ""
-            )}>
+            <div
+                className={cn(
+                    "flex items-center justify-between mb-4",
+                    isRTL ? "flex-row-reverse" : "",
+                )}
+            >
                 <h4 className="text-sm font-medium text-gray-500 uppercase tracking-wider">
                     {t("contactPerson")} #{index + 1}
                 </h4>
@@ -78,7 +83,11 @@ export default function ContactPersonForm({
                             <FormItem>
                                 <FormLabel>{t("extension")}</FormLabel>
                                 <FormControl>
-                                    <Input {...field} dir="ltr" placeholder="+966" />
+                                    <Input
+                                        {...field}
+                                        dir="ltr"
+                                        placeholder="+966"
+                                    />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>

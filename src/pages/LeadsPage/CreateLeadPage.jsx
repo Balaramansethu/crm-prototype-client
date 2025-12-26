@@ -59,10 +59,16 @@ export default function CreateLeadPage() {
                     }
 
                     if (contact.followUp) {
-                        payload.followUp = format(contact.followUp, "yyyy-MM-dd")
+                        payload.followUp = format(
+                            contact.followUp,
+                            "yyyy-MM-dd",
+                        )
                     }
 
-                    if (contact.phoneNumber && contact.phoneNumber.trim() !== "") {
+                    if (
+                        contact.phoneNumber &&
+                        contact.phoneNumber.trim() !== ""
+                    ) {
                         payload.phone = {
                             number: contact.phoneNumber,
                             extension: contact.phoneExtension || "",
@@ -91,7 +97,8 @@ export default function CreateLeadPage() {
             }
         } catch (error) {
             console.error(error)
-            const message = error?.response?.data?.message || t("somethingWrong")
+            const message =
+                error?.response?.data?.message || t("somethingWrong")
             toast.error(message)
         } finally {
             setLoading(false)

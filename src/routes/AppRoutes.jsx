@@ -58,9 +58,9 @@ export default function AppRoutes() {
                             />
                         }
                     >
-                         <Route index element={<CallLogsPage />} />
-                         <Route path="new" element={<CreateCallLogPage />} />
-                         <Route path="edit/:id" element={<EditCallLogPage />} />
+                        <Route index element={<CallLogsPage />} />
+                        <Route path="new" element={<CreateCallLogPage />} />
+                        <Route path="edit/:id" element={<EditCallLogPage />} />
                     </Route>
                     {/* EMPLOYEE */}
                     <Route

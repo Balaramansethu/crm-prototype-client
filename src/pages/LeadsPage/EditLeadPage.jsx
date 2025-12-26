@@ -43,7 +43,8 @@ export default function EditLeadPage() {
         setLoading(true)
         try {
             const { companyDetails, contacts } = data
-            const contact = contacts && contacts.length > 0 ? contacts[0] : undefined
+            const contact =
+                contacts && contacts.length > 0 ? contacts[0] : undefined
 
             const payload = {
                 company: companyDetails.name,
@@ -77,7 +78,8 @@ export default function EditLeadPage() {
             navigate("/leads")
         } catch (error) {
             console.error(error)
-            const message = error?.response?.data?.message || t("somethingWrong")
+            const message =
+                error?.response?.data?.message || t("somethingWrong")
             toast.error(message)
         } finally {
             setLoading(false)

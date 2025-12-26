@@ -2,7 +2,7 @@ import { cn } from "@/lib/utils"
 
 /**
  * Reusable form container component for consistent form layouts.
- * 
+ *
  * @param {Object} props
  * @param {React.ReactNode} props.children - Form content
  * @param {string} [props.maxWidth="max-w-2xl"] - Maximum width class
@@ -20,7 +20,7 @@ export default function FormContainer({
                     className={cn(
                         "rounded-md border bg-white p-6 shadow-sm",
                         maxWidth,
-                        className
+                        className,
                     )}
                 >
                     {children}

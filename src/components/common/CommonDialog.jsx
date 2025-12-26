@@ -1,4 +1,3 @@
-
 import React from "react"
 import {
     Dialog,
@@ -9,7 +8,14 @@ import {
     DialogTitle,
 } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
-import { Loader2, AlertTriangle, CheckCircle, XCircle, Info, Trash2 } from "lucide-react"
+import {
+    Loader2,
+    AlertTriangle,
+    CheckCircle,
+    XCircle,
+    Info,
+    Trash2,
+} from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useTranslation } from "react-i18next"
 
@@ -85,19 +91,27 @@ export default function CommonDialog({
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogContent className={cn("sm:max-w-[425px]", isCentered && "sm:max-w-[400px]")} dir={isRTL ? "rtl" : "ltr"}>
+            <DialogContent
+                className={cn(
+                    "sm:max-w-[425px]",
+                    isCentered && "sm:max-w-[400px]",
+                )}
+                dir={isRTL ? "rtl" : "ltr"}
+            >
                 <DialogHeader>
                     {isCentered ? (
-                         <div className="flex flex-col items-center text-center gap-2">
+                        <div className="flex flex-col items-center text-center gap-2">
                             {icon && (
                                 <div className="mb-2 flex h-16 w-16 items-center justify-center rounded-full bg-red-100">
                                     {icon}
                                 </div>
                             )}
-                            <DialogTitle className={cn("text-xl font-bold", headerColor)}>
+                            <DialogTitle
+                                className={cn("text-xl font-bold", headerColor)}
+                            >
                                 {title}
                             </DialogTitle>
-                             {description && (
+                            {description && (
                                 <DialogDescription className="text-center text-muted-foreground">
                                     {description}
                                 </DialogDescription>
@@ -105,9 +119,13 @@ export default function CommonDialog({
                         </div>
                     ) : (
                         <div className="flex items-center gap-4 text-start">
-                            {icon && <div className="flex-shrink-0">{icon}</div>}
+                            {icon && (
+                                <div className="flex-shrink-0">{icon}</div>
+                            )}
                             <div className="flex flex-col gap-1">
-                                <DialogTitle className={cn("text-start", headerColor)}>
+                                <DialogTitle
+                                    className={cn("text-start", headerColor)}
+                                >
                                     {title}
                                 </DialogTitle>
                                 {description && (
@@ -120,7 +138,12 @@ export default function CommonDialog({
                     )}
                 </DialogHeader>
 
-                <DialogFooter className={cn("mt-6", isCentered ? "grid grid-cols-2 gap-3 sm:space-x-0" : "")}>
+                <DialogFooter
+                    className={cn(
+                        "mt-6",
+                        isCentered ? "grid grid-cols-2 gap-3 sm:space-x-0" : "",
+                    )}
+                >
                     {!hideCancel && (
                         <Button
                             variant="outline"
@@ -139,7 +162,12 @@ export default function CommonDialog({
                     >
                         {isLoading ? (
                             <>
-                                <Loader2 className={cn("h-4 w-4 animate-spin", isRTL ? "ml-2" : "mr-2")} />
+                                <Loader2
+                                    className={cn(
+                                        "h-4 w-4 animate-spin",
+                                        isRTL ? "ml-2" : "mr-2",
+                                    )}
+                                />
                                 {confirmText}
                             </>
                         ) : (

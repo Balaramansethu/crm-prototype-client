@@ -11,7 +11,7 @@ import { useTranslation } from "react-i18next"
 
 /**
  * Reusable form input field with RTL support and consistent styling.
- * 
+ *
  * @param {Object} props
  * @param {Object} props.control - React Hook Form control object
  * @param {string} props.name - Field name for the form
@@ -51,7 +51,7 @@ export default function FormInput({
                             disabled={disabled}
                             className={cn(
                                 isRTL && !dir ? "text-right" : "",
-                                className
+                                className,
                             )}
                         />
                     </FormControl>

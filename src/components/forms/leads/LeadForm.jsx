@@ -15,7 +15,7 @@ import { useMemo } from "react"
  * Lead Form Component
  * Handles both create and edit modes for leads.
  * Uses modular sub-components for company and contact details.
- * 
+ *
  * @param {Object} props
  * @param {Object} [props.initialData] - Initial data for edit mode
  * @param {function} props.onSubmit - Form submission handler
@@ -57,7 +57,7 @@ export default function LeadForm({
                 },
             ],
         }),
-        [initialData]
+        [initialData],
     )
 
     const form = useForm({

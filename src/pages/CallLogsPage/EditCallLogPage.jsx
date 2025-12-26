@@ -58,7 +58,8 @@ export default function EditCallLogPage() {
             navigate("/call-logs")
         } catch (error) {
             console.error(error)
-            const message = error?.response?.data?.message || t("somethingWrong")
+            const message =
+                error?.response?.data?.message || t("somethingWrong")
             toast.error(message)
         } finally {
             setLoading(false)
@@ -75,10 +76,7 @@ export default function EditCallLogPage() {
 
     return (
         <div className="@container/main flex flex-1 flex-col gap-2">
-            <PageHeader
-                breadcrumbs={breadcrumbs}
-                title={t("editCallLog")}
-            />
+            <PageHeader breadcrumbs={breadcrumbs} title={t("editCallLog")} />
 
             <div className="-mt-8 px-4 lg:px-6">
                 <CallLogForm

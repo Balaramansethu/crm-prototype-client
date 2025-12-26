@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom"
 /**
  * Reusable page header component with breadcrumb navigation.
  * Provides consistent header layout across all pages.
- * 
+ *
  * @param {Object} props
  * @param {Array} props.breadcrumbs - Array of { label, path? } objects
  * @param {string} props.title - Page title
@@ -41,7 +41,9 @@ export default function PageHeader({ breadcrumbs = [], title, actions }) {
             {/* Title & Actions */}
             <div className="flex items-center justify-between">
                 <h1 className="text-2xl font-semibold">{title}</h1>
-                {actions && <div className="flex items-center gap-2">{actions}</div>}
+                {actions && (
+                    <div className="flex items-center gap-2">{actions}</div>
+                )}
             </div>
         </div>
     )

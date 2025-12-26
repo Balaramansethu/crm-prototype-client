@@ -17,7 +17,7 @@ import { useTranslation } from "react-i18next"
 
 /**
  * Reusable form select field with RTL support and styled badge options.
- * 
+ *
  * @param {Object} props
  * @param {Object} props.control - React Hook Form control object
  * @param {string} props.name - Field name for the form
@@ -51,18 +51,23 @@ export default function FormSelect({
                         onValueChange={onValueChange || field.onChange}
                     >
                         <FormControl>
-                            <SelectTrigger className={isRTL ? "text-right" : ""}>
+                            <SelectTrigger
+                                className={isRTL ? "text-right" : ""}
+                            >
                                 <SelectValue placeholder={placeholder} />
                             </SelectTrigger>
                         </FormControl>
                         <SelectContent dir={isRTL ? "rtl" : "ltr"}>
                             {options.map((option) => (
-                                <SelectItem key={option.value} value={option.value}>
+                                <SelectItem
+                                    key={option.value}
+                                    value={option.value}
+                                >
                                     {showBadge && option.color ? (
                                         <span
                                             className={cn(
                                                 "inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-bold",
-                                                option.color
+                                                option.color,
                                             )}
                                         >
                                             {t(option.value)}
