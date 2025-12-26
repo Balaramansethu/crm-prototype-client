@@ -1,12 +1,12 @@
-
 import { useTranslation } from "react-i18next"
 import { useNavigate, useParams } from "react-router-dom"
-import { ChevronRight, Loader2 } from "lucide-react"
+import { Loader2 } from "lucide-react"
+import { PageHeader } from "@/components/common"
+import { CallLogForm } from "@/components/forms"
 import { updateCallLog, getCallLogById } from "@/service/callLogsService"
 import { toast } from "sonner"
 import { useState, useEffect } from "react"
 import { format } from "date-fns"
-import CallLogForm from "./CallLogForm"
 
 export default function EditCallLogPage() {
     const { t } = useTranslation()
@@ -16,21 +16,20 @@ export default function EditCallLogPage() {
     const [initialData, setInitialData] = useState(null)
     const [fetching, setFetching] = useState(true)
 
+    const breadcrumbs = [
+        { label: t("callLogs"), path: "/call-logs" },
+        { label: t("editCallLog") },
+    ]
+
     useEffect(() => {
         const fetchLog = async () => {
             try {
                 const response = await getCallLogById(id)
-                // Assuming response is the data object or response.data. 
-                // Based on service it returns response.data
-                // If response.data is wrapper: response.data.callLog ?
-                // Response structure: { data: { _id: ..., lead: ..., ... } }
-                // So response (from service) is the whole object.
-                // We need response.data
                 const logData = response.data
                 setInitialData(logData)
             } catch (error) {
                 console.error(error)
-                toast.error(t("failedToLoadCallLog") || "Failed to load call log")
+                toast.error(t("failedToLoadCallLog"))
                 navigate("/call-logs")
             } finally {
                 setFetching(false)
@@ -55,7 +54,7 @@ export default function EditCallLogPage() {
             }
 
             await updateCallLog(id, payload)
-            toast.success(t("callLogUpdatedSuccess") || "Call log updated successfully")
+            toast.success(t("callLogUpdatedSuccess"))
             navigate("/call-logs")
         } catch (error) {
             console.error(error)
@@ -76,29 +75,11 @@ export default function EditCallLogPage() {
 
     return (
         <div className="@container/main flex flex-1 flex-col gap-2">
-            <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6 px-4 lg:px-6">
-                {/* HEADER */}
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <span
-                        className="hover:text-foreground cursor-pointer"
-                        onClick={() => navigate("/call-logs")}
-                    >
-                        {t("callLogs") || "Call Logs"}
-                    </span>
-                    <ChevronRight className="h-4 w-4" />
-                    <span className="text-foreground font-medium">
-                        {t("editCallLog") || "Edit Call Log"}
-                    </span>
-                </div>
+            <PageHeader
+                breadcrumbs={breadcrumbs}
+                title={t("editCallLog")}
+            />
 
-                <div className="flex items-center justify-between">
-                    <h1 className="text-2xl font-semibold">
-                        {t("editCallLog") || "Edit Call Log"}
-                    </h1>
-                </div>
-            </div>
-
-            {/* Form Component */}
             <div className="-mt-8 px-4 lg:px-6">
                 <CallLogForm
                     initialData={initialData}

@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { useNavigate, useParams } from "react-router-dom"
-import { ChevronRight, Loader2 } from "lucide-react"
+import { Loader2 } from "lucide-react"
+import { PageHeader } from "@/components/common"
+import { LeadForm } from "@/components/forms"
 import { getLeadById, updateLead } from "@/service/leadsService"
 import { toast } from "sonner"
 import { format } from "date-fns"
-import LeadForm from "./LeadForm"
 
 export default function EditLeadPage() {
     const { t } = useTranslation()
@@ -14,6 +15,11 @@ export default function EditLeadPage() {
     const [loading, setLoading] = useState(false)
     const [fetching, setFetching] = useState(true)
     const [initialData, setInitialData] = useState(null)
+
+    const breadcrumbs = [
+        { label: t("leads"), path: "/leads" },
+        { label: t("editLead") },
+    ]
 
     useEffect(() => {
         const fetchLead = async () => {
@@ -36,10 +42,8 @@ export default function EditLeadPage() {
     const onSubmit = async (data) => {
         setLoading(true)
         try {
-            // Flatten the nested structure back to flat payload for update
-            // Flatten the nested structure back to flat payload for update
-            const { companyDetails, contacts } = data;
-            const contact = contacts && contacts.length > 0 ? contacts[0] : undefined;
+            const { companyDetails, contacts } = data
+            const contact = contacts && contacts.length > 0 ? contacts[0] : undefined
 
             const payload = {
                 company: companyDetails.name,
@@ -73,8 +77,7 @@ export default function EditLeadPage() {
             navigate("/leads")
         } catch (error) {
             console.error(error)
-            const message =
-                error?.response?.data?.message || t("somethingWrong")
+            const message = error?.response?.data?.message || t("somethingWrong")
             toast.error(message)
         } finally {
             setLoading(false)
@@ -91,27 +94,8 @@ export default function EditLeadPage() {
 
     return (
         <div className="@container/main flex flex-1 flex-col gap-2">
-            <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6 px-4 lg:px-6">
-                {/* HEADER */}
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <span
-                        className="hover:text-foreground cursor-pointer"
-                        onClick={() => navigate("/leads")}
-                    >
-                        {t("leads")}
-                    </span>
-                    <ChevronRight className="h-4 w-4" />
-                    <span className="text-foreground font-medium">
-                        {t("editLead")}
-                    </span>
-                </div>
+            <PageHeader breadcrumbs={breadcrumbs} title={t("editLead")} />
 
-                <div className="flex items-center justify-between">
-                    <h1 className="text-2xl font-semibold">{t("editLead")}</h1>
-                </div>
-            </div>
-
-            {/* Form Component */}
             <div className="-mt-8">
                 <LeadForm
                     initialData={initialData}
