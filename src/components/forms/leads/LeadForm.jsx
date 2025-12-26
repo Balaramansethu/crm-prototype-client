@@ -28,22 +28,39 @@ export default function LeadForm({
 
         return {
             companyDetails: {
-                name: company.name || (typeof initialData?.company === "string" ? initialData.company : ""),
+                name:
+                    company.name ||
+                    (typeof initialData?.company === "string"
+                        ? initialData.company
+                        : ""),
                 email: company.email || "",
                 phoneExtension: company.phone?.extension || "",
                 phoneNumber: company.phone?.number || "",
                 website: company.website || initialData?.website || "",
-                socialProfile: company.socialProfile || initialData?.socialProfile || "",
+                socialProfile:
+                    company.socialProfile || initialData?.socialProfile || "",
             },
             contacts: [
                 {
-                    name: contact.name || (typeof initialData?.contact === "string" ? initialData.contact : ""),
+                    name:
+                        contact.name ||
+                        (typeof initialData?.contact === "string"
+                            ? initialData.contact
+                            : ""),
                     email: contact.email || initialData?.email || "",
-                    phoneExtension: contact.phone?.extension || initialData?.phone?.extension || "",
-                    phoneNumber: contact.phone?.number || initialData?.phone?.number || "",
+                    phoneExtension:
+                        contact.phone?.extension ||
+                        initialData?.phone?.extension ||
+                        "",
+                    phoneNumber:
+                        contact.phone?.number ||
+                        initialData?.phone?.number ||
+                        "",
                     status: initialData?.status || "new",
                     source: initialData?.source || "",
-                    followUp: initialData?.followUp ? new Date(initialData.followUp) : undefined,
+                    followUp: initialData?.followUp
+                        ? new Date(initialData.followUp)
+                        : undefined,
                 },
             ],
         }
@@ -112,7 +129,9 @@ export default function LeadForm({
                                 <Button
                                     type="button"
                                     variant="secondary"
-                                    onClick={() => append(DEFAULT_CONTACT_VALUES)}
+                                    onClick={() =>
+                                        append(DEFAULT_CONTACT_VALUES)
+                                    }
                                     className="w-full sm:w-auto"
                                 >
                                     <UserPlus className="mr-2 h-4 w-4" />

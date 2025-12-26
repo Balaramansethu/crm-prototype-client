@@ -8,9 +8,7 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { FormInput, FormSelect, FormDatePicker } from "@/components/form-fields"
-import {
-    LEAD_STATUS_OPTIONS,
-} from "@/constants/formOptions"
+import { LEAD_STATUS_OPTIONS } from "@/constants/formOptions"
 import { Trash2 } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { cn } from "@/lib/utils"

@@ -26,7 +26,11 @@ const cleanObject = (obj) => {
     const cleaned = {}
     Object.entries(obj).forEach(([key, value]) => {
         if (value === undefined || value === null || value === "") return
-        if (typeof value === "object" && !Array.isArray(value) && !(value instanceof Date)) {
+        if (
+            typeof value === "object" &&
+            !Array.isArray(value) &&
+            !(value instanceof Date)
+        ) {
             const nested = cleanObject(value)
             if (nested && Object.keys(nested).length > 0) {
                 cleaned[key] = nested
@@ -52,7 +56,10 @@ export const transformLeadPayload = (formData, ownerId) => {
             email: companyDetails.email?.trim() || undefined,
             website: companyDetails.website?.trim() || undefined,
             socialProfile: companyDetails.socialProfile?.trim() || undefined,
-            phone: buildPhone(companyDetails.phoneExtension, companyDetails.phoneNumber),
+            phone: buildPhone(
+                companyDetails.phoneExtension,
+                companyDetails.phoneNumber,
+            ),
         },
         contacts: [],
         status: "new",
@@ -73,9 +80,13 @@ export const transformLeadPayload = (formData, ownerId) => {
 
             if (index === 0) {
                 if (contact.status) payload.status = contact.status
-                if (contact.source?.trim()) payload.source = contact.source.trim()
+                if (contact.source?.trim())
+                    payload.source = contact.source.trim()
                 if (contact.followUp) {
-                    payload.followUp = format(contact.followUp, "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+                    payload.followUp = format(
+                        contact.followUp,
+                        "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
+                    )
                 }
             }
         })
@@ -97,7 +108,10 @@ export const transformLeadUpdatePayload = (formData) => {
             email: companyDetails.email?.trim() || undefined,
             website: companyDetails.website?.trim() || undefined,
             socialProfile: companyDetails.socialProfile?.trim() || undefined,
-            phone: buildPhone(companyDetails.phoneExtension, companyDetails.phoneNumber),
+            phone: buildPhone(
+                companyDetails.phoneExtension,
+                companyDetails.phoneNumber,
+            ),
         },
         status: contact?.status || "new",
     }
@@ -111,7 +125,10 @@ export const transformLeadUpdatePayload = (formData) => {
 
         if (contact.source?.trim()) payload.source = contact.source.trim()
         if (contact.followUp) {
-            payload.followUp = format(contact.followUp, "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+            payload.followUp = format(
+                contact.followUp,
+                "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
+            )
         }
     }
 
@@ -136,7 +153,8 @@ export const transformApiToFormData = (apiData) => {
         socialProfile: company.socialProfile || apiData.socialProfile || "",
         contact: contact.name || apiData.contact || "",
         email: contact.email || apiData.email || "",
-        phoneExtension: contact.phone?.extension || apiData.phone?.extension || "",
+        phoneExtension:
+            contact.phone?.extension || apiData.phone?.extension || "",
         phoneNumber: contact.phone?.number || apiData.phone?.number || "",
         status: apiData.status || "new",
         source: apiData.source || "",

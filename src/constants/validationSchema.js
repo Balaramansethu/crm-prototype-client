@@ -22,7 +22,12 @@ export const PATTERNS = {
 
 // Valid enum values from backend
 export const VALID_STATUS = ["new", "qualified", "contacted", "done"]
-export const VALID_OUTCOMES = ["interested", "not_interested", "contacted", "done"]
+export const VALID_OUTCOMES = [
+    "interested",
+    "not_interested",
+    "contacted",
+    "done",
+]
 
 // API Error codes
 export const API_ERROR_CODES = {
