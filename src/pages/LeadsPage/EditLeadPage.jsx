@@ -36,25 +36,35 @@ export default function EditLeadPage() {
     const onSubmit = async (data) => {
         setLoading(true)
         try {
+            // Flatten the nested structure back to flat payload for update
+            // Flatten the nested structure back to flat payload for update
+            const { companyDetails, contacts } = data;
+            const contact = contacts && contacts.length > 0 ? contacts[0] : undefined;
+
             const payload = {
-                company: data.company,
-                contact: data.contact,
-                email: data.email,
-                status: data.status,
+                company: companyDetails.name,
+                contact: contact?.name || "",
+                email: contact?.email || "",
+                status: contact?.status || "new",
+                designation: contact?.designation || "",
+                priority: contact?.priority || "medium",
+                website: companyDetails.website,
+                socialProfile: companyDetails.socialProfile,
+                companyPhone: companyDetails.phone,
             }
 
-            if (data.source && data.source.trim() !== "") {
-                payload.source = data.source
+            if (contact?.source && contact.source.trim() !== "") {
+                payload.source = contact.source
             }
 
-            if (data.followUp) {
-                payload.followUp = format(data.followUp, "yyyy-MM-dd")
+            if (contact?.followUp) {
+                payload.followUp = format(contact.followUp, "yyyy-MM-dd")
             }
 
-            if (data.phoneNumber && data.phoneNumber.trim() !== "") {
+            if (contact?.phoneNumber && contact.phoneNumber.trim() !== "") {
                 payload.phone = {
-                    number: data.phoneNumber,
-                    extension: data.phoneExtension || "",
+                    number: contact.phoneNumber,
+                    extension: contact.phoneExtension || "",
                 }
             }
 

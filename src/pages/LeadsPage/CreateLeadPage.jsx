@@ -18,39 +18,67 @@ export default function CreateLeadPage() {
     const onSubmit = async (data) => {
         setLoading(true)
         try {
-            const payload = {
-                company: data.company,
-                contact: data.contact,
-                email: data.email,
-                status: data.status,
-                owner: user?._id || user?.id,
-            }
+            const { companyDetails, contacts } = data;
+            const createdLeads = [];
 
-            if (data.source && data.source.trim() !== "") {
-                payload.source = data.source
-            }
+            if (!contacts || contacts.length === 0) {
+                 const payload = {
+                    company: companyDetails.name,
+                    contact: "",
+                    email: "",
+                    status: "new",
+                    owner: user?._id || user?.id,
+                    website: companyDetails.website,
+                    socialProfile: companyDetails.socialProfile,
+                    companyPhone: companyDetails.phone 
+                 }
+                 const createdLead = await createLead(payload)
+                 createdLeads.push(createdLead);
+            } else {
+                for (const contact of contacts) {
+                    const payload = {
+                        company: companyDetails.name,
+                        contact: contact.name,
+                        email: contact.email,
+                        status: contact.status,
+                        owner: user?._id || user?.id,
+                        designation: contact.designation,
+                        priority: contact.priority,
+                        website: companyDetails.website,
+                        socialProfile: companyDetails.socialProfile,
+                        companyPhone: companyDetails.phone 
+                    }
 
-            if (data.followUp) {
-                payload.followUp = format(data.followUp, "yyyy-MM-dd")
-            }
+                    if (contact.source && contact.source.trim() !== "") {
+                        payload.source = contact.source
+                    }
 
-            if (data.phoneNumber && data.phoneNumber.trim() !== "") {
-                payload.phone = {
-                    number: data.phoneNumber,
-                    extension: data.phoneExtension || "",
+                    if (contact.followUp) {
+                        payload.followUp = format(contact.followUp, "yyyy-MM-dd")
+                    }
+
+                    if (contact.phoneNumber && contact.phoneNumber.trim() !== "") {
+                        payload.phone = {
+                            number: contact.phoneNumber,
+                            extension: contact.phoneExtension || "",
+                        }
+                    }
+
+                    const createdLead = await createLead(payload)
+                    createdLeads.push(createdLead);
                 }
             }
 
-            const createdLead = await createLead(payload)
             toast.success(t("leadCreatedSuccess"))
             
             const searchParams = new URLSearchParams(location.search)
             const returnTo = searchParams.get("returnTo")
 
             if (returnTo) {
-                const leadId = createdLead._id  || createdLead.lead?._id || createdLead.data?._id
-                // Append newLeadId to the return URL
-                // Check if returnTo already has params
+                // Use the Last created lead ID if multiple
+                const lastLead = createdLeads[createdLeads.length - 1];
+                const leadId = lastLead._id  || lastLead.lead?._id || lastLead.data?._id
+                
                 const separator = returnTo.includes('?') ? '&' : '?'
                 navigate(`${returnTo}${separator}newLeadId=${leadId}`)
             } else {
