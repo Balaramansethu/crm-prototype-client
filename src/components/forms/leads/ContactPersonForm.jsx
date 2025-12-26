@@ -10,22 +10,11 @@ import { Input } from "@/components/ui/input"
 import { FormInput, FormSelect, FormDatePicker } from "@/components/form-fields"
 import {
     LEAD_STATUS_OPTIONS,
-    LEAD_PRIORITY_OPTIONS,
 } from "@/constants/formOptions"
 import { Trash2 } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { cn } from "@/lib/utils"
 
-/**
- * Contact Person Form Section
- * Handles individual contact person information in a Lead form.
- *
- * @param {Object} props
- * @param {Object} props.control - React Hook Form control object
- * @param {number} props.index - Contact index in the array
- * @param {function} props.onRemove - Callback to remove this contact
- * @param {boolean} [props.showRemoveButton=true] - Whether to show remove button
- */
 export default function ContactPersonForm({
     control,
     index,
@@ -37,7 +26,6 @@ export default function ContactPersonForm({
 
     return (
         <div className="relative rounded-lg border p-6 bg-gray-50/50">
-            {/* Header with title and delete button */}
             <div
                 className={cn(
                     "flex items-center justify-between mb-4",
@@ -61,20 +49,19 @@ export default function ContactPersonForm({
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* Name & Designation */}
                 <FormInput
                     control={control}
                     name={`contacts.${index}.name`}
-                    label={t("name")}
+                    label={`${t("name")} *`}
                 />
                 <FormInput
                     control={control}
-                    name={`contacts.${index}.designation`}
-                    label={t("designation")}
-                    placeholder={t("designationPlaceholder")}
+                    name={`contacts.${index}.email`}
+                    label={`${t("email")} *`}
+                    type="email"
+                    placeholder={t("emailPlaceholder")}
                 />
 
-                {/* Phone with Extension */}
                 <div className="md:col-span-2 grid grid-cols-[100px_1fr] gap-4">
                     <FormField
                         control={control}
@@ -86,7 +73,7 @@ export default function ContactPersonForm({
                                     <Input
                                         {...field}
                                         dir="ltr"
-                                        placeholder="+966"
+                                        placeholder="+91"
                                     />
                                 </FormControl>
                                 <FormMessage />
@@ -108,22 +95,6 @@ export default function ContactPersonForm({
                     />
                 </div>
 
-                {/* Email & Priority */}
-                <FormInput
-                    control={control}
-                    name={`contacts.${index}.email`}
-                    label={t("email")}
-                    type="email"
-                    placeholder={t("emailPlaceholder")}
-                />
-                <FormSelect
-                    control={control}
-                    name={`contacts.${index}.priority`}
-                    label={t("priority")}
-                    options={LEAD_PRIORITY_OPTIONS}
-                />
-
-                {/* Status & Source */}
                 <FormSelect
                     control={control}
                     name={`contacts.${index}.status`}
@@ -139,7 +110,6 @@ export default function ContactPersonForm({
                     placeholder={t("sourcePlaceholder")}
                 />
 
-                {/* Follow Up */}
                 <FormDatePicker
                     control={control}
                     name={`contacts.${index}.followUp`}

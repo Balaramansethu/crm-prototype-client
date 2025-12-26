@@ -1,44 +1,163 @@
+/**
+ * Lead form validation utilities.
+ * Aligned with backend Mongoose schemas.
+ */
 import {
+    FIELD_LIMITS,
+    validateLength,
     validateEmail,
-    validateRequiredLength,
-} from "./authenticationFieldValidations"
+    validatePhoneNumber,
+    validatePhoneExtension,
+    validateUrl,
+    validateStatus,
+} from "@/constants/validationSchema"
 
-function validateField(fieldName, value, min, max) {
-    if (!value?.trim()) return ""
-    return validateRequiredLength(fieldName, value, min, max)
+/**
+ * Validates company details from the form
+ */
+export function validateCompanyDetails(company, setError, t) {
+    let hasErrors = false
+
+    if (!validateLength(company.name, FIELD_LIMITS.COMPANY_NAME)) {
+        setError("companyDetails.name", {
+            type: "manual",
+            message: company.name?.trim()
+                ? t("invalidFormat")
+                : t("companyRequired"),
+        })
+        hasErrors = true
+    }
+
+    if (company.email?.trim() && !validateEmail(company.email)) {
+        setError("companyDetails.email", {
+            type: "manual",
+            message: t("emailInvalid"),
+        })
+        hasErrors = true
+    }
+
+    if (!validatePhoneNumber(company.phoneNumber)) {
+        setError("companyDetails.phoneNumber", {
+            type: "manual",
+            message: t("phoneTooShort"),
+        })
+        hasErrors = true
+    }
+
+    if (!validatePhoneExtension(company.phoneExtension)) {
+        setError("companyDetails.phoneExtension", {
+            type: "manual",
+            message: t("invalidFormat"),
+        })
+        hasErrors = true
+    }
+
+    if (!validateUrl(company.website)) {
+        setError("companyDetails.website", {
+            type: "manual",
+            message: t("invalidFormat"),
+        })
+        hasErrors = true
+    }
+
+    if (!validateUrl(company.socialProfile)) {
+        setError("companyDetails.socialProfile", {
+            type: "manual",
+            message: t("invalidFormat"),
+        })
+        hasErrors = true
+    }
+
+    return !hasErrors
 }
 
-export function validateLeadFields(form) {
-    const errors = {}
+/**
+ * Validates a single contact from the form
+ */
+export function validateContact(contact, index, setError, t) {
+    let hasErrors = false
 
-    let err = validateRequiredLength("Company name", form.company, 2, 100)
-    if (err) errors.company = err
+    const hasAnyData =
+        contact.name?.trim() ||
+        contact.email?.trim() ||
+        contact.phoneNumber?.trim()
 
-    err = validateRequiredLength("Contact name", form.contact, 2, 50)
-    if (err) errors.contact = err
+    if (!hasAnyData) return true
 
-    err = validateEmail(form.email)
-    if (err) errors.email = err
-
-    if (form.source && form.source.trim()) {
-        err = validateRequiredLength("Source", form.source, 2, 50)
-        if (err) errors.source = err
+    if (!validateLength(contact.name, FIELD_LIMITS.CONTACT_NAME)) {
+        setError(`contacts.${index}.name`, {
+            type: "manual",
+            message: contact.name?.trim()
+                ? t("invalidFormat")
+                : t("contactRequired"),
+        })
+        hasErrors = true
     }
 
-    if (form.phoneNumber?.trim() && form.phoneNumber.length < 8) {
-        errors.phoneNumber = "Phone number must be at least 8 digits"
+    if (!validateEmail(contact.email)) {
+        setError(`contacts.${index}.email`, {
+            type: "manual",
+            message: contact.email?.trim()
+                ? t("emailInvalid")
+                : t("emailRequired"),
+        })
+        hasErrors = true
     }
 
-    const validStatuses = ["new", "qualified", "contacted", "done"]
-
-    if (!form.status) {
-        errors.status = "Status is required"
-    } else if (!validStatuses.includes(form.status)) {
-        errors.status = "Invalid status selected"
-    }
-    if (form.followUp && isNaN(new Date(form.followUp).getTime())) {
-        errors.followUp = "Invalid date"
+    if (!validatePhoneNumber(contact.phoneNumber)) {
+        setError(`contacts.${index}.phoneNumber`, {
+            type: "manual",
+            message: t("phoneTooShort"),
+        })
+        hasErrors = true
     }
 
-    return errors
+    if (!validatePhoneExtension(contact.phoneExtension)) {
+        setError(`contacts.${index}.phoneExtension`, {
+            type: "manual",
+            message: t("invalidFormat"),
+        })
+        hasErrors = true
+    }
+
+    if (
+        contact.source?.trim() &&
+        !validateLength(contact.source, FIELD_LIMITS.SOURCE)
+    ) {
+        setError(`contacts.${index}.source`, {
+            type: "manual",
+            message: t("invalidFormat"),
+        })
+        hasErrors = true
+    }
+
+    if (contact.status && !validateStatus(contact.status)) {
+        setError(`contacts.${index}.status`, {
+            type: "manual",
+            message: t("invalidFormat"),
+        })
+        hasErrors = true
+    }
+
+    return !hasErrors
+}
+
+/**
+ * Validates entire lead form data
+ */
+export function validateLeadForm(data, setError, t) {
+    const companyValid = validateCompanyDetails(
+        data.companyDetails,
+        setError,
+        t,
+    )
+
+    let contactsValid = true
+    data.contacts?.forEach((contact, index) => {
+        if (!validateContact(contact, index, setError, t)) {
+            contactsValid = false
+        }
+    })
+
+    return companyValid && contactsValid
 }

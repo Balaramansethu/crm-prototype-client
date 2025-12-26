@@ -1,13 +1,14 @@
 import { FormInput } from "@/components/form-fields"
+import {
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
+} from "@/components/ui/form"
+import { Input } from "@/components/ui/input"
 import { useTranslation } from "react-i18next"
 
-/**
- * Company Details Form Section
- * Handles company-level information in a Lead form.
- *
- * @param {Object} props
- * @param {Object} props.control - React Hook Form control object
- */
 export default function CompanyDetailsForm({ control }) {
     const { t } = useTranslation()
 
@@ -26,15 +27,49 @@ export default function CompanyDetailsForm({ control }) {
                 <FormInput
                     control={control}
                     name="companyDetails.name"
-                    label={t("company")}
+                    label={`${t("company")} *`}
                 />
                 <FormInput
                     control={control}
-                    name="companyDetails.phone"
-                    label={t("companyPhone")}
-                    placeholder="+966..."
-                    dir="ltr"
+                    name="companyDetails.email"
+                    label={t("email")}
+                    type="email"
+                    placeholder={t("emailPlaceholder")}
                 />
+
+                <div className="md:col-span-2 grid grid-cols-[100px_1fr] gap-4">
+                    <FormField
+                        control={control}
+                        name="companyDetails.phoneExtension"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>{t("extension")}</FormLabel>
+                                <FormControl>
+                                    <Input
+                                        {...field}
+                                        dir="ltr"
+                                        placeholder="+91"
+                                    />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={control}
+                        name="companyDetails.phoneNumber"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>{t("phone")}</FormLabel>
+                                <FormControl>
+                                    <Input {...field} dir="ltr" />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                </div>
+
                 <FormInput
                     control={control}
                     name="companyDetails.website"

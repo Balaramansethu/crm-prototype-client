@@ -5,8 +5,8 @@ import { Loader2 } from "lucide-react"
 import { PageHeader } from "@/components/common"
 import { LeadForm } from "@/components/forms"
 import { getLeadById, updateLead } from "@/service/leadsService"
+import { transformLeadUpdatePayload } from "@/utils/leadTransformers"
 import { toast } from "sonner"
-import { format } from "date-fns"
 
 export default function EditLeadPage() {
     const { t } = useTranslation()
@@ -34,45 +34,13 @@ export default function EditLeadPage() {
                 setFetching(false)
             }
         }
-        if (id) {
-            fetchLead()
-        }
+        if (id) fetchLead()
     }, [id, navigate, t])
 
     const onSubmit = async (data) => {
         setLoading(true)
         try {
-            const { companyDetails, contacts } = data
-            const contact =
-                contacts && contacts.length > 0 ? contacts[0] : undefined
-
-            const payload = {
-                company: companyDetails.name,
-                contact: contact?.name || "",
-                email: contact?.email || "",
-                status: contact?.status || "new",
-                designation: contact?.designation || "",
-                priority: contact?.priority || "medium",
-                website: companyDetails.website,
-                socialProfile: companyDetails.socialProfile,
-                companyPhone: companyDetails.phone,
-            }
-
-            if (contact?.source && contact.source.trim() !== "") {
-                payload.source = contact.source
-            }
-
-            if (contact?.followUp) {
-                payload.followUp = format(contact.followUp, "yyyy-MM-dd")
-            }
-
-            if (contact?.phoneNumber && contact.phoneNumber.trim() !== "") {
-                payload.phone = {
-                    number: contact.phoneNumber,
-                    extension: contact.phoneExtension || "",
-                }
-            }
-
+            const payload = transformLeadUpdatePayload(data)
             await updateLead(id, payload)
             toast.success(t("leadUpdatedSuccess"))
             navigate("/leads")
