@@ -203,5 +203,20 @@
     "optional": "Optional",
     "enterValue": "Enter a value",
     "invalidFormat": "Invalid format",
-    "fieldRequired": "This field is required"
+    "fieldRequired": "This field is required",
+    "contactInformation": "Contact Information",
+    "companyInformation": "Company Information",
+    "leadDetails": "Lead Details",
+    "metaInformation": "Meta Information",
+    "unsavedChangesWarning": "You have unsaved changes. Are you sure you want to leave?",
+    "noChangesToSave": "No changes to save",
+    "unsavedChanges": "Unsaved Changes",
+    "leave": "Leave",
+    "stayOnPage": "Stay on Page",
+    "notInterested": "Not Interested",
+    "callOutcome": "Call Outcome",
+    "onlinePresence": "Online Presence",
+    "additionalInfo": "Additional Info",
+    "contactAndLead": "Contact & Lead",
+    "companyAndInfo": "Company & Info"
 }

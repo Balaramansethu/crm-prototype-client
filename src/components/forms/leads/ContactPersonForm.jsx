@@ -50,12 +50,12 @@ export default function ContactPersonForm({
                 <FormInput
                     control={control}
                     name={`contacts.${index}.name`}
-                    label={`${t("name")} *`}
+                    label={t("name")}
                 />
                 <FormInput
                     control={control}
                     name={`contacts.${index}.email`}
-                    label={`${t("email")} *`}
+                    label={t("email")}
                     type="email"
                     placeholder={t("emailPlaceholder")}
                 />

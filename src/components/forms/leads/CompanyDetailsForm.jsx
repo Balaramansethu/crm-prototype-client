@@ -60,7 +60,7 @@ export default function CompanyDetailsForm({ control }) {
                         name="companyDetails.phoneNumber"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>{t("phone")}</FormLabel>
+                                <FormLabel>{t("phone")} *</FormLabel>
                                 <FormControl>
                                     <Input {...field} dir="ltr" />
                                 </FormControl>

@@ -16,7 +16,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
-import { FormContainer } from "@/components/common"
+import { FormContainer, CommonDialog } from "@/components/common"
 import { FormDatePicker } from "@/components/form-fields"
 import { CALL_OUTCOME_OPTIONS } from "@/constants/formOptions"
 
@@ -29,15 +29,6 @@ import { cn } from "@/lib/utils"
 import { useLeads } from "@/hooks/useLeads"
 import { getLeadById } from "@/service/leadsService"
 
-/**
- * Call Log Form Component
- * Handles both create and edit modes for call logs.
- *
- * @param {Object} props
- * @param {function} props.onSubmit - Form submission handler
- * @param {boolean} [props.loading=false] - Loading state
- * @param {Object} [props.initialData] - Initial data for edit mode
- */
 export default function CallLogForm({
     onSubmit,
     loading = false,
@@ -48,18 +39,17 @@ export default function CallLogForm({
     const location = useLocation()
     const isRTL = i18n.dir() === "rtl"
 
-    // Fetch leads for the dropdown
+    const [showUnsavedDialog, setShowUnsavedDialog] = useState(false)
+
     const { data } = useLeads({ limit: 100 })
     const leads = data?.leads || []
 
-    // State to track selected lead details
     const [selectedLeadDetails, setSelectedLeadDetails] = useState({
         company: "",
         phone: "",
     })
     const [extraLead, setExtraLead] = useState(null)
 
-    // Combine leads with extraLead if it exists and isn't already in the list
     const displayLeads = useMemo(() => {
         if (!extraLead) return leads
         if (leads.find((l) => l._id === extraLead._id)) return leads
@@ -82,23 +72,57 @@ export default function CallLogForm({
         defaultValues,
     })
 
-    // Helper to format phone from lead object
-    const formatLeadPhone = (lead) => {
-        if (!lead) return ""
-        return lead.phone?.number
-            ? `${lead.phone.extension || ""} ${lead.phone.number}`.trim()
-            : lead.phone || ""
+    const {
+        formState: { isDirty, isSubmitting },
+    } = form
+
+    const isEditMode = !!initialData
+
+    useEffect(() => {
+        const handleBeforeUnload = (e) => {
+            if (isDirty && !isSubmitting) {
+                e.preventDefault()
+                e.returnValue = ""
+            }
+        }
+
+        window.addEventListener("beforeunload", handleBeforeUnload)
+        return () => window.removeEventListener("beforeunload", handleBeforeUnload)
+    }, [isDirty, isSubmitting])
+
+    // Format phone from either contact or company
+    const formatPhone = (phoneObj) => {
+        if (!phoneObj?.number) return ""
+        return phoneObj.number
+            ? `${phoneObj.extension || ""} ${phoneObj.number}`.trim()
+            : ""
     }
 
-    // Update details helper
+    const getCompanyName = (lead) => {
+        if (!lead) return ""
+        return lead.company?.name || lead.company || ""
+    }
+
+    // Get phone - fallback to company phone if no contact phone
+    const getLeadPhone = (lead) => {
+        if (!lead) return ""
+        if (lead.contact?.phone?.number) {
+            return formatPhone(lead.contact.phone)
+        }
+        if (lead.company?.phone?.number) {
+            return formatPhone(lead.company.phone)
+        }
+        return ""
+    }
+
     const updateLeadDetails = (leadId) => {
         const allLeads = extraLead ? [extraLead, ...leads] : leads
         const selectedLead = allLeads.find((lead) => lead._id === leadId)
 
         if (selectedLead) {
             setSelectedLeadDetails({
-                company: selectedLead.company || "",
-                phone: formatLeadPhone(selectedLead),
+                company: getCompanyName(selectedLead),
+                phone: getLeadPhone(selectedLead),
             })
             if (selectedLead.followUp) {
                 form.setValue("followUp", new Date(selectedLead.followUp))
@@ -108,7 +132,6 @@ export default function CallLogForm({
         }
     }
 
-    // Handle new lead from URL
     useEffect(() => {
         const searchParams = new URLSearchParams(location.search)
         const newLeadId = searchParams.get("newLeadId")
@@ -126,13 +149,13 @@ export default function CallLogForm({
             } else {
                 getLeadById(newLeadId)
                     .then((data) => {
-                        const l = data.lead || data
+                        const l = data.data || data.lead || data
                         if (l) {
                             setExtraLead(l)
                             form.setValue("lead", newLeadId)
                             setSelectedLeadDetails({
-                                company: l.company || "",
-                                phone: formatLeadPhone(l),
+                                company: getCompanyName(l),
+                                phone: getLeadPhone(l),
                             })
                             if (l.followUp) {
                                 form.setValue("followUp", new Date(l.followUp))
@@ -146,7 +169,6 @@ export default function CallLogForm({
         }
     }, [location.search, leads, form, extraLead, selectedLeadDetails.company])
 
-    // Reset form when initialData changes
     useEffect(() => {
         if (initialData) {
             form.reset({
@@ -161,8 +183,8 @@ export default function CallLogForm({
             if (initialData.lead) {
                 if (typeof initialData.lead === "object") {
                     setSelectedLeadDetails({
-                        company: initialData.lead.company || "",
-                        phone: formatLeadPhone(initialData.lead),
+                        company: getCompanyName(initialData.lead),
+                        phone: getLeadPhone(initialData.lead),
                     })
                 } else {
                     updateLeadDetails(initialData.lead)
@@ -171,7 +193,6 @@ export default function CallLogForm({
         }
     }, [initialData, form, leads])
 
-    // Handle lead selection change
     const handleLeadChange = (leadId) => {
         if (leadId === "CREATE_NEW_LEAD") {
             const returnUrl = encodeURIComponent(location.pathname)
@@ -202,189 +223,215 @@ export default function CallLogForm({
         onSubmit(data)
     }
 
+    const handleCancel = () => {
+        if (isDirty) {
+            setShowUnsavedDialog(true)
+        } else {
+            navigate("/call-logs")
+        }
+    }
+
+    const confirmLeave = () => {
+        setShowUnsavedDialog(false)
+        navigate("/call-logs")
+    }
+
+    const isSubmitDisabled = loading || (isEditMode && !isDirty)
+
     return (
-        <FormContainer>
-            <Form {...form}>
-                <form
-                    onSubmit={form.handleSubmit(handleSubmit)}
-                    className="grid gap-6"
-                >
-                    {/* Lead Selection */}
-                    <FormField
-                        control={form.control}
-                        name="lead"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>{t("leadName")}</FormLabel>
-                                <Select
-                                    onValueChange={handleLeadChange}
-                                    value={field.value}
-                                >
-                                    <FormControl>
-                                        <SelectTrigger
-                                            className={
-                                                isRTL ? "text-right" : ""
-                                            }
-                                        >
-                                            <SelectValue
-                                                placeholder={t("selectLead")}
-                                            />
-                                        </SelectTrigger>
-                                    </FormControl>
-                                    <SelectContent dir={isRTL ? "rtl" : "ltr"}>
-                                        <SelectItem
-                                            value="CREATE_NEW_LEAD"
-                                            className="text-primary font-medium focus:bg-primary/10 cursor-pointer"
-                                        >
-                                            <div className="flex items-center gap-2">
-                                                <Plus className="h-4 w-4" />
-                                                {t("createNewLead")}
-                                            </div>
-                                        </SelectItem>
-                                        {displayLeads.map((lead) => (
-                                            <SelectItem
-                                                key={lead._id || lead.id}
-                                                value={lead._id || lead.id}
+        <>
+            <FormContainer>
+                <Form {...form}>
+                    <form
+                        onSubmit={form.handleSubmit(handleSubmit)}
+                        className="grid gap-6"
+                    >
+                        <FormField
+                            control={form.control}
+                            name="lead"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>{t("leadName")}</FormLabel>
+                                    <Select
+                                        onValueChange={handleLeadChange}
+                                        value={field.value}
+                                    >
+                                        <FormControl>
+                                            <SelectTrigger
+                                                className={
+                                                    isRTL ? "text-right" : ""
+                                                }
                                             >
-                                                {lead.contact} ({lead.company})
+                                                <SelectValue
+                                                    placeholder={t("selectLead")}
+                                                />
+                                            </SelectTrigger>
+                                        </FormControl>
+                                        <SelectContent dir={isRTL ? "rtl" : "ltr"}>
+                                            <SelectItem
+                                                value="CREATE_NEW_LEAD"
+                                                className="text-primary font-medium focus:bg-primary/10 cursor-pointer"
+                                            >
+                                                <div className="flex items-center gap-2">
+                                                    <Plus className="h-4 w-4" />
+                                                    {t("createNewLead")}
+                                                </div>
                                             </SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-
-                    {/* Company Name - Auto-populated */}
-                    <FormItem>
-                        <FormLabel>{t("company")}</FormLabel>
-                        <FormControl>
-                            <Input
-                                value={selectedLeadDetails.company}
-                                disabled
-                                readOnly
-                                className={cn(
-                                    "bg-muted !cursor-not-allowed",
-                                    isRTL ? "text-right" : "",
-                                )}
-                                placeholder={t("selectLeadFirst")}
-                            />
-                        </FormControl>
-                    </FormItem>
-
-                    {/* Phone Number - Auto-populated */}
-                    <FormItem>
-                        <FormLabel>{t("phone")}</FormLabel>
-                        <FormControl>
-                            <Input
-                                value={selectedLeadDetails.phone}
-                                disabled
-                                readOnly
-                                dir="ltr"
-                                className="bg-muted !cursor-not-allowed"
-                                placeholder={t("selectLeadFirst")}
-                            />
-                        </FormControl>
-                    </FormItem>
-
-                    {/* Outcome */}
-                    <FormField
-                        control={form.control}
-                        name="outcome"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>{t("outcome")}</FormLabel>
-                                <Select
-                                    onValueChange={field.onChange}
-                                    value={field.value}
-                                >
-                                    <FormControl>
-                                        <SelectTrigger
-                                            className={
-                                                isRTL ? "text-right" : ""
-                                            }
-                                        >
-                                            <SelectValue
-                                                placeholder={t("selectOutcome")}
-                                            />
-                                        </SelectTrigger>
-                                    </FormControl>
-                                    <SelectContent dir={isRTL ? "rtl" : "ltr"}>
-                                        {CALL_OUTCOME_OPTIONS.map((option) => (
-                                            <SelectItem
-                                                key={option.value}
-                                                value={option.value}
-                                            >
-                                                <span
-                                                    className={cn(
-                                                        "inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-bold",
-                                                        option.color,
-                                                    )}
+                                            {displayLeads.map((lead) => (
+                                                <SelectItem
+                                                    key={lead._id || lead.id}
+                                                    value={lead._id || lead.id}
                                                 >
-                                                    {t(option.value)}
-                                                </span>
-                                            </SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-
-                    {/* Follow Up Date */}
-                    <FormDatePicker
-                        control={form.control}
-                        name="followUp"
-                        label={t("followUp")}
-                        minDate={new Date()}
-                    />
-
-                    {/* Remarks */}
-                    <FormField
-                        control={form.control}
-                        name="remarks"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>{t("remarks")}</FormLabel>
-                                <FormControl>
-                                    <Textarea
-                                        {...field}
-                                        className={cn(
-                                            "min-h-[100px]",
-                                            isRTL ? "text-right" : "",
-                                        )}
-                                        placeholder={t("enterRemarks")}
-                                    />
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-
-                    {/* Actions */}
-                    <div className="flex justify-end gap-2 pt-4">
-                        <Button
-                            type="button"
-                            variant="outline"
-                            onClick={() => navigate("/call-logs")}
-                        >
-                            {t("cancel")}
-                        </Button>
-
-                        <Button
-                            type="submit"
-                            disabled={loading || !form.formState.isDirty}
-                        >
-                            {loading && (
-                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                                    {lead.contact?.name || lead.company?.name || lead.company} ({lead.company?.name || lead.company})
+                                                </SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                    <FormMessage />
+                                </FormItem>
                             )}
-                            {t("saveCallLog")}
-                        </Button>
-                    </div>
-                </form>
-            </Form>
-        </FormContainer>
+                        />
+
+                        <FormItem>
+                            <FormLabel>{t("company")}</FormLabel>
+                            <FormControl>
+                                <Input
+                                    value={selectedLeadDetails.company}
+                                    disabled
+                                    readOnly
+                                    className={cn(
+                                        "bg-muted !cursor-not-allowed",
+                                        isRTL ? "text-right" : "",
+                                    )}
+                                    placeholder={t("selectLeadFirst")}
+                                />
+                            </FormControl>
+                        </FormItem>
+
+                        <FormItem>
+                            <FormLabel>{t("phone")}</FormLabel>
+                            <FormControl>
+                                <Input
+                                    value={selectedLeadDetails.phone}
+                                    disabled
+                                    readOnly
+                                    className="font-mono bg-muted !cursor-not-allowed"
+                                    dir="ltr"
+                                    placeholder={t("selectLeadFirst")}
+                                />
+                            </FormControl>
+                        </FormItem>
+
+                        <FormField
+                            control={form.control}
+                            name="outcome"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>{t("callOutcome")}</FormLabel>
+                                    <Select
+                                        onValueChange={field.onChange}
+                                        value={field.value}
+                                    >
+                                        <FormControl>
+                                            <SelectTrigger
+                                                className={
+                                                    isRTL ? "text-right" : ""
+                                                }
+                                            >
+                                                <SelectValue
+                                                    placeholder={t(
+                                                        "selectOutcome",
+                                                    )}
+                                                />
+                                            </SelectTrigger>
+                                        </FormControl>
+                                        <SelectContent
+                                            dir={isRTL ? "rtl" : "ltr"}
+                                        >
+                                            {CALL_OUTCOME_OPTIONS.map(
+                                                (option) => (
+                                                    <SelectItem
+                                                        key={option.value}
+                                                        value={option.value}
+                                                    >
+                                                        {t(option.label)}
+                                                    </SelectItem>
+                                                ),
+                                            )}
+                                        </SelectContent>
+                                    </Select>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+
+                        <FormDatePicker
+                            control={form.control}
+                            name="followUp"
+                            label={t("followUp")}
+                            minDate={new Date()}
+                        />
+
+                        <FormField
+                            control={form.control}
+                            name="remarks"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>{t("remarks")}</FormLabel>
+                                    <FormControl>
+                                        <Textarea
+                                            {...field}
+                                            className={cn(
+                                                "min-h-[100px]",
+                                                isRTL ? "text-right" : "",
+                                            )}
+                                            placeholder={t("enterRemarks")}
+                                        />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+
+                        <div className="flex justify-end gap-2 pt-4">
+                            <Button
+                                type="button"
+                                variant="outline"
+                                onClick={handleCancel}
+                            >
+                                {t("cancel")}
+                            </Button>
+
+                            <Button
+                                type="submit"
+                                disabled={isSubmitDisabled}
+                                title={
+                                    isEditMode && !isDirty
+                                        ? t("noChangesToSave")
+                                        : undefined
+                                }
+                            >
+                                {loading && (
+                                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                )}
+                                {t("saveCallLog")}
+                            </Button>
+                        </div>
+                    </form>
+                </Form>
+            </FormContainer>
+
+            <CommonDialog
+                open={showUnsavedDialog}
+                onOpenChange={setShowUnsavedDialog}
+                title={t("unsavedChanges")}
+                description={t("unsavedChangesWarning")}
+                confirmText={t("leave")}
+                cancelText={t("stayOnPage")}
+                onConfirm={confirmLeave}
+                variant="destructive"
+                showIcon={false}
+            />
+        </>
     )
 }

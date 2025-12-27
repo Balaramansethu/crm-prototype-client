@@ -33,6 +33,7 @@ import { useTranslation } from "react-i18next"
  * @param {function} props.onConfirm - Callback when confirm button is clicked.
  * @param {boolean} [props.isLoading=false] - Shows loading state on confirm button.
  * @param {boolean} [props.hideCancel=false] - Whether to hide the cancel button.
+ * @param {boolean} [props.showIcon=true] - Whether to show the variant icon.
  */
 export default function CommonDialog({
     open,
@@ -45,6 +46,7 @@ export default function CommonDialog({
     onConfirm,
     isLoading = false,
     hideCancel = false,
+    showIcon = true,
 }) {
     const { i18n } = useTranslation()
     const isRTL = i18n.dir() === "rtl"
@@ -101,7 +103,7 @@ export default function CommonDialog({
                 <DialogHeader>
                     {isCentered ? (
                         <div className="flex flex-col items-center text-center gap-2">
-                            {icon && (
+                            {showIcon && icon && (
                                 <div className="mb-2 flex h-16 w-16 items-center justify-center rounded-full bg-red-100">
                                     {icon}
                                 </div>
@@ -119,7 +121,7 @@ export default function CommonDialog({
                         </div>
                     ) : (
                         <div className="flex items-center gap-4 text-start">
-                            {icon && (
+                            {showIcon && icon && (
                                 <div className="flex-shrink-0">{icon}</div>
                             )}
                             <div className="flex flex-col gap-1">

@@ -393,26 +393,29 @@ export default function LeadsPage() {
                                         key={
                                             lead._id || lead.id || Math.random()
                                         }
-                                        className="hover:bg-muted/30 text-black"
+                                        className="hover:bg-muted/30 text-black cursor-pointer"
+                                        onClick={() =>
+                                            navigate(`/leads/${lead._id || lead.id}`)
+                                        }
                                     >
                                         <TableCell className="font-bold text-black pl-4">
-                                            {lead.contact}
+                                            {lead.contact?.name || lead.company?.name || lead.company}
                                         </TableCell>
                                         <TableCell className="text-black">
-                                            {lead.company}
+                                            {lead.company?.name || lead.company}
                                         </TableCell>
                                         <TableCell className="hidden md:table-cell text-black text-sm">
                                             {lead.source}
                                         </TableCell>
                                         <TableCell className="hidden lg:table-cell text-black text-sm">
-                                            {lead.email}
+                                            {lead.contact?.email || lead.company?.email || lead.email}
                                         </TableCell>
                                         <TableCell className="hidden xl:table-cell text-sm text-black font-mono">
                                             <span dir="ltr">
-                                                {lead.phone?.extension
-                                                    ? `${lead.phone.extension} `
+                                                {(lead.contact?.phone?.extension || lead.company?.phone?.extension)
+                                                    ? `${lead.contact?.phone?.extension || lead.company?.phone?.extension} `
                                                     : ""}
-                                                {lead.phone?.number}
+                                                {lead.contact?.phone?.number || lead.company?.phone?.number}
                                             </span>
                                         </TableCell>
                                         <TableCell>
@@ -450,7 +453,9 @@ export default function LeadsPage() {
                                                   )
                                                 : "-"}
                                         </TableCell>
-                                        <TableCell>
+                                        <TableCell
+                                            onClick={(e) => e.stopPropagation()}
+                                        >
                                             <DropdownMenu
                                                 dir={isRTL ? "rtl" : "ltr"}
                                             >

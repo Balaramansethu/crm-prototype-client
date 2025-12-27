@@ -1,6 +1,11 @@
 /**
  * Lead form validation utilities.
- * Aligned with backend Mongoose schemas.
+ * 
+ * Required fields (Company Details only):
+ * - Company name (2-100 chars)
+ * - Company phone number (8-15 digits)
+ * 
+ * Contact Persons section has NO required fields.
  */
 import {
     FIELD_LIMITS,
@@ -8,16 +13,17 @@ import {
     validateEmail,
     validatePhoneNumber,
     validatePhoneExtension,
-    validateUrl,
     validateStatus,
 } from "@/constants/validationSchema"
 
 /**
  * Validates company details from the form
+ * Required: Company name, Company phone
  */
 export function validateCompanyDetails(company, setError, t) {
     let hasErrors = false
 
+    // Company name is REQUIRED
     if (!validateLength(company.name, FIELD_LIMITS.COMPANY_NAME)) {
         setError("companyDetails.name", {
             type: "manual",
@@ -28,6 +34,22 @@ export function validateCompanyDetails(company, setError, t) {
         hasErrors = true
     }
 
+    // Company phone is REQUIRED
+    if (!company.phoneNumber?.trim()) {
+        setError("companyDetails.phoneNumber", {
+            type: "manual",
+            message: t("phoneRequired"),
+        })
+        hasErrors = true
+    } else if (!validatePhoneNumber(company.phoneNumber)) {
+        setError("companyDetails.phoneNumber", {
+            type: "manual",
+            message: t("phoneTooShort"),
+        })
+        hasErrors = true
+    }
+
+    // Optional fields - only validate format if provided
     if (company.email?.trim() && !validateEmail(company.email)) {
         setError("companyDetails.email", {
             type: "manual",
@@ -36,15 +58,7 @@ export function validateCompanyDetails(company, setError, t) {
         hasErrors = true
     }
 
-    if (!validatePhoneNumber(company.phoneNumber)) {
-        setError("companyDetails.phoneNumber", {
-            type: "manual",
-            message: t("phoneTooShort"),
-        })
-        hasErrors = true
-    }
-
-    if (!validatePhoneExtension(company.phoneExtension)) {
+    if (company.phoneExtension?.trim() && !validatePhoneExtension(company.phoneExtension)) {
         setError("companyDetails.phoneExtension", {
             type: "manual",
             message: t("invalidFormat"),
@@ -52,31 +66,19 @@ export function validateCompanyDetails(company, setError, t) {
         hasErrors = true
     }
 
-    if (!validateUrl(company.website)) {
-        setError("companyDetails.website", {
-            type: "manual",
-            message: t("invalidFormat"),
-        })
-        hasErrors = true
-    }
-
-    if (!validateUrl(company.socialProfile)) {
-        setError("companyDetails.socialProfile", {
-            type: "manual",
-            message: t("invalidFormat"),
-        })
-        hasErrors = true
-    }
+    // Website and socialProfile - no validation, accept any value
 
     return !hasErrors
 }
 
 /**
  * Validates a single contact from the form
+ * NO required fields - all optional, only validate format if provided
  */
 export function validateContact(contact, index, setError, t) {
     let hasErrors = false
 
+    // Skip validation if contact has no data
     const hasAnyData =
         contact.name?.trim() ||
         contact.email?.trim() ||
@@ -84,27 +86,24 @@ export function validateContact(contact, index, setError, t) {
 
     if (!hasAnyData) return true
 
-    if (!validateLength(contact.name, FIELD_LIMITS.CONTACT_NAME)) {
+    // All fields are optional - validate format only if provided
+    if (contact.name?.trim() && !validateLength(contact.name, FIELD_LIMITS.CONTACT_NAME)) {
         setError(`contacts.${index}.name`, {
             type: "manual",
-            message: contact.name?.trim()
-                ? t("invalidFormat")
-                : t("contactRequired"),
+            message: t("invalidFormat"),
         })
         hasErrors = true
     }
 
-    if (!validateEmail(contact.email)) {
+    if (contact.email?.trim() && !validateEmail(contact.email)) {
         setError(`contacts.${index}.email`, {
             type: "manual",
-            message: contact.email?.trim()
-                ? t("emailInvalid")
-                : t("emailRequired"),
+            message: t("emailInvalid"),
         })
         hasErrors = true
     }
 
-    if (!validatePhoneNumber(contact.phoneNumber)) {
+    if (contact.phoneNumber?.trim() && !validatePhoneNumber(contact.phoneNumber)) {
         setError(`contacts.${index}.phoneNumber`, {
             type: "manual",
             message: t("phoneTooShort"),
@@ -112,7 +111,7 @@ export function validateContact(contact, index, setError, t) {
         hasErrors = true
     }
 
-    if (!validatePhoneExtension(contact.phoneExtension)) {
+    if (contact.phoneExtension?.trim() && !validatePhoneExtension(contact.phoneExtension)) {
         setError(`contacts.${index}.phoneExtension`, {
             type: "manual",
             message: t("invalidFormat"),

@@ -203,5 +203,20 @@
     "optional": "اختياري",
     "enterValue": "أدخل قيمة",
     "invalidFormat": "تنسيق غير صالح",
-    "fieldRequired": "هذا الحقل مطلوب"
+    "fieldRequired": "هذا الحقل مطلوب",
+    "contactInformation": "معلومات جهة الاتصال",
+    "companyInformation": "معلومات الشركة",
+    "leadDetails": "تفاصيل العميل المحتمل",
+    "metaInformation": "معلومات إضافية",
+    "unsavedChangesWarning": "لديك تغييرات غير محفوظة. هل أنت متأكد أنك تريد المغادرة؟",
+    "noChangesToSave": "لا توجد تغييرات للحفظ",
+    "unsavedChanges": "تغييرات غير محفوظة",
+    "leave": "مغادرة",
+    "stayOnPage": "البقاء في الصفحة",
+    "notInterested": "غير مهتم",
+    "callOutcome": "نتيجة المكالمة",
+    "onlinePresence": "التواجد الإلكتروني",
+    "additionalInfo": "معلومات إضافية",
+    "contactAndLead": "جهة الاتصال والعميل",
+    "companyAndInfo": "الشركة والمعلومات"
 }

@@ -1,7 +1,10 @@
 /**
  * Lead data transformation utilities.
  * Transforms between form data and API payload formats.
- * Aligned with backend schema structure.
+ * 
+ * API Structure:
+ * - company: { name, phone, website, socialProfile }
+ * - contacts: [{ name, phone, email, status, source, followUp }]
  */
 import { format } from "date-fns"
 
@@ -14,6 +17,16 @@ const buildPhone = (extension, number) => {
         extension: extension?.trim() || "",
         number: number.trim(),
     }
+}
+
+/**
+ * Formats date to ISO string
+ */
+const formatDate = (date) => {
+    if (!date) return undefined
+    const dateObj = date instanceof Date ? date : new Date(date)
+    if (isNaN(dateObj.getTime())) return undefined
+    return format(dateObj, "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
 }
 
 /**
@@ -46,6 +59,7 @@ const cleanObject = (obj) => {
 
 /**
  * Transforms form data to API payload for creating a lead
+ * Each contact has its own status, source, and followUp
  */
 export const transformLeadPayload = (formData, ownerId) => {
     const { companyDetails, contacts } = formData
@@ -62,33 +76,23 @@ export const transformLeadPayload = (formData, ownerId) => {
             ),
         },
         contacts: [],
-        status: "new",
         owner: ownerId,
     }
 
     if (contacts?.length > 0) {
-        contacts.forEach((contact, index) => {
+        contacts.forEach((contact) => {
             if (!contact.name?.trim()) return
 
             const contactData = {
                 name: contact.name.trim(),
                 email: contact.email?.trim() || undefined,
                 phone: buildPhone(contact.phoneExtension, contact.phoneNumber),
+                status: contact.status || "new",
+                source: contact.source?.trim() || undefined,
+                followUp: formatDate(contact.followUp),
             }
 
             payload.contacts.push(contactData)
-
-            if (index === 0) {
-                if (contact.status) payload.status = contact.status
-                if (contact.source?.trim())
-                    payload.source = contact.source.trim()
-                if (contact.followUp) {
-                    payload.followUp = format(
-                        contact.followUp,
-                        "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
-                    )
-                }
-            }
         })
     }
 
@@ -96,7 +100,8 @@ export const transformLeadPayload = (formData, ownerId) => {
 }
 
 /**
- * Transforms form data for updating a lead
+ * Transforms form data for updating a lead.
+ * Sends all changed form data to the backend.
  */
 export const transformLeadUpdatePayload = (formData) => {
     const { companyDetails, contacts } = formData
@@ -104,32 +109,23 @@ export const transformLeadUpdatePayload = (formData) => {
 
     const payload = {
         company: {
-            name: companyDetails.name.trim(),
-            email: companyDetails.email?.trim() || undefined,
-            website: companyDetails.website?.trim() || undefined,
-            socialProfile: companyDetails.socialProfile?.trim() || undefined,
+            name: companyDetails?.name?.trim() || undefined,
+            email: companyDetails?.email?.trim() || undefined,
+            website: companyDetails?.website?.trim() || undefined,
+            socialProfile: companyDetails?.socialProfile?.trim() || undefined,
             phone: buildPhone(
-                companyDetails.phoneExtension,
-                companyDetails.phoneNumber,
+                companyDetails?.phoneExtension,
+                companyDetails?.phoneNumber,
             ),
         },
-        status: contact?.status || "new",
-    }
-
-    if (contact?.name?.trim()) {
-        payload.contact = {
-            name: contact.name.trim(),
+        contact: contact ? {
+            name: contact.name?.trim() || undefined,
             email: contact.email?.trim() || undefined,
             phone: buildPhone(contact.phoneExtension, contact.phoneNumber),
-        }
-
-        if (contact.source?.trim()) payload.source = contact.source.trim()
-        if (contact.followUp) {
-            payload.followUp = format(
-                contact.followUp,
-                "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
-            )
-        }
+        } : undefined,
+        status: contact?.status || "new",
+        source: contact?.source?.trim() || undefined,
+        followUp: formatDate(contact?.followUp),
     }
 
     return cleanObject(payload)
