@@ -16,6 +16,11 @@ import LeadDetailPage from "@/pages/LeadsPage/LeadDetailPage"
 import CallLogsPage from "@/pages/CallLogsPage/CallLogsPage"
 import CreateCallLogPage from "@/pages/CallLogsPage/CreateCallLogPage"
 import EditCallLogPage from "@/pages/CallLogsPage/EditCallLogPage"
+import {
+    PipelinePage,
+    CreateOpportunityPage,
+    EditOpportunityPage,
+} from "@/pages/PipelinePage"
 import NotFoundPage from "@/pages/NotFoundPage/NotFoundPage"
 import Unauthorized from "@/components/unauthorized"
 
@@ -63,6 +68,20 @@ export default function AppRoutes() {
                         <Route index element={<CallLogsPage />} />
                         <Route path="new" element={<CreateCallLogPage />} />
                         <Route path="edit/:id" element={<EditCallLogPage />} />
+                    </Route>
+
+                    {/* PIPELINE */}
+                    <Route
+                        path="/pipeline"
+                        element={
+                            <ProtectedRoute
+                                roles={["employee", "admin", "super_admin"]}
+                            />
+                        }
+                    >
+                        <Route index element={<PipelinePage />} />
+                        <Route path="new" element={<CreateOpportunityPage />} />
+                        <Route path="edit/:id" element={<EditOpportunityPage />} />
                     </Route>
                     {/* EMPLOYEE */}
                     <Route

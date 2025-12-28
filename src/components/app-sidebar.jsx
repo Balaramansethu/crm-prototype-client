@@ -10,6 +10,7 @@ import {
     IconFolder,
     IconHelp,
     IconInnerShadowTop,
+    IconLayoutKanban,
     IconListDetails,
     IconPhone,
     IconReport,
@@ -100,6 +101,16 @@ export function AppSidebar({ ...props }) {
                         >
                             <IconPhone className="h-4 w-4" />
                             <span>{t("callLogs")}</span>
+                        </SidebarMenuButton>
+                    </SidebarMenuItem>
+                    <SidebarMenuItem>
+                        <SidebarMenuButton
+                            isActive={location.pathname.startsWith("/pipeline")}
+                            onClick={() => navigate("/pipeline")}
+                            className="flex items-center gap-2"
+                        >
+                            <IconLayoutKanban className="h-4 w-4" />
+                            <span>{t("pipeline")}</span>
                         </SidebarMenuButton>
                     </SidebarMenuItem>
                     <SidebarMenuItem>
