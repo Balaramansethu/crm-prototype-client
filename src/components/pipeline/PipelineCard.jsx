@@ -18,15 +18,21 @@ export default function PipelineCard({ pipeline, onEdit, onDelete }) {
     const navigate = useNavigate()
     const isRTL = i18n.dir() === "rtl"
 
-    const [{ isDragging }, drag] = useDrag(() => ({
-        type: ITEM_TYPE,
-        item: { id: pipeline._id, currentStage: pipeline.opportunityStage },
-        collect: (monitor) => ({
-            isDragging: monitor.isDragging(),
+    const [{ isDragging }, drag] = useDrag(
+        () => ({
+            type: ITEM_TYPE,
+            item: { id: pipeline._id, currentStage: pipeline.opportunityStage },
+            collect: (monitor) => ({
+                isDragging: monitor.isDragging(),
+            }),
         }),
-    }), [pipeline._id, pipeline.opportunityStage])
+        [pipeline._id, pipeline.opportunityStage],
+    )
 
-    const leadName = pipeline.lead?.contact?.name || pipeline.lead?.company?.name || t("unknownLead")
+    const leadName =
+        pipeline.lead?.contact?.name ||
+        pipeline.lead?.company?.name ||
+        t("unknownLead")
     const companyName = pipeline.lead?.company?.name
 
     const formatCurrency = (value) => {
@@ -37,7 +43,8 @@ export default function PipelineCard({ pipeline, onEdit, onDelete }) {
         return `${value} SAR`
     }
 
-    const expectedRevenue = pipeline.expectedRevnue || pipeline.expectedRevenue || 0
+    const expectedRevenue =
+        pipeline.expectedRevnue || pipeline.expectedRevenue || 0
 
     return (
         <div
@@ -64,12 +71,23 @@ export default function PipelineCard({ pipeline, onEdit, onDelete }) {
                             <MoreHorizontal className="h-4 w-4" />
                         </Button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent align={isRTL ? "start" : "end"} className="w-36">
-                        <DropdownMenuItem onClick={() => navigate(`/pipeline/${pipeline._id}`)} className="text-xs">
+                    <DropdownMenuContent
+                        align={isRTL ? "start" : "end"}
+                        className="w-36"
+                    >
+                        <DropdownMenuItem
+                            onClick={() =>
+                                navigate(`/pipeline/${pipeline._id}`)
+                            }
+                            className="text-xs"
+                        >
                             <Eye className="mr-2 h-3 w-3" />
                             {t("detailedView")}
                         </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => onEdit(pipeline)} className="text-xs">
+                        <DropdownMenuItem
+                            onClick={() => onEdit(pipeline)}
+                            className="text-xs"
+                        >
                             <Edit className="mr-2 h-3 w-3" />
                             {t("edit")}
                         </DropdownMenuItem>
@@ -86,9 +104,7 @@ export default function PipelineCard({ pipeline, onEdit, onDelete }) {
 
             {/* Company Name */}
             {companyName && companyName !== leadName && (
-                <p className="text-xs text-blue-600 mb-3">
-                    {companyName}
-                </p>
+                <p className="text-xs text-blue-600 mb-3">{companyName}</p>
             )}
 
             {/* Value Rows - Properly aligned */}
@@ -124,7 +140,9 @@ export default function PipelineCard({ pipeline, onEdit, onDelete }) {
                         {/* Owner initials avatar */}
                         <div className="h-6 w-6 rounded-full bg-slate-100 flex items-center justify-center shrink-0">
                             <span className="text-[10px] font-semibold text-slate-600">
-                                {(pipeline.lead?.contact?.name || "U").charAt(0).toUpperCase()}
+                                {(pipeline.lead?.contact?.name || "U")
+                                    .charAt(0)
+                                    .toUpperCase()}
                             </span>
                         </div>
                     </div>

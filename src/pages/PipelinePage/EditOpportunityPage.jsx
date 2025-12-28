@@ -57,10 +57,10 @@ export default function EditOpportunityPage() {
             }
 
             await updatePipeline(id, payload)
-            
+
             // Invalidate pipelines cache so the list refreshes
             await queryClient.invalidateQueries({ queryKey: ["pipelines"] })
-            
+
             toast.success(t("opportunityUpdatedSuccess"))
             navigate("/pipeline")
         } catch (error) {
@@ -83,7 +83,10 @@ export default function EditOpportunityPage() {
 
     return (
         <div className="@container/main flex flex-1 flex-col gap-2">
-            <PageHeader breadcrumbs={breadcrumbs} title={t("editOpportunity")} />
+            <PageHeader
+                breadcrumbs={breadcrumbs}
+                title={t("editOpportunity")}
+            />
 
             <div className="-mt-8 px-4 lg:px-6">
                 <OpportunityForm

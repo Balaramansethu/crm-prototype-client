@@ -156,15 +156,21 @@ export default function CallLogsPage() {
                                             <div>
                                                 {/* Company Name */}
                                                 <h3 className="font-bold text-base text-card-foreground">
-                                                    {typeof log.lead?.company === 'object' 
-                                                        ? log.lead?.company?.name 
-                                                        : log.lead?.company || t("unknownCompany")}
+                                                    {typeof log.lead
+                                                        ?.company === "object"
+                                                        ? log.lead?.company
+                                                              ?.name
+                                                        : log.lead?.company ||
+                                                          t("unknownCompany")}
                                                 </h3>
                                                 {/* Contact Person */}
                                                 <div className="text-muted-foreground text-sm">
-                                                    {typeof log.lead?.contact === 'object'
-                                                        ? log.lead?.contact?.name
-                                                        : log.lead?.contact || t("unknownContact")}
+                                                    {typeof log.lead
+                                                        ?.contact === "object"
+                                                        ? log.lead?.contact
+                                                              ?.name
+                                                        : log.lead?.contact ||
+                                                          t("unknownContact")}
                                                 </div>
                                             </div>
 
@@ -241,8 +247,10 @@ export default function CallLogsPage() {
                                             <div className="flex items-center gap-1.5">
                                                 <Phone className="h-3.5 w-3.5" />
                                                 <span dir="ltr">
-                                                    {log.lead?.contact?.phone?.number ||
-                                                        log.lead?.company?.phone?.number ||
+                                                    {log.lead?.contact?.phone
+                                                        ?.number ||
+                                                        log.lead?.company?.phone
+                                                            ?.number ||
                                                         t("noNumber")}
                                                 </span>
                                             </div>

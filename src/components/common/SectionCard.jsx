@@ -5,7 +5,9 @@ export default function SectionCard({ title, children, className }) {
     return (
         <Card className={cn(className)}>
             <CardHeader className="pb-3">
-                <CardTitle className="text-base font-semibold">{title}</CardTitle>
+                <CardTitle className="text-base font-semibold">
+                    {title}
+                </CardTitle>
             </CardHeader>
             <CardContent className="space-y-0">{children}</CardContent>
         </Card>

@@ -87,7 +87,8 @@ export default function CallLogForm({
         }
 
         window.addEventListener("beforeunload", handleBeforeUnload)
-        return () => window.removeEventListener("beforeunload", handleBeforeUnload)
+        return () =>
+            window.removeEventListener("beforeunload", handleBeforeUnload)
     }, [isDirty, isSubmitting])
 
     // Format phone from either contact or company
@@ -261,15 +262,20 @@ export default function CallLogForm({
                                             <SelectTrigger
                                                 className={cn(
                                                     isRTL ? "text-right" : "",
-                                                    isEditMode && "bg-muted !cursor-not-allowed"
+                                                    isEditMode &&
+                                                        "bg-muted !cursor-not-allowed",
                                                 )}
                                             >
                                                 <SelectValue
-                                                    placeholder={t("selectLead")}
+                                                    placeholder={t(
+                                                        "selectLead",
+                                                    )}
                                                 />
                                             </SelectTrigger>
                                         </FormControl>
-                                        <SelectContent dir={isRTL ? "rtl" : "ltr"}>
+                                        <SelectContent
+                                            dir={isRTL ? "rtl" : "ltr"}
+                                        >
                                             <SelectItem
                                                 value="CREATE_NEW_LEAD"
                                                 className="text-primary font-medium focus:bg-primary/10 cursor-pointer"
@@ -284,7 +290,13 @@ export default function CallLogForm({
                                                     key={lead._id || lead.id}
                                                     value={lead._id || lead.id}
                                                 >
-                                                    {lead.contact?.name || lead.company?.name || lead.company} ({lead.company?.name || lead.company})
+                                                    {lead.contact?.name ||
+                                                        lead.company?.name ||
+                                                        lead.company}{" "}
+                                                    (
+                                                    {lead.company?.name ||
+                                                        lead.company}
+                                                    )
                                                 </SelectItem>
                                             ))}
                                         </SelectContent>

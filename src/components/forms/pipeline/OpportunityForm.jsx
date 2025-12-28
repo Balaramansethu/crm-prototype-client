@@ -63,7 +63,10 @@ export default function OpportunityForm({
             opportunityStage: initialData?.opportunityStage || "lead",
             estimatedValue: initialData?.estimatedValue || "",
             probability: initialData?.probability || "",
-            expectedRevenue: initialData?.expectedRevnue || initialData?.expectedRevenue || "",
+            expectedRevenue:
+                initialData?.expectedRevnue ||
+                initialData?.expectedRevenue ||
+                "",
             nextStep: initialData?.nextStep || "",
             followUp: initialData?.followUp
                 ? new Date(initialData.followUp)
@@ -87,7 +90,8 @@ export default function OpportunityForm({
 
     useEffect(() => {
         if (estimatedValue && probability) {
-            const expected = (Number(estimatedValue) * Number(probability)) / 100
+            const expected =
+                (Number(estimatedValue) * Number(probability)) / 100
             form.setValue("expectedRevenue", Math.round(expected))
         }
     }, [estimatedValue, probability, form])
@@ -101,7 +105,8 @@ export default function OpportunityForm({
         }
 
         window.addEventListener("beforeunload", handleBeforeUnload)
-        return () => window.removeEventListener("beforeunload", handleBeforeUnload)
+        return () =>
+            window.removeEventListener("beforeunload", handleBeforeUnload)
     }, [isDirty, isSubmitting])
 
     const getLeadName = (lead) => {
@@ -174,7 +179,10 @@ export default function OpportunityForm({
                 opportunityStage: initialData.opportunityStage || "lead",
                 estimatedValue: initialData.estimatedValue || "",
                 probability: initialData.probability || "",
-                expectedRevenue: initialData.expectedRevnue || initialData.expectedRevenue || "",
+                expectedRevenue:
+                    initialData.expectedRevnue ||
+                    initialData.expectedRevenue ||
+                    "",
                 nextStep: initialData.nextStep || "",
                 followUp: initialData.followUp
                     ? new Date(initialData.followUp)
@@ -249,14 +257,20 @@ export default function OpportunityForm({
                                     >
                                         <FormControl>
                                             <SelectTrigger
-                                                className={isRTL ? "text-right" : ""}
+                                                className={
+                                                    isRTL ? "text-right" : ""
+                                                }
                                             >
                                                 <SelectValue
-                                                    placeholder={t("selectLead")}
+                                                    placeholder={t(
+                                                        "selectLead",
+                                                    )}
                                                 />
                                             </SelectTrigger>
                                         </FormControl>
-                                        <SelectContent dir={isRTL ? "rtl" : "ltr"}>
+                                        <SelectContent
+                                            dir={isRTL ? "rtl" : "ltr"}
+                                        >
                                             <SelectItem
                                                 value="CREATE_NEW_LEAD"
                                                 className="text-primary font-medium focus:bg-primary/10 cursor-pointer"
@@ -271,7 +285,9 @@ export default function OpportunityForm({
                                                     key={lead._id || lead.id}
                                                     value={lead._id || lead.id}
                                                 >
-                                                    {lead.contact?.name || lead.company?.name} ({lead.company?.name})
+                                                    {lead.contact?.name ||
+                                                        lead.company?.name}{" "}
+                                                    ({lead.company?.name})
                                                 </SelectItem>
                                             ))}
                                         </SelectContent>
@@ -314,19 +330,34 @@ export default function OpportunityForm({
                             name="opportunityStage"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>{t("opportunityStage")}</FormLabel>
+                                    <FormLabel>
+                                        {t("opportunityStage")}
+                                    </FormLabel>
                                     <Select
                                         onValueChange={field.onChange}
                                         value={field.value}
                                     >
                                         <FormControl>
-                                            <SelectTrigger className={isRTL ? "text-right" : ""}>
-                                                <SelectValue placeholder={t("selectStage")} />
+                                            <SelectTrigger
+                                                className={
+                                                    isRTL ? "text-right" : ""
+                                                }
+                                            >
+                                                <SelectValue
+                                                    placeholder={t(
+                                                        "selectStage",
+                                                    )}
+                                                />
                                             </SelectTrigger>
                                         </FormControl>
-                                        <SelectContent dir={isRTL ? "rtl" : "ltr"}>
+                                        <SelectContent
+                                            dir={isRTL ? "rtl" : "ltr"}
+                                        >
                                             {PIPELINE_STAGES.map((stage) => (
-                                                <SelectItem key={stage.id} value={stage.id}>
+                                                <SelectItem
+                                                    key={stage.id}
+                                                    value={stage.id}
+                                                >
                                                     {t(stage.id) || stage.label}
                                                 </SelectItem>
                                             ))}
@@ -343,7 +374,9 @@ export default function OpportunityForm({
                                 name="estimatedValue"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>{t("estimatedValue")}</FormLabel>
+                                        <FormLabel>
+                                            {t("estimatedValue")}
+                                        </FormLabel>
                                         <FormControl>
                                             <Input
                                                 {...field}
@@ -363,7 +396,9 @@ export default function OpportunityForm({
                                 name="probability"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>{t("probability")} (%)</FormLabel>
+                                        <FormLabel>
+                                            {t("probability")} (%)
+                                        </FormLabel>
                                         <FormControl>
                                             <Input
                                                 {...field}
@@ -384,7 +419,9 @@ export default function OpportunityForm({
                                 name="expectedRevenue"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>{t("expectedRevenue")}</FormLabel>
+                                        <FormLabel>
+                                            {t("expectedRevenue")}
+                                        </FormLabel>
                                         <FormControl>
                                             <Input
                                                 {...field}
@@ -410,8 +447,12 @@ export default function OpportunityForm({
                                     <FormControl>
                                         <Input
                                             {...field}
-                                            placeholder={t("nextStepPlaceholder")}
-                                            className={isRTL ? "text-right" : ""}
+                                            placeholder={t(
+                                                "nextStepPlaceholder",
+                                            )}
+                                            className={
+                                                isRTL ? "text-right" : ""
+                                            }
                                         />
                                     </FormControl>
                                     <FormMessage />
@@ -468,7 +509,9 @@ export default function OpportunityForm({
                                 {loading && (
                                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                                 )}
-                                {isEditMode ? t("saveChanges") : t("saveOpportunity")}
+                                {isEditMode
+                                    ? t("saveChanges")
+                                    : t("saveOpportunity")}
                             </Button>
                         </div>
                     </form>

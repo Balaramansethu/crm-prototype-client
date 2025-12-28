@@ -93,7 +93,10 @@ export default function LeadDetailPage() {
                         size="sm"
                         onClick={() => navigate("/leads")}
                     >
-                        <ArrowLeft className={isRTL ? "ml-2 rotate-180" : "mr-2"} size={16} />
+                        <ArrowLeft
+                            className={isRTL ? "ml-2 rotate-180" : "mr-2"}
+                            size={16}
+                        />
                         {t("back")}
                     </Button>
                     <Button
@@ -140,7 +143,10 @@ export default function LeadDetailPage() {
                     <Separator />
                     <FieldRow label={t("email")} value={lead.contact?.email} />
                     <Separator />
-                    <FieldRow label={t("phone")} value={formatPhone(lead.contact?.phone)} />
+                    <FieldRow
+                        label={t("phone")}
+                        value={formatPhone(lead.contact?.phone)}
+                    />
 
                     {/* Divider between sections */}
                     <div className="my-4 border-t border-dashed" />
@@ -155,7 +161,10 @@ export default function LeadDetailPage() {
                     <Separator />
                     <FieldRow label={t("source")} value={lead.source} />
                     <Separator />
-                    <FieldRow label={t("followUp")} value={formatDate(lead.followUp)} />
+                    <FieldRow
+                        label={t("followUp")}
+                        value={formatDate(lead.followUp)}
+                    />
                 </SectionCard>
 
                 {/* Right Card - Company + Additional Info */}
@@ -168,7 +177,10 @@ export default function LeadDetailPage() {
                     <Separator />
                     <FieldRow label={t("email")} value={lead.company?.email} />
                     <Separator />
-                    <FieldRow label={t("phone")} value={formatPhone(lead.company?.phone)} />
+                    <FieldRow
+                        label={t("phone")}
+                        value={formatPhone(lead.company?.phone)}
+                    />
 
                     {/* Divider between sections */}
                     <div className="my-4 border-t border-dashed" />
@@ -177,9 +189,15 @@ export default function LeadDetailPage() {
                     <div className="text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-2">
                         {t("additionalInfo")}
                     </div>
-                    <FieldRow label={t("website")} value={lead.company?.website} />
+                    <FieldRow
+                        label={t("website")}
+                        value={lead.company?.website}
+                    />
                     <Separator />
-                    <FieldRow label={t("socialProfile")} value={lead.company?.socialProfile} />
+                    <FieldRow
+                        label={t("socialProfile")}
+                        value={lead.company?.socialProfile}
+                    />
                 </SectionCard>
             </div>
         </div>

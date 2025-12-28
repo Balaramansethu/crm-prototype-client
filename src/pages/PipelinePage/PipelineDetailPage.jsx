@@ -90,7 +90,8 @@ export default function PipelineDetailPage() {
         return null
     }
 
-    const expectedRevenue = pipeline.expectedRevnue || pipeline.expectedRevenue || 0
+    const expectedRevenue =
+        pipeline.expectedRevnue || pipeline.expectedRevenue || 0
 
     return (
         <div className="flex flex-1 flex-col gap-6 p-6">
@@ -98,12 +99,16 @@ export default function PipelineDetailPage() {
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
                     <h1 className="text-2xl font-semibold">
-                        {lead.contact?.name || lead.company?.name || t("opportunityDetails")}
+                        {lead.contact?.name ||
+                            lead.company?.name ||
+                            t("opportunityDetails")}
                     </h1>
-                    <span className={cn(
-                        "px-2.5 py-1 rounded-full text-xs font-medium",
-                        getStageBadgeStyles(pipeline.opportunityStage)
-                    )}>
+                    <span
+                        className={cn(
+                            "px-2.5 py-1 rounded-full text-xs font-medium",
+                            getStageBadgeStyles(pipeline.opportunityStage),
+                        )}
+                    >
                         {getStageLabel(pipeline.opportunityStage)}
                     </span>
                 </div>
@@ -113,7 +118,10 @@ export default function PipelineDetailPage() {
                         size="sm"
                         onClick={() => navigate("/pipeline")}
                     >
-                        <ArrowLeft className={isRTL ? "ml-2 rotate-180" : "mr-2"} size={16} />
+                        <ArrowLeft
+                            className={isRTL ? "ml-2 rotate-180" : "mr-2"}
+                            size={16}
+                        />
                         {t("back")}
                     </Button>
                     <Button
@@ -131,23 +139,37 @@ export default function PipelineDetailPage() {
                 {/* Opportunity Details Card */}
                 <SectionCard title={t("opportunityDetails")}>
                     <FieldRow label={t("opportunityStage")}>
-                        <span className={cn(
-                            "px-2.5 py-1 rounded-full text-xs font-medium",
-                            getStageBadgeStyles(pipeline.opportunityStage)
-                        )}>
+                        <span
+                            className={cn(
+                                "px-2.5 py-1 rounded-full text-xs font-medium",
+                                getStageBadgeStyles(pipeline.opportunityStage),
+                            )}
+                        >
                             {getStageLabel(pipeline.opportunityStage)}
                         </span>
                     </FieldRow>
                     <Separator />
-                    <FieldRow label={t("estimatedValue")} value={formatCurrency(pipeline.estimatedValue)} />
+                    <FieldRow
+                        label={t("estimatedValue")}
+                        value={formatCurrency(pipeline.estimatedValue)}
+                    />
                     <Separator />
-                    <FieldRow label={t("probability")} value={`${pipeline.probability || 0}%`} />
+                    <FieldRow
+                        label={t("probability")}
+                        value={`${pipeline.probability || 0}%`}
+                    />
                     <Separator />
-                    <FieldRow label={t("expectedRevenue")} value={formatCurrency(expectedRevenue)} />
+                    <FieldRow
+                        label={t("expectedRevenue")}
+                        value={formatCurrency(expectedRevenue)}
+                    />
                     {pipeline.nextStep && (
                         <>
                             <Separator />
-                            <FieldRow label={t("nextStep")} value={pipeline.nextStep} />
+                            <FieldRow
+                                label={t("nextStep")}
+                                value={pipeline.nextStep}
+                            />
                         </>
                     )}
                 </SectionCard>
@@ -162,11 +184,17 @@ export default function PipelineDetailPage() {
                     <Separator />
                     <FieldRow label={t("email")} value={lead.contact?.email} />
                     <Separator />
-                    <FieldRow label={t("phone")} value={formatPhone(lead.contact?.phone)} />
+                    <FieldRow
+                        label={t("phone")}
+                        value={formatPhone(lead.contact?.phone)}
+                    />
                     {lead.contact?.designation && (
                         <>
                             <Separator />
-                            <FieldRow label={t("designation")} value={lead.contact?.designation} />
+                            <FieldRow
+                                label={t("designation")}
+                                value={lead.contact?.designation}
+                            />
                         </>
                     )}
 
@@ -183,7 +211,10 @@ export default function PipelineDetailPage() {
                     <Separator />
                     <FieldRow label={t("source")} value={lead.source} />
                     <Separator />
-                    <FieldRow label={t("followUp")} value={formatDate(lead.followUp)} />
+                    <FieldRow
+                        label={t("followUp")}
+                        value={formatDate(lead.followUp)}
+                    />
                 </SectionCard>
 
                 {/* Company + Additional Info Card */}
@@ -196,7 +227,10 @@ export default function PipelineDetailPage() {
                     <Separator />
                     <FieldRow label={t("email")} value={lead.company?.email} />
                     <Separator />
-                    <FieldRow label={t("phone")} value={formatPhone(lead.company?.phone)} />
+                    <FieldRow
+                        label={t("phone")}
+                        value={formatPhone(lead.company?.phone)}
+                    />
 
                     {/* Divider between sections */}
                     <div className="my-4 border-t border-dashed" />
@@ -205,9 +239,15 @@ export default function PipelineDetailPage() {
                     <div className="text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-2">
                         {t("additionalInfo")}
                     </div>
-                    <FieldRow label={t("website")} value={lead.company?.website} />
+                    <FieldRow
+                        label={t("website")}
+                        value={lead.company?.website}
+                    />
                     <Separator />
-                    <FieldRow label={t("socialProfile")} value={lead.company?.socialProfile} />
+                    <FieldRow
+                        label={t("socialProfile")}
+                        value={lead.company?.socialProfile}
+                    />
                 </SectionCard>
             </div>
         </div>

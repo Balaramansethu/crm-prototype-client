@@ -38,10 +38,10 @@ export default function CreateOpportunityPage() {
             }
 
             await createPipeline(payload)
-            
+
             // Invalidate pipelines cache so the list refreshes
             await queryClient.invalidateQueries({ queryKey: ["pipelines"] })
-            
+
             toast.success(t("opportunityCreatedSuccess"))
             navigate("/pipeline")
         } catch (error) {

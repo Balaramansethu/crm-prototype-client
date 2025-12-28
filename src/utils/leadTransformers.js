@@ -1,7 +1,7 @@
 /**
  * Lead data transformation utilities.
  * Transforms between form data and API payload formats.
- * 
+ *
  * API Structure:
  * - company: { name, phone, website, socialProfile }
  * - contacts: [{ name, phone, email, status, source, followUp }]
@@ -118,11 +118,16 @@ export const transformLeadUpdatePayload = (formData) => {
                 companyDetails?.phoneNumber,
             ),
         },
-        contact: contact ? {
-            name: contact.name?.trim() || undefined,
-            email: contact.email?.trim() || undefined,
-            phone: buildPhone(contact.phoneExtension, contact.phoneNumber),
-        } : undefined,
+        contact: contact
+            ? {
+                  name: contact.name?.trim() || undefined,
+                  email: contact.email?.trim() || undefined,
+                  phone: buildPhone(
+                      contact.phoneExtension,
+                      contact.phoneNumber,
+                  ),
+              }
+            : undefined,
         status: contact?.status || "new",
         source: contact?.source?.trim() || undefined,
         followUp: formatDate(contact?.followUp),

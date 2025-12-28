@@ -23,7 +23,7 @@ export default function PipelinePage() {
     const deleteMutation = useDeletePipeline()
 
     // Treat API error as empty data (backend may not exist yet)
-    const pipelines = isError ? [] : (data?.pipelines || data?.data || [])
+    const pipelines = isError ? [] : data?.pipelines || data?.data || []
 
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
     const [pipelineToDelete, setPipelineToDelete] = useState(null)
@@ -110,7 +110,9 @@ export default function PipelinePage() {
                 title={t("confirmDeleteOpportunity")}
                 description={t("deleteOpportunityWarning")}
                 variant="destructive"
-                confirmText={deleteMutation.isPending ? t("deleting") : t("delete")}
+                confirmText={
+                    deleteMutation.isPending ? t("deleting") : t("delete")
+                }
                 cancelText={t("cancel")}
                 onConfirm={confirmDelete}
                 isLoading={deleteMutation.isPending}

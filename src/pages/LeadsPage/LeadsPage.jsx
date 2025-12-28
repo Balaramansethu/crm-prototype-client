@@ -395,11 +395,15 @@ export default function LeadsPage() {
                                         }
                                         className="hover:bg-muted/30 text-black cursor-pointer"
                                         onClick={() =>
-                                            navigate(`/leads/${lead._id || lead.id}`)
+                                            navigate(
+                                                `/leads/${lead._id || lead.id}`,
+                                            )
                                         }
                                     >
                                         <TableCell className="font-bold text-black pl-4">
-                                            {lead.contact?.name || lead.company?.name || lead.company}
+                                            {lead.contact?.name ||
+                                                lead.company?.name ||
+                                                lead.company}
                                         </TableCell>
                                         <TableCell className="text-black">
                                             {lead.company?.name || lead.company}
@@ -408,14 +412,19 @@ export default function LeadsPage() {
                                             {lead.source}
                                         </TableCell>
                                         <TableCell className="hidden lg:table-cell text-black text-sm">
-                                            {lead.contact?.email || lead.company?.email || lead.email}
+                                            {lead.contact?.email ||
+                                                lead.company?.email ||
+                                                lead.email}
                                         </TableCell>
                                         <TableCell className="hidden xl:table-cell text-sm text-black font-mono">
                                             <span dir="ltr">
-                                                {(lead.contact?.phone?.extension || lead.company?.phone?.extension)
+                                                {lead.contact?.phone
+                                                    ?.extension ||
+                                                lead.company?.phone?.extension
                                                     ? `${lead.contact?.phone?.extension || lead.company?.phone?.extension} `
                                                     : ""}
-                                                {lead.contact?.phone?.number || lead.company?.phone?.number}
+                                                {lead.contact?.phone?.number ||
+                                                    lead.company?.phone?.number}
                                             </span>
                                         </TableCell>
                                         <TableCell>

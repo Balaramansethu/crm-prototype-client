@@ -92,7 +92,8 @@ export default function LeadForm({
         }
 
         window.addEventListener("beforeunload", handleBeforeUnload)
-        return () => window.removeEventListener("beforeunload", handleBeforeUnload)
+        return () =>
+            window.removeEventListener("beforeunload", handleBeforeUnload)
     }, [isDirty, isSubmitting])
 
     const handleSubmit = (data) => {
@@ -152,7 +153,9 @@ export default function LeadForm({
                                             control={form.control}
                                             index={index}
                                             onRemove={() => remove(index)}
-                                            showRemoveButton={!isEditMode && index > 0}
+                                            showRemoveButton={
+                                                !isEditMode && index > 0
+                                            }
                                         />
                                     ))}
                                 </div>

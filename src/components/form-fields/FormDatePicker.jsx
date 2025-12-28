@@ -40,7 +40,7 @@ export default function FormDatePicker({
     // Set minDate to today if not provided and past dates are not allowed
     const today = new Date()
     today.setHours(0, 0, 0, 0) // Reset time to start of day
-    const effectiveMinDate = allowPastDates ? minDate : (minDate || today)
+    const effectiveMinDate = allowPastDates ? minDate : minDate || today
 
     return (
         <FormField

@@ -57,14 +57,14 @@ export const useUpdatePipelineStage = () => {
         onMutate: async ({ id, opportunityStage }) => {
             // Cancel any outgoing refetches
             await queryClient.cancelQueries({ queryKey: ["pipelines"] })
-            
+
             // Snapshot the previous value
             const previousData = queryClient.getQueryData(["pipelines"])
 
             // Optimistically update the cache immediately
             queryClient.setQueryData(["pipelines"], (old) => {
                 if (!old) return old
-                
+
                 // Handle both possible response structures
                 const pipelinesArray = old.pipelines || old.data || []
                 const updatedPipelines = pipelinesArray.map((p) =>

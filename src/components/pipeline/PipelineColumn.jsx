@@ -30,9 +30,7 @@ export default function PipelineColumn({
         [stage.id, onDrop],
     )
 
-    const columnCards = pipelines.filter(
-        (p) => p.opportunityStage === stage.id,
-    )
+    const columnCards = pipelines.filter((p) => p.opportunityStage === stage.id)
 
     const isDropTarget = isOver && canDrop
 
@@ -51,7 +49,7 @@ export default function PipelineColumn({
             </div>
 
             {/* Cards Container - ONLY this scrolls vertically */}
-            <div 
+            <div
                 ref={drop}
                 className={cn(
                     "flex-1 overflow-y-auto p-2 space-y-2 transition-all duration-200",
@@ -59,16 +57,18 @@ export default function PipelineColumn({
                 )}
             >
                 {columnCards.length === 0 ? (
-                    <div 
+                    <div
                         className={cn(
                             "flex items-center justify-center h-14 rounded-lg border-2 border-dashed transition-colors",
-                            isDropTarget 
-                                ? "border-primary/40 bg-primary/5 text-primary" 
-                                : "border-slate-200 text-slate-400"
+                            isDropTarget
+                                ? "border-primary/40 bg-primary/5 text-primary"
+                                : "border-slate-200 text-slate-400",
                         )}
                     >
                         <span className="text-xs">
-                            {isDropTarget ? t("dropHere") || "Drop here" : t("noOpportunities")}
+                            {isDropTarget
+                                ? t("dropHere") || "Drop here"
+                                : t("noOpportunities")}
                         </span>
                     </div>
                 ) : (

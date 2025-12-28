@@ -1,10 +1,10 @@
 /**
  * Lead form validation utilities.
- * 
+ *
  * Required fields (Company Details only):
  * - Company name (2-100 chars)
  * - Company phone number (8-15 digits)
- * 
+ *
  * Contact Persons section has NO required fields.
  */
 import {
@@ -58,7 +58,10 @@ export function validateCompanyDetails(company, setError, t) {
         hasErrors = true
     }
 
-    if (company.phoneExtension?.trim() && !validatePhoneExtension(company.phoneExtension)) {
+    if (
+        company.phoneExtension?.trim() &&
+        !validatePhoneExtension(company.phoneExtension)
+    ) {
         setError("companyDetails.phoneExtension", {
             type: "manual",
             message: t("invalidFormat"),
@@ -87,7 +90,10 @@ export function validateContact(contact, index, setError, t) {
     if (!hasAnyData) return true
 
     // All fields are optional - validate format only if provided
-    if (contact.name?.trim() && !validateLength(contact.name, FIELD_LIMITS.CONTACT_NAME)) {
+    if (
+        contact.name?.trim() &&
+        !validateLength(contact.name, FIELD_LIMITS.CONTACT_NAME)
+    ) {
         setError(`contacts.${index}.name`, {
             type: "manual",
             message: t("invalidFormat"),
@@ -103,7 +109,10 @@ export function validateContact(contact, index, setError, t) {
         hasErrors = true
     }
 
-    if (contact.phoneNumber?.trim() && !validatePhoneNumber(contact.phoneNumber)) {
+    if (
+        contact.phoneNumber?.trim() &&
+        !validatePhoneNumber(contact.phoneNumber)
+    ) {
         setError(`contacts.${index}.phoneNumber`, {
             type: "manual",
             message: t("phoneTooShort"),
@@ -111,7 +120,10 @@ export function validateContact(contact, index, setError, t) {
         hasErrors = true
     }
 
-    if (contact.phoneExtension?.trim() && !validatePhoneExtension(contact.phoneExtension)) {
+    if (
+        contact.phoneExtension?.trim() &&
+        !validatePhoneExtension(contact.phoneExtension)
+    ) {
         setError(`contacts.${index}.phoneExtension`, {
             type: "manual",
             message: t("invalidFormat"),
