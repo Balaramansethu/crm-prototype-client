@@ -104,34 +104,34 @@ export default function CommonDialog({
                     {isCentered ? (
                         <div className="flex flex-col items-center text-center gap-2">
                             {showIcon && icon && (
-                                <div className="mb-2 flex h-16 w-16 items-center justify-center rounded-full bg-red-100">
+                                <div className="mb-1 sm:mb-2 flex h-12 w-12 sm:h-16 sm:w-16 items-center justify-center rounded-full bg-red-100">
                                     {icon}
                                 </div>
                             )}
                             <DialogTitle
-                                className={cn("text-xl font-bold", headerColor)}
+                                className={cn("text-lg sm:text-xl font-bold", headerColor)}
                             >
                                 {title}
                             </DialogTitle>
                             {description && (
-                                <DialogDescription className="text-center text-muted-foreground">
+                                <DialogDescription className="text-center text-muted-foreground text-sm">
                                     {description}
                                 </DialogDescription>
                             )}
                         </div>
                     ) : (
-                        <div className="flex items-center gap-4 text-start">
+                        <div className="flex items-center gap-3 sm:gap-4 text-start">
                             {showIcon && icon && (
                                 <div className="flex-shrink-0">{icon}</div>
                             )}
                             <div className="flex flex-col gap-1">
                                 <DialogTitle
-                                    className={cn("text-start", headerColor)}
+                                    className={cn("text-start text-base sm:text-lg", headerColor)}
                                 >
                                     {title}
                                 </DialogTitle>
                                 {description && (
-                                    <DialogDescription className="text-start">
+                                    <DialogDescription className="text-start text-sm">
                                         {description}
                                     </DialogDescription>
                                 )}
@@ -142,8 +142,8 @@ export default function CommonDialog({
 
                 <DialogFooter
                     className={cn(
-                        "mt-6",
-                        isCentered ? "grid grid-cols-2 gap-3 sm:space-x-0" : "",
+                        "mt-4 sm:mt-6",
+                        isCentered ? "grid grid-cols-2 gap-2 sm:gap-3 sm:space-x-0" : "gap-2",
                     )}
                 >
                     {!hideCancel && (
@@ -151,7 +151,7 @@ export default function CommonDialog({
                             variant="outline"
                             onClick={() => onOpenChange(false)}
                             disabled={isLoading}
-                            className="w-full"
+                            className="w-full touch-target"
                         >
                             {cancelText}
                         </Button>
@@ -160,7 +160,7 @@ export default function CommonDialog({
                         variant={buttonVariant}
                         onClick={onConfirm}
                         disabled={isLoading}
-                        className="w-full"
+                        className="w-full touch-target"
                     >
                         {isLoading ? (
                             <>

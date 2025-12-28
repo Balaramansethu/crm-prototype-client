@@ -83,11 +83,16 @@
     --ring: oklch(0.55 0.15 235);
 
     /* Nature-inspired chart colors */
-    --chart-1: oklch(0.55 0.15 235); /* Ocean blue */
-    --chart-2: oklch(0.65 0.14 210); /* Sky blue */
-    --chart-3: oklch(0.7 0.12 260); /* Twilight blue */
-    --chart-4: oklch(0.6 0.16 200); /* Aqua blue */
-    --chart-5: oklch(0.75 0.1 245); /* Soft periwinkle */
+    --chart-1: oklch(0.55 0.15 235);
+    /* Ocean blue */
+    --chart-2: oklch(0.65 0.14 210);
+    /* Sky blue */
+    --chart-3: oklch(0.7 0.12 260);
+    /* Twilight blue */
+    --chart-4: oklch(0.6 0.16 200);
+    /* Aqua blue */
+    --chart-5: oklch(0.75 0.1 245);
+    /* Soft periwinkle */
 
     /* Premium sidebar with glass effect */
     --sidebar: oklch(0.985 0.003 240);
@@ -161,6 +166,7 @@
     * {
         @apply border-border outline-ring/50;
     }
+
     body {
         @apply bg-background text-foreground;
         font-feature-settings:
@@ -177,11 +183,9 @@
 @layer components {
     .card {
         backdrop-filter: blur(12px);
-        background: linear-gradient(
-            135deg,
-            oklch(1 0.005 240 / 0.95) 0%,
-            oklch(0.99 0.008 235 / 0.98) 100%
-        );
+        background: linear-gradient(135deg,
+                oklch(1 0.005 240 / 0.95) 0%,
+                oklch(0.99 0.008 235 / 0.98) 100%);
         box-shadow:
             0 1px 3px oklch(0.55 0.15 235 / 0.05),
             0 10px 30px oklch(0.55 0.15 235 / 0.08);
@@ -189,11 +193,9 @@
     }
 
     .dark .card {
-        background: linear-gradient(
-            135deg,
-            oklch(0.18 0.025 240 / 0.95) 0%,
-            oklch(0.2 0.03 235 / 0.98) 100%
-        );
+        background: linear-gradient(135deg,
+                oklch(0.18 0.025 240 / 0.95) 0%,
+                oklch(0.2 0.03 235 / 0.98) 100%);
         box-shadow:
             0 1px 3px oklch(0 0 0 / 0.3),
             0 10px 30px oklch(0.68 0.16 235 / 0.15);
@@ -227,13 +229,12 @@
 
 /* Premium button styling */
 @layer components {
+
     button[class*="bg-primary"],
     .btn-primary {
-        background: linear-gradient(
-            135deg,
-            oklch(0.6 0.16 240) 0%,
-            oklch(0.52 0.15 230) 100%
-        );
+        background: linear-gradient(135deg,
+                oklch(0.6 0.16 240) 0%,
+                oklch(0.52 0.15 230) 100%);
         box-shadow:
             0 2px 8px oklch(0.55 0.15 235 / 0.25),
             inset 0 1px 0 oklch(1 0 0 / 0.1);
@@ -242,11 +243,9 @@
 
     button[class*="bg-primary"]:hover,
     .btn-primary:hover {
-        background: linear-gradient(
-            135deg,
-            oklch(0.58 0.17 240) 0%,
-            oklch(0.5 0.16 230) 100%
-        );
+        background: linear-gradient(135deg,
+                oklch(0.58 0.17 240) 0%,
+                oklch(0.5 0.16 230) 100%);
         box-shadow:
             0 4px 12px oklch(0.55 0.15 235 / 0.35),
             inset 0 1px 0 oklch(1 0 0 / 0.15);
@@ -267,6 +266,7 @@
         opacity: 0;
         transform: translateY(8px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -287,11 +287,9 @@
         content: "";
         position: absolute;
         inset: 0;
-        background: linear-gradient(
-            135deg,
-            oklch(0.6 0.16 240 / 0.03) 0%,
-            oklch(0.52 0.15 230 / 0.05) 100%
-        );
+        background: linear-gradient(135deg,
+                oklch(0.6 0.16 240 / 0.03) 0%,
+                oklch(0.52 0.15 230 / 0.05) 100%);
         pointer-events: none;
         border-radius: inherit;
     }
@@ -343,6 +341,7 @@ body.rtl table {
 
 /* Mobile-first responsive utilities */
 @layer utilities {
+
     /* Better touch targets for mobile */
     .touch-target {
         min-height: 44px;
@@ -390,7 +389,7 @@ body.rtl table {
             gap: 0.5rem;
         }
 
-        .mobile-header-actions > * {
+        .mobile-header-actions>* {
             flex: 1;
         }
     }
@@ -452,6 +451,41 @@ body.rtl table {
     @media (min-width: 640px) {
         .mobile-btn-full {
             width: auto;
+        }
+    }
+
+    /* Mobile dialog animations */
+    @keyframes dialogSlideIn {
+        from {
+            opacity: 0;
+            transform: translate(-50%, -48%) scale(0.96);
+        }
+
+        to {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+        }
+    }
+
+    @keyframes dialogSlideOut {
+        from {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        to {
+            opacity: 0;
+            transform: translate(-50%, -48%) scale(0.96);
+        }
+    }
+
+    @media (max-width: 640px) {
+        [data-state="open"] {
+            animation: dialogSlideIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        [data-state="closed"] {
+            animation: dialogSlideOut 0.15s cubic-bezier(0.16, 1, 0.3, 1);
         }
     }
 }
