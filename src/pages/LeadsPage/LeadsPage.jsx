@@ -149,17 +149,17 @@ export default function LeadsPage() {
         contact || company || (status && status !== "all") || source || followUp
 
     return (
-        <div className="flex flex-1 flex-col gap-6 p-6">
+        <div className="flex flex-1 flex-col gap-4 sm:gap-6 p-4 sm:p-6">
             {/* Header */}
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
                 <div>
-                    <h1 className="text-2xl font-bold tracking-tight">
+                    <h1 className="text-xl sm:text-2xl font-bold tracking-tight">
                         {t("leads")}
                     </h1>
                 </div>
                 <Button
                     onClick={() => navigate("/leads/new")}
-                    className="shadow-sm"
+                    className="shadow-sm w-full sm:w-auto"
                 >
                     <Plus className="h-4 w-4" />
                     {t("createLead")}
@@ -169,7 +169,7 @@ export default function LeadsPage() {
             {/* Main Content Card */}
             <div className="flex flex-col rounded-xl border bg-card text-card-foreground shadow-sm">
                 {/* Filter Toolbar */}
-                <div className="flex flex-col gap-4 border-b p-4 lg:flex-row lg:items-center lg:justify-between">
+                <div className="flex flex-col gap-3 sm:gap-4 border-b p-3 sm:p-4 lg:flex-row lg:items-center lg:justify-between">
                     <div className="flex flex-1 flex-col gap-3 lg:flex-row lg:items-center">
                         {/* Contact Search */}
                         <div className="relative flex-1 md:max-w-[240px]">

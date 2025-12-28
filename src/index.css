@@ -340,3 +340,118 @@ body.rtl table {
         outline-color: oklch(0.68 0.16 235);
     }
 }
+
+/* Mobile-first responsive utilities */
+@layer utilities {
+    /* Better touch targets for mobile */
+    .touch-target {
+        min-height: 44px;
+        min-width: 44px;
+    }
+
+    /* Mobile-optimized spacing */
+    @media (max-width: 640px) {
+        .mobile-compact {
+            padding: 1rem !important;
+        }
+
+        .mobile-gap-sm {
+            gap: 0.75rem !important;
+        }
+
+        .mobile-gap-md {
+            gap: 1rem !important;
+        }
+
+        /* Mobile text sizes */
+        .mobile-text-sm {
+            font-size: 0.875rem !important;
+        }
+
+        .mobile-text-base {
+            font-size: 1rem !important;
+        }
+
+        /* Mobile card improvements */
+        .mobile-card-compact {
+            padding: 0.875rem !important;
+        }
+
+        /* Mobile header improvements */
+        .mobile-header-compact {
+            flex-direction: column;
+            align-items: flex-start !important;
+            gap: 1rem;
+        }
+
+        .mobile-header-actions {
+            width: 100%;
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .mobile-header-actions > * {
+            flex: 1;
+        }
+    }
+
+    /* Tablet optimizations */
+    @media (min-width: 641px) and (max-width: 1024px) {
+        .tablet-grid-1 {
+            grid-template-columns: repeat(1, minmax(0, 1fr)) !important;
+        }
+
+        .tablet-grid-2 {
+            grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        }
+    }
+}
+
+/* Improved responsive card layouts */
+@layer components {
+    .responsive-detail-grid {
+        display: grid;
+        gap: 1.5rem;
+        grid-template-columns: 1fr;
+    }
+
+    @media (min-width: 768px) {
+        .responsive-detail-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @media (min-width: 1024px) {
+        .responsive-detail-grid.three-col {
+            grid-template-columns: repeat(3, 1fr);
+        }
+    }
+
+    /* Mobile-friendly field rows */
+    .field-row-mobile {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+        padding: 0.75rem 0;
+    }
+
+    @media (min-width: 640px) {
+        .field-row-mobile {
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: start;
+            gap: 1rem;
+        }
+    }
+
+    /* Better mobile buttons */
+    .mobile-btn-full {
+        width: 100%;
+    }
+
+    @media (min-width: 640px) {
+        .mobile-btn-full {
+            width: auto;
+        }
+    }
+}

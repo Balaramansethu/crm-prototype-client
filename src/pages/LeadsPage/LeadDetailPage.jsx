@@ -78,20 +78,21 @@ export default function LeadDetailPage() {
     }
 
     return (
-        <div className="flex flex-1 flex-col gap-6 p-6">
+        <div className="flex flex-1 flex-col gap-4 sm:gap-6 p-4 sm:p-6">
             {/* Header */}
-            <div className="flex items-center justify-between">
-                <div className="flex items-center gap-4">
-                    <h1 className="text-2xl font-semibold">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
+                <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+                    <h1 className="text-xl sm:text-2xl font-semibold leading-tight">
                         {lead.contact?.name || t("leadDetails")}
                     </h1>
                     <StatusBadge status={lead.status} />
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 w-full sm:w-auto">
                     <Button
                         variant="outline"
                         size="sm"
                         onClick={() => navigate("/leads")}
+                        className="flex-1 sm:flex-initial"
                     >
                         <ArrowLeft
                             className={isRTL ? "ml-2 rotate-180" : "mr-2"}
@@ -102,6 +103,7 @@ export default function LeadDetailPage() {
                     <Button
                         size="sm"
                         onClick={() => navigate(`/leads/edit/${id}`)}
+                        className="flex-1 sm:flex-initial"
                     >
                         <Edit className={isRTL ? "ml-2" : "mr-2"} size={16} />
                         {t("edit")}
@@ -112,7 +114,7 @@ export default function LeadDetailPage() {
             {/* Meta Card - Full Width */}
             <Card className="bg-muted/30">
                 <CardContent className="py-3 px-4">
-                    <div className="flex items-center justify-between">
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-4">
                         <div className="flex items-center gap-2 text-sm text-muted-foreground">
                             <Calendar size={14} />
                             <span>{t("createdAt")}:</span>
@@ -132,11 +134,11 @@ export default function LeadDetailPage() {
             </Card>
 
             {/* Two Main Cards */}
-            <div className="grid gap-6 md:grid-cols-2">
+            <div className="grid gap-4 sm:gap-6 grid-cols-1 md:grid-cols-2">
                 {/* Left Card - Contact + Lead Details */}
                 <SectionCard title={t("contactAndLead")}>
                     {/* Contact Section */}
-                    <div className="text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-2">
+                    <div className="text-xs sm:text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-2">
                         {t("contactInformation")}
                     </div>
                     <FieldRow label={t("name")} value={lead.contact?.name} />
@@ -152,7 +154,7 @@ export default function LeadDetailPage() {
                     <div className="my-4 border-t border-dashed" />
 
                     {/* Lead Details Section */}
-                    <div className="text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-2">
+                    <div className="text-xs sm:text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-2">
                         {t("leadDetails")}
                     </div>
                     <FieldRow label={t("status")}>
@@ -170,7 +172,7 @@ export default function LeadDetailPage() {
                 {/* Right Card - Company + Additional Info */}
                 <SectionCard title={t("companyAndInfo")}>
                     {/* Company Section */}
-                    <div className="text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-2">
+                    <div className="text-xs sm:text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-2">
                         {t("companyInformation")}
                     </div>
                     <FieldRow label={t("company")} value={lead.company?.name} />
@@ -186,7 +188,7 @@ export default function LeadDetailPage() {
                     <div className="my-4 border-t border-dashed" />
 
                     {/* Additional Info Section */}
-                    <div className="text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-2">
+                    <div className="text-xs sm:text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-2">
                         {t("additionalInfo")}
                     </div>
                     <FieldRow

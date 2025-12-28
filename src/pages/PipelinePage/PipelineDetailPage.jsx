@@ -94,29 +94,30 @@ export default function PipelineDetailPage() {
         pipeline.expectedRevnue || pipeline.expectedRevenue || 0
 
     return (
-        <div className="flex flex-1 flex-col gap-6 p-6">
+        <div className="flex flex-1 flex-col gap-4 sm:gap-6 p-4 sm:p-6">
             {/* Header */}
-            <div className="flex items-center justify-between">
-                <div className="flex items-center gap-4">
-                    <h1 className="text-2xl font-semibold">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
+                <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+                    <h1 className="text-xl sm:text-2xl font-semibold leading-tight">
                         {lead.contact?.name ||
                             lead.company?.name ||
                             t("opportunityDetails")}
                     </h1>
                     <span
                         className={cn(
-                            "px-2.5 py-1 rounded-full text-xs font-medium",
+                            "px-2.5 py-1 rounded-full text-xs font-medium w-fit",
                             getStageBadgeStyles(pipeline.opportunityStage),
                         )}
                     >
                         {getStageLabel(pipeline.opportunityStage)}
                     </span>
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 w-full sm:w-auto">
                     <Button
                         variant="outline"
                         size="sm"
                         onClick={() => navigate("/pipeline")}
+                        className="flex-1 sm:flex-initial"
                     >
                         <ArrowLeft
                             className={isRTL ? "ml-2 rotate-180" : "mr-2"}
@@ -127,6 +128,7 @@ export default function PipelineDetailPage() {
                     <Button
                         size="sm"
                         onClick={() => navigate(`/pipeline/edit/${id}`)}
+                        className="flex-1 sm:flex-initial"
                     >
                         <Edit className={isRTL ? "ml-2" : "mr-2"} size={16} />
                         {t("edit")}
@@ -135,7 +137,7 @@ export default function PipelineDetailPage() {
             </div>
 
             {/* Three Column Grid for All Cards */}
-            <div className="grid gap-6 lg:grid-cols-3">
+            <div className="grid gap-4 sm:gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
                 {/* Opportunity Details Card */}
                 <SectionCard title={t("opportunityDetails")}>
                     <FieldRow label={t("opportunityStage")}>
@@ -177,7 +179,7 @@ export default function PipelineDetailPage() {
                 {/* Contact + Lead Details Card */}
                 <SectionCard title={t("contactAndLead")}>
                     {/* Contact Section */}
-                    <div className="text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-2">
+                    <div className="text-xs sm:text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-2">
                         {t("contactInformation")}
                     </div>
                     <FieldRow label={t("name")} value={lead.contact?.name} />
@@ -202,7 +204,7 @@ export default function PipelineDetailPage() {
                     <div className="my-4 border-t border-dashed" />
 
                     {/* Lead Details Section */}
-                    <div className="text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-2">
+                    <div className="text-xs sm:text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-2">
                         {t("leadDetails")}
                     </div>
                     <FieldRow label={t("status")}>
@@ -220,7 +222,7 @@ export default function PipelineDetailPage() {
                 {/* Company + Additional Info Card */}
                 <SectionCard title={t("companyAndInfo")}>
                     {/* Company Section */}
-                    <div className="text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-2">
+                    <div className="text-xs sm:text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-2">
                         {t("companyInformation")}
                     </div>
                     <FieldRow label={t("company")} value={lead.company?.name} />
@@ -236,7 +238,7 @@ export default function PipelineDetailPage() {
                     <div className="my-4 border-t border-dashed" />
 
                     {/* Additional Info Section */}
-                    <div className="text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-2">
+                    <div className="text-xs sm:text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-2">
                         {t("additionalInfo")}
                     </div>
                     <FieldRow

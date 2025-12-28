@@ -116,17 +116,17 @@ export default function CallLogsPage() {
     }
 
     return (
-        <div className="flex flex-1 flex-col gap-6 p-6">
+        <div className="flex flex-1 flex-col gap-4 sm:gap-6 p-4 sm:p-6">
             {/* Header */}
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
                 <div>
-                    <h1 className="text-2xl font-bold tracking-tight">
+                    <h1 className="text-xl sm:text-2xl font-bold tracking-tight">
                         {t("callLogs") || "Call Logs"}
                     </h1>
                 </div>
                 <Button
                     onClick={() => navigate("/call-logs/new")}
-                    className="shadow-sm"
+                    className="shadow-sm w-full sm:w-auto"
                 >
                     <Plus className="h-4 w-4" />
                     {t("createCallLog") || "Create Log"}
@@ -149,13 +149,13 @@ export default function CallLogsPage() {
                                 {logs.map((log) => (
                                     <div
                                         key={log._id || Math.random()}
-                                        className="bg-card rounded-xl border shadow-sm p-4 flex flex-col gap-3 transition-colors hover:bg-muted/30"
+                                        className="bg-card rounded-xl border shadow-sm p-3 sm:p-4 flex flex-col gap-2 sm:gap-3 transition-colors hover:bg-muted/30"
                                     >
                                         {/* Card Header Row */}
-                                        <div className="flex justify-between items-start">
+                                        <div className="flex justify-between items-start gap-2">
                                             <div>
                                                 {/* Company Name */}
-                                                <h3 className="font-bold text-base text-card-foreground">
+                                                <h3 className="font-bold text-sm sm:text-base text-card-foreground leading-tight">
                                                     {typeof log.lead
                                                         ?.company === "object"
                                                         ? log.lead?.company
@@ -164,7 +164,7 @@ export default function CallLogsPage() {
                                                           t("unknownCompany")}
                                                 </h3>
                                                 {/* Contact Person */}
-                                                <div className="text-muted-foreground text-sm">
+                                                <div className="text-muted-foreground text-xs sm:text-sm">
                                                     {typeof log.lead
                                                         ?.contact === "object"
                                                         ? log.lead?.contact
@@ -175,7 +175,7 @@ export default function CallLogsPage() {
                                             </div>
 
                                             {/* Badge & Time & Actions */}
-                                            <div className="flex flex-col items-end gap-1">
+                                            <div className="flex flex-col items-end gap-1 flex-shrink-0">
                                                 <div className="flex items-center gap-2">
                                                     <span
                                                         className={`px-2.5 py-0.5 rounded-full text-xs font-semibold ${getBadgeColor(log.outcome)}`}
@@ -229,7 +229,7 @@ export default function CallLogsPage() {
                                                         </DropdownMenuContent>
                                                     </DropdownMenu>
                                                 </div>
-                                                <span className="text-xs text-muted-foreground mr-10">
+                                                <span className="text-xs text-muted-foreground sm:mr-10">
                                                     {log.createdAt
                                                         ? format(
                                                               new Date(
@@ -243,7 +243,7 @@ export default function CallLogsPage() {
                                         </div>
 
                                         {/* Contact Info Row */}
-                                        <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
+                                        <div className="flex flex-col sm:flex-row sm:flex-wrap sm:items-center gap-2 sm:gap-4 text-xs sm:text-sm text-muted-foreground">
                                             <div className="flex items-center gap-1.5">
                                                 <Phone className="h-3.5 w-3.5" />
                                                 <span dir="ltr">
@@ -271,7 +271,7 @@ export default function CallLogsPage() {
                                         </div>
 
                                         {/* Remarks */}
-                                        <div className="text-sm text-card-foreground">
+                                        <div className="text-xs sm:text-sm text-card-foreground line-clamp-3">
                                             {log.remarks}
                                         </div>
                                     </div>

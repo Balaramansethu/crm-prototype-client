@@ -75,18 +75,18 @@ export default function PipelinePage() {
     return (
         <div className="flex flex-col w-full h-full">
             {/* Header with fixed Add button */}
-            <div className="flex items-center justify-between px-6 py-4 shrink-0 border-b">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4 px-4 sm:px-6 py-3 sm:py-4 shrink-0 border-b">
                 <div>
-                    <h1 className="text-2xl font-bold tracking-tight">
+                    <h1 className="text-xl sm:text-2xl font-bold tracking-tight">
                         {t("pipeline")}
                     </h1>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-xs sm:text-sm text-muted-foreground">
                         {t("pipelineDescription")}
                     </p>
                 </div>
                 <Button
                     onClick={() => navigate("/pipeline/new")}
-                    className="shadow-sm shrink-0"
+                    className="shadow-sm shrink-0 w-full sm:w-auto"
                 >
                     <Plus className={`h-4 w-4 ${isRTL ? "ml-2" : "mr-2"}`} />
                     {t("addOpportunity")}
@@ -94,7 +94,7 @@ export default function PipelinePage() {
             </div>
 
             {/* Kanban Board - fills remaining height */}
-            <div className="flex-1 p-4 overflow-hidden">
+            <div className="flex-1 p-3 sm:p-4 overflow-hidden">
                 <PipelineBoard
                     pipelines={pipelines}
                     onStageDrop={handleStageDrop}
