@@ -249,5 +249,8 @@
     "unknownLead": "Unknown Lead",
     "dropHere": "Drop here",
     "expected": "Expected",
-    "value": "Value"
+    "value": "Value",
+    "unknownCompany": "Unknown Company",
+    "unknownContact": "Unknown Contact",
+    "noNumber": "No Number"
 }

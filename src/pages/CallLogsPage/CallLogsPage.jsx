@@ -156,13 +156,15 @@ export default function CallLogsPage() {
                                             <div>
                                                 {/* Company Name */}
                                                 <h3 className="font-bold text-base text-card-foreground">
-                                                    {log.lead?.company ||
-                                                        "Unknown Company"}
+                                                    {typeof log.lead?.company === 'object' 
+                                                        ? log.lead?.company?.name 
+                                                        : log.lead?.company || t("unknownCompany")}
                                                 </h3>
                                                 {/* Contact Person */}
                                                 <div className="text-muted-foreground text-sm">
-                                                    {log.lead?.contact ||
-                                                        "Unknown Contact"}
+                                                    {typeof log.lead?.contact === 'object'
+                                                        ? log.lead?.contact?.name
+                                                        : log.lead?.contact || t("unknownContact")}
                                                 </div>
                                             </div>
 
@@ -239,10 +241,9 @@ export default function CallLogsPage() {
                                             <div className="flex items-center gap-1.5">
                                                 <Phone className="h-3.5 w-3.5" />
                                                 <span dir="ltr">
-                                                    {log.lead?.phone?.number ||
-                                                        (log.lead?.phone
-                                                            ? log.lead.phone
-                                                            : "No Number")}
+                                                    {log.lead?.contact?.phone?.number ||
+                                                        log.lead?.company?.phone?.number ||
+                                                        t("noNumber")}
                                                 </span>
                                             </div>
                                             <div className="flex items-center gap-1.5">

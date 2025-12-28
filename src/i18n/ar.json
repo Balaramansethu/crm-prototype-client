@@ -249,5 +249,8 @@
     "unknownLead": "عميل غير معروف",
     "dropHere": "أفلت هنا",
     "expected": "المتوقع",
-    "value": "القيمة"
+    "value": "القيمة",
+    "unknownCompany": "شركة غير معروفة",
+    "unknownContact": "جهة اتصال غير معروفة",
+    "noNumber": "لا يوجد رقم"
 }

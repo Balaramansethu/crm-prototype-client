@@ -255,12 +255,14 @@ export default function CallLogForm({
                                     <Select
                                         onValueChange={handleLeadChange}
                                         value={field.value}
+                                        disabled={isEditMode}
                                     >
                                         <FormControl>
                                             <SelectTrigger
-                                                className={
-                                                    isRTL ? "text-right" : ""
-                                                }
+                                                className={cn(
+                                                    isRTL ? "text-right" : "",
+                                                    isEditMode && "bg-muted !cursor-not-allowed"
+                                                )}
                                             >
                                                 <SelectValue
                                                     placeholder={t("selectLead")}
