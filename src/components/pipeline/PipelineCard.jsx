@@ -1,4 +1,5 @@
 import { useDrag } from "react-dnd"
+import { useNavigate } from "react-router-dom"
 import { Button } from "@/components/ui/button"
 import {
     DropdownMenu,
@@ -6,7 +7,7 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { MoreHorizontal, Edit, Trash2 } from "lucide-react"
+import { MoreHorizontal, Edit, Trash2, Eye } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { cn } from "@/lib/utils"
 
@@ -14,6 +15,7 @@ export const ITEM_TYPE = "PIPELINE_CARD"
 
 export default function PipelineCard({ pipeline, onEdit, onDelete }) {
     const { t, i18n } = useTranslation()
+    const navigate = useNavigate()
     const isRTL = i18n.dir() === "rtl"
 
     const [{ isDragging }, drag] = useDrag(() => ({
@@ -62,7 +64,11 @@ export default function PipelineCard({ pipeline, onEdit, onDelete }) {
                             <MoreHorizontal className="h-4 w-4" />
                         </Button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent align={isRTL ? "start" : "end"} className="w-28">
+                    <DropdownMenuContent align={isRTL ? "start" : "end"} className="w-36">
+                        <DropdownMenuItem onClick={() => navigate(`/pipeline/${pipeline._id}`)} className="text-xs">
+                            <Eye className="mr-2 h-3 w-3" />
+                            {t("detailedView")}
+                        </DropdownMenuItem>
                         <DropdownMenuItem onClick={() => onEdit(pipeline)} className="text-xs">
                             <Edit className="mr-2 h-3 w-3" />
                             {t("edit")}

@@ -103,6 +103,7 @@ export default function PipelinePage() {
                 />
             </div>
 
+            {/* Delete Confirmation Dialog */}
             <CommonDialog
                 open={deleteDialogOpen}
                 onOpenChange={setDeleteDialogOpen}

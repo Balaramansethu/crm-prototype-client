@@ -252,5 +252,8 @@
     "value": "Value",
     "unknownCompany": "Unknown Company",
     "unknownContact": "Unknown Contact",
-    "noNumber": "No Number"
+    "noNumber": "No Number",
+    "detailedView": "Detailed View",
+    "opportunityDetails": "Opportunity Details",
+    "deleting": "Deleting..."
 }

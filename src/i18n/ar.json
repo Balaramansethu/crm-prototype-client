@@ -252,5 +252,8 @@
     "value": "القيمة",
     "unknownCompany": "شركة غير معروفة",
     "unknownContact": "جهة اتصال غير معروفة",
-    "noNumber": "لا يوجد رقم"
+    "noNumber": "لا يوجد رقم",
+    "detailedView": "عرض التفاصيل",
+    "opportunityDetails": "تفاصيل الفرصة",
+    "deleting": "جاري الحذف..."
 }

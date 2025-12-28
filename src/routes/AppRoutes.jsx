@@ -20,6 +20,7 @@ import {
     PipelinePage,
     CreateOpportunityPage,
     EditOpportunityPage,
+    PipelineDetailPage,
 } from "@/pages/PipelinePage"
 import NotFoundPage from "@/pages/NotFoundPage/NotFoundPage"
 import Unauthorized from "@/components/unauthorized"
@@ -81,6 +82,7 @@ export default function AppRoutes() {
                     >
                         <Route index element={<PipelinePage />} />
                         <Route path="new" element={<CreateOpportunityPage />} />
+                        <Route path=":id" element={<PipelineDetailPage />} />
                         <Route path="edit/:id" element={<EditOpportunityPage />} />
                     </Route>
                     {/* EMPLOYEE */}

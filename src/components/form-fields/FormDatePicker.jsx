@@ -12,6 +12,7 @@ import { useTranslation } from "react-i18next"
 
 /**
  * Reusable form date picker field with RTL support.
+ * By default, past dates are disabled (minDate is set to today).
  *
  * @param {Object} props
  * @param {Object} props.control - React Hook Form control object
@@ -19,8 +20,9 @@ import { useTranslation } from "react-i18next"
  * @param {string} props.label - Label text
  * @param {string} [props.placeholder="DD-MM-YYYY"] - Placeholder text
  * @param {string} [props.dateFormat="dd-MM-yyyy"] - Date format
- * @param {Date} [props.minDate] - Minimum selectable date
+ * @param {Date} [props.minDate] - Minimum selectable date (defaults to today)
  * @param {Date} [props.maxDate] - Maximum selectable date
+ * @param {boolean} [props.allowPastDates=false] - Set to true to allow selecting past dates
  */
 export default function FormDatePicker({
     control,
@@ -30,9 +32,15 @@ export default function FormDatePicker({
     dateFormat = "dd-MM-yyyy",
     minDate,
     maxDate,
+    allowPastDates = false,
 }) {
     const { i18n } = useTranslation()
     const isRTL = i18n.dir() === "rtl"
+
+    // Set minDate to today if not provided and past dates are not allowed
+    const today = new Date()
+    today.setHours(0, 0, 0, 0) // Reset time to start of day
+    const effectiveMinDate = allowPastDates ? minDate : (minDate || today)
 
     return (
         <FormField
@@ -45,7 +53,7 @@ export default function FormDatePicker({
                         <DatePicker
                             selected={field.value}
                             onChange={field.onChange}
-                            minDate={minDate}
+                            minDate={effectiveMinDate}
                             maxDate={maxDate}
                             placeholderText={placeholder}
                             dateFormat={dateFormat}
