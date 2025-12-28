@@ -28,6 +28,7 @@ import { Loader2, Plus } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useLeads } from "@/hooks/useLeads"
 import { getLeadById } from "@/service/leadsService"
+import React from "react"
 
 export default function CallLogForm({
     onSubmit,
@@ -41,7 +42,8 @@ export default function CallLogForm({
 
     const [showUnsavedDialog, setShowUnsavedDialog] = useState(false)
 
-    const { data } = useLeads({ limit: 100 })
+    const leadsParams = useMemo(() => ({ limit: 100 }), [])
+    const { data } = useLeads(leadsParams)
     const leads = data?.leads || []
 
     const [selectedLeadDetails, setSelectedLeadDetails] = useState({
@@ -121,57 +123,86 @@ export default function CallLogForm({
         const selectedLead = allLeads.find((lead) => lead._id === leadId)
 
         if (selectedLead) {
-            setSelectedLeadDetails({
-                company: getCompanyName(selectedLead),
-                phone: getLeadPhone(selectedLead),
-            })
+            const newCompany = getCompanyName(selectedLead)
+            const newPhone = getLeadPhone(selectedLead)
+            
+            // Only update state if values actually changed
+            if (newCompany !== selectedLeadDetails.company || newPhone !== selectedLeadDetails.phone) {
+                setSelectedLeadDetails({
+                    company: newCompany,
+                    phone: newPhone,
+                })
+            }
+            
             if (selectedLead.followUp) {
-                form.setValue("followUp", new Date(selectedLead.followUp))
+                // Only set if different to avoid potential loops (though setValue handles this usually)
+                const currentFollowUp = form.getValues("followUp")
+                const newFollowUp = new Date(selectedLead.followUp)
+                if (!currentFollowUp || currentFollowUp.getTime() !== newFollowUp.getTime()) {
+                    form.setValue("followUp", newFollowUp)
+                }
             }
         } else {
-            setSelectedLeadDetails({ company: "", phone: "" })
+            if (selectedLeadDetails.company !== "" || selectedLeadDetails.phone !== "") {
+                 setSelectedLeadDetails({ company: "", phone: "" })
+            }
         }
     }
 
+    // Handle newLeadId from URL (when returning from lead creation)
+    const processedNewLeadIdRef = React.useRef(null)
+    
     useEffect(() => {
         const searchParams = new URLSearchParams(location.search)
         const newLeadId = searchParams.get("newLeadId")
 
-        if (newLeadId) {
-            const allLeads = extraLead ? [extraLead, ...leads] : leads
-            const leadExists = allLeads.find((l) => l._id === newLeadId)
-
-            if (leadExists) {
-                const currentLead = form.getValues("lead")
-                if (currentLead !== newLeadId || !selectedLeadDetails.company) {
-                    form.setValue("lead", newLeadId)
-                    updateLeadDetails(newLeadId)
-                }
-            } else {
-                getLeadById(newLeadId)
-                    .then((data) => {
-                        const l = data.data || data.lead || data
-                        if (l) {
-                            setExtraLead(l)
-                            form.setValue("lead", newLeadId)
-                            setSelectedLeadDetails({
-                                company: getCompanyName(l),
-                                phone: getLeadPhone(l),
-                            })
-                            if (l.followUp) {
-                                form.setValue("followUp", new Date(l.followUp))
-                            }
-                        }
-                    })
-                    .catch((err) =>
-                        console.error("Failed to fetch new lead", err),
-                    )
-            }
+        // Skip if no newLeadId or already processed this ID
+        if (!newLeadId || processedNewLeadIdRef.current === newLeadId) {
+            return
         }
-    }, [location.search, leads, form, extraLead, selectedLeadDetails.company])
 
+        const allLeads = extraLead ? [extraLead, ...leads] : leads
+        const leadExists = allLeads.find((l) => l._id === newLeadId)
+
+        if (leadExists) {
+            processedNewLeadIdRef.current = newLeadId
+            form.setValue("lead", newLeadId)
+            // updateLeadDetails checks for changes internally now, but we can call it directly
+            updateLeadDetails(newLeadId)
+        } else if (leads.length === 0) {
+            // Leads haven't loaded yet, fetch directly
+            getLeadById(newLeadId)
+                .then((data) => {
+                    const l = data.data || data.lead || data
+                    if (l) {
+                        processedNewLeadIdRef.current = newLeadId
+                        setExtraLead(l)
+                        form.setValue("lead", newLeadId)
+                        
+                        // Manually set details since updateLeadDetails relies on state/leads
+                        const newCompany = getCompanyName(l)
+                        const newPhone = getLeadPhone(l)
+                        
+                        setSelectedLeadDetails({
+                            company: newCompany,
+                            phone: newPhone,
+                        })
+                        
+                        if (l.followUp) {
+                            form.setValue("followUp", new Date(l.followUp))
+                        }
+                    }
+                })
+                .catch((err) =>
+                    console.error("Failed to fetch new lead", err),
+                )
+        }
+    }, [location.search, leads, extraLead, form, selectedLeadDetails])
+
+    // Update form values when initialData changes
     useEffect(() => {
         if (initialData) {
+            // We use reset here which is fine, it sets the form values
             form.reset({
                 lead: initialData.lead?._id || initialData.lead || "",
                 outcome: initialData.outcome || "interested",
@@ -180,19 +211,38 @@ export default function CallLogForm({
                     : null,
                 remarks: initialData.remarks || "",
             })
+        }
+    }, [initialData, form])
 
-            if (initialData.lead) {
-                if (typeof initialData.lead === "object") {
-                    setSelectedLeadDetails({
-                        company: getCompanyName(initialData.lead),
-                        phone: getLeadPhone(initialData.lead),
-                    })
-                } else {
-                    updateLeadDetails(initialData.lead)
+    // Update read-only lead details for initialData
+    useEffect(() => {
+        if (initialData?.lead) {
+            let newCompany = ""
+            let newPhone = ""
+            
+            if (typeof initialData.lead === "object") {
+                newCompany = getCompanyName(initialData.lead)
+                newPhone = getLeadPhone(initialData.lead)
+            } else {
+                const leadId = initialData.lead
+                const allLeads = extraLead ? [extraLead, ...leads] : leads
+                const selectedLead = allLeads.find((lead) => lead._id === leadId)
+                
+                if (selectedLead) {
+                    newCompany = getCompanyName(selectedLead)
+                    newPhone = getLeadPhone(selectedLead)
                 }
             }
+            
+            // Only update if changed
+            if (newCompany !== selectedLeadDetails.company || newPhone !== selectedLeadDetails.phone) {
+                setSelectedLeadDetails({
+                    company: newCompany,
+                    phone: newPhone,
+                })
+            }
         }
-    }, [initialData, form, leads])
+    }, [initialData, leads, extraLead, selectedLeadDetails])
 
     const handleLeadChange = (leadId) => {
         if (leadId === "CREATE_NEW_LEAD") {
