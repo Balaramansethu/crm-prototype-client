@@ -453,39 +453,4 @@ body.rtl table {
             width: auto;
         }
     }
-
-    /* Mobile dialog animations */
-    @keyframes dialogSlideIn {
-        from {
-            opacity: 0;
-            transform: translate(-50%, -48%) scale(0.96);
-        }
-
-        to {
-            opacity: 1;
-            transform: translate(-50%, -50%) scale(1);
-        }
-    }
-
-    @keyframes dialogSlideOut {
-        from {
-            opacity: 1;
-            transform: translate(-50%, -50%) scale(1);
-        }
-
-        to {
-            opacity: 0;
-            transform: translate(-50%, -48%) scale(0.96);
-        }
-    }
-
-    @media (max-width: 640px) {
-        [data-state="open"] {
-            animation: dialogSlideIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        [data-state="closed"] {
-            animation: dialogSlideOut 0.15s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-    }
 }
