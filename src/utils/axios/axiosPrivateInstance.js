@@ -22,8 +22,15 @@ axiosPrivateInstance.interceptors.response.use(
     async (error) => {
         const originalReq = error.config
 
-        if (
-            (error.response?.data?.errorCode === "2003" ||
+        if (error.response?.data?.errorCode === "2006") {
+            toast.error("Session expired, please login to continue.")
+            useUserStore.getState().clearUser()
+            alert("Session expired, please login to continue.")
+            // window.location.href = "/login"
+            return Promise.reject(error)
+        }
+        else if (
+            (error.response?.data?.errorCode === "2003" &&
                 error.response?.status === 401) &&
             !originalReq._retry
         ) {
@@ -33,13 +40,13 @@ axiosPrivateInstance.interceptors.response.use(
                 await axiosPrivateInstance.post("/auth/refresh", {})
                 return axiosPrivateInstance(originalReq)
             } catch (err) {
-                toast.error("Session expired, please login to continue.")
-                useUserStore.getState().clearUser()
-                window.location.href = "/login"
+                // toast.error("Session expired, please login to continue.")
+                // useUserStore.getState().clearUser()
+                // window.location.href = "/login"
             }
         }
 
-        return Promise.reject(error)
+        // return Promise.reject(error)
     },
 )
 
