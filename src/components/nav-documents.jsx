@@ -31,8 +31,8 @@ export function NavDocuments({ items }) {
 
     return (
         <SidebarGroup className="group-data-[collapsible=icon]:hidden">
-            <SidebarGroupLabel>{t("documents")}</SidebarGroupLabel>
-            <SidebarMenu>
+            {/* <SidebarGroupLabel>{t("documents")}</SidebarGroupLabel> */}
+            {/* <SidebarMenu>
                 {items.map((item) => (
                     <SidebarMenuItem key={item.name}>
                         <SidebarMenuButton asChild>
@@ -79,7 +79,7 @@ export function NavDocuments({ items }) {
                         <span>{t("more")}</span>
                     </SidebarMenuButton>
                 </SidebarMenuItem>
-            </SidebarMenu>
+            </SidebarMenu> */}
         </SidebarGroup>
     )
 }

@@ -187,14 +187,14 @@ export function AppSidebar({ ...props }) {
                 />
 
                 {/* SECONDARY */}
-                <NavSecondary
+                {/* <NavSecondary
                     className="mt-2"
                     items={[
                         { title: t("settings"), icon: IconSettings, url: "#" },
                         { title: t("help"), icon: IconHelp, url: "#" },
                         { title: t("search"), icon: IconSearch, url: "#" },
                     ]}
-                />
+                /> */}
             </SidebarContent>
 
             {/* FOOTER USER CARD */}

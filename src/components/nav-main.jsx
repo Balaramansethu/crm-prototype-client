@@ -15,7 +15,7 @@ export function NavMain({ items }) {
 
     return (
         <SidebarGroup>
-            <SidebarGroupContent className="flex flex-col gap-2">
+            {/* <SidebarGroupContent className="flex flex-col gap-2">
                 <SidebarMenu>
                     <SidebarMenuItem className="flex items-center gap-2">
                         <SidebarMenuButton tooltip="Quick Create">
@@ -42,7 +42,7 @@ export function NavMain({ items }) {
                         </SidebarMenuItem>
                     ))}
                 </SidebarMenu>
-            </SidebarGroupContent>
+            </SidebarGroupContent> */}
         </SidebarGroup>
     )
 }
