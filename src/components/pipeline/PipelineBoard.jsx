@@ -8,6 +8,7 @@ export default function PipelineBoard({
     onStageDrop,
     onEdit,
     onDelete,
+    canDelete = false,
 }) {
     return (
         <DndProvider backend={HTML5Backend}>
@@ -22,6 +23,7 @@ export default function PipelineBoard({
                             onDrop={onStageDrop}
                             onEdit={onEdit}
                             onDelete={onDelete}
+                            canDelete={canDelete}
                         />
                     ))}
                 </div>

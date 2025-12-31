@@ -10,6 +10,7 @@ export default function PipelineColumn({
     onDrop,
     onEdit,
     onDelete,
+    canDelete = false,
 }) {
     const { t } = useTranslation()
 
@@ -79,6 +80,7 @@ export default function PipelineColumn({
                                 pipeline={pipeline}
                                 onEdit={onEdit}
                                 onDelete={onDelete}
+                                canDelete={canDelete}
                             />
                         ))}
                         {/* Drop indicator when dragging over column with cards */}

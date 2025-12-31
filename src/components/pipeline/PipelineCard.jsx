@@ -13,7 +13,7 @@ import { cn } from "@/lib/utils"
 
 export const ITEM_TYPE = "PIPELINE_CARD"
 
-export default function PipelineCard({ pipeline, onEdit, onDelete }) {
+export default function PipelineCard({ pipeline, onEdit, onDelete, canDelete = false }) {
     const { t, i18n } = useTranslation()
     const navigate = useNavigate()
     const isRTL = i18n.dir() === "rtl"
@@ -91,13 +91,15 @@ export default function PipelineCard({ pipeline, onEdit, onDelete }) {
                             <Edit className="mr-2 h-3 w-3" />
                             {t("edit")}
                         </DropdownMenuItem>
-                        <DropdownMenuItem
-                            onClick={() => onDelete(pipeline._id)}
-                            className="text-red-600 focus:text-red-600 text-xs"
-                        >
-                            <Trash2 className="mr-2 h-3 w-3" />
-                            {t("delete")}
-                        </DropdownMenuItem>
+                        {canDelete && (
+                            <DropdownMenuItem
+                                onClick={() => onDelete(pipeline._id)}
+                                className="text-red-600 focus:text-red-600 text-xs"
+                            >
+                                <Trash2 className="mr-2 h-3 w-3" />
+                                {t("delete")}
+                            </DropdownMenuItem>
+                        )}
                     </DropdownMenuContent>
                 </DropdownMenu>
             </div>

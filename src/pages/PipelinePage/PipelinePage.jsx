@@ -12,11 +12,16 @@ import {
     useUpdatePipelineStage,
     useDeletePipeline,
 } from "@/hooks/usePipeline"
+import { useUserStore } from "@/store/userStore"
 
 export default function PipelinePage() {
     const { t, i18n } = useTranslation()
     const navigate = useNavigate()
+    const user = useUserStore((s) => s.user)
     const isRTL = i18n.dir() === "rtl"
+    
+    // Role-based permission: only admin and super_admin can delete
+    const canDelete = user?.role !== "employee"
 
     const { data, isLoading, isError } = usePipelines()
     const updateStageMutation = useUpdatePipelineStage()
@@ -100,6 +105,7 @@ export default function PipelinePage() {
                     onStageDrop={handleStageDrop}
                     onEdit={handleEdit}
                     onDelete={handleDeleteClick}
+                    canDelete={canDelete}
                 />
             </div>
 
