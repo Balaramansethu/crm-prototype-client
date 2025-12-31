@@ -23,6 +23,7 @@ import { useTranslation } from "react-i18next"
  * @param {Date} [props.minDate] - Minimum selectable date (defaults to today)
  * @param {Date} [props.maxDate] - Maximum selectable date
  * @param {boolean} [props.allowPastDates=false] - Set to true to allow selecting past dates
+ * @param {boolean} [props.disabled=false] - Whether date picker is disabled
  */
 export default function FormDatePicker({
     control,
@@ -33,6 +34,7 @@ export default function FormDatePicker({
     minDate,
     maxDate,
     allowPastDates = false,
+    disabled = false,
 }) {
     const { i18n } = useTranslation()
     const isRTL = i18n.dir() === "rtl"
@@ -57,9 +59,11 @@ export default function FormDatePicker({
                             maxDate={maxDate}
                             placeholderText={placeholder}
                             dateFormat={dateFormat}
+                            disabled={disabled}
                             className={cn(
                                 "h-10 w-full rounded-md border px-3 text-sm",
                                 isRTL ? "text-right" : "",
+                                disabled && "opacity-50 cursor-not-allowed bg-muted",
                             )}
                             wrapperClassName="w-full"
                             showPopperArrow={false}

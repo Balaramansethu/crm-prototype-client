@@ -255,5 +255,6 @@
     "noNumber": "No Number",
     "detailedView": "Detailed View",
     "opportunityDetails": "Opportunity Details",
-    "deleting": "Deleting..."
+    "deleting": "Deleting...",
+    "readOnly": "Read Only"
 }

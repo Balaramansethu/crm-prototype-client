@@ -10,23 +10,153 @@ import { Loader2, UserPlus } from "lucide-react"
 import { useFieldArray, useForm } from "react-hook-form"
 import { useTranslation } from "react-i18next"
 import { useNavigate } from "react-router-dom"
-import { useMemo, useEffect, useState } from "react"
+import { useMemo, useEffect, useState, useRef, useCallback } from "react"
 
 export default function LeadForm({
     initialData,
     onSubmit,
     loading = false,
     submitLabel,
+    editableContactIndex = null,
 }) {
     const { t } = useTranslation()
     const navigate = useNavigate()
     const isEditMode = !!initialData
+    // In edit mode, if editableContactIndex is provided, only that contact is editable
+    const hasRestrictedEdit = isEditMode && editableContactIndex !== null
 
     const [showUnsavedDialog, setShowUnsavedDialog] = useState(false)
+    const contactRefs = useRef([])
+
+    // Scroll to highlighted contact on mount
+    useEffect(() => {
+        if (hasRestrictedEdit && editableContactIndex !== null) {
+            // Small delay to ensure DOM is ready
+            const timer = setTimeout(() => {
+                const targetRef = contactRefs.current[editableContactIndex]
+                if (targetRef) {
+                    targetRef.scrollIntoView({
+                        behavior: "smooth",
+                        block: "center",
+                    })
+                }
+            }, 100)
+            return () => clearTimeout(timer)
+        }
+    }, [hasRestrictedEdit, editableContactIndex])
+
+    // Callback ref setter for contact forms
+    const setContactRef = useCallback((el, index) => {
+        contactRefs.current[index] = el
+    }, [])
 
     const defaultValues = useMemo(() => {
         const company = initialData?.company || {}
-        const contact = initialData?.contact || {}
+        // Get leads from company.leads (other contacts)
+        const companyLeads = company?.leads || []
+        const legacyContact = initialData?.contact || {}
+
+        // Check if this is a single lead edit (contact fields at root level)
+        // This happens when we fetch a lead by its ID - the lead data is at root
+        const hasRootLevelLead = initialData?.name && initialData?._id
+
+        // Build contacts array
+        let contacts = []
+        let allLeadsWithIds = [] // Track lead IDs for finding editable index
+
+        if (hasRootLevelLead) {
+            // The current lead is at root level
+            const currentLead = {
+                _id: initialData._id,
+                name: initialData.name || "",
+                email: initialData.email || "",
+                phoneExtension: initialData.phone?.extension || "",
+                phoneNumber: initialData.phone?.number || "",
+                status: initialData.status || "new",
+                source: initialData.source || "",
+                followUp: initialData.followUp
+                    ? new Date(initialData.followUp)
+                    : undefined,
+                priority: initialData.priority || 1,
+            }
+
+            // Convert company.leads to the same format
+            const otherLeads = companyLeads.map((lead) => ({
+                _id: lead._id,
+                name: lead.name || "",
+                email: lead.email || "",
+                phoneExtension: lead.phone?.extension || "",
+                phoneNumber: lead.phone?.number || "",
+                status: lead.status || "new",
+                source: lead.source || "",
+                followUp: lead.followUp ? new Date(lead.followUp) : undefined,
+                priority: lead.priority || 2,
+            }))
+
+            // Combine all leads and sort by priority
+            allLeadsWithIds = [currentLead, ...otherLeads]
+            allLeadsWithIds.sort((a, b) => (a.priority || 99) - (b.priority || 99))
+
+            // Remove _id from contacts (not needed in form)
+            contacts = allLeadsWithIds.map(({ _id, ...rest }) => rest)
+
+            // Store lead IDs for editable index calculation (will be used below)
+            if (typeof window !== "undefined") {
+                window.__leadIdsOrder = allLeadsWithIds.map((l) => l._id)
+            }
+        } else if (initialData?.leads?.length > 0) {
+            // Response already has leads array at root (company-level fetch)
+            contacts = initialData.leads.map((lead, index) => ({
+                name: lead.name || "",
+                email: lead.email || "",
+                phoneExtension: lead.phone?.extension || "",
+                phoneNumber: lead.phone?.number || "",
+                status: lead.status || "new",
+                source: lead.source || "",
+                followUp: lead.followUp ? new Date(lead.followUp) : undefined,
+                priority: lead.priority || index + 1,
+            }))
+        } else if (legacyContact.name || initialData?.contact) {
+            // Fallback to legacy single contact structure
+            contacts = [
+                {
+                    name:
+                        legacyContact.name ||
+                        (typeof initialData?.contact === "string"
+                            ? initialData.contact
+                            : ""),
+                    email: legacyContact.email || initialData?.email || "",
+                    phoneExtension:
+                        legacyContact.phone?.extension ||
+                        initialData?.phone?.extension ||
+                        "",
+                    phoneNumber:
+                        legacyContact.phone?.number ||
+                        initialData?.phone?.number ||
+                        "",
+                    status: initialData?.status || "new",
+                    source: initialData?.source || "",
+                    followUp: initialData?.followUp
+                        ? new Date(initialData.followUp)
+                        : undefined,
+                    priority: legacyContact.priority || 1,
+                },
+            ]
+        } else {
+            // New form - start with one empty contact
+            contacts = [
+                {
+                    name: "",
+                    email: "",
+                    phoneExtension: "",
+                    phoneNumber: "",
+                    status: "new",
+                    source: "",
+                    followUp: undefined,
+                    priority: 1,
+                },
+            ]
+        }
 
         return {
             companyDetails: {
@@ -42,29 +172,7 @@ export default function LeadForm({
                 socialProfile:
                     company.socialProfile || initialData?.socialProfile || "",
             },
-            contacts: [
-                {
-                    name:
-                        contact.name ||
-                        (typeof initialData?.contact === "string"
-                            ? initialData.contact
-                            : ""),
-                    email: contact.email || initialData?.email || "",
-                    phoneExtension:
-                        contact.phone?.extension ||
-                        initialData?.phone?.extension ||
-                        "",
-                    phoneNumber:
-                        contact.phone?.number ||
-                        initialData?.phone?.number ||
-                        "",
-                    status: initialData?.status || "new",
-                    source: initialData?.source || "",
-                    followUp: initialData?.followUp
-                        ? new Date(initialData.followUp)
-                        : undefined,
-                },
-            ],
+            contacts,
         }
     }, [initialData])
 
@@ -150,11 +258,21 @@ export default function LeadForm({
                                     {fields.map((field, index) => (
                                         <ContactPersonForm
                                             key={field.id}
+                                            ref={(el) => setContactRef(el, index)}
                                             control={form.control}
                                             index={index}
                                             onRemove={() => remove(index)}
                                             showRemoveButton={
                                                 !isEditMode && index > 0
+                                            }
+                                            totalContacts={fields.length}
+                                            disabled={
+                                                hasRestrictedEdit &&
+                                                index !== editableContactIndex
+                                            }
+                                            isHighlighted={
+                                                hasRestrictedEdit &&
+                                                index === editableContactIndex
                                             }
                                         />
                                     ))}
@@ -168,9 +286,14 @@ export default function LeadForm({
                                     <Button
                                         type="button"
                                         variant="secondary"
-                                        onClick={() =>
-                                            append(DEFAULT_CONTACT_VALUES)
-                                        }
+                                        onClick={() => {
+                                            // Auto-assign next priority number (1-based)
+                                            const nextPriority = fields.length + 1
+                                            append({
+                                                ...DEFAULT_CONTACT_VALUES,
+                                                priority: nextPriority,
+                                            })
+                                        }}
                                         className="w-full sm:w-auto"
                                     >
                                         <UserPlus className="mr-2 h-4 w-4" />

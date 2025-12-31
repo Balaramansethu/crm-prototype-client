@@ -11,10 +11,11 @@ import { toast } from "sonner"
 export default function EditLeadPage() {
     const { t } = useTranslation()
     const navigate = useNavigate()
-    const { id } = useParams()
+    const { id } = useParams() // This is the lead (contact) ID
     const [loading, setLoading] = useState(false)
     const [fetching, setFetching] = useState(true)
     const [initialData, setInitialData] = useState(null)
+    const [editableContactIndex, setEditableContactIndex] = useState(null)
 
     const breadcrumbs = [
         { label: t("leads"), path: "/leads" },
@@ -24,8 +25,48 @@ export default function EditLeadPage() {
     useEffect(() => {
         const fetchLead = async () => {
             try {
+                // Fetch the individual lead data
                 const response = await getLeadById(id)
-                setInitialData(response.data)
+                const leadData = response.data
+
+                if (!leadData) {
+                    toast.error(t("failedToLoadLead"))
+                    navigate("/leads")
+                    return
+                }
+
+                // Check if this is a root-level lead with company.leads
+                const hasRootLevelLead = leadData?.name && leadData?._id
+                const companyLeads = leadData?.company?.leads || []
+
+                if (hasRootLevelLead) {
+                    // Build the combined leads list same as LeadForm does
+                    const currentLead = {
+                        _id: leadData._id,
+                        priority: leadData.priority || 1,
+                    }
+                    const otherLeads = companyLeads.map((lead) => ({
+                        _id: lead._id,
+                        priority: lead.priority || 2,
+                    }))
+
+                    // Combine and sort by priority (same logic as LeadForm)
+                    const allLeads = [currentLead, ...otherLeads]
+                    allLeads.sort((a, b) => (a.priority || 99) - (b.priority || 99))
+
+                    // Find index of the current lead in sorted array
+                    const contactIndex = allLeads.findIndex((lead) => lead._id === id)
+                    setEditableContactIndex(contactIndex !== -1 ? contactIndex : 0)
+                } else if (leadData?.leads?.length > 0) {
+                    // Response already has leads array at root (company-level fetch)
+                    const contactIndex = leadData.leads.findIndex((lead) => lead._id === id)
+                    setEditableContactIndex(contactIndex !== -1 ? contactIndex : 0)
+                } else {
+                    // Single lead, it's the only one
+                    setEditableContactIndex(0)
+                }
+
+                setInitialData(leadData)
             } catch (error) {
                 console.error(error)
                 toast.error(t("failedToLoadLead"))
@@ -40,7 +81,8 @@ export default function EditLeadPage() {
     const onSubmit = async (data) => {
         setLoading(true)
         try {
-            const payload = transformLeadUpdatePayload(data)
+            const payload = transformLeadUpdatePayload(data, editableContactIndex)
+            // Update using the lead ID (not company ID)
             await updateLead(id, payload)
             toast.success(t("leadUpdatedSuccess"))
             navigate("/leads")
@@ -72,6 +114,7 @@ export default function EditLeadPage() {
                     onSubmit={onSubmit}
                     loading={loading}
                     submitLabel={t("saveChanges")}
+                    editableContactIndex={editableContactIndex}
                 />
             </div>
         </div>

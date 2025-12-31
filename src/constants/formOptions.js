@@ -48,6 +48,7 @@ export const DEFAULT_CONTACT_VALUES = {
     status: "new",
     source: "",
     followUp: undefined,
+    priority: 1,
 }
 
 // Default company form values

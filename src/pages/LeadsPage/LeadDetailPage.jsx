@@ -14,7 +14,7 @@ import {
 } from "@/components/common"
 import { getLeadById } from "@/service/leadsService"
 import { toast } from "sonner"
-import { Edit, ArrowLeft, Calendar, Clock } from "lucide-react"
+import { Edit, ArrowLeft, Calendar, Clock, User } from "lucide-react"
 
 export default function LeadDetailPage() {
     const { t, i18n } = useTranslation()
@@ -22,19 +22,23 @@ export default function LeadDetailPage() {
     const { id } = useParams()
     const isRTL = i18n.dir() === "rtl"
 
-    const [lead, setLead] = useState(null)
+    const [leadData, setLeadData] = useState(null)
     const [loading, setLoading] = useState(true)
+
+    // Extract company and leads from the response
+    const company = leadData?.company || {}
+    const leads = leadData?.leads || []
 
     const breadcrumbs = [
         { label: t("leads"), path: "/leads" },
-        { label: lead?.contact?.name || t("leadDetails") },
+        { label: company?.name || t("leadDetails") },
     ]
 
     useEffect(() => {
         const fetchLead = async () => {
             try {
                 const response = await getLeadById(id)
-                setLead(response.data)
+                setLeadData(response.data)
             } catch (error) {
                 console.error(error)
                 toast.error(t("failedToLoadLead"))
@@ -73,7 +77,7 @@ export default function LeadDetailPage() {
         return <DetailPageSkeleton />
     }
 
-    if (!lead) {
+    if (!leadData) {
         return null
     }
 
@@ -83,9 +87,8 @@ export default function LeadDetailPage() {
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
                 <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
                     <h1 className="text-xl sm:text-2xl font-semibold leading-tight">
-                        {lead.contact?.name || t("leadDetails")}
+                        {company?.name || t("leadDetails")}
                     </h1>
-                    <StatusBadge status={lead.status} />
                 </div>
                 <div className="flex items-center gap-2 w-full sm:w-auto">
                     <Button
@@ -100,14 +103,6 @@ export default function LeadDetailPage() {
                         />
                         {t("back")}
                     </Button>
-                    <Button
-                        size="sm"
-                        onClick={() => navigate(`/leads/edit/${id}`)}
-                        className="flex-1 sm:flex-initial"
-                    >
-                        <Edit className={isRTL ? "ml-2" : "mr-2"} size={16} />
-                        {t("edit")}
-                    </Button>
                 </div>
             </div>
 
@@ -119,89 +114,118 @@ export default function LeadDetailPage() {
                             <Calendar size={14} />
                             <span>{t("createdAt")}:</span>
                             <span className="font-medium text-foreground">
-                                {formatDateTime(lead.createdAt)}
+                                {formatDateTime(company.createdAt)}
                             </span>
                         </div>
                         <div className="flex items-center gap-2 text-sm text-muted-foreground">
                             <Clock size={14} />
                             <span>{t("updatedAt")}:</span>
                             <span className="font-medium text-foreground">
-                                {formatDateTime(lead.updatedAt)}
+                                {formatDateTime(company.updatedAt)}
                             </span>
                         </div>
                     </div>
                 </CardContent>
             </Card>
 
-            {/* Two Main Cards */}
-            <div className="grid gap-4 sm:gap-6 grid-cols-1 md:grid-cols-2">
-                {/* Left Card - Contact + Lead Details */}
-                <SectionCard title={t("contactAndLead")}>
-                    {/* Contact Section */}
-                    <div className="text-xs sm:text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-2">
-                        {t("contactInformation")}
+            {/* Company Info Card */}
+            <SectionCard title={t("companyInformation")}>
+                <FieldRow label={t("company")} value={company?.name} />
+                <Separator />
+                <FieldRow label={t("email")} value={company?.email} />
+                <Separator />
+                <FieldRow
+                    label={t("phone")}
+                    value={formatPhone(company?.phone)}
+                />
+                <Separator />
+                <FieldRow label={t("website")} value={company?.website} />
+                <Separator />
+                <FieldRow
+                    label={t("socialProfile")}
+                    value={company?.socialProfile}
+                />
+            </SectionCard>
+
+            {/* Contact Persons Section */}
+            <div className="space-y-4">
+                <h2 className="text-lg font-semibold">
+                    {t("contactPersons")} ({leads.length})
+                </h2>
+
+                {leads.length === 0 ? (
+                    <Card className="bg-muted/20">
+                        <CardContent className="py-6 text-center text-muted-foreground">
+                            {t("noDataAvailable")}
+                        </CardContent>
+                    </Card>
+                ) : (
+                    <div className="grid gap-4 grid-cols-1 lg:grid-cols-2">
+                        {leads.map((lead, index) => (
+                            <Card key={lead._id || index} className="relative">
+                                <CardContent className="pt-4">
+                                    {/* Contact Header */}
+                                    <div className="flex items-center justify-between mb-3">
+                                        <div className="flex items-center gap-2">
+                                            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10">
+                                                <User className="h-4 w-4 text-primary" />
+                                            </div>
+                                            <div>
+                                                <span className="font-medium">
+                                                    {lead.name}
+                                                </span>
+                                                {leads.length > 1 && (
+                                                    <span className="ml-2 text-xs text-muted-foreground">
+                                                        {t("priority")}: {lead.priority || index + 1}
+                                                    </span>
+                                                )}
+                                            </div>
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            <StatusBadge status={lead.status} />
+                                            <Button
+                                                variant="ghost"
+                                                size="sm"
+                                                onClick={() =>
+                                                    navigate(
+                                                        `/leads/edit/${lead._id}`,
+                                                    )
+                                                }
+                                            >
+                                                <Edit size={14} />
+                                            </Button>
+                                        </div>
+                                    </div>
+
+                                    {/* Contact Details */}
+                                    <div className="space-y-2 text-sm">
+                                        <FieldRow
+                                            label={t("email")}
+                                            value={lead.email}
+                                        />
+                                        <Separator />
+                                        <FieldRow
+                                            label={t("phone")}
+                                            value={formatPhone(lead.phone)}
+                                        />
+                                        <Separator />
+                                        <FieldRow
+                                            label={t("source")}
+                                            value={lead.source}
+                                        />
+                                        <Separator />
+                                        <FieldRow
+                                            label={t("followUp")}
+                                            value={formatDate(lead.followUp)}
+                                        />
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        ))}
                     </div>
-                    <FieldRow label={t("name")} value={lead.contact?.name} />
-                    <Separator />
-                    <FieldRow label={t("email")} value={lead.contact?.email} />
-                    <Separator />
-                    <FieldRow
-                        label={t("phone")}
-                        value={formatPhone(lead.contact?.phone)}
-                    />
-
-                    {/* Divider between sections */}
-                    <div className="my-4 border-t border-dashed" />
-
-                    {/* Lead Details Section */}
-                    <div className="text-xs sm:text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-2">
-                        {t("leadDetails")}
-                    </div>
-                    <FieldRow label={t("status")}>
-                        <StatusBadge status={lead.status} />
-                    </FieldRow>
-                    <Separator />
-                    <FieldRow label={t("source")} value={lead.source} />
-                    <Separator />
-                    <FieldRow
-                        label={t("followUp")}
-                        value={formatDate(lead.followUp)}
-                    />
-                </SectionCard>
-
-                {/* Right Card - Company + Additional Info */}
-                <SectionCard title={t("companyAndInfo")}>
-                    {/* Company Section */}
-                    <div className="text-xs sm:text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-2">
-                        {t("companyInformation")}
-                    </div>
-                    <FieldRow label={t("company")} value={lead.company?.name} />
-                    <Separator />
-                    <FieldRow label={t("email")} value={lead.company?.email} />
-                    <Separator />
-                    <FieldRow
-                        label={t("phone")}
-                        value={formatPhone(lead.company?.phone)}
-                    />
-
-                    {/* Divider between sections */}
-                    <div className="my-4 border-t border-dashed" />
-
-                    {/* Additional Info Section */}
-                    <div className="text-xs sm:text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-2">
-                        {t("additionalInfo")}
-                    </div>
-                    <FieldRow
-                        label={t("website")}
-                        value={lead.company?.website}
-                    />
-                    <Separator />
-                    <FieldRow
-                        label={t("socialProfile")}
-                        value={lead.company?.socialProfile}
-                    />
-                </SectionCard>
+                )}
             </div>
         </div>
     )
 }
+

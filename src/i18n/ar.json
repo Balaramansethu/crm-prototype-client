@@ -255,5 +255,6 @@
     "noNumber": "لا يوجد رقم",
     "detailedView": "عرض التفاصيل",
     "opportunityDetails": "تفاصيل الفرصة",
-    "deleting": "جاري الحذف..."
+    "deleting": "جاري الحذف...",
+    "readOnly": "للقراءة فقط"
 }

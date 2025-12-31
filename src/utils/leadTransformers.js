@@ -4,7 +4,7 @@
  *
  * API Structure:
  * - company: { name, phone, website, socialProfile }
- * - contacts: [{ name, phone, email, status, source, followUp }]
+ * - leads: [{ name, phone, email, status, source, followUp, priority }]
  */
 import { format } from "date-fns"
 
@@ -59,7 +59,12 @@ const cleanObject = (obj) => {
 
 /**
  * Transforms form data to API payload for creating a lead
- * Each contact has its own status, source, and followUp
+ * Each lead (contact person) has its own status, source, followUp
+ * Priority is only included when there are multiple leads (1-based)
+ * 
+ * API Structure:
+ * - company: { name, phone, website, socialProfile }
+ * - leads: [{ name, phone, email, status, source, followUp, priority? }]
  */
 export const transformLeadPayload = (formData, ownerId) => {
     const { companyDetails, contacts } = formData
@@ -75,15 +80,18 @@ export const transformLeadPayload = (formData, ownerId) => {
                 companyDetails.phoneNumber,
             ),
         },
-        contacts: [],
+        leads: [],
         owner: ownerId,
     }
 
+    // Only include priority when there are multiple contacts
+    const includesPriority = contacts?.length > 1
+
     if (contacts?.length > 0) {
-        contacts.forEach((contact) => {
+        contacts.forEach((contact, index) => {
             if (!contact.name?.trim()) return
 
-            const contactData = {
+            const leadData = {
                 name: contact.name.trim(),
                 email: contact.email?.trim() || undefined,
                 phone: buildPhone(contact.phoneExtension, contact.phoneNumber),
@@ -92,7 +100,12 @@ export const transformLeadPayload = (formData, ownerId) => {
                 followUp: formatDate(contact.followUp),
             }
 
-            payload.contacts.push(contactData)
+            // Add priority only when there are multiple leads (1-based)
+            if (includesPriority) {
+                leadData.priority = contact.priority || (index + 1)
+            }
+
+            payload.leads.push(leadData)
         })
     }
 
@@ -101,11 +114,14 @@ export const transformLeadPayload = (formData, ownerId) => {
 
 /**
  * Transforms form data for updating a lead.
- * Sends all changed form data to the backend.
+ * Sends the edited contact's data to the backend.
+ * The lead ID is passed in the URL, so we just need to send the data.
+ * 
+ * @param {Object} formData - Form data from the lead form
+ * @param {number|null} editableContactIndex - Index of the contact being edited in the form
  */
-export const transformLeadUpdatePayload = (formData) => {
+export const transformLeadUpdatePayload = (formData, editableContactIndex = null) => {
     const { companyDetails, contacts } = formData
-    const contact = contacts?.[0]
 
     const payload = {
         company: {
@@ -118,19 +134,25 @@ export const transformLeadUpdatePayload = (formData) => {
                 companyDetails?.phoneNumber,
             ),
         },
-        contact: contact
-            ? {
-                  name: contact.name?.trim() || undefined,
-                  email: contact.email?.trim() || undefined,
-                  phone: buildPhone(
-                      contact.phoneExtension,
-                      contact.phoneNumber,
-                  ),
-              }
-            : undefined,
-        status: contact?.status || "new",
-        source: contact?.source?.trim() || undefined,
-        followUp: formatDate(contact?.followUp),
+    }
+
+    // Get the contact to update (either by index or first one)
+    const contactIndex = editableContactIndex !== null ? editableContactIndex : 0
+    const contact = contacts?.[contactIndex]
+
+    if (contact) {
+        // Send lead data at root level (matching API response structure)
+        payload.name = contact.name?.trim() || undefined
+        payload.email = contact.email?.trim() || undefined
+        payload.phone = buildPhone(contact.phoneExtension, contact.phoneNumber)
+        payload.status = contact.status || "new"
+        payload.source = contact.source?.trim() || undefined
+        payload.followUp = formatDate(contact.followUp)
+        
+        // Include priority if there are multiple contacts
+        if (contacts.length > 1) {
+            payload.priority = contact.priority || (contactIndex + 1)
+        }
     }
 
     return cleanObject(payload)

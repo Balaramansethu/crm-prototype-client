@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useMemo } from "react"
 import { useTranslation } from "react-i18next"
 import { useNavigate } from "react-router-dom"
 import { useLeads } from "@/hooks/useLeads"
@@ -90,8 +90,46 @@ export default function LeadsPage() {
         followUp: followUp ? format(followUp, "yyyy-MM-dd") : "",
     })
 
-    const leads = data?.leads || []
+    const rawLeads = data?.leads || []
     const info = data?.info || { total: 0, totalPages: 1 }
+
+    // Flatten the nested structure: each company with its leads becomes multiple rows
+    // Each row: { company, lead, companyId, leadIndex }
+    const leads = useMemo(() => {
+        const flattened = []
+        rawLeads.forEach((item) => {
+            const company = item.company || {}
+            const contactLeads = item.leads || []
+            
+            if (contactLeads.length > 0) {
+                contactLeads.forEach((lead, index) => {
+                    flattened.push({
+                        _id: lead._id,
+                        companyId: company._id,
+                        company,
+                        contact: lead,
+                        leadIndex: index,
+                        source: lead.source,
+                        status: lead.status,
+                        followUp: lead.followUp,
+                    })
+                })
+            } else {
+                // Company with no contacts - show company only
+                flattened.push({
+                    _id: company._id,
+                    companyId: company._id,
+                    company,
+                    contact: null,
+                    leadIndex: 0,
+                    source: "",
+                    status: "new",
+                    followUp: null,
+                })
+            }
+        })
+        return flattened
+    }, [rawLeads])
 
     const handleDeleteClick = (id) => {
         setLeadToDelete(id)
@@ -296,20 +334,20 @@ export default function LeadsPage() {
                             <TableRow>
                                 <TableHead
                                     className="cursor-pointer hover:bg-muted/50 transition-colors w-[150px] pl-4"
-                                    onClick={() => handleSort("contact")}
-                                >
-                                    <div className="flex items-center text-xs font-bold uppercase tracking-wider text-black">
-                                        {t("contact")}
-                                        {renderSortIcon("contact")}
-                                    </div>
-                                </TableHead>
-                                <TableHead
-                                    className="cursor-pointer hover:bg-muted/50 transition-colors"
                                     onClick={() => handleSort("company")}
                                 >
                                     <div className="flex items-center text-xs font-bold uppercase tracking-wider text-black">
                                         {t("company")}
                                         {renderSortIcon("company")}
+                                    </div>
+                                </TableHead>
+                                <TableHead
+                                    className="cursor-pointer hover:bg-muted/50 transition-colors"
+                                    onClick={() => handleSort("contact")}
+                                >
+                                    <div className="flex items-center text-xs font-bold uppercase tracking-wider text-black">
+                                        {t("contact")}
+                                        {renderSortIcon("contact")}
                                     </div>
                                 </TableHead>
                                 <TableHead
@@ -390,41 +428,32 @@ export default function LeadsPage() {
                             ) : (
                                 leads.map((lead) => (
                                     <TableRow
-                                        key={
-                                            lead._id || lead.id || Math.random()
-                                        }
+                                        key={`${lead.companyId}-${lead.leadIndex}`}
                                         className="hover:bg-muted/30 text-black cursor-pointer"
                                         onClick={() =>
                                             navigate(
-                                                `/leads/${lead._id || lead.id}`,
+                                                `/leads/${lead.companyId}`,
                                             )
                                         }
                                     >
                                         <TableCell className="font-bold text-black pl-4">
-                                            {lead.contact?.name ||
-                                                lead.company?.name ||
-                                                lead.company}
+                                            {lead.company?.name || ""}
                                         </TableCell>
                                         <TableCell className="text-black">
-                                            {lead.company?.name || lead.company}
+                                            {lead.contact?.name || "-"}
                                         </TableCell>
                                         <TableCell className="hidden md:table-cell text-black text-sm">
                                             {lead.source}
                                         </TableCell>
                                         <TableCell className="hidden lg:table-cell text-black text-sm">
-                                            {lead.contact?.email ||
-                                                lead.company?.email ||
-                                                lead.email}
+                                            {lead.contact?.email || lead.company?.email || "-"}
                                         </TableCell>
                                         <TableCell className="hidden xl:table-cell text-sm text-black font-mono">
                                             <span dir="ltr">
-                                                {lead.contact?.phone
-                                                    ?.extension ||
-                                                lead.company?.phone?.extension
-                                                    ? `${lead.contact?.phone?.extension || lead.company?.phone?.extension} `
+                                                {lead.contact?.phone?.extension
+                                                    ? `${lead.contact.phone.extension} `
                                                     : ""}
-                                                {lead.contact?.phone?.number ||
-                                                    lead.company?.phone?.number}
+                                                {lead.contact?.phone?.number || "-"}
                                             </span>
                                         </TableCell>
                                         <TableCell>
@@ -487,7 +516,7 @@ export default function LeadsPage() {
                                                     <DropdownMenuItem
                                                         onClick={() =>
                                                             navigate(
-                                                                `/leads/edit/${lead._id || lead.id}`,
+                                                                `/leads/edit/${lead._id}`,
                                                             )
                                                         }
                                                     >
@@ -499,7 +528,7 @@ export default function LeadsPage() {
                                                         <DropdownMenuItem
                                                             onClick={() =>
                                                                 handleDeleteClick(
-                                                                    lead._id,
+                                                                    lead.companyId,
                                                                 )
                                                             }
                                                             className="text-red-600 focus:text-red-600"

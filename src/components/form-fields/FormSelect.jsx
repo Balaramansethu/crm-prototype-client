@@ -25,6 +25,7 @@ import { useTranslation } from "react-i18next"
  * @param {string} [props.placeholder] - Select placeholder
  * @param {Array} props.options - Array of { value, color? } objects
  * @param {boolean} [props.showBadge=false] - Whether to show colored badge for options
+ * @param {boolean} [props.disabled=false] - Whether select is disabled
  * @param {function} [props.onValueChange] - Custom change handler (receives value)
  */
 export default function FormSelect({
@@ -34,6 +35,7 @@ export default function FormSelect({
     placeholder,
     options = [],
     showBadge = false,
+    disabled = false,
     onValueChange,
 }) {
     const { t, i18n } = useTranslation()
@@ -49,6 +51,7 @@ export default function FormSelect({
                     <Select
                         value={field.value}
                         onValueChange={onValueChange || field.onChange}
+                        disabled={disabled}
                     >
                         <FormControl>
                             <SelectTrigger
