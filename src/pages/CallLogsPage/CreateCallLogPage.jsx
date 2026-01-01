@@ -39,7 +39,10 @@ export default function CreateCallLogPage() {
             }
 
             if (data.followUp) {
-                payload.followUp = format(data.followUp, "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+                payload.followUp = format(
+                    data.followUp,
+                    "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
+                )
             } else {
                 toast.error(t("followUpRequired"))
                 setLoading(false)

@@ -52,15 +52,25 @@ export default function EditLeadPage() {
 
                     // Combine and sort by priority (same logic as LeadForm)
                     const allLeads = [currentLead, ...otherLeads]
-                    allLeads.sort((a, b) => (a.priority || 99) - (b.priority || 99))
+                    allLeads.sort(
+                        (a, b) => (a.priority || 99) - (b.priority || 99),
+                    )
 
                     // Find index of the current lead in sorted array
-                    const contactIndex = allLeads.findIndex((lead) => lead._id === id)
-                    setEditableContactIndex(contactIndex !== -1 ? contactIndex : 0)
+                    const contactIndex = allLeads.findIndex(
+                        (lead) => lead._id === id,
+                    )
+                    setEditableContactIndex(
+                        contactIndex !== -1 ? contactIndex : 0,
+                    )
                 } else if (leadData?.leads?.length > 0) {
                     // Response already has leads array at root (company-level fetch)
-                    const contactIndex = leadData.leads.findIndex((lead) => lead._id === id)
-                    setEditableContactIndex(contactIndex !== -1 ? contactIndex : 0)
+                    const contactIndex = leadData.leads.findIndex(
+                        (lead) => lead._id === id,
+                    )
+                    setEditableContactIndex(
+                        contactIndex !== -1 ? contactIndex : 0,
+                    )
                 } else {
                     // Single lead, it's the only one
                     setEditableContactIndex(0)
@@ -81,7 +91,10 @@ export default function EditLeadPage() {
     const onSubmit = async (data) => {
         setLoading(true)
         try {
-            const payload = transformLeadUpdatePayload(data, editableContactIndex)
+            const payload = transformLeadUpdatePayload(
+                data,
+                editableContactIndex,
+            )
             // Update using the lead ID (not company ID)
             await updateLead(id, payload)
             toast.success(t("leadUpdatedSuccess"))

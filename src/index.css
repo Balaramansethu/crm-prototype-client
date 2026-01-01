@@ -183,9 +183,11 @@
 @layer components {
     .card {
         backdrop-filter: blur(12px);
-        background: linear-gradient(135deg,
-                oklch(1 0.005 240 / 0.95) 0%,
-                oklch(0.99 0.008 235 / 0.98) 100%);
+        background: linear-gradient(
+            135deg,
+            oklch(1 0.005 240 / 0.95) 0%,
+            oklch(0.99 0.008 235 / 0.98) 100%
+        );
         box-shadow:
             0 1px 3px oklch(0.55 0.15 235 / 0.05),
             0 10px 30px oklch(0.55 0.15 235 / 0.08);
@@ -193,9 +195,11 @@
     }
 
     .dark .card {
-        background: linear-gradient(135deg,
-                oklch(0.18 0.025 240 / 0.95) 0%,
-                oklch(0.2 0.03 235 / 0.98) 100%);
+        background: linear-gradient(
+            135deg,
+            oklch(0.18 0.025 240 / 0.95) 0%,
+            oklch(0.2 0.03 235 / 0.98) 100%
+        );
         box-shadow:
             0 1px 3px oklch(0 0 0 / 0.3),
             0 10px 30px oklch(0.68 0.16 235 / 0.15);
@@ -229,12 +233,13 @@
 
 /* Premium button styling */
 @layer components {
-
     button[class*="bg-primary"],
     .btn-primary {
-        background: linear-gradient(135deg,
-                oklch(0.6 0.16 240) 0%,
-                oklch(0.52 0.15 230) 100%);
+        background: linear-gradient(
+            135deg,
+            oklch(0.6 0.16 240) 0%,
+            oklch(0.52 0.15 230) 100%
+        );
         box-shadow:
             0 2px 8px oklch(0.55 0.15 235 / 0.25),
             inset 0 1px 0 oklch(1 0 0 / 0.1);
@@ -243,9 +248,11 @@
 
     button[class*="bg-primary"]:hover,
     .btn-primary:hover {
-        background: linear-gradient(135deg,
-                oklch(0.58 0.17 240) 0%,
-                oklch(0.5 0.16 230) 100%);
+        background: linear-gradient(
+            135deg,
+            oklch(0.58 0.17 240) 0%,
+            oklch(0.5 0.16 230) 100%
+        );
         box-shadow:
             0 4px 12px oklch(0.55 0.15 235 / 0.35),
             inset 0 1px 0 oklch(1 0 0 / 0.15);
@@ -287,9 +294,11 @@
         content: "";
         position: absolute;
         inset: 0;
-        background: linear-gradient(135deg,
-                oklch(0.6 0.16 240 / 0.03) 0%,
-                oklch(0.52 0.15 230 / 0.05) 100%);
+        background: linear-gradient(
+            135deg,
+            oklch(0.6 0.16 240 / 0.03) 0%,
+            oklch(0.52 0.15 230 / 0.05) 100%
+        );
         pointer-events: none;
         border-radius: inherit;
     }
@@ -341,7 +350,6 @@ body.rtl table {
 
 /* Mobile-first responsive utilities */
 @layer utilities {
-
     /* Better touch targets for mobile */
     .touch-target {
         min-height: 44px;
@@ -389,7 +397,7 @@ body.rtl table {
             gap: 0.5rem;
         }
 
-        .mobile-header-actions>* {
+        .mobile-header-actions > * {
             flex: 1;
         }
     }

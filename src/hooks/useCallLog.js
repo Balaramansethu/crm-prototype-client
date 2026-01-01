@@ -44,7 +44,9 @@ export const useUpdateCallLog = () => {
         mutationFn: ({ id, data }) => updateCallLog(id, data),
         onSuccess: (_, variables) => {
             queryClient.invalidateQueries({ queryKey: ["call-logs"] })
-            queryClient.invalidateQueries({ queryKey: ["call-log", variables.id] })
+            queryClient.invalidateQueries({
+                queryKey: ["call-log", variables.id],
+            })
         },
     })
 }

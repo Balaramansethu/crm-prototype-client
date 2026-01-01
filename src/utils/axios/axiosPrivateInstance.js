@@ -26,10 +26,9 @@ axiosPrivateInstance.interceptors.response.use(
             // Trigger global session expired state
             useUserStore.getState().setSessionExpired(true)
             return Promise.reject(error)
-        }
-        else if (
-            (error.response?.data?.errorCode === "2003" &&
-                error.response?.status === 401) &&
+        } else if (
+            error.response?.data?.errorCode === "2003" &&
+            error.response?.status === 401 &&
             !originalReq._retry
         ) {
             originalReq._retry = true

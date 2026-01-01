@@ -75,8 +75,13 @@ const ContactPersonForm = forwardRef(function ContactPersonForm(
                                             disabled={disabled}
                                             className="w-16 h-7 text-center text-sm font-medium"
                                             onChange={(e) => {
-                                                const value = parseInt(e.target.value, 10)
-                                                field.onChange(value > 0 ? value : 1)
+                                                const value = parseInt(
+                                                    e.target.value,
+                                                    10,
+                                                )
+                                                field.onChange(
+                                                    value > 0 ? value : 1,
+                                                )
                                             }}
                                         />
                                     </FormControl>
@@ -140,7 +145,11 @@ const ContactPersonForm = forwardRef(function ContactPersonForm(
                             <FormItem>
                                 <FormLabel>{t("phone")}</FormLabel>
                                 <FormControl>
-                                    <Input {...field} dir="ltr" disabled={disabled} />
+                                    <Input
+                                        {...field}
+                                        dir="ltr"
+                                        disabled={disabled}
+                                    />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>

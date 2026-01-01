@@ -102,7 +102,9 @@ export default function PipelineDetailPage() {
                 ]}
                 title={
                     <div className="flex items-center gap-3">
-                        <span className="truncate">{company.name || t("opportunityDetails")}</span>
+                        <span className="truncate">
+                            {company.name || t("opportunityDetails")}
+                        </span>
                         <span
                             className={cn(
                                 "px-2.5 py-1 rounded-full text-sm font-medium shrink-0",

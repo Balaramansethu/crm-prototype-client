@@ -46,15 +46,20 @@ export default function FormSelect({
             control={control}
             name={name}
             render={({ field }) => {
-                const selectedOption = options.find((o) => o.value === field.value)
-                const triggerColorClass = showBadge && selectedOption?.color ? selectedOption.color : ""
+                const selectedOption = options.find(
+                    (o) => o.value === field.value,
+                )
+                const triggerColorClass =
+                    showBadge && selectedOption?.color
+                        ? selectedOption.color
+                        : ""
 
                 // Extract a "dot" color from the badge color if possible
                 // Lead status colors are like "bg-blue-100 text-blue-900"
                 // We'll try to find a darker version or just use the badge's text color as bg for the dot
                 const getDotClass = (colorStr) => {
                     if (!colorStr) return "bg-slate-400"
-                    
+
                     // Try to match text color first: text-blue-900 -> bg-blue-500
                     const textMatch = colorStr.match(/text-([a-z]+)-([0-9]+)/)
                     if (textMatch) {
@@ -86,7 +91,7 @@ export default function FormSelect({
                                     className={cn(
                                         isRTL ? "text-right" : "",
                                         triggerColorClass,
-                                        showBadge && "font-medium"
+                                        showBadge && "font-medium",
                                     )}
                                 >
                                     <SelectValue placeholder={placeholder} />
@@ -100,7 +105,14 @@ export default function FormSelect({
                                     >
                                         {showBadge && option.color ? (
                                             <div className="flex items-center gap-2">
-                                                <div className={cn("h-2 w-2 rounded-full", getDotClass(option.color))} />
+                                                <div
+                                                    className={cn(
+                                                        "h-2 w-2 rounded-full",
+                                                        getDotClass(
+                                                            option.color,
+                                                        ),
+                                                    )}
+                                                />
                                                 <span className="font-medium text-slate-700">
                                                     {t(option.value)}
                                                 </span>

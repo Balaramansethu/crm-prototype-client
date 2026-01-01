@@ -21,7 +21,16 @@ import {
 } from "@/components/common"
 import { getLeadById } from "@/service/leadsService"
 import { toast } from "sonner"
-import { Edit, Calendar, Clock, User, Users, Building2, Phone, Mail } from "lucide-react"
+import {
+    Edit,
+    Calendar,
+    Clock,
+    User,
+    Users,
+    Building2,
+    Phone,
+    Mail,
+} from "lucide-react"
 
 export default function LeadDetailPage() {
     const { t } = useTranslation()
@@ -34,20 +43,22 @@ export default function LeadDetailPage() {
     // Extract company and main lead from the response
     const company = leadData?.company || {}
     // Main contact is at root level when fetched by lead ID
-    const mainContact = leadData?.name ? {
-        _id: leadData._id,
-        name: leadData.name,
-        email: leadData.email,
-        phone: leadData.phone,
-        status: leadData.status,
-        source: leadData.source,
-        followUp: leadData.followUp,
-        priority: leadData.priority,
-    } : null
+    const mainContact = leadData?.name
+        ? {
+              _id: leadData._id,
+              name: leadData.name,
+              email: leadData.email,
+              phone: leadData.phone,
+              status: leadData.status,
+              source: leadData.source,
+              followUp: leadData.followUp,
+              priority: leadData.priority,
+          }
+        : null
     // Other contacts are in company.leads
     // Filter out placeholder leads (those with no name) and the current lead itself
     const otherContacts = (company?.leads || []).filter(
-        (contact) => contact.name && contact.name.trim() && contact._id !== id
+        (contact) => contact.name && contact.name.trim() && contact._id !== id,
     )
 
     const breadcrumbs = [
@@ -108,7 +119,12 @@ export default function LeadDetailPage() {
             <PageHeader
                 breadcrumbs={[
                     { label: t("leads"), path: "/leads" },
-                    { label: mainContact?.name || company?.name || t("leadDetails") },
+                    {
+                        label:
+                            mainContact?.name ||
+                            company?.name ||
+                            t("leadDetails"),
+                    },
                 ]}
                 title={company?.name || t("leadDetails")}
             />
@@ -155,7 +171,11 @@ export default function LeadDetailPage() {
                                     <Button
                                         variant="ghost"
                                         size="sm"
-                                        onClick={() => navigate(`/leads/edit/${mainContact._id}`)}
+                                        onClick={() =>
+                                            navigate(
+                                                `/leads/edit/${mainContact._id}`,
+                                            )
+                                        }
                                     >
                                         <Edit size={14} />
                                     </Button>
@@ -163,17 +183,35 @@ export default function LeadDetailPage() {
                             </div>
                         </CardHeader>
                         <CardContent className="space-y-3">
-                            <FieldRow label={t("name")} value={mainContact.name} />
+                            <FieldRow
+                                label={t("name")}
+                                value={mainContact.name}
+                            />
                             <Separator />
-                            <FieldRow label={t("email")} value={mainContact.email} />
+                            <FieldRow
+                                label={t("email")}
+                                value={mainContact.email}
+                            />
                             <Separator />
-                            <FieldRow label={t("phone")} value={formatPhone(mainContact.phone)} />
+                            <FieldRow
+                                label={t("phone")}
+                                value={formatPhone(mainContact.phone)}
+                            />
                             <Separator />
-                            <FieldRow label={t("source")} value={mainContact.source} />
+                            <FieldRow
+                                label={t("source")}
+                                value={mainContact.source}
+                            />
                             <Separator />
-                            <FieldRow label={t("followUp")} value={formatDate(mainContact.followUp)} />
+                            <FieldRow
+                                label={t("followUp")}
+                                value={formatDate(mainContact.followUp)}
+                            />
                             <Separator />
-                            <FieldRow label={t("priority")} value={mainContact.priority || 1} />
+                            <FieldRow
+                                label={t("priority")}
+                                value={mainContact.priority || 1}
+                            />
                         </CardContent>
                     </Card>
                 )}
@@ -195,11 +233,20 @@ export default function LeadDetailPage() {
                         <Separator />
                         <FieldRow label={t("email")} value={company?.email} />
                         <Separator />
-                        <FieldRow label={t("phone")} value={formatPhone(company?.phone)} />
+                        <FieldRow
+                            label={t("phone")}
+                            value={formatPhone(company?.phone)}
+                        />
                         <Separator />
-                        <FieldRow label={t("website")} value={company?.website} />
+                        <FieldRow
+                            label={t("website")}
+                            value={company?.website}
+                        />
                         <Separator />
-                        <FieldRow label={t("socialProfile")} value={company?.socialProfile} />
+                        <FieldRow
+                            label={t("socialProfile")}
+                            value={company?.socialProfile}
+                        />
                     </CardContent>
                 </Card>
             </div>
@@ -214,7 +261,8 @@ export default function LeadDetailPage() {
                                     <Users className="h-5 w-5 text-green-500" />
                                 </div>
                                 <CardTitle className="text-lg">
-                                    {t("contactPersons")} ({otherContacts.length})
+                                    {t("contactPersons")} (
+                                    {otherContacts.length})
                                 </CardTitle>
                             </div>
                         </div>
@@ -224,23 +272,38 @@ export default function LeadDetailPage() {
                             <Table>
                                 <TableHeader className="bg-muted/50">
                                     <TableRow>
-                                        <TableHead className="font-semibold">{t("name")}</TableHead>
-                                        <TableHead className="font-semibold">{t("email")}</TableHead>
-                                        <TableHead className="font-semibold">{t("phone")}</TableHead>
-                                        <TableHead className="font-semibold text-center">{t("priority")}</TableHead>
-                                        <TableHead className="font-semibold text-center">{t("status")}</TableHead>
+                                        <TableHead className="font-semibold">
+                                            {t("name")}
+                                        </TableHead>
+                                        <TableHead className="font-semibold">
+                                            {t("email")}
+                                        </TableHead>
+                                        <TableHead className="font-semibold">
+                                            {t("phone")}
+                                        </TableHead>
+                                        <TableHead className="font-semibold text-center">
+                                            {t("priority")}
+                                        </TableHead>
+                                        <TableHead className="font-semibold text-center">
+                                            {t("status")}
+                                        </TableHead>
                                         <TableHead className="w-[60px]"></TableHead>
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
                                     {otherContacts.map((contact, index) => (
-                                        <TableRow key={contact._id || index} className="hover:bg-muted/30">
+                                        <TableRow
+                                            key={contact._id || index}
+                                            className="hover:bg-muted/30"
+                                        >
                                             <TableCell>
                                                 <div className="flex items-center gap-2">
                                                     <div className="flex h-7 w-7 items-center justify-center rounded-full bg-muted">
                                                         <User className="h-3.5 w-3.5 text-muted-foreground" />
                                                     </div>
-                                                    <span className="font-medium">{contact.name}</span>
+                                                    <span className="font-medium">
+                                                        {contact.name}
+                                                    </span>
                                                 </div>
                                             </TableCell>
                                             <TableCell>
@@ -250,24 +313,34 @@ export default function LeadDetailPage() {
                                                 </div>
                                             </TableCell>
                                             <TableCell>
-                                                <div className="flex items-center gap-1.5 text-sm text-muted-foreground font-mono" dir="ltr">
+                                                <div
+                                                    className="flex items-center gap-1.5 text-sm text-muted-foreground font-mono"
+                                                    dir="ltr"
+                                                >
                                                     <Phone className="h-3.5 w-3.5" />
                                                     {formatPhone(contact.phone)}
                                                 </div>
                                             </TableCell>
                                             <TableCell className="text-center">
                                                 <span className="inline-flex items-center justify-center h-6 w-6 rounded-full bg-primary/10 text-primary text-sm font-medium">
-                                                    {contact.priority || index + 1}
+                                                    {contact.priority ||
+                                                        index + 1}
                                                 </span>
                                             </TableCell>
                                             <TableCell className="text-center">
-                                                <StatusBadge status={contact.status} />
+                                                <StatusBadge
+                                                    status={contact.status}
+                                                />
                                             </TableCell>
                                             <TableCell>
                                                 <Button
                                                     variant="ghost"
                                                     size="sm"
-                                                    onClick={() => navigate(`/leads/edit/${contact._id}`)}
+                                                    onClick={() =>
+                                                        navigate(
+                                                            `/leads/edit/${contact._id}`,
+                                                        )
+                                                    }
                                                 >
                                                     <Edit size={14} />
                                                 </Button>

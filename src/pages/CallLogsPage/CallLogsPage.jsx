@@ -119,10 +119,7 @@ export default function CallLogsPage() {
             return <ArrowUpDown className="ml-2 h-3 w-3 opacity-30" />
         return (
             <ArrowUpDown
-                className={cn(
-                    "ml-2 h-3 w-3",
-                    order === "desc" && "rotate-180",
-                )}
+                className={cn("ml-2 h-3 w-3", order === "desc" && "rotate-180")}
             />
         )
     }
@@ -226,7 +223,13 @@ export default function CallLogsPage() {
                     <div className="flex flex-1 flex-col gap-3 lg:flex-row lg:items-center">
                         {/* Outcome Filter */}
                         <div className="md:w-[180px]">
-                            <Select value={outcome} onValueChange={(val) => { setOutcome(val); setPage(1); }}>
+                            <Select
+                                value={outcome}
+                                onValueChange={(val) => {
+                                    setOutcome(val)
+                                    setPage(1)
+                                }}
+                            >
                                 <SelectTrigger className="h-9 bg-muted/50 focus:bg-background border-input">
                                     <div className="flex items-center gap-2">
                                         <Filter className="h-3.5 w-3.5 text-gray-500" />
@@ -249,11 +252,16 @@ export default function CallLogsPage() {
                                         {t("all")}
                                     </SelectItem>
                                     {CALL_OUTCOME_OPTIONS.map((option) => (
-                                        <SelectItem key={option.value} value={option.value}>
-                                            <span className={cn(
-                                                "px-2 py-0.5 rounded-full text-xs font-medium",
-                                                option.color
-                                            )}>
+                                        <SelectItem
+                                            key={option.value}
+                                            value={option.value}
+                                        >
+                                            <span
+                                                className={cn(
+                                                    "px-2 py-0.5 rounded-full text-xs font-medium",
+                                                    option.color,
+                                                )}
+                                            >
                                                 {t(option.label)}
                                             </span>
                                         </SelectItem>
@@ -370,7 +378,9 @@ export default function CallLogsPage() {
                                     <TableRow
                                         key={log._id}
                                         className="hover:bg-muted/30 cursor-pointer"
-                                        onClick={() => navigate(`/call-logs/${log._id}`)}
+                                        onClick={() =>
+                                            navigate(`/call-logs/${log._id}`)
+                                        }
                                     >
                                         <TableCell className="font-bold text-black pl-4">
                                             {getCompanyName(log.lead)}
@@ -379,16 +389,21 @@ export default function CallLogsPage() {
                                             {getContactName(log.lead)}
                                         </TableCell>
                                         <TableCell className="hidden md:table-cell">
-                                            <div className="flex items-center gap-1.5 text-sm text-black font-mono" dir="ltr">
+                                            <div
+                                                className="flex items-center gap-1.5 text-sm text-black font-mono"
+                                                dir="ltr"
+                                            >
                                                 <Phone className="h-3.5 w-3.5 text-muted-foreground" />
                                                 {getLeadPhone(log.lead)}
                                             </div>
                                         </TableCell>
                                         <TableCell className="text-center">
-                                            <span className={cn(
-                                                "px-2.5 py-1 rounded-full text-xs font-semibold",
-                                                getBadgeColor(log.outcome)
-                                            )}>
+                                            <span
+                                                className={cn(
+                                                    "px-2.5 py-1 rounded-full text-xs font-semibold",
+                                                    getBadgeColor(log.outcome),
+                                                )}
+                                            >
                                                 {getOutcomeText(log.outcome)}
                                             </span>
                                         </TableCell>
@@ -401,24 +416,40 @@ export default function CallLogsPage() {
                                         <TableCell className="hidden md:table-cell text-black text-sm">
                                             {formatDuration(log.callDuration)}
                                         </TableCell>
-                                        <TableCell onClick={(e) => e.stopPropagation()}>
+                                        <TableCell
+                                            onClick={(e) => e.stopPropagation()}
+                                        >
                                             <DropdownMenu>
                                                 <DropdownMenuTrigger asChild>
-                                                    <Button variant="ghost" className="h-8 w-8 p-0">
-                                                        <span className="sr-only">Open menu</span>
+                                                    <Button
+                                                        variant="ghost"
+                                                        className="h-8 w-8 p-0"
+                                                    >
+                                                        <span className="sr-only">
+                                                            Open menu
+                                                        </span>
                                                         <MoreHorizontal className="h-4 w-4" />
                                                     </Button>
                                                 </DropdownMenuTrigger>
                                                 <DropdownMenuContent align="end">
                                                     <DropdownMenuItem
-                                                        onClick={() => navigate(`/call-logs/edit/${log._id}`)}
+                                                        onClick={() =>
+                                                            navigate(
+                                                                `/call-logs/edit/${log._id}`,
+                                                            )
+                                                        }
                                                     >
                                                         <Pencil className="mr-2 h-4 w-4" />
                                                         {t("edit")}
                                                     </DropdownMenuItem>
-                                                    {user.role !== "employee" && (
+                                                    {user.role !==
+                                                        "employee" && (
                                                         <DropdownMenuItem
-                                                            onClick={() => handleDeleteClick(log._id)}
+                                                            onClick={() =>
+                                                                handleDeleteClick(
+                                                                    log._id,
+                                                                )
+                                                            }
                                                             className="text-destructive focus:text-destructive"
                                                         >
                                                             <Trash2 className="mr-2 h-4 w-4" />
@@ -439,8 +470,14 @@ export default function CallLogsPage() {
                 <div className="flex flex-col sm:flex-row items-center justify-between gap-3 p-3 sm:p-4 border-t">
                     <div className="text-sm text-muted-foreground">
                         {t("showingLeads", {
-                            start: pagination.total > 0 ? (pagination.page - 1) * limit + 1 : 0,
-                            end: Math.min(pagination.page * limit, pagination.total),
+                            start:
+                                pagination.total > 0
+                                    ? (pagination.page - 1) * limit + 1
+                                    : 0,
+                            end: Math.min(
+                                pagination.page * limit,
+                                pagination.total,
+                            ),
                             total: pagination.total,
                         })}
                     </div>
@@ -449,10 +486,17 @@ export default function CallLogsPage() {
                             <Button
                                 variant="outline"
                                 size="sm"
-                                onClick={() => setPage((p) => Math.max(1, p - 1))}
+                                onClick={() =>
+                                    setPage((p) => Math.max(1, p - 1))
+                                }
                                 disabled={pagination.page <= 1}
                             >
-                                <ChevronLeft className={cn("h-4 w-4", isRTL && "rotate-180")} />
+                                <ChevronLeft
+                                    className={cn(
+                                        "h-4 w-4",
+                                        isRTL && "rotate-180",
+                                    )}
+                                />
                                 {t("previous")}
                             </Button>
                             <span className="text-sm text-muted-foreground px-2">
@@ -464,11 +508,22 @@ export default function CallLogsPage() {
                             <Button
                                 variant="outline"
                                 size="sm"
-                                onClick={() => setPage((p) => Math.min(pagination.totalPages, p + 1))}
-                                disabled={pagination.page >= pagination.totalPages}
+                                onClick={() =>
+                                    setPage((p) =>
+                                        Math.min(pagination.totalPages, p + 1),
+                                    )
+                                }
+                                disabled={
+                                    pagination.page >= pagination.totalPages
+                                }
                             >
                                 {t("next")}
-                                <ChevronRight className={cn("h-4 w-4", isRTL && "rotate-180")} />
+                                <ChevronRight
+                                    className={cn(
+                                        "h-4 w-4",
+                                        isRTL && "rotate-180",
+                                    )}
+                                />
                             </Button>
                         </div>
                     )}

@@ -63,7 +63,8 @@ export default function FormDatePicker({
                             className={cn(
                                 "h-10 w-full rounded-md border px-3 text-sm",
                                 isRTL ? "text-right" : "",
-                                disabled && "opacity-50 cursor-not-allowed bg-muted",
+                                disabled &&
+                                    "opacity-50 cursor-not-allowed bg-muted",
                             )}
                             wrapperClassName="w-full"
                             showPopperArrow={false}

@@ -35,7 +35,7 @@ export default function App() {
         <QueryClientProvider client={queryClient}>
             <AppRoutes />
             <ExpirationModal />
-            
+
             <Toaster
                 position={currentLang === "ar" ? "top-left" : "top-right"}
                 richColors

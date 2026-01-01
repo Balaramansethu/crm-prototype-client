@@ -52,7 +52,10 @@ export default function EditCallLogPage() {
             }
 
             if (data.followUp) {
-                payload.followUp = format(data.followUp, "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+                payload.followUp = format(
+                    data.followUp,
+                    "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
+                )
             }
 
             await updateCallLog(id, payload)

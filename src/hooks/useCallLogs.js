@@ -20,20 +20,29 @@ export const useCallLogs = (params = {}) => {
             // API response: { data: { callLogs: [], info: { total, totalPages } } }
             // or: { callLogs: [], info: { total, totalPages } }
             const responseData = response.data || response
-            
+
             // Extract call logs array
-            const callLogs = responseData.callLogs || responseData.data || responseData || []
-            
+            const callLogs =
+                responseData.callLogs || responseData.data || responseData || []
+
             // Extract pagination info (could be 'info' or 'pagination')
             const info = responseData.info || responseData.pagination || {}
-            
+
             return {
                 callLogs: Array.isArray(callLogs) ? callLogs : [],
                 pagination: {
                     page: info.page || params.page || 1,
                     limit: info.limit || params.limit || 10,
-                    total: info.total || (Array.isArray(callLogs) ? callLogs.length : 0),
-                    totalPages: info.totalPages || Math.ceil((info.total || callLogs.length) / (params.limit || 10)) || 1,
+                    total:
+                        info.total ||
+                        (Array.isArray(callLogs) ? callLogs.length : 0),
+                    totalPages:
+                        info.totalPages ||
+                        Math.ceil(
+                            (info.total || callLogs.length) /
+                                (params.limit || 10),
+                        ) ||
+                        1,
                 },
             }
         },

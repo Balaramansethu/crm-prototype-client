@@ -66,14 +66,20 @@ export const useUpdatePipelineStage = () => {
                 if (!old) return old
 
                 // Handle nested response structure: { data: { pipelines: [...] } }
-                const pipelinesArray = old.data?.pipelines || old.pipelines || old.data || []
-                const updatedPipelines = Array.isArray(pipelinesArray) 
-                    ? pipelinesArray.map((p) => p._id === id ? { ...p, opportunityStage } : p)
+                const pipelinesArray =
+                    old.data?.pipelines || old.pipelines || old.data || []
+                const updatedPipelines = Array.isArray(pipelinesArray)
+                    ? pipelinesArray.map((p) =>
+                          p._id === id ? { ...p, opportunityStage } : p,
+                      )
                     : []
 
                 // Return in the same structure
                 if (old.data?.pipelines) {
-                    return { ...old, data: { ...old.data, pipelines: updatedPipelines } }
+                    return {
+                        ...old,
+                        data: { ...old.data, pipelines: updatedPipelines },
+                    }
                 }
                 if (old.pipelines) {
                     return { ...old, pipelines: updatedPipelines }

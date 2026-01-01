@@ -111,7 +111,10 @@ export default function CommonDialog({
                                 </div>
                             )}
                             <DialogTitle
-                                className={cn("text-lg sm:text-xl font-bold", headerColor)}
+                                className={cn(
+                                    "text-lg sm:text-xl font-bold",
+                                    headerColor,
+                                )}
                             >
                                 {title}
                             </DialogTitle>
@@ -128,7 +131,10 @@ export default function CommonDialog({
                             )}
                             <div className="flex flex-col gap-1">
                                 <DialogTitle
-                                    className={cn("text-start text-base sm:text-lg", headerColor)}
+                                    className={cn(
+                                        "text-start text-base sm:text-lg",
+                                        headerColor,
+                                    )}
                                 >
                                     {title}
                                 </DialogTitle>
@@ -145,7 +151,9 @@ export default function CommonDialog({
                 <DialogFooter
                     className={cn(
                         "mt-4 sm:mt-6",
-                        isCentered && !hideCancel ? "grid grid-cols-2 gap-2 sm:gap-3 sm:space-x-0" : "gap-2",
+                        isCentered && !hideCancel
+                            ? "grid grid-cols-2 gap-2 sm:gap-3 sm:space-x-0"
+                            : "gap-2",
                     )}
                 >
                     {!hideCancel && (

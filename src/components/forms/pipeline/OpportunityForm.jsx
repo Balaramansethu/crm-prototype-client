@@ -52,9 +52,15 @@ export default function OpportunityForm({
                 let companiesList = data.companies || []
 
                 // In edit mode, ensure the current company is in the list
-                if (isEditMode && initialData?.company && typeof initialData.company === "object") {
+                if (
+                    isEditMode &&
+                    initialData?.company &&
+                    typeof initialData.company === "object"
+                ) {
                     const currentCompany = initialData.company
-                    const companyExists = companiesList.some((c) => c._id === currentCompany._id)
+                    const companyExists = companiesList.some(
+                        (c) => c._id === currentCompany._id,
+                    )
                     if (!companyExists) {
                         companiesList = [currentCompany, ...companiesList]
                     }
@@ -233,10 +239,10 @@ export default function OpportunityForm({
                             name="opportunityStage"
                             label={t("opportunityStage")}
                             placeholder={t("selectStage")}
-                            options={PIPELINE_STAGES.map(stage => ({
+                            options={PIPELINE_STAGES.map((stage) => ({
                                 value: stage.id,
                                 label: t(stage.id) || stage.label,
-                                color: stage.color
+                                color: stage.color,
                             }))}
                             showBadge
                         />

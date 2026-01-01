@@ -26,7 +26,10 @@ import { useNavigate } from "react-router-dom"
 import { useMemo, useState, useEffect } from "react"
 import { Loader2 } from "lucide-react"
 import { cn } from "@/lib/utils"
-import { searchCompanies, searchLeadsByCompany } from "@/service/callLogsService"
+import {
+    searchCompanies,
+    searchLeadsByCompany,
+} from "@/service/callLogsService"
 
 export default function CallLogForm({
     onSubmit,
@@ -92,22 +95,32 @@ export default function CallLogForm({
                 const response = await searchCompanies({ limit: 100 })
                 const data = response.data || response
                 let companiesList = data.companies || []
-                
+
                 // In edit mode, ensure the current company is in the list
-                if (isEditMode && initialData?.lead?.company && typeof initialData.lead.company === 'object') {
+                if (
+                    isEditMode &&
+                    initialData?.lead?.company &&
+                    typeof initialData.lead.company === "object"
+                ) {
                     const currentCompany = initialData.lead.company
-                    const companyExists = companiesList.some(c => c._id === currentCompany._id)
+                    const companyExists = companiesList.some(
+                        (c) => c._id === currentCompany._id,
+                    )
                     if (!companyExists) {
                         companiesList = [currentCompany, ...companiesList]
                     }
                 }
-                
+
                 setCompanies(companiesList)
                 console.log("Companies loaded:", companiesList)
             } catch (error) {
                 console.error("Failed to fetch companies:", error)
                 // In edit mode, still show the current company
-                if (isEditMode && initialData?.lead?.company && typeof initialData.lead.company === 'object') {
+                if (
+                    isEditMode &&
+                    initialData?.lead?.company &&
+                    typeof initialData.lead.company === "object"
+                ) {
                     setCompanies([initialData.lead.company])
                 }
             } finally {
@@ -131,72 +144,100 @@ export default function CallLogForm({
             try {
                 const response = await searchLeadsByCompany(selectedCompanyId)
                 const data = response.data || response
-                const rawLeadsArray = Array.isArray(data) ? data : data.leads || []
-                
+                const rawLeadsArray = Array.isArray(data)
+                    ? data
+                    : data.leads || []
+
                 // Try to get company info from response (might include phone)
                 let companyFromResponse = data.company || null
-                
+
                 // If no company in response, try to extract from first lead's populated company
                 if (!companyFromResponse && rawLeadsArray.length > 0) {
                     const firstLead = rawLeadsArray[0]
-                    if (firstLead.company && typeof firstLead.company === 'object') {
+                    if (
+                        firstLead.company &&
+                        typeof firstLead.company === "object"
+                    ) {
                         companyFromResponse = firstLead.company
                     }
                 }
-                
+
                 // Filter out leads with null/empty names (company-only entries)
-                let leadsArray = rawLeadsArray.filter(lead => lead.name && lead.name.trim())
-                
+                let leadsArray = rawLeadsArray.filter(
+                    (lead) => lead.name && lead.name.trim(),
+                )
+
                 // In edit mode, ensure the current lead is in the list (if it has a name)
-                if (isEditMode && initialData?.lead && typeof initialData.lead === 'object') {
+                if (
+                    isEditMode &&
+                    initialData?.lead &&
+                    typeof initialData.lead === "object"
+                ) {
                     const currentLead = initialData.lead
                     if (currentLead.name && currentLead.name.trim()) {
-                        const leadExists = leadsArray.some(l => l._id === currentLead._id)
+                        const leadExists = leadsArray.some(
+                            (l) => l._id === currentLead._id,
+                        )
                         if (!leadExists) {
                             leadsArray = [currentLead, ...leadsArray]
                         }
                     }
                 }
-                
+
                 setLeads(leadsArray)
-                
+
                 // Get company phone - try from response first, then from companies list
                 let companyPhoneData = null
-                
+
                 // Helper to extract phone from object
                 const extractPhone = (obj) => {
                     if (!obj) return null
                     if (obj.phone?.number) return obj.phone
-                    if (obj.phoneNumber) return { number: obj.phoneNumber, extension: obj.phoneExtension || "" }
+                    if (obj.phoneNumber)
+                        return {
+                            number: obj.phoneNumber,
+                            extension: obj.phoneExtension || "",
+                        }
                     return null
                 }
 
                 companyPhoneData = extractPhone(companyFromResponse)
 
                 if (!companyPhoneData) {
-                    const selectedCompany = companies.find(c => c._id === selectedCompanyId)
+                    const selectedCompany = companies.find(
+                        (c) => c._id === selectedCompanyId,
+                    )
                     companyPhoneData = extractPhone(selectedCompany)
                 }
-                
+
                 if (companyPhoneData) {
-                    setCompanyPhone(`${companyPhoneData.extension || ""} ${companyPhoneData.number}`.trim())
+                    setCompanyPhone(
+                        `${companyPhoneData.extension || ""} ${companyPhoneData.number}`.trim(),
+                    )
                 }
-                
+
                 // If no valid leads (with names), show new lead field
                 if (leadsArray.length === 0 && !selectedLeadId) {
                     setShowNewLeadField(true)
                     // Show company phone when entering new lead
                     if (companyPhoneData) {
-                        setPhoneDisplay(`${companyPhoneData.extension || ""} ${companyPhoneData.number}`.trim())
+                        setPhoneDisplay(
+                            `${companyPhoneData.extension || ""} ${companyPhoneData.number}`.trim(),
+                        )
                     }
                 } else {
                     setShowNewLeadField(false)
                 }
             } catch (error) {
                 console.error("Failed to fetch leads:", error)
-                
+
                 // In edit mode, still show the current lead (if it has a name)
-                if (isEditMode && initialData?.lead && typeof initialData.lead === 'object' && initialData.lead.name) {
+                if (
+                    isEditMode &&
+                    initialData?.lead &&
+                    typeof initialData.lead === "object" &&
+                    initialData.lead.name
+                ) {
                     setLeads([initialData.lead])
                     setShowNewLeadField(false)
                 } else {
@@ -204,10 +245,14 @@ export default function CallLogForm({
                     if (!selectedLeadId) {
                         setShowNewLeadField(true)
                         // Show company phone
-                        const selectedCompany = companies.find(c => c._id === selectedCompanyId)
+                        const selectedCompany = companies.find(
+                            (c) => c._id === selectedCompanyId,
+                        )
                         if (selectedCompany?.phone?.number) {
                             const phone = selectedCompany.phone
-                            setPhoneDisplay(`${phone.extension || ""} ${phone.number}`.trim())
+                            setPhoneDisplay(
+                                `${phone.extension || ""} ${phone.number}`.trim(),
+                            )
                         }
                     }
                 }
@@ -224,7 +269,9 @@ export default function CallLogForm({
             const selectedLead = leads.find((l) => l._id === selectedLeadId)
             if (selectedLead?.phone?.number) {
                 const phone = selectedLead.phone
-                setPhoneDisplay(`${phone.extension || ""} ${phone.number}`.trim())
+                setPhoneDisplay(
+                    `${phone.extension || ""} ${phone.number}`.trim(),
+                )
             } else {
                 setPhoneDisplay("")
             }
@@ -238,12 +285,19 @@ export default function CallLogForm({
             setPhoneDisplay("")
             form.setValue("lead", "")
         }
-    }, [selectedLeadId, leads, form, showNewLeadField, companyPhone, selectedCompanyId])
+    }, [
+        selectedLeadId,
+        leads,
+        form,
+        showNewLeadField,
+        companyPhone,
+        selectedCompanyId,
+    ])
 
     // Initialize edit mode with existing data (wait for companies to load)
     useEffect(() => {
         if (!initialData || loadingCompanies) return
-        
+
         // Calculate duration values
         const durationMins = initialData.callDuration
             ? Math.floor(initialData.callDuration / 60)
@@ -251,14 +305,14 @@ export default function CallLogForm({
         const durationSecs = initialData.callDuration
             ? initialData.callDuration % 60
             : ""
-        
+
         // Format callStartTime to HH:mm
         let timeValue = ""
         if (initialData.callStartTime) {
             try {
                 const date = new Date(initialData.callStartTime)
-                const hours = String(date.getHours()).padStart(2, '0')
-                const mins = String(date.getMinutes()).padStart(2, '0')
+                const hours = String(date.getHours()).padStart(2, "0")
+                const mins = String(date.getMinutes()).padStart(2, "0")
                 timeValue = `${hours}:${mins}`
             } catch {
                 timeValue = ""
@@ -287,13 +341,17 @@ export default function CallLogForm({
                     setSelectedCompanyId(companyId)
                 }
                 setSelectedLeadId(lead._id)
-                
+
                 // Set phone display
                 if (lead.phone?.number) {
-                    setPhoneDisplay(`${lead.phone.extension || ""} ${lead.phone.number}`.trim())
+                    setPhoneDisplay(
+                        `${lead.phone.extension || ""} ${lead.phone.number}`.trim(),
+                    )
                 } else if (lead.contact?.phone?.number) {
                     const phone = lead.contact.phone
-                    setPhoneDisplay(`${phone.extension || ""} ${phone.number}`.trim())
+                    setPhoneDisplay(
+                        `${phone.extension || ""} ${phone.number}`.trim(),
+                    )
                 }
             }
         }
@@ -317,9 +375,9 @@ export default function CallLogForm({
         setSelectedLeadId("")
         setNewLeadName("")
         form.setValue("lead", "")
-        
+
         // Try to set phone display immediately from company list
-        const selectedCompany = companies.find(c => c._id === companyId)
+        const selectedCompany = companies.find((c) => c._id === companyId)
         if (selectedCompany?.phone?.number) {
             const phone = selectedCompany.phone
             setPhoneDisplay(`${phone.extension || ""} ${phone.number}`.trim())
@@ -373,7 +431,7 @@ export default function CallLogForm({
         // Validate durationMinutes and durationSeconds
         const minutes = parseInt(data.durationMinutes, 10) || 0
         const seconds = parseInt(data.durationSeconds, 10) || 0
-        
+
         if (minutes === 0 && seconds === 0) {
             form.setError("durationMinutes", {
                 type: "required",
@@ -383,7 +441,9 @@ export default function CallLogForm({
         }
 
         // Calculate total duration in seconds
-        const totalDurationSeconds = (parseInt(data.durationMinutes, 10) || 0) * 60 + (parseInt(data.durationSeconds, 10) || 0)
+        const totalDurationSeconds =
+            (parseInt(data.durationMinutes, 10) || 0) * 60 +
+            (parseInt(data.durationSeconds, 10) || 0)
 
         // Build callStartTime with current date and selected time
         let formattedCallStartTime = null
@@ -454,7 +514,8 @@ export default function CallLogForm({
                                     <SelectTrigger
                                         className={cn(
                                             isRTL ? "text-right" : "",
-                                            isEditMode && "bg-muted !cursor-not-allowed",
+                                            isEditMode &&
+                                                "bg-muted !cursor-not-allowed",
                                         )}
                                     >
                                         <SelectValue
@@ -490,31 +551,42 @@ export default function CallLogForm({
                                         <Select
                                             onValueChange={handleLeadChange}
                                             value={selectedLeadId}
-                                            disabled={isEditMode || loadingLeads}
+                                            disabled={
+                                                isEditMode || loadingLeads
+                                            }
                                         >
                                             <FormControl>
                                                 <SelectTrigger
                                                     className={cn(
-                                                        isRTL ? "text-right" : "",
-                                                        isEditMode && "bg-muted !cursor-not-allowed",
+                                                        isRTL
+                                                            ? "text-right"
+                                                            : "",
+                                                        isEditMode &&
+                                                            "bg-muted !cursor-not-allowed",
                                                     )}
                                                 >
                                                     <SelectValue
                                                         placeholder={
                                                             loadingLeads
                                                                 ? t("loading")
-                                                                : t("selectLead")
+                                                                : t(
+                                                                      "selectLead",
+                                                                  )
                                                         }
                                                     />
                                                 </SelectTrigger>
                                             </FormControl>
-                                            <SelectContent dir={isRTL ? "rtl" : "ltr"}>
+                                            <SelectContent
+                                                dir={isRTL ? "rtl" : "ltr"}
+                                            >
                                                 {leads.map((lead) => (
                                                     <SelectItem
                                                         key={lead._id}
                                                         value={lead._id}
                                                     >
-                                                        {lead.name || lead.email || "-"}
+                                                        {lead.name ||
+                                                            lead.email ||
+                                                            "-"}
                                                     </SelectItem>
                                                 ))}
                                             </SelectContent>
@@ -529,12 +601,15 @@ export default function CallLogForm({
                         {selectedCompanyId && showNewLeadField && (
                             <FormItem>
                                 <FormLabel>
-                                    {t("leadName")} <span className="text-destructive">*</span>
+                                    {t("leadName")}{" "}
+                                    <span className="text-destructive">*</span>
                                 </FormLabel>
                                 <FormControl>
                                     <Input
                                         value={newLeadName}
-                                        onChange={(e) => setNewLeadName(e.target.value)}
+                                        onChange={(e) =>
+                                            setNewLeadName(e.target.value)
+                                        }
                                         placeholder={t("enterLeadName")}
                                         className={isRTL ? "text-right" : ""}
                                     />
@@ -566,10 +641,10 @@ export default function CallLogForm({
                             name="outcome"
                             label={t("callOutcome")}
                             placeholder={t("selectOutcome")}
-                            options={CALL_OUTCOME_OPTIONS.map(opt => ({ 
-                                ...opt, 
-                                value: opt.value, 
-                                label: t(opt.label) 
+                            options={CALL_OUTCOME_OPTIONS.map((opt) => ({
+                                ...opt,
+                                value: opt.value,
+                                label: t(opt.label),
                             }))}
                             showBadge
                         />
@@ -595,7 +670,7 @@ export default function CallLogForm({
                                             type="time"
                                             className={cn(
                                                 "w-full",
-                                                isRTL ? "text-right" : ""
+                                                isRTL ? "text-right" : "",
                                             )}
                                         />
                                     </FormControl>
@@ -623,14 +698,31 @@ export default function CallLogForm({
                                                         placeholder="0"
                                                         className={cn(
                                                             "pr-12",
-                                                            isRTL ? "text-right pl-12 pr-3" : ""
+                                                            isRTL
+                                                                ? "text-right pl-12 pr-3"
+                                                                : "",
                                                         )}
-                                                        onChange={(e) => field.onChange(e.target.value ? parseInt(e.target.value, 10) : "")}
+                                                        onChange={(e) =>
+                                                            field.onChange(
+                                                                e.target.value
+                                                                    ? parseInt(
+                                                                          e
+                                                                              .target
+                                                                              .value,
+                                                                          10,
+                                                                      )
+                                                                    : "",
+                                                            )
+                                                        }
                                                     />
-                                                    <span className={cn(
-                                                        "absolute top-1/2 -translate-y-1/2 text-sm text-muted-foreground",
-                                                        isRTL ? "left-3" : "right-3"
-                                                    )}>
+                                                    <span
+                                                        className={cn(
+                                                            "absolute top-1/2 -translate-y-1/2 text-sm text-muted-foreground",
+                                                            isRTL
+                                                                ? "left-3"
+                                                                : "right-3",
+                                                        )}
+                                                    >
                                                         {t("min")}
                                                     </span>
                                                 </div>
@@ -653,14 +745,31 @@ export default function CallLogForm({
                                                         placeholder="0"
                                                         className={cn(
                                                             "pr-12",
-                                                            isRTL ? "text-right pl-12 pr-3" : ""
+                                                            isRTL
+                                                                ? "text-right pl-12 pr-3"
+                                                                : "",
                                                         )}
-                                                        onChange={(e) => field.onChange(e.target.value ? parseInt(e.target.value, 10) : "")}
+                                                        onChange={(e) =>
+                                                            field.onChange(
+                                                                e.target.value
+                                                                    ? parseInt(
+                                                                          e
+                                                                              .target
+                                                                              .value,
+                                                                          10,
+                                                                      )
+                                                                    : "",
+                                                            )
+                                                        }
                                                     />
-                                                    <span className={cn(
-                                                        "absolute top-1/2 -translate-y-1/2 text-sm text-muted-foreground",
-                                                        isRTL ? "left-3" : "right-3"
-                                                    )}>
+                                                    <span
+                                                        className={cn(
+                                                            "absolute top-1/2 -translate-y-1/2 text-sm text-muted-foreground",
+                                                            isRTL
+                                                                ? "left-3"
+                                                                : "right-3",
+                                                        )}
+                                                    >
                                                         {t("sec")}
                                                     </span>
                                                 </div>

@@ -100,10 +100,12 @@ export default function LeadsPage() {
         rawLeads.forEach((item) => {
             const company = item.company || {}
             const contactLeads = item.leads || []
-            
+
             // Filter out leads with null/empty names (company-only placeholder entries)
-            const validLeads = contactLeads.filter(lead => lead.name && lead.name.trim())
-            
+            const validLeads = contactLeads.filter(
+                (lead) => lead.name && lead.name.trim(),
+            )
+
             if (validLeads.length > 0) {
                 validLeads.forEach((lead, index) => {
                     flattened.push({
@@ -438,9 +440,7 @@ export default function LeadsPage() {
                                         key={`${lead.companyId}-${lead.leadIndex}`}
                                         className="hover:bg-muted/30 text-black cursor-pointer"
                                         onClick={() =>
-                                            navigate(
-                                                `/leads/${lead._id}`,
-                                            )
+                                            navigate(`/leads/${lead._id}`)
                                         }
                                     >
                                         <TableCell className="font-bold text-black pl-4">
@@ -448,7 +448,9 @@ export default function LeadsPage() {
                                         </TableCell>
                                         <TableCell className="text-black">
                                             {lead.isCompanyOnly ? (
-                                                <span className="text-gray-400 italic">{t("noLeads")}</span>
+                                                <span className="text-gray-400 italic">
+                                                    {t("noLeads")}
+                                                </span>
                                             ) : (
                                                 lead.contact?.name || "-"
                                             )}
@@ -457,25 +459,31 @@ export default function LeadsPage() {
                                             {lead.source || "-"}
                                         </TableCell>
                                         <TableCell className="hidden lg:table-cell text-black text-sm">
-                                            {lead.contact?.email || lead.company?.email || "-"}
+                                            {lead.contact?.email ||
+                                                lead.company?.email ||
+                                                "-"}
                                         </TableCell>
                                         <TableCell className="hidden xl:table-cell text-sm text-black font-mono">
                                             <span dir="ltr">
                                                 {lead.isCompanyOnly ? (
                                                     // Show company phone for company-only rows
                                                     <>
-                                                        {lead.company?.phone?.extension
+                                                        {lead.company?.phone
+                                                            ?.extension
                                                             ? `${lead.company.phone.extension} `
                                                             : ""}
-                                                        {lead.company?.phone?.number || "-"}
+                                                        {lead.company?.phone
+                                                            ?.number || "-"}
                                                     </>
                                                 ) : (
                                                     // Show contact phone for lead rows
                                                     <>
-                                                        {lead.contact?.phone?.extension
+                                                        {lead.contact?.phone
+                                                            ?.extension
                                                             ? `${lead.contact.phone.extension} `
                                                             : ""}
-                                                        {lead.contact?.phone?.number || "-"}
+                                                        {lead.contact?.phone
+                                                            ?.number || "-"}
                                                     </>
                                                 )}
                                             </span>

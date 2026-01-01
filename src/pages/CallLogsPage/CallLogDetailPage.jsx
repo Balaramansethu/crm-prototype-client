@@ -13,7 +13,17 @@ import {
 } from "@/components/common"
 import { getCallLogById } from "@/service/callLogsService"
 import { toast } from "sonner"
-import { Edit, Calendar, Clock, User, Building2, Phone, Mail, MessageSquare, Globe } from "lucide-react"
+import {
+    Edit,
+    Calendar,
+    Clock,
+    User,
+    Building2,
+    Phone,
+    Mail,
+    MessageSquare,
+    Globe,
+} from "lucide-react"
 import { cn } from "@/lib/utils"
 
 export default function CallLogDetailPage() {
@@ -89,10 +99,20 @@ export default function CallLogDetailPage() {
     const getOutcomeBadge = (outcome) => {
         if (!outcome) return { color: "bg-gray-100 text-gray-700", text: "-" }
         const lower = outcome.toLowerCase()
-        if (lower === "interested") return { color: "bg-green-100 text-green-700", text: t("interested") }
-        if (lower === "not_interested") return { color: "bg-red-100 text-red-700", text: t("notInterested") }
-        if (lower === "contacted") return { color: "bg-blue-100 text-blue-700", text: t("contacted") }
-        if (lower === "done") return { color: "bg-gray-100 text-gray-700", text: t("done") }
+        if (lower === "interested")
+            return {
+                color: "bg-green-100 text-green-700",
+                text: t("interested"),
+            }
+        if (lower === "not_interested")
+            return {
+                color: "bg-red-100 text-red-700",
+                text: t("notInterested"),
+            }
+        if (lower === "contacted")
+            return { color: "bg-blue-100 text-blue-700", text: t("contacted") }
+        if (lower === "done")
+            return { color: "bg-gray-100 text-gray-700", text: t("done") }
         return { color: "bg-gray-100 text-gray-700", text: outcome }
     }
 
@@ -112,7 +132,10 @@ export default function CallLogDetailPage() {
             <PageHeader
                 breadcrumbs={[
                     { label: t("callLogs"), path: "/call-logs" },
-                    { label: lead?.name || company?.name || t("callLogDetails") },
+                    {
+                        label:
+                            lead?.name || company?.name || t("callLogDetails"),
+                    },
                 ]}
                 title={t("callLogDetails")}
                 actions={
@@ -165,23 +188,38 @@ export default function CallLogDetailPage() {
                     </CardHeader>
                     <CardContent className="space-y-3">
                         <div className="flex items-center justify-between py-2">
-                            <span className="text-sm text-muted-foreground">{t("outcome")}</span>
-                            <span className={cn(
-                                "px-3 py-1 rounded-full text-sm font-semibold",
-                                outcomeBadge.color
-                            )}>
+                            <span className="text-sm text-muted-foreground">
+                                {t("outcome")}
+                            </span>
+                            <span
+                                className={cn(
+                                    "px-3 py-1 rounded-full text-sm font-semibold",
+                                    outcomeBadge.color,
+                                )}
+                            >
                                 {outcomeBadge.text}
                             </span>
                         </div>
                         <Separator />
-                        <FieldRow label={t("callStartTime")} value={formatTime(callLogData.callStartTime)} />
+                        <FieldRow
+                            label={t("callStartTime")}
+                            value={formatTime(callLogData.callStartTime)}
+                        />
                         <Separator />
-                        <FieldRow label={t("callDuration")} value={formatDuration(callLogData.callDuration)} />
+                        <FieldRow
+                            label={t("callDuration")}
+                            value={formatDuration(callLogData.callDuration)}
+                        />
                         <Separator />
-                        <FieldRow label={t("followUp")} value={formatDate(callLogData.followUp)} />
+                        <FieldRow
+                            label={t("followUp")}
+                            value={formatDate(callLogData.followUp)}
+                        />
                         <Separator />
                         <div className="py-2">
-                            <span className="text-sm text-muted-foreground block mb-2">{t("remarks")}</span>
+                            <span className="text-sm text-muted-foreground block mb-2">
+                                {t("remarks")}
+                            </span>
                             <p className="text-sm bg-muted/50 rounded-lg p-3">
                                 {callLogData.remarks || "-"}
                             </p>
@@ -207,7 +245,10 @@ export default function CallLogDetailPage() {
                     <CardContent className="space-y-3">
                         <FieldRow label={t("name")} value={lead?.name} />
                         <Separator />
-                        <FieldRow label={t("phone")} value={formatPhone(lead?.phone)} />
+                        <FieldRow
+                            label={t("phone")}
+                            value={formatPhone(lead?.phone)}
+                        />
                         <Separator />
                         <FieldRow label={t("email")} value={lead?.email} />
                         <Separator />
@@ -231,53 +272,72 @@ export default function CallLogDetailPage() {
                 <CardContent>
                     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                         <div className="space-y-1">
-                            <span className="text-sm text-muted-foreground">{t("company")}</span>
-                            <p className="font-medium">{company?.name || "-"}</p>
+                            <span className="text-sm text-muted-foreground">
+                                {t("company")}
+                            </span>
+                            <p className="font-medium">
+                                {company?.name || "-"}
+                            </p>
                         </div>
                         <div className="space-y-1">
-                            <span className="text-sm text-muted-foreground">{t("email")}</span>
+                            <span className="text-sm text-muted-foreground">
+                                {t("email")}
+                            </span>
                             <div className="flex items-center gap-1.5">
                                 <Mail className="h-4 w-4 text-muted-foreground" />
                                 <span>{company?.email || "-"}</span>
                             </div>
                         </div>
                         <div className="space-y-1">
-                            <span className="text-sm text-muted-foreground">{t("phone")}</span>
-                            <div className="flex items-center gap-1.5 font-mono" dir="ltr">
+                            <span className="text-sm text-muted-foreground">
+                                {t("phone")}
+                            </span>
+                            <div
+                                className="flex items-center gap-1.5 font-mono"
+                                dir="ltr"
+                            >
                                 <Phone className="h-4 w-4 text-muted-foreground" />
                                 <span>{formatPhone(company?.phone)}</span>
                             </div>
                         </div>
                         <div className="space-y-1">
-                            <span className="text-sm text-muted-foreground">{t("website")}</span>
+                            <span className="text-sm text-muted-foreground">
+                                {t("website")}
+                            </span>
                             <div className="flex items-center gap-1.5">
                                 <Globe className="h-4 w-4 text-muted-foreground" />
                                 {company?.website ? (
-                                    <a 
-                                        href={company.website} 
-                                        target="_blank" 
+                                    <a
+                                        href={company.website}
+                                        target="_blank"
                                         rel="noopener noreferrer"
                                         className="text-primary hover:underline"
                                     >
                                         {company.website}
                                     </a>
-                                ) : "-"}
+                                ) : (
+                                    "-"
+                                )}
                             </div>
                         </div>
                         <div className="space-y-1">
-                            <span className="text-sm text-muted-foreground">{t("socialProfile")}</span>
+                            <span className="text-sm text-muted-foreground">
+                                {t("socialProfile")}
+                            </span>
                             <div className="flex items-center gap-1.5">
                                 <MessageSquare className="h-4 w-4 text-muted-foreground" />
                                 {company?.socialProfile ? (
-                                    <a 
-                                        href={company.socialProfile} 
-                                        target="_blank" 
+                                    <a
+                                        href={company.socialProfile}
+                                        target="_blank"
                                         rel="noopener noreferrer"
                                         className="text-primary hover:underline"
                                     >
                                         {company.socialProfile}
                                     </a>
-                                ) : "-"}
+                                ) : (
+                                    "-"
+                                )}
                             </div>
                         </div>
                     </div>

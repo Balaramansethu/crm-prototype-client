@@ -19,7 +19,7 @@ export default function PipelinePage() {
     const navigate = useNavigate()
     const user = useUserStore((s) => s.user)
     const isRTL = i18n.dir() === "rtl"
-    
+
     // Role-based permission: only admin and super_admin can delete
     const canDelete = user?.role !== "employee"
 
@@ -29,8 +29,8 @@ export default function PipelinePage() {
 
     // Treat API error as empty data (backend may not exist yet)
     // Handle nested response: { data: { pipelines: [...] } } or { pipelines: [...] }
-    const rawPipelines = isError 
-        ? [] 
+    const rawPipelines = isError
+        ? []
         : data?.data?.pipelines || data?.pipelines || data?.data || []
     const pipelines = Array.isArray(rawPipelines) ? rawPipelines : []
 

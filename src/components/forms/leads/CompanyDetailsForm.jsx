@@ -71,7 +71,11 @@ export default function CompanyDetailsForm({ control, disabled = false }) {
                             <FormItem>
                                 <FormLabel>{t("phone")} *</FormLabel>
                                 <FormControl>
-                                    <Input {...field} dir="ltr" disabled={disabled} />
+                                    <Input
+                                        {...field}
+                                        dir="ltr"
+                                        disabled={disabled}
+                                    />
                                 </FormControl>
                                 <FormMessage />
                             </FormItem>

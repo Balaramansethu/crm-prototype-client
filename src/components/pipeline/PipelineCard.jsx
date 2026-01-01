@@ -13,7 +13,12 @@ import { cn } from "@/lib/utils"
 
 export const ITEM_TYPE = "PIPELINE_CARD"
 
-export default function PipelineCard({ pipeline, onEdit, onDelete, canDelete = false }) {
+export default function PipelineCard({
+    pipeline,
+    onEdit,
+    onDelete,
+    canDelete = false,
+}) {
     const { t, i18n } = useTranslation()
     const navigate = useNavigate()
     const isRTL = i18n.dir() === "rtl"
@@ -134,9 +139,7 @@ export default function PipelineCard({ pipeline, onEdit, onDelete, canDelete = f
                         {/* Company initial avatar */}
                         <div className="h-6 w-6 rounded-full bg-slate-100 flex items-center justify-center shrink-0">
                             <span className="text-[10px] font-semibold text-slate-600">
-                                {(companyName || "C")
-                                    .charAt(0)
-                                    .toUpperCase()}
+                                {(companyName || "C").charAt(0).toUpperCase()}
                             </span>
                         </div>
                     </div>

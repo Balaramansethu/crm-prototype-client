@@ -33,7 +33,9 @@ export default function PipelineColumn({
 
     // Ensure pipelines is always an array
     const pipelinesArray = Array.isArray(pipelines) ? pipelines : []
-    const columnCards = pipelinesArray.filter((p) => p.opportunityStage === stage.id)
+    const columnCards = pipelinesArray.filter(
+        (p) => p.opportunityStage === stage.id,
+    )
 
     const isDropTarget = isOver && canDrop
 

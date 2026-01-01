@@ -103,8 +103,8 @@ export default function LeadForm({
                 (a, b) => (a.priority || 99) - (b.priority || 99),
             )
 
-            // Remove _id from contacts (not needed in form)
-            contacts = allLeadsWithIds.map(({ _id, ...rest }) => rest)
+            // Keep _id in contacts to identify existing ones in edit mode
+            contacts = allLeadsWithIds.map((lead) => ({ ...lead }))
 
             // Store lead IDs for editable index calculation (will be used below)
             if (typeof window !== "undefined") {
@@ -115,6 +115,7 @@ export default function LeadForm({
             contacts = initialData.leads
                 .filter((lead) => lead.name && lead.name.trim())
                 .map((lead, index) => ({
+                    _id: lead._id,
                     name: lead.name || "",
                     email: lead.email || "",
                     phoneExtension: lead.phone?.extension || "",
@@ -130,6 +131,7 @@ export default function LeadForm({
             // Fallback to legacy single contact structure
             contacts = [
                 {
+                    _id: initialData?._id || legacyContact?._id,
                     name:
                         legacyContact.name ||
                         (typeof initialData?.contact === "string"
@@ -219,9 +221,7 @@ export default function LeadForm({
 
         // Filter out contacts that don't have a name (required for a valid contact)
         // This allows company-only submissions when no contact details are entered
-        const validContacts = data.contacts.filter(
-            (c) => c.name?.trim(),
-        )
+        const validContacts = data.contacts.filter((c) => c.name?.trim())
 
         onSubmit({ ...data, contacts: validContacts })
     }
@@ -270,17 +270,23 @@ export default function LeadForm({
                                     {fields.map((field, index) => (
                                         <ContactPersonForm
                                             key={field.id}
-                                            ref={(el) => setContactRef(el, index)}
+                                            ref={(el) =>
+                                                setContactRef(el, index)
+                                            }
                                             control={form.control}
                                             index={index}
                                             onRemove={() => remove(index)}
                                             showRemoveButton={
-                                                !isEditMode && index > 0
+                                                !isEditMode
+                                                    ? index > 0
+                                                    : !field._id
                                             }
                                             totalContacts={fields.length}
                                             disabled={
                                                 hasRestrictedEdit &&
-                                                index !== editableContactIndex
+                                                index !==
+                                                    editableContactIndex &&
+                                                field._id // Only disable existing contacts that aren't the primary edit target
                                             }
                                             isHighlighted={
                                                 hasRestrictedEdit &&
@@ -294,24 +300,22 @@ export default function LeadForm({
 
                         <div className="flex flex-col gap-4 sm:flex-row sm:justify-between border-t pt-6">
                             <div className="order-2 sm:order-1">
-                                {!isEditMode && (
-                                    <Button
-                                        type="button"
-                                        variant="secondary"
-                                        onClick={() => {
-                                            // Auto-assign next priority number (1-based)
-                                            const nextPriority = fields.length + 1
-                                            append({
-                                                ...DEFAULT_CONTACT_VALUES,
-                                                priority: nextPriority,
-                                            })
-                                        }}
-                                        className="w-full sm:w-auto"
-                                    >
-                                        <UserPlus className="mr-2 h-4 w-4" />
-                                        {t("addContactPerson")}
-                                    </Button>
-                                )}
+                                <Button
+                                    type="button"
+                                    variant="secondary"
+                                    onClick={() => {
+                                        // Auto-assign next priority number (1-based)
+                                        const nextPriority = fields.length + 1
+                                        append({
+                                            ...DEFAULT_CONTACT_VALUES,
+                                            priority: nextPriority,
+                                        })
+                                    }}
+                                    className="w-full sm:w-auto"
+                                >
+                                    <UserPlus className="mr-2 h-4 w-4" />
+                                    {t("addContactPerson")}
+                                </Button>
                             </div>
 
                             <div className="flex gap-2 justify-end order-1 sm:order-2">
