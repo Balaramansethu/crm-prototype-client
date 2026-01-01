@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { useNavigate, useLocation } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 import { useTranslation } from "react-i18next"
 import { useQueryClient } from "@tanstack/react-query"
 import { toast } from "sonner"
@@ -8,11 +8,13 @@ import { format } from "date-fns"
 import { PageHeader } from "@/components/common"
 import { OpportunityForm } from "@/components/forms/pipeline"
 import { createPipeline } from "@/service/pipelineService"
+import { useUserStore } from "@/store/userStore"
 
 export default function CreateOpportunityPage() {
     const { t } = useTranslation()
     const navigate = useNavigate()
     const queryClient = useQueryClient()
+    const user = useUserStore((state) => state.user)
     const [loading, setLoading] = useState(false)
 
     const breadcrumbs = [
@@ -23,14 +25,17 @@ export default function CreateOpportunityPage() {
     const onSubmit = async (data) => {
         setLoading(true)
         try {
+            const ownerId = user?._id || user?.id
+
             const payload = {
-                lead: data.lead,
+                company: data.company,
                 opportunityStage: data.opportunityStage,
                 estimatedValue: Number(data.estimatedValue) || 0,
                 probability: Number(data.probability) || 0,
-                expectedRevnue: Number(data.expectedRevenue) || 0,
+                expectedRevnue: Number(data.expectedRevenue) || 0, // Note: backend typo
                 nextStep: data.nextStep || "",
                 remarks: data.remarks || "",
+                owner: ownerId,
             }
 
             if (data.followUp) {

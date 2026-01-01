@@ -271,5 +271,7 @@
     "sec": "sec",
     "minutes": "minutes",
     "seconds": "seconds",
-    "noLeads": "No leads"
+    "noLeads": "No leads",
+    "noContactPersons": "No contact persons available",
+    "contactPersonsWillAppearHere": "Contact persons will appear here when added"
 }

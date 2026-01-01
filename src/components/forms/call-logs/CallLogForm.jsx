@@ -17,7 +17,7 @@ import {
     SelectValue,
 } from "@/components/ui/select"
 import { FormContainer, CommonDialog } from "@/components/common"
-import { FormDatePicker } from "@/components/form-fields"
+import { FormDatePicker, FormSelect } from "@/components/form-fields"
 import { CALL_OUTCOME_OPTIONS } from "@/constants/formOptions"
 
 import { useForm } from "react-hook-form"
@@ -561,43 +561,17 @@ export default function CallLogForm({
                         </FormItem>
 
                         {/* Outcome Select */}
-                        <FormField
+                        <FormSelect
                             control={form.control}
                             name="outcome"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>{t("callOutcome")}</FormLabel>
-                                    <Select
-                                        onValueChange={field.onChange}
-                                        value={field.value}
-                                    >
-                                        <FormControl>
-                                            <SelectTrigger
-                                                className={isRTL ? "text-right" : ""}
-                                            >
-                                                <SelectValue
-                                                    placeholder={t("selectOutcome")}
-                                                />
-                                            </SelectTrigger>
-                                        </FormControl>
-                                        <SelectContent dir={isRTL ? "rtl" : "ltr"}>
-                                            {CALL_OUTCOME_OPTIONS.map((option) => (
-                                                <SelectItem
-                                                    key={option.value}
-                                                    value={option.value}
-                                                >
-                                                    <div className="flex items-center gap-2">
-                                                        <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${option.color}`}>
-                                                            {t(option.label)}
-                                                        </span>
-                                                    </div>
-                                                </SelectItem>
-                                            ))}
-                                        </SelectContent>
-                                    </Select>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
+                            label={t("callOutcome")}
+                            placeholder={t("selectOutcome")}
+                            options={CALL_OUTCOME_OPTIONS.map(opt => ({ 
+                                ...opt, 
+                                value: opt.value, 
+                                label: t(opt.label) 
+                            }))}
+                            showBadge
                         />
 
                         {/* Follow-up Date */}

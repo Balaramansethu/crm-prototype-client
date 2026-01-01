@@ -7,24 +7,23 @@ import { Separator } from "@/components/ui/separator"
 import {
     SectionCard,
     FieldRow,
-    StatusBadge,
     PipelineDetailSkeleton,
+    PageHeader,
 } from "@/components/common"
 import { getPipelineById } from "@/service/pipelineService"
 import { toast } from "sonner"
-import { Edit, ArrowLeft } from "lucide-react"
+import { Edit, Building2 } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 export default function PipelineDetailPage() {
-    const { t, i18n } = useTranslation()
+    const { t } = useTranslation()
     const navigate = useNavigate()
     const { id } = useParams()
-    const isRTL = i18n.dir() === "rtl"
 
     const [pipeline, setPipeline] = useState(null)
     const [loading, setLoading] = useState(true)
 
-    const lead = pipeline?.lead || {}
+    const company = pipeline?.company || {}
 
     useEffect(() => {
         const fetchPipeline = async () => {
@@ -73,7 +72,7 @@ export default function PipelineDetailPage() {
     const getStageBadgeStyles = (stage) => {
         const styles = {
             lead: "bg-slate-100 text-slate-700",
-            contacted: "bg-blue-100 text-blue-700",
+            meeting: "bg-blue-100 text-blue-700",
             proposal: "bg-purple-100 text-purple-700",
             negotiation: "bg-amber-100 text-amber-700",
             closed_won: "bg-green-100 text-green-700",
@@ -95,49 +94,38 @@ export default function PipelineDetailPage() {
 
     return (
         <div className="flex flex-1 flex-col gap-4 sm:gap-6 p-4 sm:p-6">
-            {/* Header */}
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
-                <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
-                    <h1 className="text-xl sm:text-2xl font-semibold leading-tight">
-                        {lead.contact?.name ||
-                            lead.company?.name ||
-                            t("opportunityDetails")}
-                    </h1>
-                    <span
-                        className={cn(
-                            "px-2.5 py-1 rounded-full text-xs font-medium w-fit",
-                            getStageBadgeStyles(pipeline.opportunityStage),
-                        )}
-                    >
-                        {getStageLabel(pipeline.opportunityStage)}
-                    </span>
-                </div>
-                <div className="flex items-center gap-2 w-full sm:w-auto">
-                    <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => navigate("/pipeline")}
-                        className="flex-1 sm:flex-initial"
-                    >
-                        <ArrowLeft
-                            className={isRTL ? "ml-2 rotate-180" : "mr-2"}
-                            size={16}
-                        />
-                        {t("back")}
-                    </Button>
+            {/* Breadcrumb Header */}
+            <PageHeader
+                breadcrumbs={[
+                    { label: t("pipeline"), path: "/pipeline" },
+                    { label: company.name || t("opportunityDetails") },
+                ]}
+                title={company.name || t("opportunityDetails")}
+                actions={
                     <Button
                         size="sm"
                         onClick={() => navigate(`/pipeline/edit/${id}`)}
-                        className="flex-1 sm:flex-initial"
                     >
-                        <Edit className={isRTL ? "ml-2" : "mr-2"} size={16} />
+                        <Edit className="mr-2 h-4 w-4" />
                         {t("edit")}
                     </Button>
-                </div>
+                }
+            />
+
+            {/* Stage Badge */}
+            <div className="flex items-center gap-2">
+                <span
+                    className={cn(
+                        "px-2.5 py-1 rounded-full text-xs font-medium w-fit",
+                        getStageBadgeStyles(pipeline.opportunityStage),
+                    )}
+                >
+                    {getStageLabel(pipeline.opportunityStage)}
+                </span>
             </div>
 
-            {/* Three Column Grid for All Cards */}
-            <div className="grid gap-4 sm:gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+            {/* Main Grid */}
+            <div className="grid gap-4 sm:gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-2">
                 {/* Opportunity Details Card */}
                 <SectionCard title={t("opportunityDetails")}>
                     <FieldRow label={t("opportunityStage")}>
@@ -174,82 +162,64 @@ export default function PipelineDetailPage() {
                             />
                         </>
                     )}
-                </SectionCard>
-
-                {/* Contact + Lead Details Card */}
-                <SectionCard title={t("contactAndLead")}>
-                    {/* Contact Section */}
-                    <div className="text-xs sm:text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-2">
-                        {t("contactInformation")}
-                    </div>
-                    <FieldRow label={t("name")} value={lead.contact?.name} />
-                    <Separator />
-                    <FieldRow label={t("email")} value={lead.contact?.email} />
-                    <Separator />
-                    <FieldRow
-                        label={t("phone")}
-                        value={formatPhone(lead.contact?.phone)}
-                    />
-                    {lead.contact?.designation && (
+                    {pipeline.followUp && (
                         <>
                             <Separator />
                             <FieldRow
-                                label={t("designation")}
-                                value={lead.contact?.designation}
+                                label={t("followUp")}
+                                value={formatDate(pipeline.followUp)}
                             />
                         </>
                     )}
-
-                    {/* Divider between sections */}
-                    <div className="my-4 border-t border-dashed" />
-
-                    {/* Lead Details Section */}
-                    <div className="text-xs sm:text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-2">
-                        {t("leadDetails")}
-                    </div>
-                    <FieldRow label={t("status")}>
-                        <StatusBadge status={lead.status} />
-                    </FieldRow>
-                    <Separator />
-                    <FieldRow label={t("source")} value={lead.source} />
-                    <Separator />
-                    <FieldRow
-                        label={t("followUp")}
-                        value={formatDate(lead.followUp)}
-                    />
+                    {pipeline.remarks && (
+                        <>
+                            <Separator />
+                            <FieldRow
+                                label={t("remarks")}
+                                value={pipeline.remarks}
+                            />
+                        </>
+                    )}
                 </SectionCard>
 
-                {/* Company + Additional Info Card */}
-                <SectionCard title={t("companyAndInfo")}>
-                    {/* Company Section */}
-                    <div className="text-xs sm:text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-2">
-                        {t("companyInformation")}
+                {/* Company Details Card */}
+                <SectionCard title={t("companyDetails")}>
+                    <div className="flex items-center gap-3 mb-4">
+                        <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-slate-700 to-slate-800 flex items-center justify-center shadow-sm">
+                            <Building2 className="h-6 w-6 text-white" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                            <h4 className="font-semibold text-slate-900 truncate">
+                                {company.name || "-"}
+                            </h4>
+                            {company.website && (
+                                <a
+                                    href={company.website}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-xs text-blue-600 hover:underline truncate block"
+                                >
+                                    {company.website}
+                                </a>
+                            )}
+                        </div>
                     </div>
-                    <FieldRow label={t("company")} value={lead.company?.name} />
                     <Separator />
-                    <FieldRow label={t("email")} value={lead.company?.email} />
+                    <FieldRow label={t("email")} value={company.email} />
                     <Separator />
                     <FieldRow
                         label={t("phone")}
-                        value={formatPhone(lead.company?.phone)}
+                        value={formatPhone(company.phone)}
                     />
-
-                    {/* Divider between sections */}
-                    <div className="my-4 border-t border-dashed" />
-
-                    {/* Additional Info Section */}
-                    <div className="text-xs sm:text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-2">
-                        {t("additionalInfo")}
-                    </div>
-                    <FieldRow
-                        label={t("website")}
-                        value={lead.company?.website}
-                    />
-                    <Separator />
-                    <FieldRow
-                        label={t("socialProfile")}
-                        value={lead.company?.socialProfile}
-                    />
+                    {company.socialProfile && (
+                        <>
+                            <Separator />
+                            <FieldRow
+                                label={t("socialProfile")}
+                                value={company.socialProfile}
+                            />
+                        </>
+                    )}
                 </SectionCard>
             </div>
         </div>

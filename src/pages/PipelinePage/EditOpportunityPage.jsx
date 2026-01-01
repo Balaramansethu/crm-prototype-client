@@ -44,10 +44,11 @@ export default function EditOpportunityPage() {
         setLoading(true)
         try {
             const payload = {
+                company: data.company,
                 opportunityStage: data.opportunityStage,
                 estimatedValue: Number(data.estimatedValue) || 0,
                 probability: Number(data.probability) || 0,
-                expectedRevnue: Number(data.expectedRevenue) || 0,
+                expectedRevnue: Number(data.expectedRevenue) || 0, // Note: backend typo
                 nextStep: data.nextStep || "",
                 remarks: data.remarks || "",
             }

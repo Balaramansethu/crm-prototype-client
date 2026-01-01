@@ -28,7 +28,11 @@ export default function PipelinePage() {
     const deleteMutation = useDeletePipeline()
 
     // Treat API error as empty data (backend may not exist yet)
-    const pipelines = isError ? [] : data?.pipelines || data?.data || []
+    // Handle nested response: { data: { pipelines: [...] } } or { pipelines: [...] }
+    const rawPipelines = isError 
+        ? [] 
+        : data?.data?.pipelines || data?.pipelines || data?.data || []
+    const pipelines = Array.isArray(rawPipelines) ? rawPipelines : []
 
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
     const [pipelineToDelete, setPipelineToDelete] = useState(null)

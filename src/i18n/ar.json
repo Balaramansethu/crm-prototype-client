@@ -271,5 +271,7 @@
     "sec": "ثا",
     "minutes": "دقائق",
     "seconds": "ثواني",
-    "noLeads": "لا يوجد عملاء"
+    "noLeads": "لا يوجد عملاء",
+    "noContactPersons": "لا يوجد أشخاص اتصال متاحين",
+    "contactPersonsWillAppearHere": "ستظهر أشخاص الاتصال هنا عند إضافتهم"
 }

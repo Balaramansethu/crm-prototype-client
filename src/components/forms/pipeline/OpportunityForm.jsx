@@ -17,17 +17,16 @@ import {
     SelectValue,
 } from "@/components/ui/select"
 import { FormContainer, CommonDialog } from "@/components/common"
-import { FormDatePicker } from "@/components/form-fields"
+import { FormDatePicker, FormSelect } from "@/components/form-fields"
 import { PIPELINE_STAGES } from "@/constants/pipelineOptions"
 
 import { useForm } from "react-hook-form"
 import { useTranslation } from "react-i18next"
-import { useNavigate, useLocation } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 import { useMemo, useState, useEffect } from "react"
-import { Loader2, Plus } from "lucide-react"
+import { Loader2 } from "lucide-react"
 import { cn } from "@/lib/utils"
-import { useLeads } from "@/hooks/useLeads"
-import { getLeadById } from "@/service/leadsService"
+import { searchCompanies } from "@/service/callLogsService"
 
 export default function OpportunityForm({
     onSubmit,
@@ -36,30 +35,45 @@ export default function OpportunityForm({
 }) {
     const { t, i18n } = useTranslation()
     const navigate = useNavigate()
-    const location = useLocation()
     const isRTL = i18n.dir() === "rtl"
     const isEditMode = !!initialData
 
     const [showUnsavedDialog, setShowUnsavedDialog] = useState(false)
+    const [companies, setCompanies] = useState([])
+    const [loadingCompanies, setLoadingCompanies] = useState(false)
 
-    const { data } = useLeads({ limit: 100 })
-    const leads = data?.leads || []
+    // Fetch companies on mount
+    useEffect(() => {
+        const fetchCompanies = async () => {
+            setLoadingCompanies(true)
+            try {
+                const response = await searchCompanies({ limit: 100 })
+                const data = response.data || response
+                let companiesList = data.companies || []
 
-    const [selectedLeadDetails, setSelectedLeadDetails] = useState({
-        leadName: "",
-        companyName: "",
-    })
-    const [extraLead, setExtraLead] = useState(null)
+                // In edit mode, ensure the current company is in the list
+                if (isEditMode && initialData?.company && typeof initialData.company === "object") {
+                    const currentCompany = initialData.company
+                    const companyExists = companiesList.some((c) => c._id === currentCompany._id)
+                    if (!companyExists) {
+                        companiesList = [currentCompany, ...companiesList]
+                    }
+                }
 
-    const displayLeads = useMemo(() => {
-        if (!extraLead) return leads
-        if (leads.find((l) => l._id === extraLead._id)) return leads
-        return [extraLead, ...leads]
-    }, [leads, extraLead])
+                setCompanies(companiesList)
+            } catch (error) {
+                console.error("Failed to fetch companies:", error)
+                setCompanies([])
+            } finally {
+                setLoadingCompanies(false)
+            }
+        }
+        fetchCompanies()
+    }, [isEditMode, initialData])
 
     const defaultValues = useMemo(
         () => ({
-            lead: initialData?.lead?._id || initialData?.lead || "",
+            company: initialData?.company?._id || initialData?.company || "",
             opportunityStage: initialData?.opportunityStage || "lead",
             estimatedValue: initialData?.estimatedValue || "",
             probability: initialData?.probability || "",
@@ -88,6 +102,7 @@ export default function OpportunityForm({
     const estimatedValue = watch("estimatedValue")
     const probability = watch("probability")
 
+    // Auto-calculate expected revenue
     useEffect(() => {
         if (estimatedValue && probability) {
             const expected =
@@ -96,6 +111,7 @@ export default function OpportunityForm({
         }
     }, [estimatedValue, probability, form])
 
+    // Warn on page leave
     useEffect(() => {
         const handleBeforeUnload = (e) => {
             if (isDirty && !isSubmitting) {
@@ -109,73 +125,11 @@ export default function OpportunityForm({
             window.removeEventListener("beforeunload", handleBeforeUnload)
     }, [isDirty, isSubmitting])
 
-    const getLeadName = (lead) => {
-        if (!lead) return ""
-        return lead.contact?.name || lead.company?.name || ""
-    }
-
-    const getCompanyName = (lead) => {
-        if (!lead) return ""
-        return lead.company?.name || ""
-    }
-
-    const updateLeadDetails = (leadId) => {
-        const allLeads = extraLead ? [extraLead, ...leads] : leads
-        const selectedLead = allLeads.find((lead) => lead._id === leadId)
-
-        if (selectedLead) {
-            setSelectedLeadDetails({
-                leadName: getLeadName(selectedLead),
-                companyName: getCompanyName(selectedLead),
-            })
-        } else {
-            setSelectedLeadDetails({ leadName: "", companyName: "" })
-        }
-    }
-
-    // Handle newLeadId from query params (after creating a new lead)
-    useEffect(() => {
-        const searchParams = new URLSearchParams(location.search)
-        const newLeadId = searchParams.get("newLeadId")
-
-        if (newLeadId) {
-            const allLeads = extraLead ? [extraLead, ...leads] : leads
-            const leadExists = allLeads.find((l) => l._id === newLeadId)
-
-            if (leadExists) {
-                const currentLead = form.getValues("lead")
-                if (currentLead !== newLeadId) {
-                    form.setValue("lead", newLeadId)
-                    setSelectedLeadDetails({
-                        leadName: getLeadName(leadExists),
-                        companyName: getCompanyName(leadExists),
-                    })
-                }
-            } else if (!extraLead) {
-                getLeadById(newLeadId)
-                    .then((data) => {
-                        const l = data.data || data.lead || data
-                        if (l) {
-                            setExtraLead(l)
-                            form.setValue("lead", newLeadId)
-                            setSelectedLeadDetails({
-                                leadName: getLeadName(l),
-                                companyName: getCompanyName(l),
-                            })
-                        }
-                    })
-                    .catch((err) =>
-                        console.error("Failed to fetch new lead", err),
-                    )
-            }
-        }
-    }, [location.search, leads, extraLead])
-
-    // Handle initialData for edit mode
+    // Reset form when initialData changes (edit mode)
     useEffect(() => {
         if (initialData) {
             form.reset({
-                lead: initialData.lead?._id || initialData.lead || "",
+                company: initialData.company?._id || initialData.company || "",
                 opportunityStage: initialData.opportunityStage || "lead",
                 estimatedValue: initialData.estimatedValue || "",
                 probability: initialData.probability || "",
@@ -189,32 +143,15 @@ export default function OpportunityForm({
                     : null,
                 remarks: initialData.remarks || "",
             })
-
-            if (initialData.lead && typeof initialData.lead === "object") {
-                setSelectedLeadDetails({
-                    leadName: getLeadName(initialData.lead),
-                    companyName: getCompanyName(initialData.lead),
-                })
-            }
         }
-    }, [initialData])
-
-    const handleLeadChange = (leadId) => {
-        if (leadId === "CREATE_NEW_LEAD") {
-            const returnUrl = encodeURIComponent(location.pathname)
-            navigate(`/leads/new?returnTo=${returnUrl}`)
-            return
-        }
-
-        form.setValue("lead", leadId)
-        updateLeadDetails(leadId)
-    }
+    }, [initialData, form])
 
     const handleSubmit = (data) => {
-        if (!data.lead) {
-            form.setError("lead", {
+        // Validate company selection
+        if (!data.company) {
+            form.setError("company", {
                 type: "required",
-                message: t("leadRequired"),
+                message: t("companyRequired"),
             })
             return
         }
@@ -245,97 +182,17 @@ export default function OpportunityForm({
                         onSubmit={form.handleSubmit(handleSubmit)}
                         className="grid gap-6"
                     >
+                        {/* Company Selection */}
                         <FormField
                             control={form.control}
-                            name="lead"
+                            name="company"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>{t("lead")} *</FormLabel>
-                                    <Select
-                                        onValueChange={handleLeadChange}
-                                        value={field.value}
-                                    >
-                                        <FormControl>
-                                            <SelectTrigger
-                                                className={
-                                                    isRTL ? "text-right" : ""
-                                                }
-                                            >
-                                                <SelectValue
-                                                    placeholder={t(
-                                                        "selectLead",
-                                                    )}
-                                                />
-                                            </SelectTrigger>
-                                        </FormControl>
-                                        <SelectContent
-                                            dir={isRTL ? "rtl" : "ltr"}
-                                        >
-                                            <SelectItem
-                                                value="CREATE_NEW_LEAD"
-                                                className="text-primary font-medium focus:bg-primary/10 cursor-pointer"
-                                            >
-                                                <div className="flex items-center gap-2">
-                                                    <Plus className="h-4 w-4" />
-                                                    {t("createNewLead")}
-                                                </div>
-                                            </SelectItem>
-                                            {displayLeads.map((lead) => (
-                                                <SelectItem
-                                                    key={lead._id || lead.id}
-                                                    value={lead._id || lead.id}
-                                                >
-                                                    {lead.contact?.name ||
-                                                        lead.company?.name}{" "}
-                                                    ({lead.company?.name})
-                                                </SelectItem>
-                                            ))}
-                                        </SelectContent>
-                                    </Select>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-
-                        <div className="grid grid-cols-2 gap-4">
-                            <FormItem>
-                                <FormLabel>{t("leadName")}</FormLabel>
-                                <FormControl>
-                                    <Input
-                                        value={selectedLeadDetails.leadName}
-                                        disabled
-                                        readOnly
-                                        className="bg-muted"
-                                        placeholder={t("selectLeadFirst")}
-                                    />
-                                </FormControl>
-                            </FormItem>
-
-                            <FormItem>
-                                <FormLabel>{t("company")}</FormLabel>
-                                <FormControl>
-                                    <Input
-                                        value={selectedLeadDetails.companyName}
-                                        disabled
-                                        readOnly
-                                        className="bg-muted"
-                                        placeholder={t("selectLeadFirst")}
-                                    />
-                                </FormControl>
-                            </FormItem>
-                        </div>
-
-                        <FormField
-                            control={form.control}
-                            name="opportunityStage"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>
-                                        {t("opportunityStage")}
-                                    </FormLabel>
+                                    <FormLabel>{t("company")} *</FormLabel>
                                     <Select
                                         onValueChange={field.onChange}
                                         value={field.value}
+                                        disabled={loadingCompanies}
                                     >
                                         <FormControl>
                                             <SelectTrigger
@@ -344,21 +201,23 @@ export default function OpportunityForm({
                                                 }
                                             >
                                                 <SelectValue
-                                                    placeholder={t(
-                                                        "selectStage",
-                                                    )}
+                                                    placeholder={
+                                                        loadingCompanies
+                                                            ? t("loading")
+                                                            : t("selectCompany")
+                                                    }
                                                 />
                                             </SelectTrigger>
                                         </FormControl>
                                         <SelectContent
                                             dir={isRTL ? "rtl" : "ltr"}
                                         >
-                                            {PIPELINE_STAGES.map((stage) => (
+                                            {companies.map((company) => (
                                                 <SelectItem
-                                                    key={stage.id}
-                                                    value={stage.id}
+                                                    key={company._id}
+                                                    value={company._id}
                                                 >
-                                                    {t(stage.id) || stage.label}
+                                                    {company.name}
                                                 </SelectItem>
                                             ))}
                                         </SelectContent>
@@ -368,7 +227,22 @@ export default function OpportunityForm({
                             )}
                         />
 
-                        <div className="grid grid-cols-3 gap-4">
+                        {/* Opportunity Stage */}
+                        <FormSelect
+                            control={form.control}
+                            name="opportunityStage"
+                            label={t("opportunityStage")}
+                            placeholder={t("selectStage")}
+                            options={PIPELINE_STAGES.map(stage => ({
+                                value: stage.id,
+                                label: t(stage.id) || stage.label,
+                                color: stage.color
+                            }))}
+                            showBadge
+                        />
+
+                        {/* Financial Values Grid */}
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                             <FormField
                                 control={form.control}
                                 name="estimatedValue"
@@ -438,6 +312,7 @@ export default function OpportunityForm({
                             />
                         </div>
 
+                        {/* Next Step */}
                         <FormField
                             control={form.control}
                             name="nextStep"
@@ -460,6 +335,7 @@ export default function OpportunityForm({
                             )}
                         />
 
+                        {/* Follow Up Date */}
                         <FormDatePicker
                             control={form.control}
                             name="followUp"
@@ -467,6 +343,7 @@ export default function OpportunityForm({
                             minDate={new Date()}
                         />
 
+                        {/* Remarks */}
                         <FormField
                             control={form.control}
                             name="remarks"
@@ -488,6 +365,7 @@ export default function OpportunityForm({
                             )}
                         />
 
+                        {/* Action Buttons */}
                         <div className="flex justify-end gap-2 pt-4">
                             <Button
                                 type="button"

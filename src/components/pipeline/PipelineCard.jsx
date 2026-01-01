@@ -29,11 +29,8 @@ export default function PipelineCard({ pipeline, onEdit, onDelete, canDelete = f
         [pipeline._id, pipeline.opportunityStage],
     )
 
-    const leadName =
-        pipeline.lead?.contact?.name ||
-        pipeline.lead?.company?.name ||
-        t("unknownLead")
-    const companyName = pipeline.lead?.company?.name
+    // Use company name from the pipeline model
+    const companyName = pipeline.company?.name || t("unknownCompany")
 
     const formatCurrency = (value) => {
         if (!value || value === 0) return "-"
@@ -55,10 +52,10 @@ export default function PipelineCard({ pipeline, onEdit, onDelete, canDelete = f
                 isDragging && "opacity-60 shadow-xl scale-[1.02] bg-blue-50/50",
             )}
         >
-            {/* Header: Title and Menu */}
-            <div className="flex items-start justify-between gap-2 mb-1">
+            {/* Header: Company Name and Menu */}
+            <div className="flex items-start justify-between gap-2 mb-3">
                 <h4 className="font-semibold text-sm text-slate-800 leading-snug">
-                    {leadName}
+                    {companyName}
                 </h4>
                 <DropdownMenu dir={isRTL ? "rtl" : "ltr"}>
                     <DropdownMenuTrigger asChild>
@@ -104,12 +101,7 @@ export default function PipelineCard({ pipeline, onEdit, onDelete, canDelete = f
                 </DropdownMenu>
             </div>
 
-            {/* Company Name */}
-            {companyName && companyName !== leadName && (
-                <p className="text-xs text-blue-600 mb-3">{companyName}</p>
-            )}
-
-            {/* Value Rows - Properly aligned */}
+            {/* Value Rows */}
             <div className="space-y-2 text-xs">
                 <div className="flex justify-between items-baseline">
                     <span className="text-slate-400">{t("value")}</span>
@@ -139,10 +131,10 @@ export default function PipelineCard({ pipeline, onEdit, onDelete, canDelete = f
                         <p className="text-xs text-slate-500 truncate flex-1">
                             {pipeline.nextStep}
                         </p>
-                        {/* Owner initials avatar */}
+                        {/* Company initial avatar */}
                         <div className="h-6 w-6 rounded-full bg-slate-100 flex items-center justify-center shrink-0">
                             <span className="text-[10px] font-semibold text-slate-600">
-                                {(pipeline.lead?.contact?.name || "U")
+                                {(companyName || "C")
                                     .charAt(0)
                                     .toUpperCase()}
                             </span>

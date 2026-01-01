@@ -6,7 +6,7 @@ import { useTranslation } from "react-i18next"
 
 export default function PipelineColumn({
     stage,
-    pipelines,
+    pipelines = [],
     onDrop,
     onEdit,
     onDelete,
@@ -31,7 +31,9 @@ export default function PipelineColumn({
         [stage.id, onDrop],
     )
 
-    const columnCards = pipelines.filter((p) => p.opportunityStage === stage.id)
+    // Ensure pipelines is always an array
+    const pipelinesArray = Array.isArray(pipelines) ? pipelines : []
+    const columnCards = pipelinesArray.filter((p) => p.opportunityStage === stage.id)
 
     const isDropTarget = isOver && canDrop
 

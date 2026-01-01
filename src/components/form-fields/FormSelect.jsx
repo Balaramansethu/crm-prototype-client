@@ -45,46 +45,77 @@ export default function FormSelect({
         <FormField
             control={control}
             name={name}
-            render={({ field }) => (
-                <FormItem>
-                    <FormLabel>{label}</FormLabel>
-                    <Select
-                        value={field.value}
-                        onValueChange={onValueChange || field.onChange}
-                        disabled={disabled}
-                    >
-                        <FormControl>
-                            <SelectTrigger
-                                className={isRTL ? "text-right" : ""}
-                            >
-                                <SelectValue placeholder={placeholder} />
-                            </SelectTrigger>
-                        </FormControl>
-                        <SelectContent dir={isRTL ? "rtl" : "ltr"}>
-                            {options.map((option) => (
-                                <SelectItem
-                                    key={option.value}
-                                    value={option.value}
-                                >
-                                    {showBadge && option.color ? (
-                                        <span
-                                            className={cn(
-                                                "inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-bold",
-                                                option.color,
-                                            )}
-                                        >
-                                            {t(option.value)}
-                                        </span>
-                                    ) : (
-                                        t(option.value)
+            render={({ field }) => {
+                const selectedOption = options.find((o) => o.value === field.value)
+                const triggerColorClass = showBadge && selectedOption?.color ? selectedOption.color : ""
+
+                // Extract a "dot" color from the badge color if possible
+                // Lead status colors are like "bg-blue-100 text-blue-900"
+                // We'll try to find a darker version or just use the badge's text color as bg for the dot
+                const getDotClass = (colorStr) => {
+                    if (!colorStr) return "bg-slate-400"
+                    
+                    // Try to match text color first: text-blue-900 -> bg-blue-500
+                    const textMatch = colorStr.match(/text-([a-z]+)-([0-9]+)/)
+                    if (textMatch) {
+                        return `bg-${textMatch[1]}-500`
+                    }
+
+                    // Try to match background color: bg-blue-100 -> bg-blue-500
+                    const bgMatch = colorStr.match(/bg-([a-z]+)-([0-9]+)/)
+                    if (bgMatch) {
+                        return `bg-${bgMatch[1]}-500`
+                    }
+
+                    return "bg-slate-400"
+                }
+
+                return (
+                    <FormItem>
+                        <FormLabel>{label}</FormLabel>
+                        <Select
+                            value={field.value}
+                            onValueChange={(val) => {
+                                field.onChange(val)
+                                if (onValueChange) onValueChange(val)
+                            }}
+                            disabled={disabled}
+                        >
+                            <FormControl>
+                                <SelectTrigger
+                                    className={cn(
+                                        isRTL ? "text-right" : "",
+                                        triggerColorClass,
+                                        showBadge && "font-medium"
                                     )}
-                                </SelectItem>
-                            ))}
-                        </SelectContent>
-                    </Select>
-                    <FormMessage />
-                </FormItem>
-            )}
+                                >
+                                    <SelectValue placeholder={placeholder} />
+                                </SelectTrigger>
+                            </FormControl>
+                            <SelectContent dir={isRTL ? "rtl" : "ltr"}>
+                                {options.map((option) => (
+                                    <SelectItem
+                                        key={option.value}
+                                        value={option.value}
+                                    >
+                                        {showBadge && option.color ? (
+                                            <div className="flex items-center gap-2">
+                                                <div className={cn("h-2 w-2 rounded-full", getDotClass(option.color))} />
+                                                <span className="font-medium text-slate-700">
+                                                    {t(option.value)}
+                                                </span>
+                                            </div>
+                                        ) : (
+                                            t(option.value)
+                                        )}
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                        <FormMessage />
+                    </FormItem>
+                )
+            }}
         />
     )
 }
