@@ -101,8 +101,11 @@ export default function LeadsPage() {
             const company = item.company || {}
             const contactLeads = item.leads || []
             
-            if (contactLeads.length > 0) {
-                contactLeads.forEach((lead, index) => {
+            // Filter out leads with null/empty names (company-only placeholder entries)
+            const validLeads = contactLeads.filter(lead => lead.name && lead.name.trim())
+            
+            if (validLeads.length > 0) {
+                validLeads.forEach((lead, index) => {
                     flattened.push({
                         _id: lead._id,
                         companyId: company._id,
@@ -112,19 +115,24 @@ export default function LeadsPage() {
                         source: lead.source,
                         status: lead.status,
                         followUp: lead.followUp,
+                        isCompanyOnly: false,
                     })
                 })
             } else {
-                // Company with no contacts - show company only
+                // Company with no valid contacts - show company only
+                // If there's a placeholder lead (name: null), use its ID
+                const firstLead = contactLeads[0]
                 flattened.push({
-                    _id: company._id,
+                    _id: firstLead?._id || company._id, // Use lead ID if available, fallback to company ID
                     companyId: company._id,
                     company,
-                    contact: null,
+                    contact: firstLead || null,
                     leadIndex: 0,
-                    source: "",
-                    status: "new",
-                    followUp: null,
+                    source: firstLead?.source || company.socialProfile || "",
+                    status: firstLead?.status || "new",
+                    followUp: firstLead?.followUp || null,
+                    isCompanyOnly: true,
+                    email: firstLead?.email || company.email || "",
                 })
             }
         })
@@ -440,20 +448,37 @@ export default function LeadsPage() {
                                             {lead.company?.name || ""}
                                         </TableCell>
                                         <TableCell className="text-black">
-                                            {lead.contact?.name || "-"}
+                                            {lead.isCompanyOnly ? (
+                                                <span className="text-gray-400 italic">{t("noLeads")}</span>
+                                            ) : (
+                                                lead.contact?.name || "-"
+                                            )}
                                         </TableCell>
                                         <TableCell className="hidden md:table-cell text-black text-sm">
-                                            {lead.source}
+                                            {lead.source || "-"}
                                         </TableCell>
                                         <TableCell className="hidden lg:table-cell text-black text-sm">
                                             {lead.contact?.email || lead.company?.email || "-"}
                                         </TableCell>
                                         <TableCell className="hidden xl:table-cell text-sm text-black font-mono">
                                             <span dir="ltr">
-                                                {lead.contact?.phone?.extension
-                                                    ? `${lead.contact.phone.extension} `
-                                                    : ""}
-                                                {lead.contact?.phone?.number || "-"}
+                                                {lead.isCompanyOnly ? (
+                                                    // Show company phone for company-only rows
+                                                    <>
+                                                        {lead.company?.phone?.extension
+                                                            ? `${lead.company.phone.extension} `
+                                                            : ""}
+                                                        {lead.company?.phone?.number || "-"}
+                                                    </>
+                                                ) : (
+                                                    // Show contact phone for lead rows
+                                                    <>
+                                                        {lead.contact?.phone?.extension
+                                                            ? `${lead.contact.phone.extension} `
+                                                            : ""}
+                                                        {lead.contact?.phone?.number || "-"}
+                                                    </>
+                                                )}
                                             </span>
                                         </TableCell>
                                         <TableCell>
@@ -528,7 +553,7 @@ export default function LeadsPage() {
                                                         <DropdownMenuItem
                                                             onClick={() =>
                                                                 handleDeleteClick(
-                                                                    lead.companyId,
+                                                                    lead._id,
                                                                 )
                                                             }
                                                             className="text-red-600 focus:text-red-600"
@@ -557,7 +582,7 @@ export default function LeadsPage() {
                                 total: info.total,
                             })}
                         </div>
-                        <div className="flex items-center space-x-2">
+                        <div className="flex items-center gap-2">
                             <Button
                                 variant="outline"
                                 size="sm"
@@ -565,17 +590,20 @@ export default function LeadsPage() {
                                     setPage((p) => Math.max(1, p - 1))
                                 }
                                 disabled={page === 1}
-                                className="h-8 w-8 p-0"
                             >
                                 {isRTL ? (
                                     <ChevronRight className="h-4 w-4" />
                                 ) : (
                                     <ChevronLeft className="h-4 w-4" />
                                 )}
+                                {t("previous")}
                             </Button>
-                            <div className="text-sm font-medium min-w-[3rem] text-center text-black">
-                                {page} / {info.totalPages || 1}
-                            </div>
+                            <span className="text-sm text-muted-foreground px-2">
+                                {t("pageIndicator", {
+                                    page: page,
+                                    totalPages: info.totalPages || 1,
+                                })}
+                            </span>
                             <Button
                                 variant="outline"
                                 size="sm"
@@ -584,8 +612,8 @@ export default function LeadsPage() {
                                     !info.hasMoreRecords &&
                                     page >= (info.totalPages || 1)
                                 }
-                                className="h-8 w-8 p-0"
                             >
+                                {t("next")}
                                 {isRTL ? (
                                     <ChevronLeft className="h-4 w-4" />
                                 ) : (

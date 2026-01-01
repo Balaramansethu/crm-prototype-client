@@ -80,22 +80,28 @@ export default function LeadForm({
                 priority: initialData.priority || 1,
             }
 
-            // Convert company.leads to the same format
-            const otherLeads = companyLeads.map((lead) => ({
-                _id: lead._id,
-                name: lead.name || "",
-                email: lead.email || "",
-                phoneExtension: lead.phone?.extension || "",
-                phoneNumber: lead.phone?.number || "",
-                status: lead.status || "new",
-                source: lead.source || "",
-                followUp: lead.followUp ? new Date(lead.followUp) : undefined,
-                priority: lead.priority || 2,
-            }))
+            // Convert company.leads to the same format, filtering out unnamed ones
+            const otherLeads = companyLeads
+                .filter((lead) => lead.name && lead.name.trim())
+                .map((lead) => ({
+                    _id: lead._id,
+                    name: lead.name || "",
+                    email: lead.email || "",
+                    phoneExtension: lead.phone?.extension || "",
+                    phoneNumber: lead.phone?.number || "",
+                    status: lead.status || "new",
+                    source: lead.source || "",
+                    followUp: lead.followUp
+                        ? new Date(lead.followUp)
+                        : undefined,
+                    priority: lead.priority || 2,
+                }))
 
             // Combine all leads and sort by priority
             allLeadsWithIds = [currentLead, ...otherLeads]
-            allLeadsWithIds.sort((a, b) => (a.priority || 99) - (b.priority || 99))
+            allLeadsWithIds.sort(
+                (a, b) => (a.priority || 99) - (b.priority || 99),
+            )
 
             // Remove _id from contacts (not needed in form)
             contacts = allLeadsWithIds.map(({ _id, ...rest }) => rest)
@@ -106,16 +112,20 @@ export default function LeadForm({
             }
         } else if (initialData?.leads?.length > 0) {
             // Response already has leads array at root (company-level fetch)
-            contacts = initialData.leads.map((lead, index) => ({
-                name: lead.name || "",
-                email: lead.email || "",
-                phoneExtension: lead.phone?.extension || "",
-                phoneNumber: lead.phone?.number || "",
-                status: lead.status || "new",
-                source: lead.source || "",
-                followUp: lead.followUp ? new Date(lead.followUp) : undefined,
-                priority: lead.priority || index + 1,
-            }))
+            contacts = initialData.leads
+                .filter((lead) => lead.name && lead.name.trim())
+                .map((lead, index) => ({
+                    name: lead.name || "",
+                    email: lead.email || "",
+                    phoneExtension: lead.phone?.extension || "",
+                    phoneNumber: lead.phone?.number || "",
+                    status: lead.status || "new",
+                    source: lead.source || "",
+                    followUp: lead.followUp
+                        ? new Date(lead.followUp)
+                        : undefined,
+                    priority: lead.priority || index + 1,
+                }))
         } else if (legacyContact.name || initialData?.contact) {
             // Fallback to legacy single contact structure
             contacts = [
@@ -207,8 +217,10 @@ export default function LeadForm({
     const handleSubmit = (data) => {
         if (!validateLeadForm(data, form.setError, t)) return
 
+        // Filter out contacts that don't have a name (required for a valid contact)
+        // This allows company-only submissions when no contact details are entered
         const validContacts = data.contacts.filter(
-            (c) => c.name?.trim() || c.email?.trim(),
+            (c) => c.name?.trim(),
         )
 
         onSubmit({ ...data, contacts: validContacts })

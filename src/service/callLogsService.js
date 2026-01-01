@@ -49,3 +49,27 @@ export async function deleteCallLog(id) {
         throw error
     }
 }
+
+// Search companies for call log form
+export async function searchCompanies(params = {}) {
+    try {
+        const response = await axiosPrivateInstance.get("/call-logs/search/company", {
+            params,
+        })
+        return response.data
+    } catch (error) {
+        throw error
+    }
+}
+
+// Search leads by company ID for call log form
+export async function searchLeadsByCompany(companyId, params = {}) {
+    try {
+        const response = await axiosPrivateInstance.get("/call-logs/search/leads", {
+            params: { companyId, ...params },
+        })
+        return response.data
+    } catch (error) {
+        throw error
+    }
+}

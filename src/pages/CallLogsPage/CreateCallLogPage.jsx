@@ -21,13 +21,25 @@ export default function CreateCallLogPage() {
         setLoading(true)
         try {
             const payload = {
-                lead: data.lead,
                 outcome: data.outcome,
                 remarks: data.remarks,
+                callDuration: data.callDuration,
+                callStartTime: data.callStartTime,
+            }
+
+            // Include lead ID if exists
+            if (data.lead) {
+                payload.lead = data.lead
+            }
+
+            // Include leadName and companyId if creating new lead
+            if (data.leadName) {
+                payload.leadName = data.leadName
+                payload.companyId = data.companyId
             }
 
             if (data.followUp) {
-                payload.followUp = format(data.followUp, "yyyy-MM-dd")
+                payload.followUp = format(data.followUp, "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
             } else {
                 toast.error(t("followUpRequired"))
                 setLoading(false)

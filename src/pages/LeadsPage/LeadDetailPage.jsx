@@ -45,7 +45,10 @@ export default function LeadDetailPage() {
         priority: leadData.priority,
     } : null
     // Other contacts are in company.leads
-    const otherContacts = company?.leads || []
+    // Filter out placeholder leads (those with no name) and the current lead itself
+    const otherContacts = (company?.leads || []).filter(
+        (contact) => contact.name && contact.name.trim() && contact._id !== id
+    )
 
     const breadcrumbs = [
         { label: t("leads"), path: "/leads" },

@@ -256,5 +256,20 @@
     "detailedView": "Detailed View",
     "opportunityDetails": "Opportunity Details",
     "deleting": "Deleting...",
-    "readOnly": "Read Only"
+    "readOnly": "Read Only",
+    "callDetails": "Call Details",
+    "callLogDetails": "Call Log Details",
+    "selectCompany": "Select a company",
+    "enterLeadName": "Enter lead name",
+    "noLeadsForCompany": "No leads found for this company. Please enter a lead name.",
+    "leadNameRequired": "Lead name is required",
+    "callStartTime": "Call Start Time",
+    "callStartTimeRequired": "Call start time is required",
+    "callDuration": "Call Duration",
+    "callDurationRequired": "Call duration is required",
+    "min": "min",
+    "sec": "sec",
+    "minutes": "minutes",
+    "seconds": "seconds",
+    "noLeads": "No leads"
 }

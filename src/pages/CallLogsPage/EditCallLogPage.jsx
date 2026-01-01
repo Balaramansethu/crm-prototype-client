@@ -43,14 +43,16 @@ export default function EditCallLogPage() {
     const onSubmit = async (data) => {
         setLoading(true)
         try {
+            // Note: 'lead' field cannot be updated per API spec
             const payload = {
-                lead: data.lead,
                 outcome: data.outcome,
                 remarks: data.remarks,
+                callDuration: data.callDuration,
+                callStartTime: data.callStartTime,
             }
 
             if (data.followUp) {
-                payload.followUp = format(data.followUp, "yyyy-MM-dd")
+                payload.followUp = format(data.followUp, "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
             }
 
             await updateCallLog(id, payload)

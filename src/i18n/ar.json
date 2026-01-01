@@ -256,5 +256,20 @@
     "detailedView": "عرض التفاصيل",
     "opportunityDetails": "تفاصيل الفرصة",
     "deleting": "جاري الحذف...",
-    "readOnly": "للقراءة فقط"
+    "readOnly": "للقراءة فقط",
+    "callDetails": "تفاصيل المكالمة",
+    "callLogDetails": "تفاصيل سجل المكالمات",
+    "selectCompany": "اختر شركة",
+    "enterLeadName": "أدخل اسم العميل المحتمل",
+    "noLeadsForCompany": "لا توجد عملاء محتملين لهذه الشركة. يرجى إدخال اسم العميل.",
+    "leadNameRequired": "اسم العميل المحتمل مطلوب",
+    "callStartTime": "وقت بدء المكالمة",
+    "callStartTimeRequired": "وقت بدء المكالمة مطلوب",
+    "callDuration": "مدة المكالمة",
+    "callDurationRequired": "مدة المكالمة مطلوبة",
+    "min": "دق",
+    "sec": "ثا",
+    "minutes": "دقائق",
+    "seconds": "ثواني",
+    "noLeads": "لا يوجد عملاء"
 }

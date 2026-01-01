@@ -16,6 +16,7 @@ import LeadDetailPage from "@/pages/LeadsPage/LeadDetailPage"
 import CallLogsPage from "@/pages/CallLogsPage/CallLogsPage"
 import CreateCallLogPage from "@/pages/CallLogsPage/CreateCallLogPage"
 import EditCallLogPage from "@/pages/CallLogsPage/EditCallLogPage"
+import CallLogDetailPage from "@/pages/CallLogsPage/CallLogDetailPage"
 import {
     PipelinePage,
     CreateOpportunityPage,
@@ -68,6 +69,7 @@ export default function AppRoutes() {
                     >
                         <Route index element={<CallLogsPage />} />
                         <Route path="new" element={<CreateCallLogPage />} />
+                        <Route path=":id" element={<CallLogDetailPage />} />
                         <Route path="edit/:id" element={<EditCallLogPage />} />
                     </Route>
 
