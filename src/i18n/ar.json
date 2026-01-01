@@ -273,5 +273,8 @@
     "seconds": "ثواني",
     "noLeads": "لا يوجد عملاء",
     "noContactPersons": "لا يوجد أشخاص اتصال متاحين",
-    "contactPersonsWillAppearHere": "ستظهر أشخاص الاتصال هنا عند إضافتهم"
+    "contactPersonsWillAppearHere": "ستظهر أشخاص الاتصال هنا عند إضافتهم",
+    "sessionExpired": "انتهت الجلسة",
+    "sessionExpiredDescription": "انتهت جلستك. يرجى تسجيل الدخول مرة أخرى للمتابعة.",
+    "okay": "حسنا"
 }

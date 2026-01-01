@@ -23,10 +23,8 @@ axiosPrivateInstance.interceptors.response.use(
         const originalReq = error.config
 
         if (error.response?.data?.errorCode === "2006") {
-            toast.error("Session expired, please login to continue.")
-            useUserStore.getState().clearUser()
-            alert("Session expired, please login to continue.")
-            // window.location.href = "/login"
+            // Trigger global session expired state
+            useUserStore.getState().setSessionExpired(true)
             return Promise.reject(error)
         }
         else if (

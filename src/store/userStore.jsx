@@ -5,10 +5,12 @@ export const useUserStore = create(
     persist(
         (set) => ({
             user: null,
+            isSessionExpired: false,
 
             setUser: (user) => set({ user }),
+            setSessionExpired: (status) => set({ isSessionExpired: status }),
             clearUser: () => {
-                set({ user: null })
+                set({ user: null, isSessionExpired: false })
                 sessionStorage.removeItem("crm-user")
             },
         }),

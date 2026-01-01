@@ -273,5 +273,8 @@
     "seconds": "seconds",
     "noLeads": "No leads",
     "noContactPersons": "No contact persons available",
-    "contactPersonsWillAppearHere": "Contact persons will appear here when added"
+    "contactPersonsWillAppearHere": "Contact persons will appear here when added",
+    "sessionExpired": "Session Expired",
+    "sessionExpiredDescription": "Your session has expired. Please log in again to continue.",
+    "okay": "Okay"
 }

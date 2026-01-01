@@ -1,6 +1,9 @@
 import { useEffect } from "react"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { Toaster } from "sonner"
+import { useTranslation } from "react-i18next"
+import { useUserStore } from "@/store/userStore"
+import { CommonDialog } from "@/components/common"
 import AppRoutes from "@/routes/AppRoutes"
 import i18n from "@/i18n.js"
 
@@ -31,11 +34,41 @@ export default function App() {
     return (
         <QueryClientProvider client={queryClient}>
             <AppRoutes />
+            <ExpirationModal />
+            
             <Toaster
                 position={currentLang === "ar" ? "top-left" : "top-right"}
                 richColors
                 closeButton
             />
         </QueryClientProvider>
+    )
+}
+
+function ExpirationModal() {
+    const { t } = useTranslation()
+    const isSessionExpired = useUserStore((state) => state.isSessionExpired)
+    const clearUser = useUserStore((state) => state.clearUser)
+
+    const handleConfirm = () => {
+        clearUser()
+        window.location.href = "/login"
+    }
+
+    if (!isSessionExpired) return null
+
+    return (
+        <CommonDialog
+            open={isSessionExpired}
+            onOpenChange={() => {}}
+            title={t("sessionExpired")}
+            description={t("sessionExpiredDescription")}
+            confirmText={t("okay")}
+            onConfirm={handleConfirm}
+            variant="destructive"
+            hideCancel={true}
+            showIcon={false}
+            hideCloseButton={true}
+        />
     )
 }

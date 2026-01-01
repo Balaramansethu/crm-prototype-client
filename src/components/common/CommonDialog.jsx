@@ -47,6 +47,7 @@ export default function CommonDialog({
     isLoading = false,
     hideCancel = false,
     showIcon = true,
+    hideCloseButton = false,
 }) {
     const { i18n } = useTranslation()
     const isRTL = i18n.dir() === "rtl"
@@ -99,6 +100,7 @@ export default function CommonDialog({
                     isCentered && "sm:max-w-[400px]",
                 )}
                 dir={isRTL ? "rtl" : "ltr"}
+                hideCloseButton={hideCloseButton}
             >
                 <DialogHeader>
                     {isCentered ? (
@@ -143,7 +145,7 @@ export default function CommonDialog({
                 <DialogFooter
                     className={cn(
                         "mt-4 sm:mt-6",
-                        isCentered ? "grid grid-cols-2 gap-2 sm:gap-3 sm:space-x-0" : "gap-2",
+                        isCentered && !hideCancel ? "grid grid-cols-2 gap-2 sm:gap-3 sm:space-x-0" : "gap-2",
                     )}
                 >
                     {!hideCancel && (

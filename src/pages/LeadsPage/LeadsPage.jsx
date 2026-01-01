@@ -310,7 +310,6 @@ export default function LeadsPage() {
                                         setFollowUp(null)
                                     }
                                 }}
-                                minDate={new Date()}
                                 placeholderText={t("followUp")}
                                 dateFormat="dd-MM-yyyy"
                                 className="w-full h-9 px-3 rounded-md border border-input bg-muted/50 text-sm focus:bg-background transition-colors text-black placeholder:text-gray-500"

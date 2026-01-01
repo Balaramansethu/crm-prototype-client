@@ -113,7 +113,7 @@ export function AppSidebar({ ...props }) {
                             <span>{t("pipeline")}</span>
                         </SidebarMenuButton>
                     </SidebarMenuItem>
-                    <SidebarMenuItem>
+                    {/* <SidebarMenuItem>
                         <SidebarMenuButton
                             isActive={location.pathname === "/dashboard"}
                             onClick={() => navigate("/dashboard")}
@@ -122,9 +122,9 @@ export function AppSidebar({ ...props }) {
                             <IconDashboard className="h-4 w-4" />
                             <span>{t("employeeDashboard")}</span>
                         </SidebarMenuButton>
-                    </SidebarMenuItem>
+                    </SidebarMenuItem> */}
 
-                    {(user.role === "admin" || user.role === "super_admin") && (
+                    {/* {(user.role === "admin" || user.role === "super_admin") && (
                         <SidebarMenuItem>
                             <SidebarMenuButton
                                 isActive={
@@ -137,9 +137,9 @@ export function AppSidebar({ ...props }) {
                                 <span>{t("adminDashboard")}</span>
                             </SidebarMenuButton>
                         </SidebarMenuItem>
-                    )}
+                    )} */}
 
-                    {user.role === "super_admin" && (
+                    {/* {user.role === "super_admin" && (
                         <SidebarMenuItem>
                             <SidebarMenuButton
                                 isActive={
@@ -155,7 +155,7 @@ export function AppSidebar({ ...props }) {
                                 <span>{t("superAdminDashboard")}</span>
                             </SidebarMenuButton>
                         </SidebarMenuItem>
-                    )}
+                    )} */}
                 </SidebarMenu>
 
                 {/* MAIN NAV */}

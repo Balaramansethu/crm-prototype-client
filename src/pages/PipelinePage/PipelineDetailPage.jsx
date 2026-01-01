@@ -93,14 +93,26 @@ export default function PipelineDetailPage() {
         pipeline.expectedRevnue || pipeline.expectedRevenue || 0
 
     return (
-        <div className="flex flex-1 flex-col gap-4 sm:gap-6 p-4 sm:p-6">
+        <div className="flex flex-col flex-1 w-full">
             {/* Breadcrumb Header */}
             <PageHeader
                 breadcrumbs={[
                     { label: t("pipeline"), path: "/pipeline" },
                     { label: company.name || t("opportunityDetails") },
                 ]}
-                title={company.name || t("opportunityDetails")}
+                title={
+                    <div className="flex items-center gap-3">
+                        <span className="truncate">{company.name || t("opportunityDetails")}</span>
+                        <span
+                            className={cn(
+                                "px-2.5 py-1 rounded-full text-sm font-medium shrink-0",
+                                getStageBadgeStyles(pipeline.opportunityStage),
+                            )}
+                        >
+                            {getStageLabel(pipeline.opportunityStage)}
+                        </span>
+                    </div>
+                }
                 actions={
                     <Button
                         size="sm"
@@ -112,20 +124,8 @@ export default function PipelineDetailPage() {
                 }
             />
 
-            {/* Stage Badge */}
-            <div className="flex items-center gap-2">
-                <span
-                    className={cn(
-                        "px-2.5 py-1 rounded-full text-xs font-medium w-fit",
-                        getStageBadgeStyles(pipeline.opportunityStage),
-                    )}
-                >
-                    {getStageLabel(pipeline.opportunityStage)}
-                </span>
-            </div>
-
             {/* Main Grid */}
-            <div className="grid gap-4 sm:gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-2">
+            <div className="grid gap-4 sm:gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 px-4 lg:px-6 pb-6">
                 {/* Opportunity Details Card */}
                 <SectionCard title={t("opportunityDetails")}>
                     <FieldRow label={t("opportunityStage")}>
