@@ -276,5 +276,21 @@
     "contactPersonsWillAppearHere": "ستظهر أشخاص الاتصال هنا عند إضافتهم",
     "sessionExpired": "انتهت الجلسة",
     "sessionExpiredDescription": "انتهت جلستك. يرجى تسجيل الدخول مرة أخرى للمتابعة.",
-    "okay": "حسنا"
+    "okay": "حسنا",
+    "invite": "دعوة",
+    "shareBoard": "مشاركة اللوحة",
+    "shareBoardWithLink": "شارك هذه اللوحة برابط",
+    "createLink": "إنشاء رابط",
+    "boardMembers": "أعضاء اللوحة",
+    "member": "عضو",
+    "admin": "مسؤول",
+    "workspaceGuest": "ضيف مساحة العمل",
+    "workspaceAdmin": "مسؤول مساحة العمل",
+    "alreadyAMember": "عضو بالفعل",
+    "emailPlaceholderInvite": "البريد الإلكتروني أو الاسم",
+    "inviteSent": "تم إرسال الدعوة بنجاح",
+    "failedToInvite": "فشل إرسال الدعوة",
+    "invalidDomain": "مسموح فقط بعناوين البريد الإلكتروني @datasack.in",
+    "featureComingSoon": "الميزة قادمة قريباً",
+    "you": "أنت"
 }

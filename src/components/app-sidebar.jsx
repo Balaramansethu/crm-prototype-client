@@ -1,4 +1,5 @@
 import * as React from "react"
+import { useState } from "react"
 import {
     IconCamera,
     IconChartBar,
@@ -17,6 +18,7 @@ import {
     IconSearch,
     IconSettings,
     IconUsers,
+    IconUserPlus,
 } from "@tabler/icons-react"
 
 import LanguageToggle from "@/components/LanguageToggle"
@@ -27,6 +29,8 @@ import { NavDocuments } from "@/components/nav-documents"
 import { NavMain } from "@/components/nav-main"
 import { NavSecondary } from "@/components/nav-secondary"
 import { NavUser } from "@/components/nav-user"
+import { InviteModal } from "@/components/InviteModal"
+import { Button } from "@/components/ui/button"
 import { useTranslation } from "react-i18next"
 
 import {
@@ -45,6 +49,7 @@ export function AppSidebar({ ...props }) {
     const location = useLocation()
     const { t, i18n } = useTranslation()
     const isRTL = i18n.language === "ar"
+    const [inviteModalOpen, setInviteModalOpen] = useState(false)
 
     return (
         <Sidebar
@@ -199,12 +204,27 @@ export function AppSidebar({ ...props }) {
 
             {/* FOOTER USER CARD */}
             <SidebarFooter className={isRTL ? "text-right" : "text-left"}>
+                {/* Invite Button */}
+                <Button
+                    onClick={() => setInviteModalOpen(true)}
+                    className="w-full mb-2 bg-black hover:bg-gray-900 text-white border border-gray-700"
+                >
+                    <IconUserPlus className="w-4 h-4" stroke={2} color="white" />
+                    {t("invite")}
+                </Button>
+
                 <NavUser
                     user={{
                         name: `${user.firstName} ${user.lastName}`,
                         email: user.email,
                         avatar: user.profileImage || "",
                     }}
+                />
+
+                {/* Invite Modal */}
+                <InviteModal
+                    open={inviteModalOpen}
+                    onOpenChange={setInviteModalOpen}
                 />
             </SidebarFooter>
         </Sidebar>

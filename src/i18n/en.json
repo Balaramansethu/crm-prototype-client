@@ -276,5 +276,21 @@
     "contactPersonsWillAppearHere": "Contact persons will appear here when added",
     "sessionExpired": "Session Expired",
     "sessionExpiredDescription": "Your session has expired. Please log in again to continue.",
-    "okay": "Okay"
+    "okay": "Okay",
+    "invite": "Invite",
+    "shareBoard": "Share board",
+    "shareBoardWithLink": "Share this board with a link",
+    "createLink": "Create link",
+    "boardMembers": "Board members",
+    "member": "Member",
+    "admin": "Admin",
+    "workspaceGuest": "Workspace guest",
+    "workspaceAdmin": "Workspace admin",
+    "alreadyAMember": "Already a member",
+    "emailPlaceholderInvite": "Email address or name",
+    "inviteSent": "Invitation sent successfully",
+    "failedToInvite": "Failed to send invitation",
+    "invalidDomain": "Only @datasack.in email addresses are allowed",
+    "featureComingSoon": "Feature coming soon",
+    "you": "you"
 }
