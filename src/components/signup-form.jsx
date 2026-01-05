@@ -46,7 +46,7 @@ export function SignupForm({ className, onSubmit, loading, ...props }) {
             try {
                 const inviteData = JSON.parse(storedInvite)
                 if (inviteData.email && inviteData.method === "viaMagicLink") {
-                    setForm(prev => ({
+                    setForm((prev) => ({
                         ...prev,
                         email: inviteData.email,
                         role: inviteData.role || "employee",
@@ -157,7 +157,9 @@ export function SignupForm({ className, onSubmit, loading, ...props }) {
                                         placeholder="m@example.com"
                                         disabled={isFromInvite}
                                         readOnly={isFromInvite}
-                                        className={isFromInvite ? "bg-muted pr-10" : ""}
+                                        className={
+                                            isFromInvite ? "bg-muted pr-10" : ""
+                                        }
                                     />
                                     {isFromInvite && (
                                         <Mail className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-green-600" />

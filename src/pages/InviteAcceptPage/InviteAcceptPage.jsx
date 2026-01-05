@@ -12,14 +12,14 @@ export default function InviteAcceptPage() {
     const { t } = useTranslation()
     const navigate = useNavigate()
     const [searchParams] = useSearchParams()
-    
+
     const [status, setStatus] = useState("validating") // validating, success, error
     const [errorMessage, setErrorMessage] = useState("")
 
     useEffect(() => {
         const validateToken = async () => {
             const token = searchParams.get("token")
-            
+
             if (!token) {
                 setStatus("error")
                 setErrorMessage(t("inviteInvalid"))
@@ -39,11 +39,11 @@ export default function InviteAcceptPage() {
                             tenantId: inviteData.tenantId,
                             role: inviteData.role,
                             method: inviteData.method || "viaMagicLink",
-                        })
+                        }),
                     )
 
                     setStatus("success")
-                    
+
                     // Redirect to signup after short delay
                     setTimeout(() => {
                         navigate("/signup", { replace: true })
@@ -55,9 +55,10 @@ export default function InviteAcceptPage() {
             } catch (error) {
                 console.error("Failed to validate invite token:", error)
                 setStatus("error")
-                
+
                 // Check for specific error messages from backend
-                const errorMsg = error.response?.data?.message || t("inviteInvalid")
+                const errorMsg =
+                    error.response?.data?.message || t("inviteInvalid")
                 setErrorMessage(errorMsg)
             }
         }
@@ -83,9 +84,7 @@ export default function InviteAcceptPage() {
                             <h2 className="text-xl font-semibold text-gray-900 mb-2">
                                 {t("validatingInvite")}
                             </h2>
-                            <p className="text-gray-500">
-                                {t("pleaseWait")}
-                            </p>
+                            <p className="text-gray-500">{t("pleaseWait")}</p>
                         </>
                     )}
 
@@ -107,11 +106,12 @@ export default function InviteAcceptPage() {
                             <h2 className="text-xl font-semibold text-gray-900 mb-2">
                                 {t("inviteError")}
                             </h2>
-                            <p className="text-gray-500 mb-6">
-                                {errorMessage}
-                            </p>
+                            <p className="text-gray-500 mb-6">{errorMessage}</p>
                             <div className="flex gap-3">
-                                <Button variant="outline" onClick={handleGoToLogin}>
+                                <Button
+                                    variant="outline"
+                                    onClick={handleGoToLogin}
+                                >
                                     {t("login")}
                                 </Button>
                                 <Button onClick={handleGoToSignup}>

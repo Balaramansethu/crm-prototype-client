@@ -67,9 +67,9 @@ export function AppSidebar({ ...props }) {
                             className="data-[slot=sidebar-menu-button]:!p-1.5"
                         >
                             <a href="#" className="flex items-center gap-2">
-                                <img 
-                                    src="https://bunny-wp-pullzone-dgpgtislbk.b-cdn.net/wp-content/uploads/2023/12/Datasack_tech_logo4_240X240_72dpi.png" 
-                                    alt="Datasack Logo" 
+                                <img
+                                    src="https://bunny-wp-pullzone-dgpgtislbk.b-cdn.net/wp-content/uploads/2023/12/Datasack_tech_logo4_240X240_72dpi.png"
+                                    alt="Datasack Logo"
                                     className="size-8 rounded object-contain"
                                 />
                                 <span className="text-base font-semibold">
@@ -213,7 +213,11 @@ export function AppSidebar({ ...props }) {
                     onClick={() => setInviteModalOpen(true)}
                     className="w-full mb-2 bg-black hover:bg-gray-900 text-white border border-gray-700"
                 >
-                    <IconUserPlus className="w-4 h-4" stroke={2} color="white" />
+                    <IconUserPlus
+                        className="w-4 h-4"
+                        stroke={2}
+                        color="white"
+                    />
                     {t("invite")}
                 </Button>
 

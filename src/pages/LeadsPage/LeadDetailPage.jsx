@@ -156,229 +156,243 @@ export default function LeadDetailPage() {
 
                 {/* Main Contact & Company - Side by Side */}
                 <div className="grid gap-4 grid-cols-1 md:grid-cols-2">
-                {/* Main Contact Card */}
-                {mainContact && (
+                    {/* Main Contact Card */}
+                    {mainContact && (
+                        <Card>
+                            <CardHeader className="pb-3">
+                                <div className="flex items-center justify-between">
+                                    <div className="flex items-center gap-2">
+                                        <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary/10">
+                                            <User className="h-5 w-5 text-primary" />
+                                        </div>
+                                        <CardTitle className="text-lg">
+                                            {t("contactPerson")}
+                                        </CardTitle>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        <StatusBadge
+                                            status={mainContact.status}
+                                        />
+                                        <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            onClick={() =>
+                                                navigate(
+                                                    `/leads/edit/${mainContact._id}`,
+                                                )
+                                            }
+                                        >
+                                            <Edit size={14} />
+                                        </Button>
+                                    </div>
+                                </div>
+                            </CardHeader>
+                            <CardContent className="space-y-3">
+                                <FieldRow
+                                    label={t("name")}
+                                    value={mainContact.name}
+                                />
+                                <Separator />
+                                <FieldRow
+                                    label={t("email")}
+                                    value={mainContact.email}
+                                />
+                                <Separator />
+                                <FieldRow
+                                    label={t("phone")}
+                                    value={formatPhone(mainContact.phone)}
+                                />
+                                <Separator />
+                                <FieldRow
+                                    label={t("source")}
+                                    value={mainContact.source}
+                                />
+                                <Separator />
+                                <FieldRow
+                                    label={t("followUp")}
+                                    value={formatDate(mainContact.followUp)}
+                                />
+                                {mainContact.priority !== 0 && (
+                                    <>
+                                        <Separator />
+                                        <FieldRow
+                                            label={t("priority")}
+                                            value={mainContact.priority || 1}
+                                        />
+                                    </>
+                                )}
+                            </CardContent>
+                        </Card>
+                    )}
+
+                    {/* Company Info Card */}
                     <Card>
                         <CardHeader className="pb-3">
-                            <div className="flex items-center justify-between">
-                                <div className="flex items-center gap-2">
-                                    <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary/10">
-                                        <User className="h-5 w-5 text-primary" />
-                                    </div>
-                                    <CardTitle className="text-lg">
-                                        {t("contactPerson")}
-                                    </CardTitle>
+                            <div className="flex items-center gap-2">
+                                <div className="flex h-9 w-9 items-center justify-center rounded-full bg-blue-500/10">
+                                    <Building2 className="h-5 w-5 text-blue-500" />
                                 </div>
-                                <div className="flex items-center gap-2">
-                                    <StatusBadge status={mainContact.status} />
-                                    <Button
-                                        variant="ghost"
-                                        size="sm"
-                                        onClick={() =>
-                                            navigate(
-                                                `/leads/edit/${mainContact._id}`,
-                                            )
-                                        }
-                                    >
-                                        <Edit size={14} />
-                                    </Button>
-                                </div>
+                                <CardTitle className="text-lg">
+                                    {t("companyInformation")}
+                                </CardTitle>
                             </div>
                         </CardHeader>
                         <CardContent className="space-y-3">
                             <FieldRow
-                                label={t("name")}
-                                value={mainContact.name}
+                                label={t("company")}
+                                value={company?.name}
                             />
                             <Separator />
                             <FieldRow
                                 label={t("email")}
-                                value={mainContact.email}
+                                value={company?.email}
                             />
                             <Separator />
                             <FieldRow
                                 label={t("phone")}
-                                value={formatPhone(mainContact.phone)}
+                                value={formatPhone(company?.phone)}
                             />
                             <Separator />
                             <FieldRow
-                                label={t("source")}
-                                value={mainContact.source}
+                                label={t("website")}
+                                value={company?.website}
                             />
                             <Separator />
                             <FieldRow
-                                label={t("followUp")}
-                                value={formatDate(mainContact.followUp)}
+                                label={t("socialProfile")}
+                                value={company?.socialProfile}
                             />
-                            {mainContact.priority !== 0 && (
-                                <>
-                                    <Separator />
-                                    <FieldRow
-                                        label={t("priority")}
-                                        value={mainContact.priority || 1}
-                                    />
-                                </>
-                            )}
+                        </CardContent>
+                    </Card>
+                </div>
+
+                {/* Other Contacts - Full Width Card */}
+                {otherContacts.length > 0 && (
+                    <Card>
+                        <CardHeader className="pb-3">
+                            <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-2">
+                                    <div className="flex h-9 w-9 items-center justify-center rounded-full bg-green-500/10">
+                                        <Users className="h-5 w-5 text-green-500" />
+                                    </div>
+                                    <CardTitle className="text-lg">
+                                        {t("contactPersons")} (
+                                        {otherContacts.length})
+                                    </CardTitle>
+                                </div>
+                            </div>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="rounded-lg border overflow-hidden">
+                                <Table>
+                                    <TableHeader className="bg-muted/50">
+                                        <TableRow>
+                                            <TableHead className="font-semibold">
+                                                {t("name")}
+                                            </TableHead>
+                                            <TableHead className="font-semibold">
+                                                {t("email")}
+                                            </TableHead>
+                                            <TableHead className="font-semibold">
+                                                {t("phone")}
+                                            </TableHead>
+                                            {otherContacts.some(
+                                                (c) => c.priority !== 0,
+                                            ) && (
+                                                <TableHead className="font-semibold text-center">
+                                                    {t("priority")}
+                                                </TableHead>
+                                            )}
+                                            <TableHead className="font-semibold text-center">
+                                                {t("status")}
+                                            </TableHead>
+                                            <TableHead className="w-[100px]"></TableHead>
+                                        </TableRow>
+                                    </TableHeader>
+                                    <TableBody>
+                                        {otherContacts.map((contact, index) => (
+                                            <TableRow
+                                                key={contact._id || index}
+                                                className="hover:bg-muted/30"
+                                            >
+                                                <TableCell>
+                                                    <div className="flex items-center gap-2">
+                                                        <div className="flex h-7 w-7 items-center justify-center rounded-full bg-muted">
+                                                            <User className="h-3.5 w-3.5 text-muted-foreground" />
+                                                        </div>
+                                                        <span className="font-medium">
+                                                            {contact.name}
+                                                        </span>
+                                                    </div>
+                                                </TableCell>
+                                                <TableCell>
+                                                    <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
+                                                        <Mail className="h-3.5 w-3.5" />
+                                                        {contact.email || "-"}
+                                                    </div>
+                                                </TableCell>
+                                                <TableCell>
+                                                    <div
+                                                        className="flex items-center gap-1.5 text-sm text-muted-foreground font-mono"
+                                                        dir="ltr"
+                                                    >
+                                                        <Phone className="h-3.5 w-3.5" />
+                                                        {formatPhone(
+                                                            contact.phone,
+                                                        )}
+                                                    </div>
+                                                </TableCell>
+                                                {contact.priority !== 0 && (
+                                                    <TableCell className="text-center">
+                                                        <span className="inline-flex items-center justify-center h-6 w-6 rounded-full bg-primary/10 text-primary text-sm font-medium">
+                                                            {contact.priority ||
+                                                                index + 1}
+                                                        </span>
+                                                    </TableCell>
+                                                )}
+                                                <TableCell className="text-center">
+                                                    <StatusBadge
+                                                        status={contact.status}
+                                                    />
+                                                </TableCell>
+                                                <TableCell>
+                                                    <div className="flex items-center gap-1">
+                                                        <Button
+                                                            variant="ghost"
+                                                            size="sm"
+                                                            onClick={() =>
+                                                                navigate(
+                                                                    `/leads/${contact._id}`,
+                                                                )
+                                                            }
+                                                            title={t(
+                                                                "viewDetails",
+                                                            )}
+                                                        >
+                                                            <Eye size={14} />
+                                                        </Button>
+                                                        <Button
+                                                            variant="ghost"
+                                                            size="sm"
+                                                            onClick={() =>
+                                                                navigate(
+                                                                    `/leads/edit/${contact._id}`,
+                                                                )
+                                                            }
+                                                            title={t("edit")}
+                                                        >
+                                                            <Edit size={14} />
+                                                        </Button>
+                                                    </div>
+                                                </TableCell>
+                                            </TableRow>
+                                        ))}
+                                    </TableBody>
+                                </Table>
+                            </div>
                         </CardContent>
                     </Card>
                 )}
-
-                {/* Company Info Card */}
-                <Card>
-                    <CardHeader className="pb-3">
-                        <div className="flex items-center gap-2">
-                            <div className="flex h-9 w-9 items-center justify-center rounded-full bg-blue-500/10">
-                                <Building2 className="h-5 w-5 text-blue-500" />
-                            </div>
-                            <CardTitle className="text-lg">
-                                {t("companyInformation")}
-                            </CardTitle>
-                        </div>
-                    </CardHeader>
-                    <CardContent className="space-y-3">
-                        <FieldRow label={t("company")} value={company?.name} />
-                        <Separator />
-                        <FieldRow label={t("email")} value={company?.email} />
-                        <Separator />
-                        <FieldRow
-                            label={t("phone")}
-                            value={formatPhone(company?.phone)}
-                        />
-                        <Separator />
-                        <FieldRow
-                            label={t("website")}
-                            value={company?.website}
-                        />
-                        <Separator />
-                        <FieldRow
-                            label={t("socialProfile")}
-                            value={company?.socialProfile}
-                        />
-                    </CardContent>
-                </Card>
-            </div>
-
-            {/* Other Contacts - Full Width Card */}
-            {otherContacts.length > 0 && (
-                <Card>
-                    <CardHeader className="pb-3">
-                        <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-2">
-                                <div className="flex h-9 w-9 items-center justify-center rounded-full bg-green-500/10">
-                                    <Users className="h-5 w-5 text-green-500" />
-                                </div>
-                                <CardTitle className="text-lg">
-                                    {t("contactPersons")} (
-                                    {otherContacts.length})
-                                </CardTitle>
-                            </div>
-                        </div>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="rounded-lg border overflow-hidden">
-                            <Table>
-                                <TableHeader className="bg-muted/50">
-                                    <TableRow>
-                                        <TableHead className="font-semibold">
-                                            {t("name")}
-                                        </TableHead>
-                                        <TableHead className="font-semibold">
-                                            {t("email")}
-                                        </TableHead>
-                                        <TableHead className="font-semibold">
-                                            {t("phone")}
-                                        </TableHead>
-                                        {otherContacts.some(c => c.priority !== 0) && (
-                                            <TableHead className="font-semibold text-center">
-                                                {t("priority")}
-                                            </TableHead>
-                                        )}
-                                        <TableHead className="font-semibold text-center">
-                                            {t("status")}
-                                        </TableHead>
-                                        <TableHead className="w-[100px]"></TableHead>
-                                    </TableRow>
-                                </TableHeader>
-                                <TableBody>
-                                    {otherContacts.map((contact, index) => (
-                                        <TableRow
-                                            key={contact._id || index}
-                                            className="hover:bg-muted/30"
-                                        >
-                                            <TableCell>
-                                                <div className="flex items-center gap-2">
-                                                    <div className="flex h-7 w-7 items-center justify-center rounded-full bg-muted">
-                                                        <User className="h-3.5 w-3.5 text-muted-foreground" />
-                                                    </div>
-                                                    <span className="font-medium">
-                                                        {contact.name}
-                                                    </span>
-                                                </div>
-                                            </TableCell>
-                                            <TableCell>
-                                                <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
-                                                    <Mail className="h-3.5 w-3.5" />
-                                                    {contact.email || "-"}
-                                                </div>
-                                            </TableCell>
-                                            <TableCell>
-                                                <div
-                                                    className="flex items-center gap-1.5 text-sm text-muted-foreground font-mono"
-                                                    dir="ltr"
-                                                >
-                                                    <Phone className="h-3.5 w-3.5" />
-                                                    {formatPhone(contact.phone)}
-                                                </div>
-                                            </TableCell>
-                                            {contact.priority !== 0 && (
-                                                <TableCell className="text-center">
-                                                    <span className="inline-flex items-center justify-center h-6 w-6 rounded-full bg-primary/10 text-primary text-sm font-medium">
-                                                        {contact.priority ||
-                                                            index + 1}
-                                                    </span>
-                                                </TableCell>
-                                            )}
-                                            <TableCell className="text-center">
-                                                <StatusBadge
-                                                    status={contact.status}
-                                                />
-                                            </TableCell>
-                                            <TableCell>
-                                                <div className="flex items-center gap-1">
-                                                    <Button
-                                                        variant="ghost"
-                                                        size="sm"
-                                                        onClick={() =>
-                                                            navigate(
-                                                                `/leads/${contact._id}`,
-                                                            )
-                                                        }
-                                                        title={t("viewDetails")}
-                                                    >
-                                                        <Eye size={14} />
-                                                    </Button>
-                                                    <Button
-                                                        variant="ghost"
-                                                        size="sm"
-                                                        onClick={() =>
-                                                            navigate(
-                                                                `/leads/edit/${contact._id}`,
-                                                            )
-                                                        }
-                                                        title={t("edit")}
-                                                    >
-                                                        <Edit size={14} />
-                                                    </Button>
-                                                </div>
-                                            </TableCell>
-                                        </TableRow>
-                                    ))}
-                                </TableBody>
-                            </Table>
-                        </div>
-                    </CardContent>
-                </Card>
-            )}
             </div>
         </div>
     )

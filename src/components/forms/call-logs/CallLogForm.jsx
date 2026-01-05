@@ -304,7 +304,9 @@ export default function CallLogForm({
         // Calculate duration values (HH:MM:SS)
         const totalSeconds = initialData.callDuration || 0
         const durationHrs = totalSeconds ? Math.floor(totalSeconds / 3600) : ""
-        const durationMins = totalSeconds ? Math.floor((totalSeconds % 3600) / 60) : ""
+        const durationMins = totalSeconds
+            ? Math.floor((totalSeconds % 3600) / 60)
+            : ""
         const durationSecs = totalSeconds ? totalSeconds % 60 : ""
 
         // Format callStartTime to HH:mm
@@ -467,7 +469,7 @@ export default function CallLogForm({
         }
 
         // Calculate total duration in seconds (HH:MM:SS to seconds)
-        const totalDurationSeconds = (hours * 3600) + (minutes * 60) + seconds
+        const totalDurationSeconds = hours * 3600 + minutes * 60 + seconds
 
         // Build callStartTime with current date and selected time
         let formattedCallStartTime = null
@@ -727,9 +729,25 @@ export default function CallLogForm({
                                                                 : "",
                                                         )}
                                                         onChange={(e) => {
-                                                            const val = parseInt(e.target.value, 10)
+                                                            const val =
+                                                                parseInt(
+                                                                    e.target
+                                                                        .value,
+                                                                    10,
+                                                                )
                                                             field.onChange(
-                                                                e.target.value === "" ? "" : Math.min(Math.max(val || 0, 0), 23)
+                                                                e.target
+                                                                    .value ===
+                                                                    ""
+                                                                    ? ""
+                                                                    : Math.min(
+                                                                          Math.max(
+                                                                              val ||
+                                                                                  0,
+                                                                              0,
+                                                                          ),
+                                                                          23,
+                                                                      ),
                                                             )
                                                         }}
                                                     />
@@ -769,9 +787,25 @@ export default function CallLogForm({
                                                                 : "",
                                                         )}
                                                         onChange={(e) => {
-                                                            const val = parseInt(e.target.value, 10)
+                                                            const val =
+                                                                parseInt(
+                                                                    e.target
+                                                                        .value,
+                                                                    10,
+                                                                )
                                                             field.onChange(
-                                                                e.target.value === "" ? "" : Math.min(Math.max(val || 0, 0), 59)
+                                                                e.target
+                                                                    .value ===
+                                                                    ""
+                                                                    ? ""
+                                                                    : Math.min(
+                                                                          Math.max(
+                                                                              val ||
+                                                                                  0,
+                                                                              0,
+                                                                          ),
+                                                                          59,
+                                                                      ),
                                                             )
                                                         }}
                                                     />
@@ -811,9 +845,25 @@ export default function CallLogForm({
                                                                 : "",
                                                         )}
                                                         onChange={(e) => {
-                                                            const val = parseInt(e.target.value, 10)
+                                                            const val =
+                                                                parseInt(
+                                                                    e.target
+                                                                        .value,
+                                                                    10,
+                                                                )
                                                             field.onChange(
-                                                                e.target.value === "" ? "" : Math.min(Math.max(val || 0, 0), 59)
+                                                                e.target
+                                                                    .value ===
+                                                                    ""
+                                                                    ? ""
+                                                                    : Math.min(
+                                                                          Math.max(
+                                                                              val ||
+                                                                                  0,
+                                                                              0,
+                                                                          ),
+                                                                          59,
+                                                                      ),
                                                             )
                                                         }}
                                                     />

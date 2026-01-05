@@ -10,7 +10,7 @@ export async function checkInviteStatus(email) {
     try {
         const response = await axiosPrivateInstance.get(
             "/organization/invite/status",
-            { params: { email } }
+            { params: { email } },
         )
         return response.data
     } catch (error) {
@@ -27,7 +27,7 @@ export async function inviteMembers(members) {
     try {
         const response = await axiosPrivateInstance.post(
             "/organization/invite",
-            { members }
+            { members },
         )
         return response.data
     } catch (error) {
@@ -57,7 +57,7 @@ export async function validateInviteToken(token) {
     try {
         const response = await axiosPublicInstance.get(
             "/organization/invite/validate",
-            { params: { token } }
+            { params: { token } },
         )
         return response.data
     } catch (error) {

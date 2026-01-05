@@ -54,7 +54,8 @@ export function InviteModal({ open, onOpenChange }) {
         setIsMembersLoading(true)
         try {
             const response = await getOrganizationMembers()
-            const membersList = response?.data?.members || response?.members || []
+            const membersList =
+                response?.data?.members || response?.members || []
             setMembers(membersList)
         } catch (error) {
             console.error("Failed to fetch members:", error)
@@ -102,7 +103,7 @@ export function InviteModal({ open, onOpenChange }) {
             // Check if user can be invited
             const statusResponse = await checkInviteStatus(email)
             const inviteData = statusResponse?.data || statusResponse
-            
+
             if (!inviteData?.canInvite) {
                 // User cannot be invited - show reason
                 const reason = inviteData?.reason || t("alreadyAMember")
@@ -205,8 +206,8 @@ export function InviteModal({ open, onOpenChange }) {
                                 value={email}
                                 onChange={handleEmailChange}
                                 className={`flex-1 h-9 bg-white border text-gray-900 placeholder:text-gray-400 focus:ring-2 focus:ring-offset-0 rounded-lg text-sm transition-all ${
-                                    emailError 
-                                        ? "border-red-400 focus:border-red-400 focus:ring-red-100" 
+                                    emailError
+                                        ? "border-red-400 focus:border-red-400 focus:ring-red-100"
                                         : "border-gray-200 focus:border-gray-900 focus:ring-gray-100"
                                 }`}
                             />
@@ -246,15 +247,17 @@ export function InviteModal({ open, onOpenChange }) {
                                 value={email}
                                 onChange={handleEmailChange}
                                 className={`w-full h-11 bg-white border text-gray-900 placeholder:text-gray-400 focus:ring-2 focus:ring-offset-0 rounded-lg text-sm ${
-                                    emailError 
-                                        ? "border-red-400 focus:border-red-400 focus:ring-red-100" 
+                                    emailError
+                                        ? "border-red-400 focus:border-red-400 focus:ring-red-100"
                                         : "border-gray-200 focus:border-gray-900 focus:ring-gray-100"
                                 }`}
                             />
                             <div className="flex gap-3">
                                 <Select value={role} onValueChange={setRole}>
                                     <SelectTrigger className="flex-1 h-11 bg-white border border-gray-200 text-gray-900 rounded-lg font-medium text-sm">
-                                        <SelectValue placeholder={t("employee")} />
+                                        <SelectValue
+                                            placeholder={t("employee")}
+                                        />
                                     </SelectTrigger>
                                     <SelectContent className="bg-white border border-gray-200 rounded-lg shadow-xl">
                                         <SelectItem
@@ -284,8 +287,16 @@ export function InviteModal({ open, onOpenChange }) {
                         {/* Error message */}
                         {emailError && (
                             <p className="text-sm text-red-500 flex items-center gap-1.5">
-                                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                                <svg
+                                    className="w-4 h-4"
+                                    fill="currentColor"
+                                    viewBox="0 0 20 20"
+                                >
+                                    <path
+                                        fillRule="evenodd"
+                                        d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                                        clipRule="evenodd"
+                                    />
                                 </svg>
                                 {emailError}
                             </p>
@@ -306,65 +317,74 @@ export function InviteModal({ open, onOpenChange }) {
                         </div>
 
                         <div className="space-y-0.5 max-h-[180px] sm:max-h-[220px] overflow-y-auto -mx-1 px-1">
-                            {isMembersLoading ? (
-                                // Skeleton loading state
-                                Array.from({ length: 3 }).map((_, index) => (
-                                    <div
-                                        key={index}
-                                        className="flex items-center gap-2.5 py-2 px-1"
-                                    >
-                                        <Skeleton className="h-9 w-9 sm:h-10 sm:w-10 rounded-full bg-gray-100" />
-                                        <div className="flex-1 space-y-2">
-                                            <Skeleton className="h-4 w-28 bg-gray-100" />
-                                            <Skeleton className="h-3 w-40 bg-gray-100" />
-                                        </div>
-                                        <Skeleton className="h-7 w-16 sm:w-20 bg-gray-100 rounded-lg" />
-                                    </div>
-                                ))
-                            ) : (
-                                members.map((member) => (
-                                    <div
-                                        key={member._id || member.email}
-                                        className="flex items-center gap-2.5 py-2 px-1 rounded-lg hover:bg-gray-50 transition-colors"
-                                    >
-                                        {/* Avatar */}
-                                        <Avatar
-                                            className={`h-9 w-9 sm:h-10 sm:w-10 flex-shrink-0 ${getAvatarColor(getMemberName(member))}`}
-                                        >
-                                            <AvatarFallback className="text-white font-semibold text-sm bg-transparent">
-                                                {getInitials(member)}
-                                            </AvatarFallback>
-                                        </Avatar>
+                            {isMembersLoading
+                                ? // Skeleton loading state
+                                  Array.from({ length: 3 }).map((_, index) => (
+                                      <div
+                                          key={index}
+                                          className="flex items-center gap-2.5 py-2 px-1"
+                                      >
+                                          <Skeleton className="h-9 w-9 sm:h-10 sm:w-10 rounded-full bg-gray-100" />
+                                          <div className="flex-1 space-y-2">
+                                              <Skeleton className="h-4 w-28 bg-gray-100" />
+                                              <Skeleton className="h-3 w-40 bg-gray-100" />
+                                          </div>
+                                          <Skeleton className="h-7 w-16 sm:w-20 bg-gray-100 rounded-lg" />
+                                      </div>
+                                  ))
+                                : members.map((member) => (
+                                      <div
+                                          key={member._id || member.email}
+                                          className="flex items-center gap-2.5 py-2 px-1 rounded-lg hover:bg-gray-50 transition-colors"
+                                      >
+                                          {/* Avatar */}
+                                          <Avatar
+                                              className={`h-9 w-9 sm:h-10 sm:w-10 flex-shrink-0 ${getAvatarColor(getMemberName(member))}`}
+                                          >
+                                              <AvatarFallback className="text-white font-semibold text-sm bg-transparent">
+                                                  {getInitials(member)}
+                                              </AvatarFallback>
+                                          </Avatar>
 
-                                        {/* Name and email */}
-                                        <div className="flex-1 min-w-0">
-                                            <p className="text-sm font-medium text-gray-900 truncate">
-                                                {getMemberName(member)}
-                                            </p>
-                                            <p className="text-xs text-gray-500 truncate">
-                                                {member.email}
-                                                <span className="hidden sm:inline"> • {getRoleDescription(member)}</span>
-                                            </p>
-                                        </div>
+                                          {/* Name and email */}
+                                          <div className="flex-1 min-w-0">
+                                              <p className="text-sm font-medium text-gray-900 truncate">
+                                                  {getMemberName(member)}
+                                              </p>
+                                              <p className="text-xs text-gray-500 truncate">
+                                                  {member.email}
+                                                  <span className="hidden sm:inline">
+                                                      {" "}
+                                                      •{" "}
+                                                      {getRoleDescription(
+                                                          member,
+                                                      )}
+                                                  </span>
+                                              </p>
+                                          </div>
 
-                                        {/* Role badge */}
-                                        <Tooltip>
-                                            <TooltipTrigger asChild>
-                                                <div className={`px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-lg text-xs sm:text-sm font-medium cursor-default flex-shrink-0 ${
-                                                    member.role === "admin" 
-                                                        ? "bg-gray-100 text-gray-500" 
-                                                        : "bg-gray-50 text-gray-600 border border-gray-200"
-                                                }`}>
-                                                    {getRoleDisplay(member.role)}
-                                                </div>
-                                            </TooltipTrigger>
-                                            <TooltipContent side="left">
-                                                <p>{t("alreadyAMember")}</p>
-                                            </TooltipContent>
-                                        </Tooltip>
-                                    </div>
-                                ))
-                            )}
+                                          {/* Role badge */}
+                                          <Tooltip>
+                                              <TooltipTrigger asChild>
+                                                  <div
+                                                      className={`px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-lg text-xs sm:text-sm font-medium cursor-default flex-shrink-0 ${
+                                                          member.role ===
+                                                          "admin"
+                                                              ? "bg-gray-100 text-gray-500"
+                                                              : "bg-gray-50 text-gray-600 border border-gray-200"
+                                                      }`}
+                                                  >
+                                                      {getRoleDisplay(
+                                                          member.role,
+                                                      )}
+                                                  </div>
+                                              </TooltipTrigger>
+                                              <TooltipContent side="left">
+                                                  <p>{t("alreadyAMember")}</p>
+                                              </TooltipContent>
+                                          </Tooltip>
+                                      </div>
+                                  ))}
                         </div>
                     </div>
                 </div>
@@ -372,4 +392,3 @@ export function InviteModal({ open, onOpenChange }) {
         </Dialog>
     )
 }
-

@@ -256,7 +256,10 @@ export default function CallLogDetailPage() {
                         {lead.priority !== 0 && (
                             <>
                                 <Separator />
-                                <FieldRow label={t("priority")} value={lead.priority} />
+                                <FieldRow
+                                    label={t("priority")}
+                                    value={lead.priority}
+                                />
                             </>
                         )}
                     </CardContent>
