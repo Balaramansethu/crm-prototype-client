@@ -67,7 +67,11 @@ export function AppSidebar({ ...props }) {
                             className="data-[slot=sidebar-menu-button]:!p-1.5"
                         >
                             <a href="#" className="flex items-center gap-2">
-                                <IconInnerShadowTop className="!size-5" />
+                                <img 
+                                    src="https://bunny-wp-pullzone-dgpgtislbk.b-cdn.net/wp-content/uploads/2023/12/Datasack_tech_logo4_240X240_72dpi.png" 
+                                    alt="Datasack Logo" 
+                                    className="size-8 rounded object-contain"
+                                />
                                 <span className="text-base font-semibold">
                                     {t("crmTool")}
                                 </span>
