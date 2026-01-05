@@ -88,11 +88,13 @@ export default function CallLogDetailPage() {
 
     const formatDuration = (seconds) => {
         if (!seconds && seconds !== 0) return "-"
-        const mins = Math.floor(seconds / 60)
+        const hrs = Math.floor(seconds / 3600)
+        const mins = Math.floor((seconds % 3600) / 60)
         const secs = seconds % 60
-        if (mins === 0) return `${secs} ${t("seconds")}`
-        if (secs === 0) return `${mins} ${t("minutes")}`
-        return `${mins} ${t("min")} ${secs} ${t("sec")}`
+        const hh = String(hrs).padStart(2, "0")
+        const mm = String(mins).padStart(2, "0")
+        const ss = String(secs).padStart(2, "0")
+        return `${hh}:${mm}:${ss}`
     }
 
     // Badge color based on outcome
@@ -251,8 +253,12 @@ export default function CallLogDetailPage() {
                         />
                         <Separator />
                         <FieldRow label={t("email")} value={lead?.email} />
-                        <Separator />
-                        <FieldRow label={t("priority")} value={lead.priority} />
+                        {lead.priority !== 0 && (
+                            <>
+                                <Separator />
+                                <FieldRow label={t("priority")} value={lead.priority} />
+                            </>
+                        )}
                     </CardContent>
                 </Card>
             </div>

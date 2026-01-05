@@ -210,11 +210,15 @@ export default function LeadDetailPage() {
                                 label={t("followUp")}
                                 value={formatDate(mainContact.followUp)}
                             />
-                            <Separator />
-                            <FieldRow
-                                label={t("priority")}
-                                value={mainContact.priority || 1}
-                            />
+                            {mainContact.priority !== 0 && (
+                                <>
+                                    <Separator />
+                                    <FieldRow
+                                        label={t("priority")}
+                                        value={mainContact.priority || 1}
+                                    />
+                                </>
+                            )}
                         </CardContent>
                     </Card>
                 )}
@@ -284,9 +288,11 @@ export default function LeadDetailPage() {
                                         <TableHead className="font-semibold">
                                             {t("phone")}
                                         </TableHead>
-                                        <TableHead className="font-semibold text-center">
-                                            {t("priority")}
-                                        </TableHead>
+                                        {otherContacts.some(c => c.priority !== 0) && (
+                                            <TableHead className="font-semibold text-center">
+                                                {t("priority")}
+                                            </TableHead>
+                                        )}
                                         <TableHead className="font-semibold text-center">
                                             {t("status")}
                                         </TableHead>
@@ -324,12 +330,14 @@ export default function LeadDetailPage() {
                                                     {formatPhone(contact.phone)}
                                                 </div>
                                             </TableCell>
-                                            <TableCell className="text-center">
-                                                <span className="inline-flex items-center justify-center h-6 w-6 rounded-full bg-primary/10 text-primary text-sm font-medium">
-                                                    {contact.priority ||
-                                                        index + 1}
-                                                </span>
-                                            </TableCell>
+                                            {contact.priority !== 0 && (
+                                                <TableCell className="text-center">
+                                                    <span className="inline-flex items-center justify-center h-6 w-6 rounded-full bg-primary/10 text-primary text-sm font-medium">
+                                                        {contact.priority ||
+                                                            index + 1}
+                                                    </span>
+                                                </TableCell>
+                                            )}
                                             <TableCell className="text-center">
                                                 <StatusBadge
                                                     status={contact.status}

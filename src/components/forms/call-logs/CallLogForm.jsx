@@ -68,8 +68,11 @@ export default function CallLogForm({
             callStartTime: initialData?.callStartTime
                 ? new Date(initialData.callStartTime).toTimeString().slice(0, 5)
                 : "",
+            durationHours: initialData?.callDuration
+                ? Math.floor(initialData.callDuration / 3600)
+                : "",
             durationMinutes: initialData?.callDuration
-                ? Math.floor(initialData.callDuration / 60)
+                ? Math.floor((initialData.callDuration % 3600) / 60)
                 : "",
             durationSeconds: initialData?.callDuration
                 ? initialData.callDuration % 60
@@ -298,13 +301,11 @@ export default function CallLogForm({
     useEffect(() => {
         if (!initialData || loadingCompanies) return
 
-        // Calculate duration values
-        const durationMins = initialData.callDuration
-            ? Math.floor(initialData.callDuration / 60)
-            : ""
-        const durationSecs = initialData.callDuration
-            ? initialData.callDuration % 60
-            : ""
+        // Calculate duration values (HH:MM:SS)
+        const totalSeconds = initialData.callDuration || 0
+        const durationHrs = totalSeconds ? Math.floor(totalSeconds / 3600) : ""
+        const durationMins = totalSeconds ? Math.floor((totalSeconds % 3600) / 60) : ""
+        const durationSecs = totalSeconds ? totalSeconds % 60 : ""
 
         // Format callStartTime to HH:mm
         let timeValue = ""
@@ -326,6 +327,7 @@ export default function CallLogForm({
                 ? new Date(initialData.followUp)
                 : null,
             callStartTime: timeValue,
+            durationHours: durationHrs,
             durationMinutes: durationMins,
             durationSeconds: durationSecs,
             remarks: initialData.remarks || "",
@@ -428,22 +430,44 @@ export default function CallLogForm({
             return
         }
 
-        // Validate durationMinutes and durationSeconds
+        // Validate duration fields (HH:MM:SS format)
+        const hours = parseInt(data.durationHours, 10) || 0
         const minutes = parseInt(data.durationMinutes, 10) || 0
         const seconds = parseInt(data.durationSeconds, 10) || 0
 
-        if (minutes === 0 && seconds === 0) {
+        // Validate ranges: hours 0-23, minutes 0-59, seconds 0-59
+        if (hours < 0 || hours > 23) {
+            form.setError("durationHours", {
+                type: "validate",
+                message: t("hoursRange"),
+            })
+            return
+        }
+        if (minutes < 0 || minutes > 59) {
             form.setError("durationMinutes", {
+                type: "validate",
+                message: t("minutesRange"),
+            })
+            return
+        }
+        if (seconds < 0 || seconds > 59) {
+            form.setError("durationSeconds", {
+                type: "validate",
+                message: t("secondsRange"),
+            })
+            return
+        }
+
+        if (hours === 0 && minutes === 0 && seconds === 0) {
+            form.setError("durationHours", {
                 type: "required",
                 message: t("callDurationRequired"),
             })
             return
         }
 
-        // Calculate total duration in seconds
-        const totalDurationSeconds =
-            (parseInt(data.durationMinutes, 10) || 0) * 60 +
-            (parseInt(data.durationSeconds, 10) || 0)
+        // Calculate total duration in seconds (HH:MM:SS to seconds)
+        const totalDurationSeconds = (hours * 3600) + (minutes * 60) + seconds
 
         // Build callStartTime with current date and selected time
         let formattedCallStartTime = null
@@ -679,10 +703,52 @@ export default function CallLogForm({
                             )}
                         />
 
-                        {/* Call Duration - Minutes and Seconds side by side */}
+                        {/* Call Duration - Hours, Minutes and Seconds side by side */}
                         <div className="space-y-2">
                             <FormLabel>{t("callDuration")}</FormLabel>
-                            <div className="grid grid-cols-2 gap-3">
+                            <div className="grid grid-cols-3 gap-3">
+                                <FormField
+                                    control={form.control}
+                                    name="durationHours"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormControl>
+                                                <div className="relative">
+                                                    <Input
+                                                        {...field}
+                                                        type="number"
+                                                        min="0"
+                                                        max="23"
+                                                        placeholder="0"
+                                                        className={cn(
+                                                            "pr-10",
+                                                            isRTL
+                                                                ? "text-right pl-10 pr-3"
+                                                                : "",
+                                                        )}
+                                                        onChange={(e) => {
+                                                            const val = parseInt(e.target.value, 10)
+                                                            field.onChange(
+                                                                e.target.value === "" ? "" : Math.min(Math.max(val || 0, 0), 23)
+                                                            )
+                                                        }}
+                                                    />
+                                                    <span
+                                                        className={cn(
+                                                            "absolute top-1/2 -translate-y-1/2 text-sm text-muted-foreground",
+                                                            isRTL
+                                                                ? "left-3"
+                                                                : "right-3",
+                                                        )}
+                                                    >
+                                                        {t("hr")}
+                                                    </span>
+                                                </div>
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
                                 <FormField
                                     control={form.control}
                                     name="durationMinutes"
@@ -694,7 +760,7 @@ export default function CallLogForm({
                                                         {...field}
                                                         type="number"
                                                         min="0"
-                                                        max="999"
+                                                        max="59"
                                                         placeholder="0"
                                                         className={cn(
                                                             "pr-12",
@@ -702,18 +768,12 @@ export default function CallLogForm({
                                                                 ? "text-right pl-12 pr-3"
                                                                 : "",
                                                         )}
-                                                        onChange={(e) =>
+                                                        onChange={(e) => {
+                                                            const val = parseInt(e.target.value, 10)
                                                             field.onChange(
-                                                                e.target.value
-                                                                    ? parseInt(
-                                                                          e
-                                                                              .target
-                                                                              .value,
-                                                                          10,
-                                                                      )
-                                                                    : "",
+                                                                e.target.value === "" ? "" : Math.min(Math.max(val || 0, 0), 59)
                                                             )
-                                                        }
+                                                        }}
                                                     />
                                                     <span
                                                         className={cn(
@@ -742,6 +802,7 @@ export default function CallLogForm({
                                                         {...field}
                                                         type="number"
                                                         min="0"
+                                                        max="59"
                                                         placeholder="0"
                                                         className={cn(
                                                             "pr-12",
@@ -749,18 +810,12 @@ export default function CallLogForm({
                                                                 ? "text-right pl-12 pr-3"
                                                                 : "",
                                                         )}
-                                                        onChange={(e) =>
+                                                        onChange={(e) => {
+                                                            const val = parseInt(e.target.value, 10)
                                                             field.onChange(
-                                                                e.target.value
-                                                                    ? parseInt(
-                                                                          e
-                                                                              .target
-                                                                              .value,
-                                                                          10,
-                                                                      )
-                                                                    : "",
+                                                                e.target.value === "" ? "" : Math.min(Math.max(val || 0, 0), 59)
                                                             )
-                                                        }
+                                                        }}
                                                     />
                                                     <span
                                                         className={cn(

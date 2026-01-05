@@ -167,11 +167,13 @@ export default function CallLogsPage() {
 
     const formatDuration = (seconds) => {
         if (!seconds && seconds !== 0) return "-"
-        const mins = Math.floor(seconds / 60)
+        const hrs = Math.floor(seconds / 3600)
+        const mins = Math.floor((seconds % 3600) / 60)
         const secs = seconds % 60
-        if (mins === 0) return `${secs}s`
-        if (secs === 0) return `${mins}m`
-        return `${mins}m ${secs}s`
+        const hh = String(hrs).padStart(2, "0")
+        const mm = String(mins).padStart(2, "0")
+        const ss = String(secs).padStart(2, "0")
+        return `${hh}:${mm}:${ss}`
     }
 
     // Get company name from lead

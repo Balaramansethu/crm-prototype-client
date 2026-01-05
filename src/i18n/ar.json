@@ -292,5 +292,9 @@
     "failedToInvite": "فشل إرسال الدعوة",
     "invalidDomain": "مسموح فقط بعناوين البريد الإلكتروني @datasack.in",
     "featureComingSoon": "الميزة قادمة قريباً",
-    "you": "أنت"
+    "you": "أنت",
+    "hr": "سا",
+    "hoursRange": "الساعات يجب أن تكون 0-23",
+    "minutesRange": "الدقائق يجب أن تكون 0-59",
+    "secondsRange": "الثواني يجب أن تكون 0-59"
 }

@@ -164,14 +164,14 @@
     "callLogDeletedSuccess": "Call log deleted successfully",
     "failedToDeleteCallLog": "Failed to delete call log",
     "remarks": "Remarks",
-    "selectLeadFirst": "Select a lead first",
+    "selectLeadFirst": "Company phone number",
     "createNewLead": "Create New Lead",
     "companyDetails": "Company Details",
     "companyPhone": "Company Phone Number",
     "website": "Website",
     "socialProfile": "Social Profile",
     "contactPerson": "Contact Person",
-    "contactPersons": "Contact Persons",
+    "contactPersons": "Relevant Contacts",
     "designation": "Designation",
     "priority": "Priority",
     "high": "High",
@@ -292,5 +292,9 @@
     "failedToInvite": "Failed to send invitation",
     "invalidDomain": "Only @datasack.in email addresses are allowed",
     "featureComingSoon": "Feature coming soon",
-    "you": "you"
+    "you": "you",
+    "hr": "hr",
+    "hoursRange": "Hours must be 0-23",
+    "minutesRange": "Minutes must be 0-59",
+    "secondsRange": "Seconds must be 0-59"
 }
