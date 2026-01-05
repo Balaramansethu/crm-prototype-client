@@ -208,18 +208,20 @@ export function AppSidebar({ ...props }) {
 
             {/* FOOTER USER CARD */}
             <SidebarFooter className={isRTL ? "text-right" : "text-left"}>
-                {/* Invite Button */}
-                <Button
-                    onClick={() => setInviteModalOpen(true)}
-                    className="w-full mb-2 bg-black hover:bg-gray-900 text-white border border-gray-700"
-                >
-                    <IconUserPlus
-                        className="w-4 h-4"
-                        stroke={2}
-                        color="white"
-                    />
-                    {t("invite")}
-                </Button>
+                {/* Invite Button - Only visible for super_admin */}
+                {user.role === "super_admin" && (
+                    <Button
+                        onClick={() => setInviteModalOpen(true)}
+                        className="w-full mb-2 bg-black hover:bg-gray-900 text-white border border-gray-700"
+                    >
+                        <IconUserPlus
+                            className="w-4 h-4"
+                            stroke={2}
+                            color="white"
+                        />
+                        {t("invite")}
+                    </Button>
+                )}
 
                 <NavUser
                     user={{
