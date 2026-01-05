@@ -23,6 +23,7 @@ import { getLeadById } from "@/service/leadsService"
 import { toast } from "sonner"
 import {
     Edit,
+    Eye,
     Calendar,
     Clock,
     User,
@@ -114,7 +115,7 @@ export default function LeadDetailPage() {
     }
 
     return (
-        <div className="flex flex-1 flex-col gap-4 sm:gap-6 p-4 sm:p-6">
+        <div className="flex flex-1 flex-col w-full">
             {/* Breadcrumb Header */}
             <PageHeader
                 breadcrumbs={[
@@ -129,30 +130,32 @@ export default function LeadDetailPage() {
                 title={company?.name || t("leadDetails")}
             />
 
-            {/* Meta Card - Full Width */}
-            <Card className="bg-muted/30">
-                <CardContent className="py-3 px-4">
-                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-4">
-                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                            <Calendar size={14} />
-                            <span>{t("createdAt")}:</span>
-                            <span className="font-medium text-foreground">
-                                {formatDateTime(company.createdAt)}
-                            </span>
+            {/* Content Area with proper spacing */}
+            <div className="flex flex-col gap-4 px-4 lg:px-6 pb-6">
+                {/* Meta Card - Full Width */}
+                <Card className="bg-muted/30">
+                    <CardContent className="py-3 px-4">
+                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-4">
+                            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                                <Calendar size={14} />
+                                <span>{t("createdAt")}:</span>
+                                <span className="font-medium text-foreground">
+                                    {formatDateTime(company.createdAt)}
+                                </span>
+                            </div>
+                            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                                <Clock size={14} />
+                                <span>{t("updatedAt")}:</span>
+                                <span className="font-medium text-foreground">
+                                    {formatDateTime(company.updatedAt)}
+                                </span>
+                            </div>
                         </div>
-                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                            <Clock size={14} />
-                            <span>{t("updatedAt")}:</span>
-                            <span className="font-medium text-foreground">
-                                {formatDateTime(company.updatedAt)}
-                            </span>
-                        </div>
-                    </div>
-                </CardContent>
-            </Card>
+                    </CardContent>
+                </Card>
 
-            {/* Main Contact & Company - Side by Side */}
-            <div className="grid gap-4 md:gap-6 grid-cols-1 md:grid-cols-2">
+                {/* Main Contact & Company - Side by Side */}
+                <div className="grid gap-4 grid-cols-1 md:grid-cols-2">
                 {/* Main Contact Card */}
                 {mainContact && (
                     <Card>
@@ -287,7 +290,7 @@ export default function LeadDetailPage() {
                                         <TableHead className="font-semibold text-center">
                                             {t("status")}
                                         </TableHead>
-                                        <TableHead className="w-[60px]"></TableHead>
+                                        <TableHead className="w-[100px]"></TableHead>
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
@@ -333,17 +336,32 @@ export default function LeadDetailPage() {
                                                 />
                                             </TableCell>
                                             <TableCell>
-                                                <Button
-                                                    variant="ghost"
-                                                    size="sm"
-                                                    onClick={() =>
-                                                        navigate(
-                                                            `/leads/edit/${contact._id}`,
-                                                        )
-                                                    }
-                                                >
-                                                    <Edit size={14} />
-                                                </Button>
+                                                <div className="flex items-center gap-1">
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="sm"
+                                                        onClick={() =>
+                                                            navigate(
+                                                                `/leads/${contact._id}`,
+                                                            )
+                                                        }
+                                                        title={t("viewDetails")}
+                                                    >
+                                                        <Eye size={14} />
+                                                    </Button>
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="sm"
+                                                        onClick={() =>
+                                                            navigate(
+                                                                `/leads/edit/${contact._id}`,
+                                                            )
+                                                        }
+                                                        title={t("edit")}
+                                                    >
+                                                        <Edit size={14} />
+                                                    </Button>
+                                                </div>
                                             </TableCell>
                                         </TableRow>
                                     ))}
@@ -353,6 +371,7 @@ export default function LeadDetailPage() {
                     </CardContent>
                 </Card>
             )}
+            </div>
         </div>
     )
 }
