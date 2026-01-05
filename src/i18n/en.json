@@ -283,11 +283,12 @@
     "createLink": "Create link",
     "boardMembers": "Board members",
     "member": "Member",
+    "employee": "Employee",
     "admin": "Admin",
     "workspaceGuest": "Workspace guest",
     "workspaceAdmin": "Workspace admin",
     "alreadyAMember": "Already a member",
-    "emailPlaceholderInvite": "Email address or name",
+    "emailPlaceholderInvite": "Enter email address",
     "inviteSent": "Invitation sent successfully",
     "failedToInvite": "Failed to send invitation",
     "invalidDomain": "Only @datasack.in email addresses are allowed",
@@ -296,5 +297,12 @@
     "hr": "hr",
     "hoursRange": "Hours must be 0-23",
     "minutesRange": "Minutes must be 0-59",
-    "secondsRange": "Seconds must be 0-59"
+    "secondsRange": "Seconds must be 0-59",
+    "validatingInvite": "Validating your invite...",
+    "inviteValid": "Invite verified!",
+    "inviteInvalid": "Invalid or expired invite link",
+    "inviteError": "Invite Error",
+    "emailFromInvite": "from invitation",
+    "redirectingToSignup": "Redirecting to signup...",
+    "pleaseWait": "Please wait..."
 }

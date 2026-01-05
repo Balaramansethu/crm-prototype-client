@@ -7,6 +7,7 @@ import ProtectedRoute from "@/components/ProtectedRoute"
 import SignupPage from "@/pages/SignupPage/SignupPage"
 import LoginPage from "@/pages/LoginPage/LoginPage"
 import OrganizationRegisterPage from "@/pages/OrganizationRegisterPage/OrganizationRegisterPage"
+import InviteAcceptPage from "@/pages/InviteAcceptPage/InviteAcceptPage"
 
 import DashboardPage from "@/pages/Dashboard/Dashboard"
 import LeadsPage from "@/pages/LeadsPage/LeadsPage"
@@ -38,6 +39,7 @@ export default function AppRoutes() {
                     path="/register-organization"
                     element={<OrganizationRegisterPage />}
                 />
+                <Route path="/invite/accept" element={<InviteAcceptPage />} />
             </Route>
 
             {/* PRIVATE ROUTES */}

@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import {
@@ -16,9 +16,11 @@ import {
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { Link } from "react-router-dom"
-import { Eye, EyeOff } from "lucide-react"
+import { Eye, EyeOff, Mail } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { validateSignupFields } from "@/utils/authenticationFieldValidations"
+
+const MAGIC_LINK_STORAGE_KEY = "magicLinkInvite"
 
 export function SignupForm({ className, onSubmit, loading, ...props }) {
     const [form, setForm] = useState({
@@ -35,6 +37,28 @@ export function SignupForm({ className, onSubmit, loading, ...props }) {
     const [errors, setErrors] = useState({})
     const [showPassword, setShowPassword] = useState(false)
     const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+    const [isFromInvite, setIsFromInvite] = useState(false)
+
+    // Check localStorage for magic link invite data on mount
+    useEffect(() => {
+        const storedInvite = localStorage.getItem(MAGIC_LINK_STORAGE_KEY)
+        if (storedInvite) {
+            try {
+                const inviteData = JSON.parse(storedInvite)
+                if (inviteData.email && inviteData.method === "viaMagicLink") {
+                    setForm(prev => ({
+                        ...prev,
+                        email: inviteData.email,
+                        role: inviteData.role || "employee",
+                    }))
+                    setIsFromInvite(true)
+                }
+            } catch (error) {
+                console.error("Failed to parse magic link data:", error)
+                localStorage.removeItem(MAGIC_LINK_STORAGE_KEY)
+            }
+        }
+    }, [])
 
     const handleChange = (e) => {
         setForm({ ...form, [e.target.id]: e.target.value })
@@ -56,6 +80,11 @@ export function SignupForm({ className, onSubmit, loading, ...props }) {
             email: form.email.toLowerCase().trim(),
             password: form.password,
             role: form.role,
+        }
+
+        // Clear magic link data from localStorage after form submission
+        if (isFromInvite) {
+            localStorage.removeItem(MAGIC_LINK_STORAGE_KEY)
         }
 
         onSubmit(payload)
@@ -114,13 +143,26 @@ export function SignupForm({ className, onSubmit, loading, ...props }) {
                             <Field>
                                 <FieldLabel htmlFor="email">
                                     {t("email")}
+                                    {isFromInvite && (
+                                        <span className="ml-2 text-xs text-green-600 font-normal">
+                                            ({t("emailFromInvite")})
+                                        </span>
+                                    )}
                                 </FieldLabel>
-                                <Input
-                                    id="email"
-                                    value={form.email}
-                                    onChange={handleChange}
-                                    placeholder="m@example.com"
-                                />
+                                <div className="relative">
+                                    <Input
+                                        id="email"
+                                        value={form.email}
+                                        onChange={handleChange}
+                                        placeholder="m@example.com"
+                                        disabled={isFromInvite}
+                                        readOnly={isFromInvite}
+                                        className={isFromInvite ? "bg-muted pr-10" : ""}
+                                    />
+                                    {isFromInvite && (
+                                        <Mail className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-green-600" />
+                                    )}
+                                </div>
                                 {errors.email && (
                                     <p className="text-red-500 text-sm">
                                         {errors.email}

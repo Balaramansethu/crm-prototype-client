@@ -283,6 +283,7 @@
     "createLink": "إنشاء رابط",
     "boardMembers": "أعضاء اللوحة",
     "member": "عضو",
+    "employee": "موظف",
     "admin": "مسؤول",
     "workspaceGuest": "ضيف مساحة العمل",
     "workspaceAdmin": "مسؤول مساحة العمل",
@@ -296,5 +297,12 @@
     "hr": "سا",
     "hoursRange": "الساعات يجب أن تكون 0-23",
     "minutesRange": "الدقائق يجب أن تكون 0-59",
-    "secondsRange": "الثواني يجب أن تكون 0-59"
+    "secondsRange": "الثواني يجب أن تكون 0-59",
+    "validatingInvite": "جاري التحقق من الدعوة...",
+    "inviteValid": "تم التحقق من الدعوة!",
+    "inviteInvalid": "رابط الدعوة غير صالح أو منتهي الصلاحية",
+    "inviteError": "خطأ في الدعوة",
+    "emailFromInvite": "من الدعوة",
+    "redirectingToSignup": "جاري التحويل إلى التسجيل...",
+    "pleaseWait": "يرجى الانتظار..."
 }

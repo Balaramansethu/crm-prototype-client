@@ -36,7 +36,7 @@ import {
 export function InviteModal({ open, onOpenChange }) {
     const { t } = useTranslation()
     const [email, setEmail] = useState("")
-    const [role, setRole] = useState("member")
+    const [role, setRole] = useState("employee")
     const [members, setMembers] = useState([])
     const [isLoading, setIsLoading] = useState(false)
     const [isMembersLoading, setIsMembersLoading] = useState(false)
@@ -54,37 +54,11 @@ export function InviteModal({ open, onOpenChange }) {
         setIsMembersLoading(true)
         try {
             const response = await getOrganizationMembers()
-            setMembers(response?.data || response || [])
+            const membersList = response?.data?.members || response?.members || []
+            setMembers(membersList)
         } catch (error) {
             console.error("Failed to fetch members:", error)
-            // Use mock data for demo
-            setMembers([
-                {
-                    id: "1",
-                    name: "Bala",
-                    email: "bala@datasack.in",
-                    username: "bala19406339",
-                    role: "member",
-                    status: "active",
-                    isCurrentUser: true,
-                },
-                {
-                    id: "2",
-                    name: "Thirunavukkarasu",
-                    email: "thiru@datasack.in",
-                    username: "thiruthanikaiarasu",
-                    role: "admin",
-                    status: "active",
-                },
-                {
-                    id: "3",
-                    name: "Prabanjan Jeyasankar",
-                    email: "prabanjan@datasack.in",
-                    username: "prabanjanjeyasankar1",
-                    role: "member",
-                    status: "active",
-                },
-            ])
+            setMembers([])
         } finally {
             setIsMembersLoading(false)
         }
@@ -116,19 +90,24 @@ export function InviteModal({ open, onOpenChange }) {
             return
         }
 
-        if (!validateDomain(email)) {
-            setEmailError(t("invalidDomain"))
-            return
-        }
+        // if (!validateDomain(email)) {
+        //     setEmailError(t("invalidDomain"))
+        //     return
+        // }
 
         setEmailError("") // Clear any previous errors
 
         setIsInviting(true)
         try {
-            // Check if user is already a member
+            // Check if user can be invited
             const statusResponse = await checkInviteStatus(email)
-            if (statusResponse?.isAlreadyMember) {
-                toast.error(t("alreadyAMember"))
+            const inviteData = statusResponse?.data || statusResponse
+            
+            if (!inviteData?.canInvite) {
+                // User cannot be invited - show reason
+                const reason = inviteData?.reason || t("alreadyAMember")
+                setEmailError(reason)
+                toast.error(reason)
                 return
             }
 
@@ -136,7 +115,7 @@ export function InviteModal({ open, onOpenChange }) {
             await inviteMembers([{ email, role }])
             toast.success(t("inviteSent"))
             setEmail("")
-            setRole("member")
+            setRole("employee")
             fetchMembers() // Refresh members list
         } catch (error) {
             console.error("Failed to invite:", error)
@@ -151,7 +130,15 @@ export function InviteModal({ open, onOpenChange }) {
         toast.info(t("featureComingSoon"))
     }
 
-    const getInitials = (name) => {
+    const getMemberName = (member) => {
+        if (member.firstName || member.lastName) {
+            return `${member.firstName || ""} ${member.lastName || ""}`.trim()
+        }
+        return member.name || member.email?.split("@")[0] || "Unknown"
+    }
+
+    const getInitials = (member) => {
+        const name = getMemberName(member)
         if (!name) return "?"
         return name
             .split(" ")
@@ -198,45 +185,45 @@ export function InviteModal({ open, onOpenChange }) {
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogContent className="w-[calc(100%-2rem)] max-w-[500px] bg-white border border-gray-200 text-gray-900 shadow-2xl rounded-2xl p-0 overflow-hidden">
+            <DialogContent className="w-[calc(100%-2rem)] max-w-[550px] bg-white border border-gray-200 text-gray-900 shadow-2xl rounded-2xl p-0 overflow-hidden">
                 {/* Header */}
-                <DialogHeader className="px-5 pt-5 pb-3">
-                    <DialogTitle className="text-lg text-center font-semibold text-gray-900">
+                <DialogHeader className="px-6 pt-6 pb-4">
+                    <DialogTitle className="text-xl text-center font-semibold text-gray-900 tracking-tight">
                         {t("shareBoard")}
                     </DialogTitle>
                 </DialogHeader>
 
                 {/* Content */}
-                <div className="px-5 pb-5 space-y-4">
+                <div className="px-6 pb-6 space-y-6">
                     {/* Email input section */}
                     <div className="space-y-2">
                         {/* Desktop: horizontal layout */}
-                        <div className="hidden sm:flex gap-2">
+                        <div className="hidden sm:flex items-center gap-3">
                             <Input
                                 type="email"
                                 placeholder={t("emailPlaceholderInvite")}
                                 value={email}
                                 onChange={handleEmailChange}
-                                className={`flex-1 h-10 bg-white border text-gray-900 placeholder:text-gray-400 focus:ring-2 focus:ring-offset-0 rounded-lg text-sm ${
+                                className={`flex-1 h-9 bg-white border text-gray-900 placeholder:text-gray-400 focus:ring-2 focus:ring-offset-0 rounded-lg text-sm transition-all ${
                                     emailError 
                                         ? "border-red-400 focus:border-red-400 focus:ring-red-100" 
                                         : "border-gray-200 focus:border-gray-900 focus:ring-gray-100"
                                 }`}
                             />
                             <Select value={role} onValueChange={setRole}>
-                                <SelectTrigger className="w-[120px] h-10 bg-white border border-gray-200 text-gray-900 rounded-lg font-medium text-sm">
-                                    <SelectValue placeholder={t("member")} />
+                                <SelectTrigger className="w-[160px] h-9 px-3 bg-white border border-gray-200 text-gray-900 rounded-lg font-medium text-sm focus:ring-2 focus:ring-gray-100 focus:ring-offset-0">
+                                    <SelectValue placeholder={t("employee")} />
                                 </SelectTrigger>
-                                <SelectContent className="bg-white border border-gray-200 rounded-lg shadow-lg">
+                                <SelectContent className="bg-white border border-gray-200 rounded-lg shadow-xl">
                                     <SelectItem
-                                        value="member"
-                                        className="text-gray-900 hover:bg-gray-50 cursor-pointer"
+                                        value="employee"
+                                        className="text-gray-900 hover:bg-gray-50 cursor-pointer h-10"
                                     >
-                                        {t("member")}
+                                        {t("employee")}
                                     </SelectItem>
                                     <SelectItem
                                         value="admin"
-                                        className="text-gray-900 hover:bg-gray-50 cursor-pointer"
+                                        className="text-gray-900 hover:bg-gray-50 cursor-pointer h-10"
                                     >
                                         {t("admin")}
                                     </SelectItem>
@@ -245,14 +232,14 @@ export function InviteModal({ open, onOpenChange }) {
                             <Button
                                 onClick={handleInvite}
                                 disabled={isInviting || !email.trim()}
-                                className="h-10 bg-gray-900 hover:bg-gray-800 text-white px-5 rounded-lg font-medium text-sm transition-colors disabled:opacity-50"
+                                className="h-9 bg-gray-900 hover:bg-gray-800 text-white px-6 rounded-lg font-medium text-sm transition-all disabled:opacity-50 shadow-sm"
                             >
                                 {isInviting ? t("loading") : t("share")}
                             </Button>
                         </div>
 
                         {/* Mobile: stacked layout */}
-                        <div className="flex sm:hidden flex-col gap-2">
+                        <div className="flex sm:hidden flex-col gap-3">
                             <Input
                                 type="email"
                                 placeholder={t("emailPlaceholderInvite")}
@@ -264,21 +251,21 @@ export function InviteModal({ open, onOpenChange }) {
                                         : "border-gray-200 focus:border-gray-900 focus:ring-gray-100"
                                 }`}
                             />
-                            <div className="flex gap-2">
+                            <div className="flex gap-3">
                                 <Select value={role} onValueChange={setRole}>
                                     <SelectTrigger className="flex-1 h-11 bg-white border border-gray-200 text-gray-900 rounded-lg font-medium text-sm">
-                                        <SelectValue placeholder={t("member")} />
+                                        <SelectValue placeholder={t("employee")} />
                                     </SelectTrigger>
-                                    <SelectContent className="bg-white border border-gray-200 rounded-lg shadow-lg">
+                                    <SelectContent className="bg-white border border-gray-200 rounded-lg shadow-xl">
                                         <SelectItem
-                                            value="member"
-                                            className="text-gray-900 hover:bg-gray-50 cursor-pointer"
+                                            value="employee"
+                                            className="text-gray-900 hover:bg-gray-50 cursor-pointer h-11"
                                         >
-                                            {t("member")}
+                                            {t("employee")}
                                         </SelectItem>
                                         <SelectItem
                                             value="admin"
-                                            className="text-gray-900 hover:bg-gray-50 cursor-pointer"
+                                            className="text-gray-900 hover:bg-gray-50 cursor-pointer h-11"
                                         >
                                             {t("admin")}
                                         </SelectItem>
@@ -287,7 +274,7 @@ export function InviteModal({ open, onOpenChange }) {
                                 <Button
                                     onClick={handleInvite}
                                     disabled={isInviting || !email.trim()}
-                                    className="flex-1 h-11 bg-gray-900 hover:bg-gray-800 text-white rounded-lg font-medium text-sm transition-colors disabled:opacity-50"
+                                    className="flex-1 h-11 bg-gray-900 hover:bg-gray-800 text-white rounded-lg font-medium text-sm transition-all disabled:opacity-50 shadow-sm"
                                 >
                                     {isInviting ? t("loading") : t("share")}
                                 </Button>
@@ -337,30 +324,25 @@ export function InviteModal({ open, onOpenChange }) {
                             ) : (
                                 members.map((member) => (
                                     <div
-                                        key={member.id || member.email}
+                                        key={member._id || member.email}
                                         className="flex items-center gap-2.5 py-2 px-1 rounded-lg hover:bg-gray-50 transition-colors"
                                     >
                                         {/* Avatar */}
                                         <Avatar
-                                            className={`h-9 w-9 sm:h-10 sm:w-10 flex-shrink-0 ${getAvatarColor(member.name)}`}
+                                            className={`h-9 w-9 sm:h-10 sm:w-10 flex-shrink-0 ${getAvatarColor(getMemberName(member))}`}
                                         >
                                             <AvatarFallback className="text-white font-semibold text-sm bg-transparent">
-                                                {getInitials(member.name)}
+                                                {getInitials(member)}
                                             </AvatarFallback>
                                         </Avatar>
 
-                                        {/* Name and username */}
+                                        {/* Name and email */}
                                         <div className="flex-1 min-w-0">
                                             <p className="text-sm font-medium text-gray-900 truncate">
-                                                {member.name}
-                                                {member.isCurrentUser && (
-                                                    <span className="text-gray-400 font-normal ml-1">
-                                                        ({t("you")})
-                                                    </span>
-                                                )}
+                                                {getMemberName(member)}
                                             </p>
                                             <p className="text-xs text-gray-500 truncate">
-                                                @{member.username || member.email.split('@')[0]}
+                                                {member.email}
                                                 <span className="hidden sm:inline"> • {getRoleDescription(member)}</span>
                                             </p>
                                         </div>
