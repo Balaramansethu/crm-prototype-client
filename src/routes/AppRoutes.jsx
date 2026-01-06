@@ -24,6 +24,7 @@ import {
     EditOpportunityPage,
     PipelineDetailPage,
 } from "@/pages/PipelinePage"
+import ArchivedDataPage from "@/pages/ArchivedDataPage/ArchivedDataPage"
 import NotFoundPage from "@/pages/NotFoundPage/NotFoundPage"
 import Unauthorized from "@/components/unauthorized"
 
@@ -91,6 +92,14 @@ export default function AppRoutes() {
                             path="edit/:id"
                             element={<EditOpportunityPage />}
                         />
+                    </Route>
+
+                    {/* ARCHIVED DATA - Super Admin Only */}
+                    <Route
+                        path="/archived"
+                        element={<ProtectedRoute roles={["super_admin"]} />}
+                    >
+                        <Route index element={<ArchivedDataPage />} />
                     </Route>
                     {/* EMPLOYEE */}
                     <Route

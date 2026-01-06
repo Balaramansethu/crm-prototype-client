@@ -41,7 +41,7 @@ import {
     User,
     MoreHorizontal,
     Edit,
-    Trash2,
+    Archive,
 } from "lucide-react"
 import DatePicker from "react-datepicker"
 import "react-datepicker/dist/react-datepicker.css"
@@ -152,13 +152,13 @@ export default function LeadsPage() {
         setIsDeleting(true)
         try {
             await deleteLead(leadToDelete)
-            toast.success(t("leadDeletedSuccess"))
+            toast.success(t("leadArchivedSuccess"))
             refetch()
             setDeleteDialogOpen(false)
             setLeadToDelete(null)
         } catch (error) {
             console.error(error)
-            toast.error(t("failedToDeleteLead"))
+            toast.error(t("failedToArchiveLead"))
         } finally {
             setIsDeleting(false)
         }
@@ -565,8 +565,8 @@ export default function LeadsPage() {
                                                             }
                                                             className="text-red-600 focus:text-red-600"
                                                         >
-                                                            <Trash2 className="mr-2 h-4 w-4" />
-                                                            {t("delete")}
+                                                            <Archive className="mr-2 h-4 w-4" />
+                                                            {t("archive")}
                                                         </DropdownMenuItem>
                                                     )}
                                                 </DropdownMenuContent>
@@ -635,9 +635,10 @@ export default function LeadsPage() {
             <CommonDialog
                 open={deleteDialogOpen}
                 onOpenChange={setDeleteDialogOpen}
-                title={t("confirmDeleteLead")}
+                title={t("confirmArchiveLead")}
+                description={t("archiveLeadMessage")}
                 variant="destructive"
-                confirmText={isDeleting ? t("deleting") : t("delete")}
+                confirmText={isDeleting ? t("archiving") : t("archive")}
                 cancelText={t("cancel")}
                 onConfirm={confirmDelete}
                 isLoading={isDeleting}

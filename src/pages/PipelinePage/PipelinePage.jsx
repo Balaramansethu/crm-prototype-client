@@ -64,12 +64,12 @@ export default function PipelinePage() {
 
         try {
             await deleteMutation.mutateAsync(pipelineToDelete)
-            toast.success(t("opportunityDeletedSuccess"))
+            toast.success(t("opportunityArchivedSuccess"))
             setDeleteDialogOpen(false)
             setPipelineToDelete(null)
         } catch (error) {
             console.error(error)
-            toast.error(t("failedToDeleteOpportunity"))
+            toast.error(t("failedToArchiveOpportunity"))
         }
     }
 
@@ -113,15 +113,15 @@ export default function PipelinePage() {
                 />
             </div>
 
-            {/* Delete Confirmation Dialog */}
+            {/* Archive Confirmation Dialog */}
             <CommonDialog
                 open={deleteDialogOpen}
                 onOpenChange={setDeleteDialogOpen}
-                title={t("confirmDeleteOpportunity")}
-                description={t("deleteOpportunityWarning")}
+                title={t("confirmArchiveOpportunity")}
+                description={t("archiveOpportunityMessage")}
                 variant="destructive"
                 confirmText={
-                    deleteMutation.isPending ? t("deleting") : t("delete")
+                    deleteMutation.isPending ? t("archiving") : t("archive")
                 }
                 cancelText={t("cancel")}
                 onConfirm={confirmDelete}

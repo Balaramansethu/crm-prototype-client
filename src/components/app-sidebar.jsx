@@ -1,6 +1,7 @@
 import * as React from "react"
 import { useState } from "react"
 import {
+    IconArchive,
     IconCamera,
     IconChartBar,
     IconDashboard,
@@ -122,6 +123,18 @@ export function AppSidebar({ ...props }) {
                             <span>{t("pipeline")}</span>
                         </SidebarMenuButton>
                     </SidebarMenuItem>
+                    {user.role === "super_admin" && (
+                        <SidebarMenuItem>
+                            <SidebarMenuButton
+                                isActive={location.pathname.startsWith("/archived")}
+                                onClick={() => navigate("/archived")}
+                                className="flex items-center gap-2"
+                            >
+                                <IconArchive className="h-4 w-4" />
+                                <span>{t("archivedData")}</span>
+                            </SidebarMenuButton>
+                        </SidebarMenuItem>
+                    )}
                     {/* <SidebarMenuItem>
                         <SidebarMenuButton
                             isActive={location.pathname === "/dashboard"}

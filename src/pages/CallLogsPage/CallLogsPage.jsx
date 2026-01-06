@@ -8,7 +8,7 @@ import {
     Plus,
     MoreHorizontal,
     Pencil,
-    Trash2,
+    Archive,
     Filter,
     X,
     ChevronLeft,
@@ -91,12 +91,12 @@ export default function CallLogsPage() {
 
         try {
             await deleteCallLogMutation.mutateAsync(logToDelete)
-            toast.success(t("callLogDeletedSuccess"))
+            toast.success(t("callLogArchivedSuccess"))
             setDeleteDialogOpen(false)
             setLogToDelete(null)
         } catch (error) {
             console.error(error)
-            toast.error(t("failedToDeleteCallLog"))
+            toast.error(t("failedToArchiveCallLog"))
         }
     }
 
@@ -454,8 +454,8 @@ export default function CallLogsPage() {
                                                             }
                                                             className="text-destructive focus:text-destructive"
                                                         >
-                                                            <Trash2 className="mr-2 h-4 w-4" />
-                                                            {t("delete")}
+                                                            <Archive className="mr-2 h-4 w-4" />
+                                                            {t("archive")}
                                                         </DropdownMenuItem>
                                                     )}
                                                 </DropdownMenuContent>
@@ -532,14 +532,14 @@ export default function CallLogsPage() {
                 </div>
             </div>
 
-            {/* Delete Confirmation Dialog */}
+            {/* Archive Confirmation Dialog */}
             <CommonDialog
                 open={deleteDialogOpen}
                 onOpenChange={setDeleteDialogOpen}
-                title={t("deleteCallLog")}
-                description={t("confirmDeleteCallLog")}
+                title={t("confirmArchiveCallLog")}
+                description={t("archiveCallLogMessage")}
                 variant="destructive"
-                confirmLabel={t("delete")}
+                confirmLabel={deleteCallLogMutation.isPending ? t("archiving") : t("archive")}
                 cancelLabel={t("cancel")}
                 onConfirm={confirmDelete}
                 isLoading={deleteCallLogMutation.isPending}

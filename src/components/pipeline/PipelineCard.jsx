@@ -7,7 +7,7 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { MoreHorizontal, Edit, Trash2, Eye } from "lucide-react"
+import { MoreHorizontal, Edit, Archive, Eye } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { cn } from "@/lib/utils"
 
@@ -98,8 +98,8 @@ export default function PipelineCard({
                                 onClick={() => onDelete(pipeline._id)}
                                 className="text-red-600 focus:text-red-600 text-xs"
                             >
-                                <Trash2 className="mr-2 h-3 w-3" />
-                                {t("delete")}
+                                <Archive className="mr-2 h-3 w-3" />
+                                {t("archive")}
                             </DropdownMenuItem>
                         )}
                     </DropdownMenuContent>

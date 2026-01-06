@@ -14,7 +14,7 @@ import {
     CheckCircle,
     XCircle,
     Info,
-    Trash2,
+    Archive,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useTranslation } from "react-i18next"
@@ -56,7 +56,7 @@ export default function CommonDialog({
         switch (variant) {
             case "destructive":
                 return {
-                    icon: <Trash2 className="h-6 w-6 text-red-600" />,
+                    icon: <Archive className="h-6 w-6 text-red-600" />,
                     buttonVariant: "destructive",
                     headerColor: "text-black", // Title color in image is black/dark
                     isCentered: true,
