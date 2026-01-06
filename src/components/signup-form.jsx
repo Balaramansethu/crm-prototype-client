@@ -80,6 +80,7 @@ export function SignupForm({ className, onSubmit, loading, ...props }) {
             email: form.email.toLowerCase().trim(),
             password: form.password,
             role: form.role,
+            ...(isFromInvite && { method: "viaMagicLink" }),
         }
 
         // Clear magic link data from localStorage after form submission
@@ -266,10 +267,12 @@ export function SignupForm({ className, onSubmit, loading, ...props }) {
                                         ? t("creatingAccount")
                                         : t("createAccountBtn")}
                                 </Button>
-                                <FieldDescription>
-                                    {t("haveAccount")}{" "}
-                                    <Link to="/login">{t("loginLink")}</Link>
-                                </FieldDescription>
+                                {!isFromInvite && (
+                                    <FieldDescription>
+                                        {t("haveAccount")}{" "}
+                                        <Link to="/login">{t("loginLink")}</Link>
+                                    </FieldDescription>
+                                )}
                             </Field>
                         </FieldGroup>
                     </form>
