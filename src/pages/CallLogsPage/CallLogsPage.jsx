@@ -539,7 +539,11 @@ export default function CallLogsPage() {
                 title={t("confirmArchiveCallLog")}
                 description={t("archiveCallLogMessage")}
                 variant="destructive"
-                confirmLabel={deleteCallLogMutation.isPending ? t("archiving") : t("archive")}
+                confirmLabel={
+                    deleteCallLogMutation.isPending
+                        ? t("archiving")
+                        : t("archive")
+                }
                 cancelLabel={t("cancel")}
                 onConfirm={confirmDelete}
                 isLoading={deleteCallLogMutation.isPending}

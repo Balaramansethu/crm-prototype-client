@@ -126,7 +126,9 @@ export function AppSidebar({ ...props }) {
                     {user.role === "super_admin" && (
                         <SidebarMenuItem>
                             <SidebarMenuButton
-                                isActive={location.pathname.startsWith("/archived")}
+                                isActive={location.pathname.startsWith(
+                                    "/archived",
+                                )}
                                 onClick={() => navigate("/archived")}
                                 className="flex items-center gap-2"
                             >

@@ -29,18 +29,18 @@ function ChromeTab({ label, isActive, onClick }) {
                     "overflow-visible",
                     isActive
                         ? "text-gray-900 z-10"
-                        : "text-gray-600 hover:text-gray-900 z-0"
+                        : "text-gray-600 hover:text-gray-900 z-0",
                 )}
-                style={{ marginBottom: '-1px' }}
+                style={{ marginBottom: "-1px" }}
             >
                 {/* Tab Background SVG */}
                 <svg
                     className="absolute inset-0 w-full h-full"
-                    style={{ 
-                        left: '-10px', 
-                        width: 'calc(100% + 20px)',
-                        height: '100%',
-                        zIndex: -1
+                    style={{
+                        left: "-10px",
+                        width: "calc(100% + 20px)",
+                        height: "100%",
+                        zIndex: -1,
                     }}
                     viewBox="0 0 140 48"
                     preserveAspectRatio="none"
@@ -52,7 +52,7 @@ function ChromeTab({ label, isActive, onClick }) {
                         strokeWidth="1"
                     />
                 </svg>
-                
+
                 {/* Label with pill badge for active tab */}
                 <span className="relative z-10 flex items-center gap-2">
                     {label}
@@ -79,7 +79,7 @@ function RoleBadge({ role }) {
         <span
             className={cn(
                 "inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium",
-                roleStyles[role] || "bg-gray-100 text-gray-800"
+                roleStyles[role] || "bg-gray-100 text-gray-800",
             )}
         >
             {t(role) || role}
@@ -215,10 +215,10 @@ function ArchivedLeadsTable({ page, setPage }) {
                             {t("deletedBy")}
                         </TableHead>
                         <TableHead className="text-xs font-bold uppercase tracking-wider text-black">
-                            {t("deletedAt")}
+                            {t("deletedByRole")}
                         </TableHead>
                         <TableHead className="text-xs font-bold uppercase tracking-wider text-black">
-                            {t("deletedByRole")}
+                            {t("deletedAt")}
                         </TableHead>
                     </TableRow>
                 </TableHeader>
@@ -236,20 +236,20 @@ function ArchivedLeadsTable({ page, setPage }) {
                                     ? `${lead.deleted.by.firstName} ${lead.deleted.by.lastName}`
                                     : "-"}
                             </TableCell>
-                            <TableCell className="text-black">
-                                {lead.deleted?.at
-                                    ? format(
-                                          new Date(lead.deleted.at),
-                                          "dd-MM-yyyy HH:mm"
-                                      )
-                                    : "-"}
-                            </TableCell>
                             <TableCell>
                                 {lead.deleted?.by?.role ? (
                                     <RoleBadge role={lead.deleted.by.role} />
                                 ) : (
                                     "-"
                                 )}
+                            </TableCell>
+                            <TableCell className="text-black">
+                                {lead.deleted?.at
+                                    ? format(
+                                          new Date(lead.deleted.at),
+                                          "dd-MM-yyyy HH:mm",
+                                      )
+                                    : "-"}
                             </TableCell>
                         </TableRow>
                     ))}
@@ -270,7 +270,10 @@ function ArchivedLeadsTable({ page, setPage }) {
 function ArchivedCallLogsTable({ page, setPage }) {
     const { t, i18n } = useTranslation()
     const isRTL = i18n.dir() === "rtl"
-    const { data, isLoading, isError } = useArchivedCallLogs({ page, limit: 10 })
+    const { data, isLoading, isError } = useArchivedCallLogs({
+        page,
+        limit: 10,
+    })
 
     const { callLogs, info } = useMemo(() => {
         if (!data) return { callLogs: [], info: {} }
@@ -332,10 +335,10 @@ function ArchivedCallLogsTable({ page, setPage }) {
                             {t("deletedBy")}
                         </TableHead>
                         <TableHead className="text-xs font-bold uppercase tracking-wider text-black">
-                            {t("deletedAt")}
+                            {t("deletedByRole")}
                         </TableHead>
                         <TableHead className="text-xs font-bold uppercase tracking-wider text-black">
-                            {t("deletedByRole")}
+                            {t("deletedAt")}
                         </TableHead>
                     </TableRow>
                 </TableHeader>
@@ -348,8 +351,12 @@ function ArchivedCallLogsTable({ page, setPage }) {
                             <TableCell className="text-black">
                                 {log.lead?.name || "-"}
                             </TableCell>
-                            <TableCell className="text-black font-mono" dir="ltr">
-                                {log.lead?.phone?.extension && log.lead?.phone?.number
+                            <TableCell
+                                className="text-black font-mono"
+                                dir="ltr"
+                            >
+                                {log.lead?.phone?.extension &&
+                                log.lead?.phone?.number
                                     ? `${log.lead.phone.extension} ${log.lead.phone.number}`
                                     : "-"}
                             </TableCell>
@@ -361,20 +368,20 @@ function ArchivedCallLogsTable({ page, setPage }) {
                                     ? `${log.deleted.by.firstName} ${log.deleted.by.lastName}`
                                     : "-"}
                             </TableCell>
-                            <TableCell className="text-black">
-                                {log.deleted?.at
-                                    ? format(
-                                          new Date(log.deleted.at),
-                                          "dd-MM-yyyy HH:mm"
-                                      )
-                                    : "-"}
-                            </TableCell>
                             <TableCell>
                                 {log.deleted?.by?.role ? (
                                     <RoleBadge role={log.deleted.by.role} />
                                 ) : (
                                     "-"
                                 )}
+                            </TableCell>
+                            <TableCell className="text-black">
+                                {log.deleted?.at
+                                    ? format(
+                                          new Date(log.deleted.at),
+                                          "dd-MM-yyyy HH:mm",
+                                      )
+                                    : "-"}
                             </TableCell>
                         </TableRow>
                     ))}
@@ -395,7 +402,10 @@ function ArchivedCallLogsTable({ page, setPage }) {
 function ArchivedPipelinesTable({ page, setPage }) {
     const { t, i18n } = useTranslation()
     const isRTL = i18n.dir() === "rtl"
-    const { data, isLoading, isError } = useArchivedPipelines({ page, limit: 10 })
+    const { data, isLoading, isError } = useArchivedPipelines({
+        page,
+        limit: 10,
+    })
 
     const { pipelines, info } = useMemo(() => {
         if (!data) return { pipelines: [], info: {} }
@@ -451,10 +461,10 @@ function ArchivedPipelinesTable({ page, setPage }) {
                             {t("deletedBy")}
                         </TableHead>
                         <TableHead className="text-xs font-bold uppercase tracking-wider text-black">
-                            {t("deletedAt")}
+                            {t("deletedByRole")}
                         </TableHead>
                         <TableHead className="text-xs font-bold uppercase tracking-wider text-black">
-                            {t("deletedByRole")}
+                            {t("deletedAt")}
                         </TableHead>
                     </TableRow>
                 </TableHeader>
@@ -468,27 +478,31 @@ function ArchivedPipelinesTable({ page, setPage }) {
                                 {pipeline.company?.name || "-"}
                             </TableCell>
                             <TableCell className="text-black">
-                                {t(pipeline.opportunityStage) || pipeline.opportunityStage || "-"}
+                                {t(pipeline.opportunityStage) ||
+                                    pipeline.opportunityStage ||
+                                    "-"}
                             </TableCell>
                             <TableCell className="text-black">
                                 {pipeline.deleted?.by
                                     ? `${pipeline.deleted.by.firstName} ${pipeline.deleted.by.lastName}`
                                     : "-"}
                             </TableCell>
+                            <TableCell>
+                                {pipeline.deleted?.by?.role ? (
+                                    <RoleBadge
+                                        role={pipeline.deleted.by.role}
+                                    />
+                                ) : (
+                                    "-"
+                                )}
+                            </TableCell>
                             <TableCell className="text-black">
                                 {pipeline.deleted?.at
                                     ? format(
                                           new Date(pipeline.deleted.at),
-                                          "dd-MM-yyyy HH:mm"
+                                          "dd-MM-yyyy HH:mm",
                                       )
                                     : "-"}
-                            </TableCell>
-                            <TableCell>
-                                {pipeline.deleted?.by?.role ? (
-                                    <RoleBadge role={pipeline.deleted.by.role} />
-                                ) : (
-                                    "-"
-                                )}
                             </TableCell>
                         </TableRow>
                     ))}

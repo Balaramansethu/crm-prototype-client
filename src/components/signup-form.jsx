@@ -270,7 +270,9 @@ export function SignupForm({ className, onSubmit, loading, ...props }) {
                                 {!isFromInvite && (
                                     <FieldDescription>
                                         {t("haveAccount")}{" "}
-                                        <Link to="/login">{t("loginLink")}</Link>
+                                        <Link to="/login">
+                                            {t("loginLink")}
+                                        </Link>
                                     </FieldDescription>
                                 )}
                             </Field>
