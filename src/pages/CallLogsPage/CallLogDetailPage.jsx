@@ -142,7 +142,6 @@ export default function CallLogDetailPage() {
                 title={t("callLogDetails")}
                 actions={
                     <Button
-                        variant="outline"
                         size="sm"
                         onClick={() => navigate(`/call-logs/edit/${id}`)}
                     >
