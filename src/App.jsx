@@ -63,7 +63,7 @@ function ExpirationModal() {
             onOpenChange={() => {}}
             title={t("sessionExpired")}
             description={t("sessionExpiredDescription")}
-            confirmText={t("okay")}
+            confirmText={t("loginAgain")}
             onConfirm={handleConfirm}
             variant="destructive"
             hideCancel={true}

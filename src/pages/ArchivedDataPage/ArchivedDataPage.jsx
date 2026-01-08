@@ -88,7 +88,7 @@ function RoleBadge({ role }) {
 }
 
 // Pagination Component
-function Pagination({ page, setPage, info, t, isRTL }) {
+function Pagination({ page, setPage, info, t, isRTL, type = "items" }) {
     const totalPages = info?.totalPages || 1
     const total = info?.total || 0
     const limit = info?.limit || 10
@@ -99,10 +99,11 @@ function Pagination({ page, setPage, info, t, isRTL }) {
     return (
         <div className="flex items-center justify-between border-t p-4">
             <div className="text-sm text-black">
-                {t("showingLeads", {
+                {t("showingItems", {
                     start: (page - 1) * limit + 1,
                     end: Math.min(page * limit, total),
                     total: total,
+                    type: type,
                 })}
             </div>
             <div className="flex items-center gap-2">
@@ -261,6 +262,7 @@ function ArchivedLeadsTable({ page, setPage }) {
                 info={info}
                 t={t}
                 isRTL={isRTL}
+                type={t("leads")}
             />
         </>
     )
@@ -393,6 +395,7 @@ function ArchivedCallLogsTable({ page, setPage }) {
                 info={info}
                 t={t}
                 isRTL={isRTL}
+                type={t("callLogs")}
             />
         </>
     )
@@ -514,6 +517,7 @@ function ArchivedPipelinesTable({ page, setPage }) {
                 info={info}
                 t={t}
                 isRTL={isRTL}
+                type={t("pipeline")}
             />
         </>
     )

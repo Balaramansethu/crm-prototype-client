@@ -92,7 +92,7 @@ export function AppSidebar({ ...props }) {
 
             {/* CONTENT */}
             <SidebarContent>
-                <SidebarMenu className="mb-1 pl-2">
+                <SidebarMenu className="mb-1 pl-2 pt-4 gap-2">
                     <SidebarMenuItem>
                         <SidebarMenuButton
                             isActive={location.pathname === "/leads"}
