@@ -654,7 +654,7 @@ export default function CallLogForm({
                                     value={phoneDisplay}
                                     disabled
                                     readOnly
-                                    className="font-mono bg-muted !cursor-not-allowed"
+                                    className="tabular-nums bg-muted !cursor-not-allowed"
                                     dir="ltr"
                                     placeholder={t("selectLeadFirst")}
                                 />

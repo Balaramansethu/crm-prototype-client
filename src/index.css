@@ -85,13 +85,13 @@
     /* Burgundy-based chart colors */
     --chart-1: oklch(0.38 0.12 10);
     /* Primary Burgundy */
-    --chart-2: oklch(0.50 0.11 15);
+    --chart-2: oklch(0.5 0.11 15);
     /* Medium burgundy-red */
-    --chart-3: oklch(0.45 0.10 350);
+    --chart-3: oklch(0.45 0.1 350);
     /* Deep rose */
     --chart-4: oklch(0.55 0.09 25);
     /* Terracotta */
-    --chart-5: oklch(0.60 0.08 30);
+    --chart-5: oklch(0.6 0.08 30);
     /* Warm clay */
 
     /* Premium sidebar with warm glass effect */
@@ -111,11 +111,11 @@
     --foreground: oklch(0.96 0.005 30);
 
     /* Dark glass cards with warm depth */
-    --card: oklch(0.18 0.020 20);
+    --card: oklch(0.18 0.02 20);
     --card-foreground: oklch(0.96 0.005 30);
 
     /* Dark popover */
-    --popover: oklch(0.18 0.020 20);
+    --popover: oklch(0.18 0.02 20);
     --popover-foreground: oklch(0.96 0.005 30);
 
     /* Bright Burgundy primary for dark mode - enhanced visibility */
@@ -146,13 +146,13 @@
 
     /* Dark mode chart colors - Burgundy palette */
     --chart-1: oklch(0.55 0.14 10);
-    --chart-2: oklch(0.60 0.12 15);
+    --chart-2: oklch(0.6 0.12 15);
     --chart-3: oklch(0.58 0.11 350);
-    --chart-4: oklch(0.63 0.10 25);
+    --chart-4: oklch(0.63 0.1 25);
     --chart-5: oklch(0.65 0.09 30);
 
     /* Dark sidebar with warm glass effect */
-    --sidebar: oklch(0.18 0.020 20);
+    --sidebar: oklch(0.18 0.02 20);
     --sidebar-foreground: oklch(0.96 0.005 30);
     --sidebar-primary: oklch(0.55 0.14 10);
     --sidebar-primary-foreground: oklch(0.15 0.015 20);
@@ -169,7 +169,14 @@
 
     body {
         @apply bg-background text-foreground;
-        font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+        font-family:
+            "Inter",
+            -apple-system,
+            BlinkMacSystemFont,
+            "Segoe UI",
+            Roboto,
+            Arial,
+            sans-serif;
         font-feature-settings:
             "rlig" 1,
             "calt" 1;
@@ -198,7 +205,7 @@
     .dark .card {
         background: linear-gradient(
             135deg,
-            oklch(0.18 0.020 20 / 0.95) 0%,
+            oklch(0.18 0.02 20 / 0.95) 0%,
             oklch(0.2 0.025 15 / 0.98) 100%
         );
         box-shadow:

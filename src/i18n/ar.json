@@ -291,6 +291,7 @@
     "alreadyAMember": "عضو بالفعل",
     "emailPlaceholderInvite": "البريد الإلكتروني أو الاسم",
     "inviteSent": "تم إرسال الدعوة بنجاح",
+    "inviting": "جاري الدعوة...",
     "failedToInvite": "فشل إرسال الدعوة",
     "invalidDomain": "مسموح فقط بعناوين البريد الإلكتروني @datasack.in",
     "featureComingSoon": "الميزة قادمة قريباً",

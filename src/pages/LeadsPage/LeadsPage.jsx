@@ -463,7 +463,7 @@ export default function LeadsPage() {
                                                 lead.company?.email ||
                                                 "-"}
                                         </TableCell>
-                                        <TableCell className="hidden xl:table-cell text-sm text-black font-mono">
+                                        <TableCell className="hidden xl:table-cell text-sm text-black tabular-nums">
                                             <span dir="ltr">
                                                 {lead.isCompanyOnly ? (
                                                     // Show company phone for company-only rows

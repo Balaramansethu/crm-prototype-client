@@ -302,7 +302,7 @@ export default function CallLogDetailPage() {
                                 {t("phone")}
                             </span>
                             <div
-                                className="flex items-center gap-1.5 font-mono"
+                                className="flex items-center gap-1.5 tabular-nums"
                                 dir="ltr"
                             >
                                 <Phone className="h-4 w-4 text-muted-foreground" />

@@ -333,7 +333,7 @@ export default function LeadDetailPage() {
                                                 </TableCell>
                                                 <TableCell>
                                                     <div
-                                                        className="flex items-center gap-1.5 text-sm text-muted-foreground font-mono"
+                                                        className="flex items-center gap-1.5 text-sm text-muted-foreground tabular-nums"
                                                         dir="ltr"
                                                     >
                                                         <Phone className="h-3.5 w-3.5" />

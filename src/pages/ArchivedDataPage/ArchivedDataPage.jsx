@@ -354,7 +354,7 @@ function ArchivedCallLogsTable({ page, setPage }) {
                                 {log.lead?.name || "-"}
                             </TableCell>
                             <TableCell
-                                className="text-black font-mono"
+                                className="text-black tabular-nums"
                                 dir="ltr"
                             >
                                 {log.lead?.phone?.extension &&

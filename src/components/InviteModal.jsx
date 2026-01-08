@@ -235,7 +235,7 @@ export function InviteModal({ open, onOpenChange }) {
                                 disabled={isInviting || !email.trim()}
                                 className="h-10 text-white px-6 rounded-lg font-medium text-sm transition-all disabled:opacity-50 shadow-sm"
                             >
-                                {isInviting ? t("loading") : t("share")}
+                                {isInviting ? t("inviting") : t("share")}
                             </Button>
                         </div>
 
@@ -279,7 +279,7 @@ export function InviteModal({ open, onOpenChange }) {
                                     disabled={isInviting || !email.trim()}
                                     className="w-full h-10 bg-gray-900 hover:bg-gray-800 text-white rounded-lg font-medium text-base transition-all disabled:opacity-50 shadow-sm"
                                 >
-                                    {isInviting ? t("loading") : t("share")}
+                                    {isInviting ? t("inviting") : t("share")}
                                 </Button>
                             </div>
                         </div>

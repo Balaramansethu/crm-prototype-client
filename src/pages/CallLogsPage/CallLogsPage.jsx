@@ -392,7 +392,7 @@ export default function CallLogsPage() {
                                         </TableCell>
                                         <TableCell className="hidden md:table-cell">
                                             <div
-                                                className="flex items-center gap-1.5 text-sm text-black font-mono"
+                                                className="flex items-center gap-1.5 text-sm text-black tabular-nums"
                                                 dir="ltr"
                                             >
                                                 <Phone className="h-3.5 w-3.5 text-muted-foreground" />
@@ -412,10 +412,10 @@ export default function CallLogsPage() {
                                         <TableCell className="hidden sm:table-cell text-black text-sm">
                                             {formatDate(log.followUp)}
                                         </TableCell>
-                                        <TableCell className="hidden md:table-cell text-black text-sm font-mono">
+                                        <TableCell className="hidden md:table-cell text-black text-sm tabular-nums">
                                             {formatTime(log.callStartTime)}
                                         </TableCell>
-                                        <TableCell className="hidden md:table-cell text-black text-sm">
+                                        <TableCell className="hidden md:table-cell text-black text-sm tabular-nums">
                                             {formatDuration(log.callDuration)}
                                         </TableCell>
                                         <TableCell

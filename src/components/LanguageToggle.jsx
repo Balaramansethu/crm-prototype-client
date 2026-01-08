@@ -22,7 +22,7 @@ export default function LanguageToggle() {
             <button
                 onClick={() => switchLanguage("en")}
                 className={`px-3 py-1 rounded ${
-                    lang === "en" ? "bg-black text-white" : "bg-gray-200"
+                    lang === "en" ? "bg-primary text-white" : "bg-gray-200"
                 }`}
             >
                 EN
@@ -31,7 +31,7 @@ export default function LanguageToggle() {
             <button
                 onClick={() => switchLanguage("ar")}
                 className={`px-3 py-1 rounded ${
-                    lang === "ar" ? "bg-black text-white" : "bg-gray-200"
+                    lang === "ar" ? "bg-primary text-white" : "bg-gray-200"
                 }`}
             >
                 العربية
