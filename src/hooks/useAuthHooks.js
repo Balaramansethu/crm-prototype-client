@@ -65,16 +65,21 @@ export function useLogout() {
     const { t } = useTranslation()
     const clearUser = useUserStore((s) => s.clearUser)
 
+    const clearLocalData = () => {
+        clearUser()
+        localStorage.removeItem("magicLinkInvite")
+    }
+
     return useMutation({
         mutationFn: logoutService,
         onSuccess: () => {
-            clearUser()
+            clearLocalData()
             toast.success(t("logoutSuccess"))
             navigate("/login", { replace: true })
         },
         onError: (error) => {
             // Even if logout fails, clear user and redirect
-            clearUser()
+            clearLocalData()
             ErrorHandler.handleError(error, navigate, {
                 showToast: false, // Don't show error toast on logout failure
             })
