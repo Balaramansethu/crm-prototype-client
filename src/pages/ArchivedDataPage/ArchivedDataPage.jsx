@@ -57,7 +57,7 @@ function ChromeTab({ label, isActive, onClick }) {
                 <span className="relative z-10 flex items-center gap-2">
                     {label}
                     {isActive && (
-                        <span className="inline-block w-1.5 h-1.5 rounded-full bg-gray-700 shadow-sm" />
+                        <span className="inline-block w-1.5 h-1.5 rounded-full bg-primary shadow-sm" />
                     )}
                 </span>
             </button>
@@ -71,7 +71,7 @@ function RoleBadge({ role }) {
 
     const roleStyles = {
         super_admin: "bg-purple-100 text-purple-800",
-        admin: "bg-blue-100 text-blue-800",
+        admin: "bg-primary/10 text-primary",
         employee: "bg-green-100 text-green-800",
     }
 

@@ -39,7 +39,7 @@ const ContactPersonForm = forwardRef(function ContactPersonForm(
                 "relative rounded-lg border p-6 bg-gray-50/50 transition-all duration-300",
                 disabled && "opacity-70 bg-gray-100/50",
                 isHighlighted &&
-                    "border-2 border-blue-500 shadow-lg shadow-blue-100 ring-2 ring-blue-200/50",
+                    "border-2 border-primary shadow-lg shadow-primary/10 ring-2 ring-primary/20",
             )}
         >
             <div

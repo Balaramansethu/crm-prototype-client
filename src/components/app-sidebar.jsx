@@ -227,7 +227,7 @@ export function AppSidebar({ ...props }) {
                 {user.role === "super_admin" && (
                     <Button
                         onClick={() => setInviteModalOpen(true)}
-                        className="w-full mb-2 bg-black hover:bg-gray-900 text-white border border-gray-700"
+                        className="w-full mb-2 bg-primary hover:bg-gray-900 text-white border border-gray-700"
                     >
                         <IconUserPlus
                             className="w-4 h-4"

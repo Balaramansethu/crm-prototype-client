@@ -233,7 +233,7 @@ export function InviteModal({ open, onOpenChange }) {
                             <Button
                                 onClick={handleInvite}
                                 disabled={isInviting || !email.trim()}
-                                className="h-10 bg-gray-900 hover:bg-gray-800 text-white px-6 rounded-lg font-medium text-sm transition-all disabled:opacity-50 shadow-sm"
+                                className="h-10 text-white px-6 rounded-lg font-medium text-sm transition-all disabled:opacity-50 shadow-sm"
                             >
                                 {isInviting ? t("loading") : t("share")}
                             </Button>
@@ -246,7 +246,7 @@ export function InviteModal({ open, onOpenChange }) {
                                 placeholder={t("emailPlaceholderInvite")}
                                 value={email}
                                 onChange={handleEmailChange}
-                                className={`w-full h-12 bg-white border text-gray-900 placeholder:text-gray-400 focus:ring-2 focus:ring-offset-0 rounded-lg text-base px-4 ${
+                                className={`w-full h-10 bg-white border text-gray-900 placeholder:text-gray-400 focus:ring-2 focus:ring-offset-0 rounded-lg text-base px-4 ${
                                     emailError
                                         ? "border-red-400 focus:border-red-400 focus:ring-red-100"
                                         : "border-gray-200 focus:border-gray-900 focus:ring-gray-100"
@@ -254,7 +254,7 @@ export function InviteModal({ open, onOpenChange }) {
                             />
                             <div className="grid grid-cols-2 gap-3">
                                 <Select value={role} onValueChange={setRole}>
-                                    <SelectTrigger className="w-full h-12 px-4 bg-white border border-gray-200 text-gray-900 rounded-lg font-medium text-base">
+                                    <SelectTrigger className="w-full h-10 px-4 bg-white border border-gray-200 text-gray-900 rounded-lg font-medium text-base">
                                         <SelectValue
                                             placeholder={t("employee")}
                                         />
@@ -262,13 +262,13 @@ export function InviteModal({ open, onOpenChange }) {
                                     <SelectContent className="bg-white border border-gray-200 rounded-lg shadow-xl">
                                         <SelectItem
                                             value="employee"
-                                            className="text-gray-900 hover:bg-gray-50 cursor-pointer h-12 text-base"
+                                            className="text-gray-900 hover:bg-gray-50 cursor-pointer h-10 text-base"
                                         >
                                             {t("employee")}
                                         </SelectItem>
                                         <SelectItem
                                             value="admin"
-                                            className="text-gray-900 hover:bg-gray-50 cursor-pointer h-12 text-base"
+                                            className="text-gray-900 hover:bg-gray-50 cursor-pointer h-10 text-base"
                                         >
                                             {t("admin")}
                                         </SelectItem>
@@ -277,7 +277,7 @@ export function InviteModal({ open, onOpenChange }) {
                                 <Button
                                     onClick={handleInvite}
                                     disabled={isInviting || !email.trim()}
-                                    className="w-full h-12 bg-gray-900 hover:bg-gray-800 text-white rounded-lg font-medium text-base transition-all disabled:opacity-50 shadow-sm"
+                                    className="w-full h-10 bg-gray-900 hover:bg-gray-800 text-white rounded-lg font-medium text-base transition-all disabled:opacity-50 shadow-sm"
                                 >
                                     {isInviting ? t("loading") : t("share")}
                                 </Button>

@@ -75,9 +75,9 @@ export default function CommonDialog({
                 }
             case "info":
                 return {
-                    icon: <Info className="h-6 w-6 text-blue-600" />,
+                    icon: <Info className="h-6 w-6 text-primary" />,
                     buttonVariant: "default",
-                    headerColor: "text-blue-600",
+                    headerColor: "text-primary",
                 }
             case "default":
             default:

@@ -199,7 +199,7 @@ export default function PipelineDetailPage() {
                                     href={company.website}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="text-xs text-blue-600 hover:underline truncate block"
+                                    className="text-xs text-primary hover:underline truncate block"
                                 >
                                     {company.website}
                                 </a>
