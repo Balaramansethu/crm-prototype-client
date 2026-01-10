@@ -18,13 +18,15 @@ export function enumToTranslationKey(value, prefix = "") {
     if (!value) return ""
     const camelCase = value
         .split("_")
-        .map((word, index) => 
-            index === 0 && !prefix 
-                ? word.toLowerCase() 
-                : word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+        .map((word, index) =>
+            index === 0 && !prefix
+                ? word.toLowerCase()
+                : word.charAt(0).toUpperCase() + word.slice(1).toLowerCase(),
         )
         .join("")
-    return prefix ? `${prefix}${camelCase.charAt(0).toUpperCase() + camelCase.slice(1)}` : camelCase
+    return prefix
+        ? `${prefix}${camelCase.charAt(0).toUpperCase() + camelCase.slice(1)}`
+        : camelCase
 }
 
 /**

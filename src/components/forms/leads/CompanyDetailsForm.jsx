@@ -11,11 +11,23 @@ import { SERVICE_TYPE_OPTIONS } from "@/constants/formOptions"
 import { useTranslation } from "react-i18next"
 import { cn } from "@/lib/utils"
 
-export default function CompanyDetailsForm({ control, disabled = false }) {
+export default function CompanyDetailsForm({
+    control,
+    disabled = false,
+    isHighlighted = false,
+}) {
     const { t } = useTranslation()
 
     return (
-        <div className={cn("space-y-6", disabled && "opacity-70")}>
+        <div
+            className={cn(
+                "space-y-6 rounded-lg p-6",
+                disabled && "opacity-70",
+                isHighlighted
+                    ? "border-2 border-primary shadow-lg shadow-primary/10 ring-2 ring-primary/20"
+                    : "border border-gray-100 shadow-sm bg-white",
+            )}
+        >
             <div className="border-b pb-2">
                 <h3 className="text-xl font-semibold text-gray-900">
                     {t("companyDetails")}

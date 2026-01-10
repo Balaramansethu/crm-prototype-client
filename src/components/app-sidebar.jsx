@@ -105,7 +105,9 @@ export function AppSidebar({ ...props }) {
                     </SidebarMenuItem>
                     <SidebarMenuItem>
                         <SidebarMenuButton
-                            isActive={location.pathname.startsWith("/call-logs")}
+                            isActive={location.pathname.startsWith(
+                                "/call-logs",
+                            )}
                             onClick={() => navigate("/call-logs")}
                             className="flex items-center gap-2"
                         >

@@ -126,8 +126,6 @@ export default function CallLogsPage() {
 
     const hasActiveFilters = outcome && outcome !== "all"
 
-
-
     const getOutcomeText = (outcomeVal) => {
         if (!outcomeVal) return "-"
         return t(enumToTranslationKey(outcomeVal, "outcome"))
@@ -215,7 +213,7 @@ export default function CallLogsPage() {
                 <div className="flex flex-col gap-3 sm:gap-4 border-b p-3 sm:p-4 lg:flex-row lg:items-center lg:justify-between">
                     <div className="flex flex-1 flex-col gap-3 lg:flex-row lg:items-center">
                         {/* Outcome Filter */}
-                        <div className="md:w-[180px]">
+                        <div className="w-full md:w-[250px]">
                             <Select
                                 value={outcome}
                                 onValueChange={(val) => {
@@ -224,19 +222,24 @@ export default function CallLogsPage() {
                                 }}
                             >
                                 <SelectTrigger className="h-9 bg-muted/50 focus:bg-background border-input">
-                                    <div className="flex items-center gap-2">
-                                        <Filter className="h-3.5 w-3.5 text-gray-500" />
+                                    <div className="flex items-center gap-2 w-full overflow-hidden">
+                                        <Filter className="h-3.5 w-3.5 text-gray-500 shrink-0" />
                                         <span
                                             className={cn(
-                                                "truncate",
+                                                "truncate text-left flex-1",
                                                 outcome && outcome !== "all"
                                                     ? "text-black"
                                                     : "text-gray-500",
                                             )}
                                         >
                                             {outcome && outcome !== "all"
-                                                ? t(enumToTranslationKey(outcome, "outcome"))
-                                                : t("outcome")}
+                                                ? t(
+                                                      enumToTranslationKey(
+                                                          outcome,
+                                                          "outcome",
+                                                      ),
+                                                  )
+                                                : t("filterByOutcome")}
                                         </span>
                                     </div>
                                 </SelectTrigger>
@@ -394,10 +397,16 @@ export default function CallLogsPage() {
                                             <span
                                                 className={cn(
                                                     "px-2.5 py-1 rounded-full text-xs font-semibold",
-                                                    getOutcomeColor(log.outcome || log.lead?.status),
+                                                    getOutcomeColor(
+                                                        log.outcome ||
+                                                            log.lead?.status,
+                                                    ),
                                                 )}
                                             >
-                                                {getOutcomeText(log.outcome || log.lead?.status)}
+                                                {getOutcomeText(
+                                                    log.outcome ||
+                                                        log.lead?.status,
+                                                )}
                                             </span>
                                         </TableCell>
                                         <TableCell className="hidden sm:table-cell text-black text-sm">

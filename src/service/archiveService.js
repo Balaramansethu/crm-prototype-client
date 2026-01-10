@@ -35,7 +35,9 @@ export async function fetchArchivedPipelines(params = {}) {
 
 export async function restoreLead(id) {
     try {
-        const response = await axiosPrivateInstance.patch(`/leads/${id}/restore`)
+        const response = await axiosPrivateInstance.patch(
+            `/leads/${id}/restore`,
+        )
         return response.data
     } catch (error) {
         throw error
@@ -44,7 +46,9 @@ export async function restoreLead(id) {
 
 export async function restoreCallLog(id) {
     try {
-        const response = await axiosPrivateInstance.patch(`/call-logs/${id}/restore`)
+        const response = await axiosPrivateInstance.patch(
+            `/call-logs/${id}/restore`,
+        )
         return response.data
     } catch (error) {
         throw error
@@ -53,7 +57,9 @@ export async function restoreCallLog(id) {
 
 export async function restorePipeline(id) {
     try {
-        const response = await axiosPrivateInstance.patch(`/pipeline/${id}/restore`)
+        const response = await axiosPrivateInstance.patch(
+            `/pipeline/${id}/restore`,
+        )
         return response.data
     } catch (error) {
         throw error

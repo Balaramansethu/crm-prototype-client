@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { useTranslation } from "react-i18next"
-import { useNavigate, useParams } from "react-router-dom"
+import { useNavigate, useParams, useLocation } from "react-router-dom"
 import { Loader2 } from "lucide-react"
 import { PageHeader } from "@/components/common"
 import { LeadForm } from "@/components/forms"
@@ -109,6 +109,10 @@ export default function EditLeadPage() {
         }
     }
 
+    const { search } = useLocation()
+    const searchParams = new URLSearchParams(search)
+    const focus = searchParams.get("focus")
+
     if (fetching) {
         return (
             <div className="flex h-full items-center justify-center">
@@ -128,6 +132,7 @@ export default function EditLeadPage() {
                     loading={loading}
                     submitLabel={t("saveChanges")}
                     editableContactIndex={editableContactIndex}
+                    preventIdsScroll={focus === "company"}
                 />
             </div>
         </div>

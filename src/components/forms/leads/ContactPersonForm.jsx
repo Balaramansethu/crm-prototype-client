@@ -10,7 +10,11 @@ import {
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { FormInput, FormSelect, FormDatePicker } from "@/components/form-fields"
-import { LEAD_STATUS_OPTIONS, LEAD_STATUS_OPTIONS_EDIT, CALL_OUTCOME_OPTIONS } from "@/constants/formOptions"
+import {
+    LEAD_STATUS_OPTIONS,
+    LEAD_STATUS_OPTIONS_EDIT,
+    CALL_OUTCOME_OPTIONS,
+} from "@/constants/formOptions"
 import { Trash2 } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { cn } from "@/lib/utils"
@@ -44,21 +48,22 @@ const ContactPersonForm = forwardRef(function ContactPersonForm(
     const isDropped = status === "dropped"
 
     // Use different status options based on mode
-    let statusOptions = isEditMode ? LEAD_STATUS_OPTIONS_EDIT : LEAD_STATUS_OPTIONS
+    let statusOptions = isEditMode
+        ? LEAD_STATUS_OPTIONS_EDIT
+        : LEAD_STATUS_OPTIONS
 
     // Dynamic addition of current status if it matches an outcome but not in list
     if (status && !statusOptions.find((opt) => opt.value === status)) {
-        const outcomeDef = CALL_OUTCOME_OPTIONS.find((opt) => opt.value === status)
+        const outcomeDef = CALL_OUTCOME_OPTIONS.find(
+            (opt) => opt.value === status,
+        )
         if (outcomeDef) {
             statusOptions = [
                 ...statusOptions,
                 { ...outcomeDef, label: outcomeDef.label },
             ]
         } else {
-            statusOptions = [
-                ...statusOptions,
-                { value: status, label: status },
-            ]
+            statusOptions = [...statusOptions, { value: status, label: status }]
         }
     }
 
@@ -222,18 +227,24 @@ const ContactPersonForm = forwardRef(function ContactPersonForm(
                             control={control}
                             name={`contacts.${index}.dropReason`}
                             rules={{
-                                required: isDropped ? t("dropReasonRequired") : false,
+                                required: isDropped
+                                    ? t("dropReasonRequired")
+                                    : false,
                             }}
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>
                                         {t("dropReason")}{" "}
-                                        <span className="text-destructive">*</span>
+                                        <span className="text-destructive">
+                                            *
+                                        </span>
                                     </FormLabel>
                                     <FormControl>
                                         <Textarea
                                             {...field}
-                                            placeholder={t("dropReasonPlaceholder")}
+                                            placeholder={t(
+                                                "dropReasonPlaceholder",
+                                            )}
                                             className={cn(
                                                 "min-h-[80px]",
                                                 isRTL ? "text-right" : "",

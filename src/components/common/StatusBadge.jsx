@@ -10,6 +10,7 @@ const STATUS_VARIANTS = {
     conversion_in_progress: "bg-purple-100 text-purple-800 hover:bg-purple-100",
     follow_up_needed: "bg-yellow-100 text-yellow-800 hover:bg-yellow-100",
     promoted_to_meeting: "bg-blue-100 text-blue-800 hover:bg-blue-100",
+    interested: "bg-green-100 text-green-800 hover:bg-green-100",
     not_interested: "bg-red-100 text-red-800 hover:bg-red-100",
     // Fallback/Legacy
     contacted: "bg-yellow-100 text-yellow-800 hover:bg-yellow-100",
@@ -21,7 +22,8 @@ const STATUS_VARIANTS = {
 export default function StatusBadge({ status, className }) {
     const { t } = useTranslation()
 
-    const variant = STATUS_VARIANTS[status] || "bg-gray-100 text-gray-800 hover:bg-gray-100"
+    const variant =
+        STATUS_VARIANTS[status] || "bg-gray-100 text-gray-800 hover:bg-gray-100"
 
     return (
         <Badge className={cn("font-semibold", variant, className)}>

@@ -114,7 +114,8 @@ export default function FormSelect({
                                                     )}
                                                 />
                                                 <span className="font-medium text-slate-700">
-                                                    {option.label || t(option.value)}
+                                                    {option.label ||
+                                                        t(option.value)}
                                                 </span>
                                             </div>
                                         ) : (

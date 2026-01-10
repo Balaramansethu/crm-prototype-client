@@ -45,11 +45,13 @@ import {
     User,
     Globe,
     Edit,
+    Briefcase,
 } from "lucide-react"
 import DatePicker from "react-datepicker"
 import "react-datepicker/dist/react-datepicker.css"
 import { cn, enumToTranslationKey } from "@/lib/utils"
 import { StatusBadge } from "@/components/common"
+import { SERVICE_TYPE_OPTIONS } from "@/constants/formOptions"
 import { deleteLead } from "@/service/leadsService"
 import { toast } from "sonner"
 import CommonDialog from "@/components/common/CommonDialog"
@@ -68,7 +70,7 @@ export default function LeadsPage() {
     const [contact, setContact] = useState("")
     const [company, setCompany] = useState("")
     const [status, setStatus] = useState("")
-    const [source, setSource] = useState("")
+    const [serviceType, setServiceType] = useState("")
     const [followUp, setFollowUp] = useState()
 
     // Delete confirmation state
@@ -79,7 +81,6 @@ export default function LeadsPage() {
     // Debounce search inputs
     const debouncedContact = useDebounce(contact, 500)
     const debouncedCompany = useDebounce(company, 500)
-    const debouncedSource = useDebounce(source, 500)
 
     // Fetch data
     const { data, isLoading, isError, refetch } = useLeads({
@@ -90,7 +91,7 @@ export default function LeadsPage() {
         contact: debouncedContact,
         company: debouncedCompany,
         status: status === "all" ? "" : status,
-        source: debouncedSource,
+        serviceType: serviceType === "all" ? "" : serviceType,
         followUp: followUp ? format(followUp, "yyyy-MM-dd") : "",
     })
 
@@ -182,7 +183,7 @@ export default function LeadsPage() {
         setContact("")
         setCompany("")
         setStatus("")
-        setSource("")
+        setServiceType("")
         setFollowUp(undefined)
         setPage(1)
     }
@@ -198,7 +199,11 @@ export default function LeadsPage() {
     }
 
     const hasActiveFilters =
-        contact || company || (status && status !== "all") || source || followUp
+        contact ||
+        company ||
+        (status && status !== "all") ||
+        (serviceType && serviceType !== "all") ||
+        followUp
 
     return (
         <div className="flex flex-1 flex-col gap-4 sm:gap-6 p-4 sm:p-6">
@@ -245,26 +250,68 @@ export default function LeadsPage() {
                             />
                         </div>
 
-                        {/* Source Search */}
-                        <div className="relative flex-1 md:max-w-[180px]">
-                            <Globe className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-500" />
-                            <Input
-                                placeholder={t("filterBySource")}
-                                value={source}
-                                onChange={(e) => setSource(e.target.value)}
-                                className="pl-9 h-9 bg-muted/50 focus:bg-background transition-colors text-black placeholder:text-gray-500"
-                            />
+                        {/* Service Type Filter */}
+                        <div className="md:w-[230px]">
+                            <Select
+                                value={serviceType}
+                                onValueChange={setServiceType}
+                            >
+                                <SelectTrigger className="h-9 bg-muted/50 focus:bg-background border-input">
+                                    <div className="flex items-center gap-2 w-full overflow-hidden">
+                                        <Briefcase className="h-3.5 w-3.5 text-gray-500 shrink-0" />
+                                        <span
+                                            className={cn(
+                                                "truncate text-left flex-1",
+                                                serviceType &&
+                                                    serviceType !== "all"
+                                                    ? "text-black"
+                                                    : "text-gray-500",
+                                            )}
+                                        >
+                                            {serviceType &&
+                                            serviceType !== "all"
+                                                ? SERVICE_TYPE_OPTIONS.find(
+                                                      (opt) =>
+                                                          opt.value ===
+                                                          serviceType,
+                                                  )?.label
+                                                    ? t(
+                                                          SERVICE_TYPE_OPTIONS.find(
+                                                              (opt) =>
+                                                                  opt.value ===
+                                                                  serviceType,
+                                                          ).label,
+                                                      )
+                                                    : serviceType
+                                                : t("filterByServiceType")}
+                                        </span>
+                                    </div>
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="all">
+                                        {t("all")}
+                                    </SelectItem>
+                                    {SERVICE_TYPE_OPTIONS.map((option) => (
+                                        <SelectItem
+                                            key={option.value}
+                                            value={option.value}
+                                        >
+                                            {t(option.label)}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
                         </div>
 
                         {/* Status Filter */}
-                        <div className="md:w-[160px]">
+                        <div className="md:w-[170px]">
                             <Select value={status} onValueChange={setStatus}>
                                 <SelectTrigger className="h-9 bg-muted/50 focus:bg-background border-input">
-                                    <div className="flex items-center gap-2">
-                                        <Filter className="h-3.5 w-3.5 text-gray-500" />
+                                    <div className="flex items-center gap-2 w-full overflow-hidden">
+                                        <Filter className="h-3.5 w-3.5 text-gray-500 shrink-0" />
                                         <span
                                             className={cn(
-                                                "truncate",
+                                                "truncate text-left flex-1",
                                                 status && status !== "all"
                                                     ? "text-black"
                                                     : "text-gray-500",
@@ -365,7 +412,9 @@ export default function LeadsPage() {
                                 </TableHead>
                                 <TableHead
                                     className="cursor-pointer hover:bg-muted/50 transition-colors hidden md:table-cell"
-                                    onClick={() => handleSort("company.serviceType")}
+                                    onClick={() =>
+                                        handleSort("company.serviceType")
+                                    }
                                 >
                                     <div className="flex items-center text-xs font-bold uppercase tracking-wider text-black">
                                         {t("serviceType")}

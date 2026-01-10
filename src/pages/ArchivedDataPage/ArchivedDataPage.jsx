@@ -222,8 +222,7 @@ function ArchivedLeadsTable({ page, setPage }) {
                         <TableHead className="text-xs font-bold uppercase tracking-wider text-black">
                             {t("deletedAt")}
                         </TableHead>
-                        <TableHead className="w-16">
-                        </TableHead>
+                        <TableHead className="w-16"></TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -351,8 +350,7 @@ function ArchivedCallLogsTable({ page, setPage }) {
                         <TableHead className="text-xs font-bold uppercase tracking-wider text-black">
                             {t("deletedAt")}
                         </TableHead>
-                        <TableHead className="w-16">
-                        </TableHead>
+                        <TableHead className="w-16"></TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -486,8 +484,7 @@ function ArchivedPipelinesTable({ page, setPage }) {
                         <TableHead className="text-xs font-bold uppercase tracking-wider text-black">
                             {t("deletedAt")}
                         </TableHead>
-                        <TableHead className="w-16">
-                        </TableHead>
+                        <TableHead className="w-16"></TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody>

@@ -96,7 +96,8 @@ export default function CommonDialog({
         }
     }
 
-    const { icon, buttonVariant, headerColor, isCentered, iconBgColor } = getVariantStyles()
+    const { icon, buttonVariant, headerColor, isCentered, iconBgColor } =
+        getVariantStyles()
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
@@ -112,7 +113,12 @@ export default function CommonDialog({
                     {isCentered ? (
                         <div className="flex flex-col items-center text-center gap-2">
                             {showIcon && icon && (
-                                <div className={cn("mb-1 sm:mb-2 flex h-12 w-12 sm:h-16 sm:w-16 items-center justify-center rounded-full", iconBgColor)}>
+                                <div
+                                    className={cn(
+                                        "mb-1 sm:mb-2 flex h-12 w-12 sm:h-16 sm:w-16 items-center justify-center rounded-full",
+                                        iconBgColor,
+                                    )}
+                                >
                                     {icon}
                                 </div>
                             )}

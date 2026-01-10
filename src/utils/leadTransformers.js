@@ -79,6 +79,7 @@ export const transformLeadPayload = (formData, ownerId) => {
                 companyDetails.phoneExtension,
                 companyDetails.phoneNumber,
             ),
+            serviceType: companyDetails.serviceType?.trim() || undefined,
         },
         leads: [],
         owner: ownerId,
@@ -137,6 +138,7 @@ export const transformLeadUpdatePayload = (
                 companyDetails?.phoneExtension,
                 companyDetails?.phoneNumber,
             ),
+            serviceType: companyDetails?.serviceType?.trim() || undefined,
         },
     }
 

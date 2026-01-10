@@ -101,9 +101,9 @@ export default function CallLogDetailPage() {
     const getOutcomeBadge = (outcome) => {
         if (!outcome) return { color: "bg-gray-100 text-gray-700", text: "-" }
 
-        return { 
-            color: getOutcomeColor(outcome), 
-            text: t(enumToTranslationKey(outcome, "outcome")) 
+        return {
+            color: getOutcomeColor(outcome),
+            text: t(enumToTranslationKey(outcome, "outcome")),
         }
     }
 
@@ -115,7 +115,9 @@ export default function CallLogDetailPage() {
         return null
     }
 
-    const outcomeBadge = getOutcomeBadge(callLogData.outcome || callLogData.lead?.status)
+    const outcomeBadge = getOutcomeBadge(
+        callLogData.outcome || callLogData.lead?.status,
+    )
 
     return (
         <div className="flex flex-1 flex-col gap-4 sm:gap-6 p-4 sm:p-6">

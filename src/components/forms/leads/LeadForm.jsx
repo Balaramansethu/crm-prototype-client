@@ -18,6 +18,7 @@ export default function LeadForm({
     loading = false,
     submitLabel,
     editableContactIndex = null,
+    preventIdsScroll = false,
 }) {
     const { t } = useTranslation()
     const navigate = useNavigate()
@@ -30,7 +31,11 @@ export default function LeadForm({
 
     // Scroll to highlighted contact on mount
     useEffect(() => {
-        if (hasRestrictedEdit && editableContactIndex !== null) {
+        if (
+            !preventIdsScroll &&
+            hasRestrictedEdit &&
+            editableContactIndex !== null
+        ) {
             // Small delay to ensure DOM is ready
             const timer = setTimeout(() => {
                 const targetRef = contactRefs.current[editableContactIndex]
@@ -183,7 +188,8 @@ export default function LeadForm({
                 website: company.website || initialData?.website || "",
                 socialProfile:
                     company.socialProfile || initialData?.socialProfile || "",
-                serviceType: company.serviceType || initialData?.serviceType || "",
+                serviceType:
+                    company.serviceType || initialData?.serviceType || "",
             },
             contacts,
         }
@@ -260,7 +266,10 @@ export default function LeadForm({
                         className="flex flex-col gap-8"
                         noValidate
                     >
-                        <CompanyDetailsForm control={form.control} />
+                        <CompanyDetailsForm
+                            control={form.control}
+                            isHighlighted={preventIdsScroll}
+                        />
 
                         {fields.length > 0 && (
                             <div className="space-y-6">
@@ -292,12 +301,14 @@ export default function LeadForm({
                                             }
                                             totalContacts={fields.length}
                                             disabled={
-                                                hasRestrictedEdit &&
-                                                index !==
-                                                    editableContactIndex &&
-                                                field._id // Only disable existing contacts that aren't the primary edit target
+                                                preventIdsScroll ||
+                                                (hasRestrictedEdit &&
+                                                    index !==
+                                                        editableContactIndex &&
+                                                    field._id) // Only disable existing contacts that aren't the primary edit target
                                             }
                                             isHighlighted={
+                                                !preventIdsScroll &&
                                                 hasRestrictedEdit &&
                                                 index === editableContactIndex
                                             }
@@ -313,6 +324,7 @@ export default function LeadForm({
                                 <Button
                                     type="button"
                                     variant="secondary"
+                                    disabled={preventIdsScroll}
                                     onClick={() => {
                                         // Auto-assign next priority number (1-based)
                                         const nextPriority = fields.length + 1

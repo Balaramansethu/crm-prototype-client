@@ -115,6 +115,8 @@
     "filterByCompany": "Filter by company...",
     "filterByContact": "Filter by contact...",
     "filterBySource": "Filter by source...",
+    "filterByServiceType": "Filter by service type...",
+    "filterByOutcome": "Filter by outcome...",
     "clearFilters": "Clear Filters",
     "loadingLeads": "Loading leads...",
     "failedToLoadLeads": "Failed to load leads. Please try again.",
@@ -349,7 +351,7 @@
     "followupNeeded": "Follow-up Needed",
     "promotedToMeeting": "Promoted to Meeting",
     "conversionInProgress": "Conversion in Progress",
-    "leadRemarks": "Lead Information",
+    "leadRemarks": "Previous call log Information",
     "noRemarksAvailable": "No remarks available for this lead",
     "notes": "Notes",
     "previousRemarks": "Previous Remarks",
@@ -370,6 +372,7 @@
     "statusConversionInProgress": "Conversion in Progress",
     "statusFollowUpNeeded": "Follow-up Needed",
     "statusPromotedToMeeting": "Promoted to Meeting",
+    "statusInterested": "Interested",
     "statusNotInterested": "Not Interested",
     "outcomeInterested": "Interested",
     "outcomeNotInterested": "Not Interested",
@@ -378,5 +381,6 @@
     "outcomeConversionInProgress": "Conversion in Progress",
     "outcomeDropped": "Dropped",
     "outcomeQualified": "Qualified",
-    "outcomeNew": "New"
+    "outcomeNew": "New",
+    "nextMeetingDate": "Next Meeting Date"
 }

@@ -52,6 +52,7 @@ export default function LeadDetailPage() {
               email: leadData.email,
               phone: leadData.phone,
               status: leadData.status,
+              droppedReason: leadData.droppedReason,
               source: leadData.source,
               followUp: leadData.followUp,
               priority: leadData.priority,
@@ -208,6 +209,19 @@ export default function LeadDetailPage() {
                                     label={t("source")}
                                     value={mainContact.source}
                                 />
+                                {mainContact.droppedReason && (
+                                    <>
+                                        <Separator />
+                                        <div className="flex flex-col gap-2 py-3">
+                                            <span className="text-sm font-medium text-muted-foreground">
+                                                {t("dropReason")}
+                                            </span>
+                                            <p className="text-sm text-foreground whitespace-pre-wrap break-words leading-relaxed">
+                                                {mainContact.droppedReason}
+                                            </p>
+                                        </div>
+                                    </>
+                                )}
                                 <Separator />
                                 <FieldRow
                                     label={t("followUp")}
@@ -229,13 +243,29 @@ export default function LeadDetailPage() {
                     {/* Company Info Card */}
                     <Card>
                         <CardHeader className="pb-3">
-                            <div className="flex items-center gap-2">
-                                <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary/10">
-                                    <Building2 className="h-5 w-5 text-primary" />
+                            <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-2">
+                                    <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary/10">
+                                        <Building2 className="h-5 w-5 text-primary" />
+                                    </div>
+                                    <CardTitle className="text-lg">
+                                        {t("companyInformation")}
+                                    </CardTitle>
                                 </div>
-                                <CardTitle className="text-lg">
-                                    {t("companyInformation")}
-                                </CardTitle>
+                                {mainContact && (
+                                    <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        onClick={() =>
+                                            navigate(
+                                                `/leads/edit/${mainContact._id}?focus=company`,
+                                            )
+                                        }
+                                        title={t("edit")}
+                                    >
+                                        <Edit size={14} />
+                                    </Button>
+                                )}
                             </div>
                         </CardHeader>
                         <CardContent className="space-y-3">

@@ -112,6 +112,8 @@
     "filterByCompany": "تصفية حسب الشركة...",
     "filterByContact": "تصفية حسب جهة الاتصال...",
     "filterBySource": "تصفية حسب المصدر...",
+    "filterByServiceType": "تصفية حسب نوع الخدمة...",
+    "filterByOutcome": "تصفية حسب النتيجة...",
     "clearFilters": "مسح التصفيات",
     "loadingLeads": "جاري تحميل البيانات...",
     "failedToLoadLeads": "فشل تحميل البيانات. يرجى المحاولة مرة أخرى.",
@@ -370,6 +372,7 @@
     "statusConversionInProgress": "التحويل قيد التقدم",
     "statusFollowUpNeeded": "يحتاج متابعة",
     "statusPromotedToMeeting": "ترقى إلى اجتماع",
+    "statusInterested": "مهتم",
     "statusNotInterested": "غير مهتم",
     "outcomeInterested": "مهتم",
     "outcomeNotInterested": "غير مهتم",
@@ -378,5 +381,6 @@
     "outcomeConversionInProgress": "التحويل قيد التقدم",
     "outcomeDropped": "ملغى",
     "outcomeQualified": "مؤهل",
-    "outcomeNew": "جديد"
+    "outcomeNew": "جديد",
+    "nextMeetingDate": "تاريخ الاجتماع القادم"
 }

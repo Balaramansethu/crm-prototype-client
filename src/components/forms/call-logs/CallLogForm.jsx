@@ -83,7 +83,10 @@ export default function CallLogForm({
 
     const {
         formState: { isDirty, isSubmitting },
+        watch,
     } = form
+
+    const currentOutcome = watch("outcome")
 
     // Fetch all leads on mount
     useEffect(() => {
@@ -152,13 +155,12 @@ export default function CallLogForm({
         return lead.name || ""
     }
 
-
     // Update phone display and selected lead when lead is selected
     useEffect(() => {
         if (selectedLeadId) {
             const lead = leads.find((l) => l._id === selectedLeadId)
             setSelectedLead(lead || null)
-            
+
             if (lead?.phone?.number) {
                 const phone = lead.phone
                 setPhoneDisplay(
@@ -178,7 +180,8 @@ export default function CallLogForm({
             const fetchPreviousData = async () => {
                 setLoadingPreviousData(true)
                 try {
-                    const response = await getLeadPreviousCallLogs(selectedLeadId)
+                    const response =
+                        await getLeadPreviousCallLogs(selectedLeadId)
                     // API returns { data: {...} } when found, { data: null } when not found
                     if (response?.data) {
                         setPreviousCallLogData(response.data)
@@ -230,7 +233,9 @@ export default function CallLogForm({
         // Determine outcome: Use initialData.outcome or fallback to lead status if it matches an outcome
         let initialOutcome = initialData.outcome
         if (!initialOutcome && initialData.lead?.status) {
-            const statusAsOutcome = CALL_OUTCOME_OPTIONS.find(o => o.value === initialData.lead.status)
+            const statusAsOutcome = CALL_OUTCOME_OPTIONS.find(
+                (o) => o.value === initialData.lead.status,
+            )
             if (statusAsOutcome) initialOutcome = statusAsOutcome.value
         }
 
@@ -407,17 +412,23 @@ export default function CallLogForm({
                                     <FormItem>
                                         <FormLabel>
                                             {t("lead")}{" "}
-                                            <span className="text-destructive">*</span>
+                                            <span className="text-destructive">
+                                                *
+                                            </span>
                                         </FormLabel>
                                         <Select
                                             onValueChange={handleLeadChange}
                                             value={selectedLeadId}
-                                            disabled={isEditMode || loadingLeads}
+                                            disabled={
+                                                isEditMode || loadingLeads
+                                            }
                                         >
                                             <FormControl>
                                                 <SelectTrigger
                                                     className={cn(
-                                                        isRTL ? "text-right" : "",
+                                                        isRTL
+                                                            ? "text-right"
+                                                            : "",
                                                         isEditMode &&
                                                             "bg-muted !cursor-not-allowed",
                                                     )}
@@ -426,7 +437,9 @@ export default function CallLogForm({
                                                         placeholder={
                                                             loadingLeads
                                                                 ? t("loading")
-                                                                : t("selectLead")
+                                                                : t(
+                                                                      "selectLead",
+                                                                  )
                                                         }
                                                     />
                                                 </SelectTrigger>
@@ -439,7 +452,9 @@ export default function CallLogForm({
                                                         key={lead._id}
                                                         value={lead._id}
                                                     >
-                                                        {formatLeadDisplay(lead)}
+                                                        {formatLeadDisplay(
+                                                            lead,
+                                                        )}
                                                     </SelectItem>
                                                 ))}
                                             </SelectContent>
@@ -476,13 +491,31 @@ export default function CallLogForm({
                                     label: t(opt.label),
                                 }))}
                                 showBadge
+                                onValueChange={(val) => {
+                                    if (val === "not_interested") {
+                                        const sixMonthsLater = new Date()
+                                        sixMonthsLater.setMonth(
+                                            sixMonthsLater.getMonth() + 6,
+                                        )
+                                        form.setValue(
+                                            "followUp",
+                                            sixMonthsLater,
+                                        )
+                                    } else {
+                                        form.setValue("followUp", null)
+                                    }
+                                }}
                             />
 
                             {/* Follow-up Date */}
                             <FormDatePicker
                                 control={form.control}
                                 name="followUp"
-                                label={t("followUp")}
+                                label={
+                                    currentOutcome === "promoted_to_meeting"
+                                        ? t("nextMeetingDate")
+                                        : t("followUp")
+                                }
                                 minDate={new Date()}
                             />
 
@@ -492,7 +525,9 @@ export default function CallLogForm({
                                 name="callStartTime"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>{t("callStartTime")}</FormLabel>
+                                        <FormLabel>
+                                            {t("callStartTime")}
+                                        </FormLabel>
                                         <FormControl>
                                             <Input
                                                 {...field}
@@ -740,8 +775,8 @@ export default function CallLogForm({
                     </Form>
                 </FormContainer>
 
-                {/* Lead Previous Data Card - Only shown when a lead is selected */}
-                {selectedLead && (
+                {/* Lead Previous Data Card - Only shown when a lead is selected and not in edit mode */}
+                {selectedLead && !isEditMode && (
                     <div className="lg:w-80 shrink-0">
                         <Card className="border-muted bg-muted/30">
                             <CardHeader className="pb-3">
@@ -757,14 +792,16 @@ export default function CallLogForm({
                                     </div>
                                 ) : (
                                     <div className="space-y-3">
-                                <CardTitle className="text-sm font-medium flex items-center gap-2 text-muted-foreground">
-                                    {t("remarks")}
-                                </CardTitle>
+                                        <CardTitle className="text-sm font-medium flex items-center gap-2 text-muted-foreground">
+                                            {t("remarks")}
+                                        </CardTitle>
                                         {/* Previous Call Log Remarks */}
                                         {previousCallLogData?.remarks ? (
                                             <div>
                                                 <p className="text-sm text-foreground whitespace-pre-wrap bg-background/50 p-2 rounded border">
-                                                    {previousCallLogData.remarks}
+                                                    {
+                                                        previousCallLogData.remarks
+                                                    }
                                                 </p>
                                             </div>
                                         ) : (
