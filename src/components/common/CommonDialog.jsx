@@ -56,28 +56,33 @@ export default function CommonDialog({
         switch (variant) {
             case "destructive":
                 return {
-                    icon: <Archive className="h-6 w-6 text-red-600" />,
-                    buttonVariant: "destructive",
-                    headerColor: "text-black", // Title color in image is black/dark
+                    icon: <Archive className="h-6 w-6 text-primary" />,
+                    buttonVariant: "default",
+                    headerColor: "text-black",
                     isCentered: true,
+                    iconBgColor: "bg-primary/10",
                 }
             case "success":
                 return {
                     icon: <CheckCircle className="h-6 w-6 text-green-600" />,
-                    buttonVariant: "default", // or a custom success variant if available
+                    buttonVariant: "default",
                     headerColor: "text-green-600",
+                    iconBgColor: "bg-green-100",
                 }
             case "warning":
                 return {
                     icon: <AlertTriangle className="h-6 w-6 text-yellow-600" />,
                     buttonVariant: "secondary",
                     headerColor: "text-yellow-600",
+                    iconBgColor: "bg-yellow-100",
                 }
             case "info":
                 return {
                     icon: <Info className="h-6 w-6 text-primary" />,
                     buttonVariant: "default",
                     headerColor: "text-primary",
+                    isCentered: true,
+                    iconBgColor: "bg-primary/10",
                 }
             case "default":
             default:
@@ -86,11 +91,12 @@ export default function CommonDialog({
                     buttonVariant: "default",
                     headerColor: "",
                     isCentered: false,
+                    iconBgColor: "bg-muted",
                 }
         }
     }
 
-    const { icon, buttonVariant, headerColor, isCentered } = getVariantStyles()
+    const { icon, buttonVariant, headerColor, isCentered, iconBgColor } = getVariantStyles()
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
@@ -106,7 +112,7 @@ export default function CommonDialog({
                     {isCentered ? (
                         <div className="flex flex-col items-center text-center gap-2">
                             {showIcon && icon && (
-                                <div className="mb-1 sm:mb-2 flex h-12 w-12 sm:h-16 sm:w-16 items-center justify-center rounded-full bg-red-100">
+                                <div className={cn("mb-1 sm:mb-2 flex h-12 w-12 sm:h-16 sm:w-16 items-center justify-center rounded-full", iconBgColor)}>
                                     {icon}
                                 </div>
                             )}

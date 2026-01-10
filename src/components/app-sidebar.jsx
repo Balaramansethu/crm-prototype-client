@@ -95,7 +95,7 @@ export function AppSidebar({ ...props }) {
                 <SidebarMenu className="mb-1 pl-2 pt-4 gap-2">
                     <SidebarMenuItem>
                         <SidebarMenuButton
-                            isActive={location.pathname === "/leads"}
+                            isActive={location.pathname.startsWith("/leads")}
                             onClick={() => navigate("/leads")}
                             className="flex items-center gap-2"
                         >
@@ -105,7 +105,7 @@ export function AppSidebar({ ...props }) {
                     </SidebarMenuItem>
                     <SidebarMenuItem>
                         <SidebarMenuButton
-                            isActive={location.pathname === "/call-logs"}
+                            isActive={location.pathname.startsWith("/call-logs")}
                             onClick={() => navigate("/call-logs")}
                             className="flex items-center gap-2"
                         >

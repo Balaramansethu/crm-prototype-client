@@ -331,5 +331,13 @@
     "archiveOpportunityMessage": "لن يتم حذف هذه الفرصة نهائياً، هل أنت متأكد من الأرشفة؟",
     "showingItems": "عرض {{start}} إلى {{end}} من {{total}} {{type}}",
     "opportunityArchivedSuccess": "تم أرشفة الفرصة بنجاح",
-    "failedToArchiveOpportunity": "فشل أرشفة الفرصة"
+    "failedToArchiveOpportunity": "فشل أرشفة الفرصة",
+    "restore": "استعادة",
+    "restoreConfirmTitle": "استعادة العنصر؟",
+    "restoreConfirmDescription": "سيتم استعادة {{type}} وسيظهر مرة أخرى في القائمة النشطة. هل أنت متأكد أنك تريد المتابعة؟",
+    "restoreSuccess": "تم استعادة العنصر بنجاح",
+    "restoreFailed": "فشل استعادة العنصر",
+    "restoring": "جاري الاستعادة...",
+    "callLog": "سجل المكالمات",
+    "item": "عنصر"
 }

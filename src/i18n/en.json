@@ -331,5 +331,13 @@
     "archiveOpportunityMessage": "This opportunity will not be deleted permanently, are you sure you want to archive?",
     "showingItems": "Showing {{start}} to {{end}} of {{total}} {{type}}",
     "opportunityArchivedSuccess": "Opportunity archived successfully",
-    "failedToArchiveOpportunity": "Failed to archive opportunity"
+    "failedToArchiveOpportunity": "Failed to archive opportunity",
+    "restore": "Restore",
+    "restoreConfirmTitle": "Restore Item?",
+    "restoreConfirmDescription": "This {{type}} will be restored and will reappear in the active list. Are you sure you want to continue?",
+    "restoreSuccess": "Item restored successfully",
+    "restoreFailed": "Failed to restore item",
+    "restoring": "Restoring...",
+    "callLog": "Call Log",
+    "item": "Item"
 }

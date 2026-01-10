@@ -17,6 +17,7 @@ import { Button } from "@/components/ui/button"
 import { Loader2, ChevronLeft, ChevronRight } from "lucide-react"
 import { format } from "date-fns"
 import { cn } from "@/lib/utils"
+import { RowActionsMenu } from "@/components/common/RowActionsMenu"
 
 // Chrome-style Tab Component with smooth curved edges
 function ChromeTab({ label, isActive, onClick }) {
@@ -221,6 +222,9 @@ function ArchivedLeadsTable({ page, setPage }) {
                         <TableHead className="text-xs font-bold uppercase tracking-wider text-black">
                             {t("deletedAt")}
                         </TableHead>
+                        <TableHead className="text-xs font-bold uppercase tracking-wider text-black w-16">
+                            {t("actions")}
+                        </TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -251,6 +255,12 @@ function ArchivedLeadsTable({ page, setPage }) {
                                           "dd-MM-yyyy HH:mm",
                                       )
                                     : "-"}
+                            </TableCell>
+                            <TableCell>
+                                <RowActionsMenu
+                                    itemId={lead._id}
+                                    itemType="lead"
+                                />
                             </TableCell>
                         </TableRow>
                     ))}
@@ -342,6 +352,9 @@ function ArchivedCallLogsTable({ page, setPage }) {
                         <TableHead className="text-xs font-bold uppercase tracking-wider text-black">
                             {t("deletedAt")}
                         </TableHead>
+                        <TableHead className="text-xs font-bold uppercase tracking-wider text-black w-16">
+                            {t("actions")}
+                        </TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -384,6 +397,12 @@ function ArchivedCallLogsTable({ page, setPage }) {
                                           "dd-MM-yyyy HH:mm",
                                       )
                                     : "-"}
+                            </TableCell>
+                            <TableCell>
+                                <RowActionsMenu
+                                    itemId={log._id}
+                                    itemType="call-log"
+                                />
                             </TableCell>
                         </TableRow>
                     ))}
@@ -469,6 +488,9 @@ function ArchivedPipelinesTable({ page, setPage }) {
                         <TableHead className="text-xs font-bold uppercase tracking-wider text-black">
                             {t("deletedAt")}
                         </TableHead>
+                        <TableHead className="text-xs font-bold uppercase tracking-wider text-black w-16">
+                            {t("actions")}
+                        </TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -506,6 +528,12 @@ function ArchivedPipelinesTable({ page, setPage }) {
                                           "dd-MM-yyyy HH:mm",
                                       )
                                     : "-"}
+                            </TableCell>
+                            <TableCell>
+                                <RowActionsMenu
+                                    itemId={pipeline._id}
+                                    itemType="pipeline"
+                                />
                             </TableCell>
                         </TableRow>
                     ))}
