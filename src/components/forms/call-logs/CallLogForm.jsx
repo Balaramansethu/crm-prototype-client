@@ -20,14 +20,21 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { FormContainer, CommonDialog, StatusBadge } from "@/components/common"
 import { FormDatePicker, FormSelect } from "@/components/form-fields"
 import { CALL_OUTCOME_OPTIONS } from "@/constants/formOptions"
+import {
+    Accordion,
+    AccordionContent,
+    AccordionItem,
+    AccordionTrigger,
+} from "@/components/ui/accordion"
 
+import { format } from "date-fns"
 import { useForm } from "react-hook-form"
 import { useTranslation } from "react-i18next"
 import { useNavigate } from "react-router-dom"
 import { useMemo, useState, useEffect } from "react"
 import { Loader2, FileText } from "lucide-react"
 import { cn, enumToTranslationKey } from "@/lib/utils"
-import { searchLeads, getLeadPreviousCallLogs } from "@/service/callLogsService"
+import { searchLeads, fetchCallLogs, getLeadPreviousCallLogs } from "@/service/callLogsService"
 
 export default function CallLogForm({
     onSubmit,
@@ -45,7 +52,7 @@ export default function CallLogForm({
     const [loadingLeads, setLoadingLeads] = useState(false)
     const [selectedLeadId, setSelectedLeadId] = useState("")
     const [selectedLead, setSelectedLead] = useState(null)
-    const [previousCallLogData, setPreviousCallLogData] = useState(null)
+    const [previousCallLogs, setPreviousCallLogs] = useState([])
     const [loadingPreviousData, setLoadingPreviousData] = useState(false)
 
     // Phone display
@@ -176,22 +183,18 @@ export default function CallLogForm({
             }
             form.setValue("lead", selectedLeadId)
 
-            // Fetch previous call log data for this lead
+            // Fetch all previous call log data for this lead history
             const fetchPreviousData = async () => {
                 setLoadingPreviousData(true)
                 try {
                     const response =
                         await getLeadPreviousCallLogs(selectedLeadId)
-                    // API returns { data: {...} } when found, { data: null } when not found
-                    if (response?.data) {
-                        setPreviousCallLogData(response.data)
-                    } else {
-                        setPreviousCallLogData(null)
-                    }
+                    // The user's provided JSON shows data is the array
+                    const logs = response.data || []
+                    setPreviousCallLogs(Array.isArray(logs) ? logs : [])
                 } catch (error) {
-                    // 404 or not_found errors are expected when no previous call log exists
-                    console.log("No previous call log found for this lead")
-                    setPreviousCallLogData(null)
+                    console.error("Failed to fetch previous call logs:", error)
+                    setPreviousCallLogs([])
                 } finally {
                     setLoadingPreviousData(false)
                 }
@@ -201,7 +204,7 @@ export default function CallLogForm({
             setSelectedLead(null)
             setPhoneDisplay("")
             form.setValue("lead", "")
-            setPreviousCallLogData(null)
+            setPreviousCallLogs([])
         }
     }, [selectedLeadId, leads, form])
 
@@ -396,7 +399,7 @@ export default function CallLogForm({
 
     return (
         <>
-            <div className="flex flex-col lg:flex-row gap-6">
+            <div className="flex flex-col lg:flex-row lg:items-start gap-6">
                 {/* Main Form */}
                 <FormContainer className="flex-1">
                     <Form {...form}>
@@ -783,38 +786,104 @@ export default function CallLogForm({
 
                 {/* Lead Previous Data Card - Only shown when a lead is selected and not in edit mode */}
                 {selectedLead && !isEditMode && (
-                    <div className="lg:w-80 shrink-0">
-                        <Card className="border-muted bg-muted/30">
-                            <CardHeader className="pb-3">
-                                <CardTitle className="text-sm font-medium flex items-center gap-2 text-muted-foreground">
+                    <div className="lg:w-96 shrink-0 mt-6">
+                        <Card className="mt-0">
+                            <CardHeader className="border-b py-3">
+                                <CardTitle className="text-sm font-medium flex items-center gap-2">
                                     <FileText className="h-4 w-4" />
                                     {t("leadRemarks")}
                                 </CardTitle>
                             </CardHeader>
-                            <CardContent>
+                            <CardContent className="p-0">
                                 {loadingPreviousData ? (
-                                    <div className="flex items-center justify-center py-4">
+                                    <div className="flex items-center justify-center py-8">
                                         <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
                                     </div>
+                                ) : previousCallLogs.length > 0 ? (
+                                    <div className="flex flex-col">
+                                        <Accordion
+                                            type="single"
+                                            collapsible
+                                            className="w-full"
+                                            defaultValue={`item-0`}
+                                        >
+                                            {previousCallLogs.map((log, index) => (
+                                                <AccordionItem
+                                                    key={log._id || index}
+                                                    value={`item-${index}`}
+                                                    className="border-b last:border-b-0"
+                                                >
+                                                    <AccordionTrigger className="px-4 py-3 hover:no-underline hover:bg-muted/30">
+                                                        <div className="flex items-center gap-3 text-left">
+                                                            <div className="shrink-0">
+                                                                <div className="h-8 w-8 rounded-full bg-green-600 flex items-center justify-center text-white text-[10px] font-medium">
+                                                                    {(
+                                                                        selectedLead?.name ||
+                                                                        "L"
+                                                                    )
+                                                                        .charAt(
+                                                                            0,
+                                                                        )
+                                                                        .toUpperCase()}
+                                                                </div>
+                                                            </div>
+                                                            <div className="flex flex-col min-w-0">
+                                                                <span className="text-sm font-medium text-foreground truncate">
+                                                                    {
+                                                                        selectedLead?.name
+                                                                    }
+                                                                </span>
+                                                                <span className="text-[10px] text-muted-foreground">
+                                                                    {log.updatedAt
+                                                                        ? format(
+                                                                              new Date(
+                                                                                  log.updatedAt,
+                                                                              ),
+                                                                              "d MMM, h:mm a",
+                                                                          )
+                                                                        : "-"}
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </AccordionTrigger>
+                                                    <AccordionContent className="px-4 pb-4">
+                                                        <div className="pl-11">
+                                                            <div className="mb-2">
+                                                                <StatusBadge
+                                                                    status={
+                                                                        log.outcome ||
+                                                                        log.lead?.status ||
+                                                                        "interested"
+                                                                    }
+                                                                    className="text-[10px] h-5"
+                                                                />
+                                                            </div>
+                                                            <div className="text-sm text-foreground bg-muted/50 p-3 rounded-lg border border-border/50">
+                                                                <p className="text-[10px] font-semibold text-muted-foreground mb-1 uppercase tracking-wider">
+                                                                    {t(
+                                                                        "remarks",
+                                                                    )}
+                                                                </p>
+                                                                <p className="whitespace-pre-wrap leading-relaxed">
+                                                                    {
+                                                                        log.remarks
+                                                                    }
+                                                                </p>
+                                                            </div>
+                                                        </div>
+                                                    </AccordionContent>
+                                                </AccordionItem>
+                                            ))}
+                                        </Accordion>
+                                    </div>
                                 ) : (
-                                    <div className="space-y-3">
-                                        <CardTitle className="text-sm font-medium flex items-center gap-2 text-muted-foreground">
-                                            {t("remarks")}
-                                        </CardTitle>
-                                        {/* Previous Call Log Remarks */}
-                                        {previousCallLogData?.remarks ? (
-                                            <div>
-                                                <p className="text-sm text-foreground whitespace-pre-wrap bg-background/50 p-2 rounded border">
-                                                    {
-                                                        previousCallLogData.remarks
-                                                    }
-                                                </p>
-                                            </div>
-                                        ) : (
-                                            <p className="text-sm text-muted-foreground italic">
-                                                {t("noRemarksAvailable")}
-                                            </p>
-                                        )}
+                                    <div className="flex flex-col items-center justify-center py-12 px-6 text-center">
+                                        <div className="h-12 w-12 rounded-full bg-muted flex items-center justify-center mb-3">
+                                            <FileText className="h-6 w-6 text-muted-foreground/50" />
+                                        </div>
+                                        <p className="text-sm text-muted-foreground font-medium">
+                                            {t("noRemarksAvailable")}
+                                        </p>
                                     </div>
                                 )}
                             </CardContent>
