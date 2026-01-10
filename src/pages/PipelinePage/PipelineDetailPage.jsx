@@ -4,6 +4,7 @@ import { useNavigate, useParams } from "react-router-dom"
 import { format } from "date-fns"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
+import { Badge } from "@/components/ui/badge"
 import {
     SectionCard,
     FieldRow,
@@ -11,6 +12,7 @@ import {
     PageHeader,
 } from "@/components/common"
 import { getPipelineById } from "@/service/pipelineService"
+import { SERVICE_TYPE_OPTIONS } from "@/constants/formOptions"
 import { toast } from "sonner"
 import { Edit, Building2 } from "lucide-react"
 import { cn } from "@/lib/utils"
@@ -206,7 +208,33 @@ export default function PipelineDetailPage() {
                             )}
                         </div>
                     </div>
-                    <Separator />
+                    {company.serviceType && (
+                        <>
+                            <FieldRow label={t("serviceType")}>
+                                {(() => {
+                                    const serviceTypeOption =
+                                        SERVICE_TYPE_OPTIONS.find(
+                                            (opt) =>
+                                                opt.value ===
+                                                company.serviceType,
+                                        )
+                                    return serviceTypeOption ? (
+                                        <Badge
+                                            className={cn(
+                                                "text-xs font-medium",
+                                                serviceTypeOption.color,
+                                            )}
+                                        >
+                                            {t(serviceTypeOption.label)}
+                                        </Badge>
+                                    ) : (
+                                        company.serviceType
+                                    )
+                                })()}
+                            </FieldRow>
+                            <Separator />
+                        </>
+                    )}
                     <FieldRow label={t("email")} value={company.email} />
                     <Separator />
                     <FieldRow

@@ -38,10 +38,20 @@ export const deletePipeline = async (id) => {
  * Search companies for pipeline/opportunity forms
  * Uses the dedicated pipeline company search endpoint
  */
-export const searchPipelineCompanies = async (params = {}) => {
+export const searchPipelineCompanies = async () => {
     const response = await axiosPrivateInstance.get(
-        `${API_BASE}/search/company`,
-        { params },
+        `${API_BASE}/search/company`
+    )
+    return response.data
+}
+
+/**
+ * Get company call log activity for pipeline forms
+ * Uses the call-logs activity endpoint
+ */
+export const getCompanyActivity = async (companyId) => {
+    const response = await axiosPrivateInstance.get(
+        `/call-logs/${companyId}/activity`
     )
     return response.data
 }

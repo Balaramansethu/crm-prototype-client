@@ -5,7 +5,7 @@ import { useQueryClient } from "@tanstack/react-query"
 import { toast } from "sonner"
 import { format } from "date-fns"
 
-import { PageHeader } from "@/components/common"
+import { PageHeader, CompanyActivityCard } from "@/components/common"
 import { OpportunityForm } from "@/components/forms/pipeline"
 import { createPipeline } from "@/service/pipelineService"
 import { useUserStore } from "@/store/userStore"
@@ -16,6 +16,7 @@ export default function CreateOpportunityPage() {
     const queryClient = useQueryClient()
     const user = useUserStore((state) => state.user)
     const [loading, setLoading] = useState(false)
+    const [selectedCompanyId, setSelectedCompanyId] = useState("")
 
     const breadcrumbs = [
         { label: t("pipeline"), path: "/pipeline" },
@@ -63,9 +64,19 @@ export default function CreateOpportunityPage() {
         <div className="@container/main flex flex-1 flex-col gap-2">
             <PageHeader breadcrumbs={breadcrumbs} title={t("addOpportunity")} />
 
-            <div className="-mt-8 px-4 lg:px-6">
-                <OpportunityForm onSubmit={onSubmit} loading={loading} />
+            <div className="-mt-8 px-4 lg:px-12">
+                <div className="flex flex-col lg:flex-row lg:items-start gap-4">
+                    <div className="flex-1">
+                        <OpportunityForm
+                            onSubmit={onSubmit}
+                            loading={loading}
+                            onCompanyChange={setSelectedCompanyId}
+                        />
+                    </div>
+                    <CompanyActivityCard companyId={selectedCompanyId} />
+                </div>
             </div>
         </div>
     )
 }
+

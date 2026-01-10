@@ -492,17 +492,20 @@ export default function CallLogForm({
                                 }))}
                                 showBadge
                                 onValueChange={(val) => {
-                                    if (val === "not_interested") {
-                                        const sixMonthsLater = new Date()
-                                        sixMonthsLater.setMonth(
-                                            sixMonthsLater.getMonth() + 6,
-                                        )
-                                        form.setValue(
-                                            "followUp",
-                                            sixMonthsLater,
-                                        )
-                                    } else {
-                                        form.setValue("followUp", null)
+                                    // Only auto-set follow-up date in create mode
+                                    if (!isEditMode) {
+                                        if (val === "not_interested") {
+                                            const sixMonthsLater = new Date()
+                                            sixMonthsLater.setMonth(
+                                                sixMonthsLater.getMonth() + 6,
+                                            )
+                                            form.setValue(
+                                                "followUp",
+                                                sixMonthsLater,
+                                            )
+                                        } else {
+                                            form.setValue("followUp", null)
+                                        }
                                     }
                                 }}
                             />
@@ -533,9 +536,12 @@ export default function CallLogForm({
                                                 {...field}
                                                 type="time"
                                                 className={cn(
-                                                    "w-full",
+                                                        "w-full cursor-pointer",
                                                     isRTL ? "text-right" : "",
                                                 )}
+                                                onClick={(e) =>
+                                                    e.target.showPicker?.()
+                                                }
                                             />
                                         </FormControl>
                                         <FormMessage />

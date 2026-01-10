@@ -32,6 +32,7 @@ export default function OpportunityForm({
     onSubmit,
     loading = false,
     initialData = null,
+    onCompanyChange,
 }) {
     const { t, i18n } = useTranslation()
     const navigate = useNavigate()
@@ -41,15 +42,20 @@ export default function OpportunityForm({
     const [showUnsavedDialog, setShowUnsavedDialog] = useState(false)
     const [companies, setCompanies] = useState([])
     const [loadingCompanies, setLoadingCompanies] = useState(false)
+    const [selectedCompanyId, setSelectedCompanyId] = useState(
+        initialData?.company?._id || initialData?.company || "",
+    )
 
     // Fetch companies on mount
     useEffect(() => {
         const fetchCompanies = async () => {
             setLoadingCompanies(true)
             try {
-                const response = await searchPipelineCompanies({ limit: 100 })
+                const response = await searchPipelineCompanies()
                 const data = response.data || response
-                let companiesList = data.companies || []
+                let companiesList = Array.isArray(data)
+                    ? data
+                    : data.companies || []
 
                 // In edit mode, ensure the current company is in the list
                 if (
@@ -196,7 +202,11 @@ export default function OpportunityForm({
                                 <FormItem>
                                     <FormLabel>{t("company")} *</FormLabel>
                                     <Select
-                                        onValueChange={field.onChange}
+                                        onValueChange={(val) => {
+                                            field.onChange(val)
+                                            setSelectedCompanyId(val)
+                                            onCompanyChange?.(val)
+                                        }}
                                         value={field.value}
                                         disabled={loadingCompanies}
                                     >

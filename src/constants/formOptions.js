@@ -5,10 +5,26 @@
 
 // Service Type Options for Company
 export const SERVICE_TYPE_OPTIONS = [
-    { value: "hiring_service", label: "hiringService" },
-    { value: "peo_and_eor", label: "peoAndEor" },
-    { value: "digital_marketing", label: "digitalMarketing" },
-    { value: "digital_solutions", label: "digitalSolutions" },
+    {
+        value: "hiring_service",
+        label: "hiringService",
+        color: "bg-blue-100 text-blue-700",
+    },
+    {
+        value: "peo_and_eor",
+        label: "peoAndEor",
+        color: "bg-purple-100 text-purple-700",
+    },
+    {
+        value: "digital_marketing",
+        label: "digitalMarketing",
+        color: "bg-green-100 text-green-700",
+    },
+    {
+        value: "digital_solutions",
+        label: "digitalSolutions",
+        color: "bg-orange-100 text-orange-700",
+    },
 ]
 
 // Lead Status Options (enum: new, qualified, contacted_by_email, dropped)

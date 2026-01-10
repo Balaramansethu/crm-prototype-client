@@ -382,5 +382,10 @@
     "outcomeDropped": "ملغى",
     "outcomeQualified": "مؤهل",
     "outcomeNew": "جديد",
-    "nextMeetingDate": "تاريخ الاجتماع القادم"
+    "outcomeContactedByEmail": "تم التواصل عبر البريد",
+    "nextMeetingDate": "تاريخ الاجتماع القادم",
+    "activity": "النشاط",
+    "stageChanged": "تم تغيير المرحلة",
+    "stage": "المرحلة",
+    "pipelineAlreadyExistsForCompany": "توجد فرصة مبيعات لهذه الشركة بالفعل"
 }

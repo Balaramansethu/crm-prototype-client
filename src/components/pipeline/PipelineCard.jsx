@@ -1,15 +1,18 @@
 import { useDrag } from "react-dnd"
 import { useNavigate } from "react-router-dom"
 import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
 import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { MoreHorizontal, Edit, Archive, Eye } from "lucide-react"
+import { MoreHorizontal, Edit, Archive, Eye, Calendar } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { cn } from "@/lib/utils"
+import { format } from "date-fns"
+import { SERVICE_TYPE_OPTIONS } from "@/constants/formOptions"
 
 export const ITEM_TYPE = "PIPELINE_CARD"
 
@@ -37,114 +40,137 @@ export default function PipelineCard({
     // Use company name from the pipeline model
     const companyName = pipeline.company?.name || t("unknownCompany")
 
+    // Get service type info
+    const serviceType = pipeline.company?.serviceType
+    const serviceTypeOption = SERVICE_TYPE_OPTIONS.find(
+        (opt) => opt.value === serviceType,
+    )
+
+    // Check if meeting stage
+    const isMeetingStage = pipeline.opportunityStage === "meeting"
+
     const formatCurrency = (value) => {
-        if (!value || value === 0) return "-"
-        if (value >= 1000) {
-            return `${Math.round(value / 1000)}K SAR`
-        }
-        return `${value} SAR`
+        if (!value || value === 0) return "$ 0"
+        return `SAR ${value.toLocaleString()}`
     }
 
     const expectedRevenue =
         pipeline.expectedRevnue || pipeline.expectedRevenue || 0
 
+    // Format follow-up date
+    const formatFollowUp = (date) => {
+        if (!date) return null
+        try {
+            return format(new Date(date), "d MMM yyyy")
+        } catch {
+            return null
+        }
+    }
+
+    const followUpDate = formatFollowUp(pipeline.followUp)
+
     return (
         <div
             ref={drag}
             className={cn(
-                "bg-white rounded-xl p-4 cursor-grab active:cursor-grabbing transition-all duration-200 shadow-sm",
-                "hover:shadow-md outline-none focus:outline-none focus-visible:outline-none ring-0 focus:ring-0",
+                "bg-white rounded-lg border border-slate-200 cursor-grab active:cursor-grabbing transition-all duration-200",
+                "hover:shadow-lg outline-none focus:outline-none focus-visible:outline-none ring-0 focus:ring-0",
                 isDragging && "opacity-60 shadow-xl scale-[1.02] bg-blue-50/50",
             )}
         >
-            {/* Header: Company Name and Menu */}
-            <div className="flex items-start justify-between gap-2 mb-3">
-                <h4 className="font-semibold text-sm text-slate-800 leading-snug">
-                    {companyName}
-                </h4>
-                <DropdownMenu dir={isRTL ? "rtl" : "ltr"}>
-                    <DropdownMenuTrigger asChild>
-                        <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-6 w-6 shrink-0 -mt-1 -mr-1 text-slate-400 hover:text-slate-600"
-                            onClick={(e) => e.stopPropagation()}
-                        >
-                            <MoreHorizontal className="h-4 w-4" />
-                        </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent
-                        align={isRTL ? "start" : "end"}
-                        className="w-36"
+            {/* Card Content */}
+            <div className="p-3">
+                {/* Header with title and menu */}
+                <div className="flex items-start justify-between gap-2 mb-2">
+                    <h4
+                        className="font-semibold text-sm text-slate-800 leading-snug cursor-pointer hover:text-primary truncate flex-1"
+                        onClick={() => navigate(`/pipeline/${pipeline._id}`)}
                     >
-                        <DropdownMenuItem
-                            onClick={() =>
-                                navigate(`/pipeline/${pipeline._id}`)
-                            }
-                            className="text-xs"
-                        >
-                            <Eye className="mr-2 h-3 w-3" />
-                            {t("detailedView")}
-                        </DropdownMenuItem>
-                        <DropdownMenuItem
-                            onClick={() => onEdit(pipeline)}
-                            className="text-xs"
-                        >
-                            <Edit className="mr-2 h-3 w-3" />
-                            {t("edit")}
-                        </DropdownMenuItem>
-                        {canDelete && (
-                            <DropdownMenuItem
-                                onClick={() => onDelete(pipeline._id)}
-                                className="text-primary focus:text-primary text-xs"
+                        {pipeline.nextStep || companyName}
+                    </h4>
+                    <DropdownMenu dir={isRTL ? "rtl" : "ltr"}>
+                        <DropdownMenuTrigger asChild>
+                            <Button
+                                variant="ghost"
+                                size="icon"
+                                className="h-5 w-5 shrink-0 text-slate-400 hover:text-slate-600"
+                                onClick={(e) => e.stopPropagation()}
                             >
-                                <Archive className="mr-2 h-3 w-3" />
-                                {t("archive")}
+                                <MoreHorizontal className="h-3.5 w-3.5" />
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent
+                            align={isRTL ? "start" : "end"}
+                            className="w-36"
+                        >
+                            <DropdownMenuItem
+                                onClick={() =>
+                                    navigate(`/pipeline/${pipeline._id}`)
+                                }
+                                className="text-xs"
+                            >
+                                <Eye className="mr-2 h-3 w-3" />
+                                {t("detailedView")}
                             </DropdownMenuItem>
-                        )}
-                    </DropdownMenuContent>
-                </DropdownMenu>
-            </div>
+                            <DropdownMenuItem
+                                onClick={() => onEdit(pipeline)}
+                                className="text-xs"
+                            >
+                                <Edit className="mr-2 h-3 w-3" />
+                                {t("edit")}
+                            </DropdownMenuItem>
+                            {canDelete && (
+                                <DropdownMenuItem
+                                    onClick={() => onDelete(pipeline._id)}
+                                    className="text-primary focus:text-primary text-xs"
+                                >
+                                    <Archive className="mr-2 h-3 w-3" />
+                                    {t("archive")}
+                                </DropdownMenuItem>
+                            )}
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                </div>
 
-            {/* Value Rows */}
-            <div className="space-y-2 text-xs">
-                <div className="flex justify-between items-baseline">
-                    <span className="text-slate-400">{t("value")}</span>
-                    <span className="font-medium text-slate-700 tabular-nums">
-                        {formatCurrency(pipeline.estimatedValue)}
-                    </span>
-                </div>
-                <div className="flex justify-between items-baseline">
-                    <span className="text-slate-400">{t("probability")}</span>
-                    <span className="font-medium text-slate-700 tabular-nums">
-                        {pipeline.probability || 0}%
-                    </span>
-                </div>
-                <div className="flex justify-between items-baseline">
-                    <span className="text-slate-400">{t("expected")}</span>
-                    <span className="font-medium text-slate-700 tabular-nums">
-                        {formatCurrency(expectedRevenue)}
-                    </span>
-                </div>
-            </div>
+                {/* Amount */}
+                <p className="text-sm font-medium text-slate-700 mb-1">
+                    {formatCurrency(expectedRevenue)}
+                </p>
 
-            {/* Divider and Next Step */}
-            {pipeline.nextStep && (
-                <>
-                    <div className="border-t border-slate-100 my-3" />
-                    <div className="flex items-center justify-between gap-2">
-                        <p className="text-xs text-slate-500 truncate flex-1">
-                            {pipeline.nextStep}
-                        </p>
-                        {/* Company initial avatar */}
-                        <div className="h-6 w-6 rounded-full bg-slate-100 flex items-center justify-center shrink-0">
-                            <span className="text-[10px] font-semibold text-slate-600">
-                                {(companyName || "C").charAt(0).toUpperCase()}
-                            </span>
-                        </div>
+                {/* Company Name */}
+                <p className="text-sm text-slate-500 mb-2 truncate">
+                    {companyName}
+                </p>
+
+                {/* Service Type Badges */}
+                {serviceTypeOption && (
+                    <div className="flex flex-wrap gap-1 mb-2">
+                        <Badge
+                            className={cn(
+                                "text-[10px] font-medium px-1.5 py-0",
+                                serviceTypeOption.color,
+                            )}
+                        >
+                            {t(serviceTypeOption.label)}
+                        </Badge>
                     </div>
-                </>
-            )}
+                )}
+
+                {/* Follow-up Date Badge */}
+                {followUpDate && (
+                    <div className="flex items-center gap-1 text-[10px] text-slate-500 mb-2">
+                        <Calendar className="h-3 w-3" />
+                        <span>
+                            {isMeetingStage
+                                ? t("nextMeetingDate")
+                                : t("followUp")}
+                            : {followUpDate}
+                        </span>
+                    </div>
+                )}
+            </div>
         </div>
     )
 }
+
+

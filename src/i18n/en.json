@@ -382,5 +382,10 @@
     "outcomeDropped": "Dropped",
     "outcomeQualified": "Qualified",
     "outcomeNew": "New",
-    "nextMeetingDate": "Next Meeting Date"
+    "outcomeContactedByEmail": "Contacted by Email",
+    "nextMeetingDate": "Next Meeting Date",
+    "activity": "Activity",
+    "stageChanged": "Stage changed",
+    "stage": "Stage",
+    "pipelineAlreadyExistsForCompany": "A pipeline opportunity already exists for this company"
 }

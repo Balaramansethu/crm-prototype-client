@@ -6,7 +6,7 @@ import { toast } from "sonner"
 import { format } from "date-fns"
 import { Loader2 } from "lucide-react"
 
-import { PageHeader } from "@/components/common"
+import { PageHeader, CompanyActivityCard } from "@/components/common"
 import { OpportunityForm } from "@/components/forms/pipeline"
 import { getPipelineById, updatePipeline } from "@/service/pipelineService"
 
@@ -18,6 +18,7 @@ export default function EditOpportunityPage() {
     const [loading, setLoading] = useState(false)
     const [fetching, setFetching] = useState(true)
     const [initialData, setInitialData] = useState(null)
+    const [selectedCompanyId, setSelectedCompanyId] = useState("")
 
     const breadcrumbs = [
         { label: t("pipeline"), path: "/pipeline" },
@@ -28,7 +29,12 @@ export default function EditOpportunityPage() {
         const fetchPipeline = async () => {
             try {
                 const response = await getPipelineById(id)
-                setInitialData(response.data || response)
+                const data = response.data || response
+                setInitialData(data)
+                // Set initial company id for activity card
+                setSelectedCompanyId(
+                    data?.company?._id || data?.company || "",
+                )
             } catch (error) {
                 console.error(error)
                 toast.error(t("failedToLoadOpportunity"))
@@ -90,12 +96,19 @@ export default function EditOpportunityPage() {
             />
 
             <div className="-mt-8 px-4 lg:px-6">
-                <OpportunityForm
-                    initialData={initialData}
-                    onSubmit={onSubmit}
-                    loading={loading}
-                />
+                <div className="flex flex-col lg:flex-row lg:items-start gap-4">
+                    <div className="flex-1">
+                        <OpportunityForm
+                            initialData={initialData}
+                            onSubmit={onSubmit}
+                            loading={loading}
+                            onCompanyChange={setSelectedCompanyId}
+                        />
+                    </div>
+                    <CompanyActivityCard companyId={selectedCompanyId} />
+                </div>
             </div>
         </div>
     )
 }
+
