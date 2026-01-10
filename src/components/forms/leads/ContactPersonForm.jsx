@@ -95,7 +95,7 @@ const ContactPersonForm = forwardRef(function ContactPersonForm(
                         type="button"
                         variant="ghost"
                         size="icon"
-                        className="text-gray-400 hover:text-red-500 hover:bg-red-50 shrink-0"
+                        className="text-gray-400 hover:text-primary shrink-0"
                         onClick={onRemove}
                     >
                         <Trash2 className="h-4 w-4" />

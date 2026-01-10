@@ -96,7 +96,7 @@ export default function PipelineCard({
                         {canDelete && (
                             <DropdownMenuItem
                                 onClick={() => onDelete(pipeline._id)}
-                                className="text-red-600 focus:text-red-600 text-xs"
+                                className="text-primary focus:text-primary text-xs"
                             >
                                 <Archive className="mr-2 h-3 w-3" />
                                 {t("archive")}

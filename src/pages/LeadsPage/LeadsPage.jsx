@@ -563,7 +563,7 @@ export default function LeadsPage() {
                                                                     lead._id,
                                                                 )
                                                             }
-                                                            className="text-red-600 focus:text-red-600"
+                                                            className="text-primary focus:text-primary"
                                                         >
                                                             <Archive className="mr-2 h-4 w-4" />
                                                             {t("archive")}
