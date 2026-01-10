@@ -88,7 +88,7 @@ export default function CompanyDetailsForm({ control, disabled = false }) {
                 <FormSelect
                     control={control}
                     name="companyDetails.serviceType"
-                    label={t("serviceType")}
+                    label={`${t("serviceType")} *`}
                     placeholder={t("selectServiceType")}
                     options={SERVICE_TYPE_OPTIONS.map((opt) => ({
                         ...opt,

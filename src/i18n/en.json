@@ -357,6 +357,7 @@
     "previousFollowUp": "Previous Follow-up",
     "noPreviousCallLogs": "No previous call logs for this lead",
     "serviceType": "Service Type",
+    "serviceTypeRequired": "Service type is required",
     "selectServiceType": "Select a service type",
     "hiringService": "Hiring Service",
     "peoAndEor": "PEO and EOR",

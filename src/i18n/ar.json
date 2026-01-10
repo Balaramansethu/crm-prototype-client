@@ -357,6 +357,7 @@
     "previousFollowUp": "المتابعة السابقة",
     "noPreviousCallLogs": "لا توجد سجلات مكالمات سابقة لهذا العميل المحتمل",
     "serviceType": "نوع الخدمة",
+    "serviceTypeRequired": "نوع الخدمة مطلوب",
     "selectServiceType": "اختر نوع الخدمة",
     "hiringService": "خدمة التوظيف",
     "peoAndEor": "PEO و EOR",

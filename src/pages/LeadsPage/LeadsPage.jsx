@@ -48,7 +48,7 @@ import {
 } from "lucide-react"
 import DatePicker from "react-datepicker"
 import "react-datepicker/dist/react-datepicker.css"
-import { cn } from "@/lib/utils"
+import { cn, enumToTranslationKey } from "@/lib/utils"
 import { StatusBadge } from "@/components/common"
 import { deleteLead } from "@/service/leadsService"
 import { toast } from "sonner"
@@ -365,11 +365,11 @@ export default function LeadsPage() {
                                 </TableHead>
                                 <TableHead
                                     className="cursor-pointer hover:bg-muted/50 transition-colors hidden md:table-cell"
-                                    onClick={() => handleSort("source")}
+                                    onClick={() => handleSort("company.serviceType")}
                                 >
                                     <div className="flex items-center text-xs font-bold uppercase tracking-wider text-black">
-                                        {t("source")}
-                                        {renderSortIcon("source")}
+                                        {t("serviceType")}
+                                        {renderSortIcon("company.serviceType")}
                                     </div>
                                 </TableHead>
                                 <TableHead
@@ -460,7 +460,14 @@ export default function LeadsPage() {
                                             )}
                                         </TableCell>
                                         <TableCell className="hidden md:table-cell text-black text-sm">
-                                            {lead.source || "-"}
+                                            {lead.company?.serviceType
+                                                ? t(
+                                                      enumToTranslationKey(
+                                                          lead.company
+                                                              .serviceType,
+                                                      ),
+                                                  )
+                                                : "-"}
                                         </TableCell>
                                         <TableCell className="hidden lg:table-cell text-black text-sm">
                                             {lead.contact?.email ||

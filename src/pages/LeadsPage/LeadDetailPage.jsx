@@ -32,6 +32,7 @@ import {
     Phone,
     Mail,
 } from "lucide-react"
+import { enumToTranslationKey } from "@/lib/utils"
 
 export default function LeadDetailPage() {
     const { t } = useTranslation()
@@ -251,6 +252,19 @@ export default function LeadDetailPage() {
                             <FieldRow
                                 label={t("phone")}
                                 value={formatPhone(company?.phone)}
+                            />
+                            <Separator />
+                            <FieldRow
+                                label={t("serviceType")}
+                                value={
+                                    company?.serviceType
+                                        ? t(
+                                              enumToTranslationKey(
+                                                  company.serviceType,
+                                              ),
+                                          )
+                                        : "-"
+                                }
                             />
                             <Separator />
                             <FieldRow

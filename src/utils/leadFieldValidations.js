@@ -58,6 +58,15 @@ export function validateCompanyDetails(company, setError, t) {
         hasErrors = true
     }
 
+    // Service Type is REQUIRED
+    if (!company.serviceType?.trim()) {
+        setError("companyDetails.serviceType", {
+            type: "manual",
+            message: t("serviceTypeRequired") || "Service type is required",
+        })
+        hasErrors = true
+    }
+
     if (
         company.phoneExtension?.trim() &&
         !validatePhoneExtension(company.phoneExtension)
