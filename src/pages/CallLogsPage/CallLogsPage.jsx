@@ -43,7 +43,7 @@ import { useDeleteCallLog } from "@/hooks/useCallLog"
 import { toast } from "sonner"
 import CommonDialog from "@/components/common/CommonDialog"
 import { CALL_OUTCOME_OPTIONS } from "@/constants/formOptions"
-import { cn } from "@/lib/utils"
+import { cn, enumToTranslationKey, getOutcomeColor } from "@/lib/utils"
 
 export default function CallLogsPage() {
     const { t, i18n } = useTranslation()
@@ -126,20 +126,11 @@ export default function CallLogsPage() {
 
     const hasActiveFilters = outcome && outcome !== "all"
 
-    // Badge color based on outcome
-    const getBadgeColor = (outcomeVal) => {
-        if (!outcomeVal) return "bg-gray-100 text-gray-700"
-        const lower = outcomeVal.toLowerCase()
-        if (lower === "interested") return "bg-green-100 text-green-700"
-        if (lower === "not_interested") return "bg-red-100 text-red-700"
-        if (lower === "contacted") return "bg-blue-100 text-blue-700"
-        if (lower === "done") return "bg-gray-100 text-gray-700"
-        return "bg-gray-100 text-gray-700"
-    }
+
 
     const getOutcomeText = (outcomeVal) => {
         if (!outcomeVal) return "-"
-        return t(outcomeVal) || outcomeVal.replace(/_/g, " ")
+        return t(enumToTranslationKey(outcomeVal, "outcome"))
     }
 
     const formatPhone = (phone) => {
@@ -244,7 +235,7 @@ export default function CallLogsPage() {
                                             )}
                                         >
                                             {outcome && outcome !== "all"
-                                                ? t(outcome) || outcome
+                                                ? t(enumToTranslationKey(outcome, "outcome"))
                                                 : t("outcome")}
                                         </span>
                                     </div>
@@ -403,10 +394,10 @@ export default function CallLogsPage() {
                                             <span
                                                 className={cn(
                                                     "px-2.5 py-1 rounded-full text-xs font-semibold",
-                                                    getBadgeColor(log.outcome),
+                                                    getOutcomeColor(log.outcome || log.lead?.status),
                                                 )}
                                             >
-                                                {getOutcomeText(log.outcome)}
+                                                {getOutcomeText(log.outcome || log.lead?.status)}
                                             </span>
                                         </TableCell>
                                         <TableCell className="hidden sm:table-cell text-black text-sm">

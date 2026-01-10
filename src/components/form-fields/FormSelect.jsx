@@ -114,11 +114,11 @@ export default function FormSelect({
                                                     )}
                                                 />
                                                 <span className="font-medium text-slate-700">
-                                                    {t(option.value)}
+                                                    {option.label || t(option.value)}
                                                 </span>
                                             </div>
                                         ) : (
-                                            t(option.value)
+                                            option.label || t(option.value)
                                         )}
                                     </SelectItem>
                                 ))}

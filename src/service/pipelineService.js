@@ -33,3 +33,12 @@ export const deletePipeline = async (id) => {
     const response = await axiosPrivateInstance.delete(`${API_BASE}/${id}`)
     return response.data
 }
+
+/**
+ * Search companies for pipeline/opportunity forms
+ * Uses the dedicated pipeline company search endpoint
+ */
+export const searchPipelineCompanies = async (params = {}) => {
+    const response = await axiosPrivateInstance.get(`${API_BASE}/search/company`, { params })
+    return response.data
+}

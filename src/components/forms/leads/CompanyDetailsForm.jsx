@@ -1,4 +1,4 @@
-import { FormInput } from "@/components/form-fields"
+import { FormInput, FormSelect } from "@/components/form-fields"
 import {
     FormControl,
     FormField,
@@ -7,6 +7,7 @@ import {
     FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
+import { SERVICE_TYPE_OPTIONS } from "@/constants/formOptions"
 import { useTranslation } from "react-i18next"
 import { cn } from "@/lib/utils"
 
@@ -82,6 +83,19 @@ export default function CompanyDetailsForm({ control, disabled = false }) {
                         )}
                     />
                 </div>
+
+                {/* Service Type Dropdown */}
+                <FormSelect
+                    control={control}
+                    name="companyDetails.serviceType"
+                    label={t("serviceType")}
+                    placeholder={t("selectServiceType")}
+                    options={SERVICE_TYPE_OPTIONS.map((opt) => ({
+                        ...opt,
+                        label: t(opt.label),
+                    }))}
+                    disabled={disabled}
+                />
 
                 <FormInput
                     control={control}

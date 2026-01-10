@@ -183,6 +183,7 @@ export default function LeadForm({
                 website: company.website || initialData?.website || "",
                 socialProfile:
                     company.socialProfile || initialData?.socialProfile || "",
+                serviceType: company.serviceType || initialData?.serviceType || "",
             },
             contacts,
         }
@@ -221,7 +222,15 @@ export default function LeadForm({
 
         // Filter out contacts that don't have a name (required for a valid contact)
         // This allows company-only submissions when no contact details are entered
-        const validContacts = data.contacts.filter((c) => c.name?.trim())
+        const validContacts = data.contacts
+            .filter((c) => c.name?.trim())
+            .map((c) => {
+                // Map dropReason to droppedReason if present
+                if (c.status === "dropped" && c.dropReason) {
+                    return { ...c, droppedReason: c.dropReason }
+                }
+                return c
+            })
 
         onSubmit({ ...data, contacts: validContacts })
     }
@@ -292,6 +301,7 @@ export default function LeadForm({
                                                 hasRestrictedEdit &&
                                                 index === editableContactIndex
                                             }
+                                            isEditMode={isEditMode}
                                         />
                                     ))}
                                 </div>

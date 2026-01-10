@@ -150,6 +150,15 @@ export function validateContact(contact, index, setError, t) {
         hasErrors = true
     }
 
+    // Validate dropReason is required when status is 'dropped'
+    if (contact.status === "dropped" && !contact.dropReason?.trim()) {
+        setError(`contacts.${index}.dropReason`, {
+            type: "manual",
+            message: t("dropReasonRequired"),
+        })
+        hasErrors = true
+    }
+
     return !hasErrors
 }
 

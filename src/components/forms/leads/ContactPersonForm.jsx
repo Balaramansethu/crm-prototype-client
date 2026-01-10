@@ -8,11 +8,13 @@ import {
     FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
 import { FormInput, FormSelect, FormDatePicker } from "@/components/form-fields"
-import { LEAD_STATUS_OPTIONS } from "@/constants/formOptions"
+import { LEAD_STATUS_OPTIONS, LEAD_STATUS_OPTIONS_EDIT, CALL_OUTCOME_OPTIONS } from "@/constants/formOptions"
 import { Trash2 } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { cn } from "@/lib/utils"
+import { useWatch } from "react-hook-form"
 
 const ContactPersonForm = forwardRef(function ContactPersonForm(
     {
@@ -23,6 +25,7 @@ const ContactPersonForm = forwardRef(function ContactPersonForm(
         totalContacts = 1,
         disabled = false,
         isHighlighted = false,
+        isEditMode = false,
     },
     ref,
 ) {
@@ -31,6 +34,33 @@ const ContactPersonForm = forwardRef(function ContactPersonForm(
 
     // Only show priority when there are multiple contacts
     const showPriority = totalContacts > 1
+
+    // Watch the status field to conditionally show drop reason
+    const status = useWatch({
+        control,
+        name: `contacts.${index}.status`,
+    })
+
+    const isDropped = status === "dropped"
+
+    // Use different status options based on mode
+    let statusOptions = isEditMode ? LEAD_STATUS_OPTIONS_EDIT : LEAD_STATUS_OPTIONS
+
+    // Dynamic addition of current status if it matches an outcome but not in list
+    if (status && !statusOptions.find((opt) => opt.value === status)) {
+        const outcomeDef = CALL_OUTCOME_OPTIONS.find((opt) => opt.value === status)
+        if (outcomeDef) {
+            statusOptions = [
+                ...statusOptions,
+                { ...outcomeDef, label: outcomeDef.label },
+            ]
+        } else {
+            statusOptions = [
+                ...statusOptions,
+                { value: status, label: status },
+            ]
+        }
+    }
 
     return (
         <div
@@ -162,7 +192,10 @@ const ContactPersonForm = forwardRef(function ContactPersonForm(
                     name={`contacts.${index}.status`}
                     label={t("status")}
                     placeholder={t("selectStatus")}
-                    options={LEAD_STATUS_OPTIONS}
+                    options={statusOptions.map((opt) => ({
+                        ...opt,
+                        label: t(opt.label),
+                    }))}
                     showBadge
                     disabled={disabled}
                 />
@@ -181,6 +214,47 @@ const ContactPersonForm = forwardRef(function ContactPersonForm(
                     minDate={new Date()}
                     disabled={disabled}
                 />
+
+                {/* Conditional Drop Reason Field - Only shown when status is 'dropped' */}
+                {isDropped && (
+                    <div className="md:col-span-2">
+                        <FormField
+                            control={control}
+                            name={`contacts.${index}.dropReason`}
+                            rules={{
+                                required: isDropped ? t("dropReasonRequired") : false,
+                            }}
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>
+                                        {t("dropReason")}{" "}
+                                        <span className="text-destructive">*</span>
+                                    </FormLabel>
+                                    <FormControl>
+                                        <Textarea
+                                            {...field}
+                                            placeholder={t("dropReasonPlaceholder")}
+                                            className={cn(
+                                                "min-h-[80px]",
+                                                isRTL ? "text-right" : "",
+                                            )}
+                                            disabled={disabled}
+                                            aria-required="true"
+                                            aria-describedby={`drop-reason-desc-${index}`}
+                                        />
+                                    </FormControl>
+                                    <p
+                                        id={`drop-reason-desc-${index}`}
+                                        className="text-sm text-muted-foreground"
+                                    >
+                                        {t("dropReasonDescription")}
+                                    </p>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                    </div>
+                )}
             </div>
         </div>
     )

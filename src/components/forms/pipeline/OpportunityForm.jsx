@@ -26,7 +26,7 @@ import { useNavigate } from "react-router-dom"
 import { useMemo, useState, useEffect } from "react"
 import { Loader2 } from "lucide-react"
 import { cn } from "@/lib/utils"
-import { searchCompanies } from "@/service/callLogsService"
+import { searchPipelineCompanies } from "@/service/pipelineService"
 
 export default function OpportunityForm({
     onSubmit,
@@ -47,7 +47,7 @@ export default function OpportunityForm({
         const fetchCompanies = async () => {
             setLoadingCompanies(true)
             try {
-                const response = await searchCompanies({ limit: 100 })
+                const response = await searchPipelineCompanies({ limit: 100 })
                 const data = response.data || response
                 let companiesList = data.companies || []
 

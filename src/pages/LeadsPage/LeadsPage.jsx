@@ -37,15 +37,19 @@ import {
     X,
     Search,
     Filter,
-    Globe,
-    User,
+    Check,
+    ChevronsUpDown,
     MoreHorizontal,
-    Edit,
+    Trash2,
     Archive,
+    User,
+    Globe,
+    Edit,
 } from "lucide-react"
 import DatePicker from "react-datepicker"
 import "react-datepicker/dist/react-datepicker.css"
 import { cn } from "@/lib/utils"
+import { StatusBadge } from "@/components/common"
 import { deleteLead } from "@/service/leadsService"
 import { toast } from "sonner"
 import CommonDialog from "@/components/common/CommonDialog"
@@ -489,31 +493,7 @@ export default function LeadsPage() {
                                             </span>
                                         </TableCell>
                                         <TableCell>
-                                            <div
-                                                className={cn(
-                                                    "inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-bold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
-                                                    // Keep colored badges but ensure text is readable
-                                                    lead.status === "new" &&
-                                                        "bg-blue-100 text-blue-900",
-                                                    lead.status ===
-                                                        "contacted" &&
-                                                        "bg-yellow-100 text-yellow-900",
-                                                    lead.status ===
-                                                        "qualified" &&
-                                                        "bg-green-100 text-green-900",
-                                                    lead.status === "lost" &&
-                                                        "bg-gray-100 text-gray-900",
-                                                    ![
-                                                        "new",
-                                                        "contacted",
-                                                        "qualified",
-                                                        "lost",
-                                                    ].includes(lead.status) &&
-                                                        "bg-secondary text-black",
-                                                )}
-                                            >
-                                                {t(lead.status) || lead.status}
-                                            </div>
+                                            <StatusBadge status={lead.status} />
                                         </TableCell>
                                         <TableCell className="hidden md:table-cell text-sm text-black">
                                             {lead.followUp

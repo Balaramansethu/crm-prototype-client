@@ -24,7 +24,7 @@ import {
     MessageSquare,
     Globe,
 } from "lucide-react"
-import { cn } from "@/lib/utils"
+import { cn, enumToTranslationKey, getOutcomeColor } from "@/lib/utils"
 
 export default function CallLogDetailPage() {
     const { t } = useTranslation()
@@ -100,22 +100,11 @@ export default function CallLogDetailPage() {
     // Badge color based on outcome
     const getOutcomeBadge = (outcome) => {
         if (!outcome) return { color: "bg-gray-100 text-gray-700", text: "-" }
-        const lower = outcome.toLowerCase()
-        if (lower === "interested")
-            return {
-                color: "bg-green-100 text-green-700",
-                text: t("interested"),
-            }
-        if (lower === "not_interested")
-            return {
-                color: "bg-red-100 text-red-700",
-                text: t("notInterested"),
-            }
-        if (lower === "contacted")
-            return { color: "bg-blue-100 text-blue-700", text: t("contacted") }
-        if (lower === "done")
-            return { color: "bg-gray-100 text-gray-700", text: t("done") }
-        return { color: "bg-gray-100 text-gray-700", text: outcome }
+
+        return { 
+            color: getOutcomeColor(outcome), 
+            text: t(enumToTranslationKey(outcome, "outcome")) 
+        }
     }
 
     if (loading) {
@@ -126,7 +115,7 @@ export default function CallLogDetailPage() {
         return null
     }
 
-    const outcomeBadge = getOutcomeBadge(callLogData.outcome)
+    const outcomeBadge = getOutcomeBadge(callLogData.outcome || callLogData.lead?.status)
 
     return (
         <div className="flex flex-1 flex-col gap-4 sm:gap-6 p-4 sm:p-6">
@@ -231,16 +220,13 @@ export default function CallLogDetailPage() {
                 {/* Contact Card */}
                 <Card>
                     <CardHeader className="pb-3">
-                        <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-2">
-                                <div className="flex h-9 w-9 items-center justify-center rounded-full bg-green-500/10">
-                                    <User className="h-5 w-5 text-green-500" />
-                                </div>
-                                <CardTitle className="text-lg">
-                                    {t("contactPerson")}
-                                </CardTitle>
+                        <div className="flex items-center gap-2">
+                            <div className="flex h-9 w-9 items-center justify-center rounded-full bg-green-500/10">
+                                <User className="h-5 w-5 text-green-500" />
                             </div>
-                            <StatusBadge status={lead.status} />
+                            <CardTitle className="text-lg">
+                                {t("contactPerson")}
+                            </CardTitle>
                         </div>
                     </CardHeader>
                     <CardContent className="space-y-3">

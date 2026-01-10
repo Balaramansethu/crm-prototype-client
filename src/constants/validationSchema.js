@@ -21,12 +21,24 @@ export const PATTERNS = {
 }
 
 // Valid enum values from backend
-export const VALID_STATUS = ["new", "qualified", "contacted", "done"]
+// Valid enum values from backend
+export const VALID_STATUS = [
+    "new",
+    "qualified",
+    "contacted_by_email",
+    "dropped",
+    "interested",
+    "not_interested",
+    "follow_up_needed",
+    "promoted_to_meeting",
+    "conversion_in_progress",
+]
 export const VALID_OUTCOMES = [
     "interested",
     "not_interested",
-    "contacted",
-    "done",
+    "follow_up_needed",
+    "promoted_to_meeting",
+    "conversion_in_progress",
 ]
 
 // API Error codes

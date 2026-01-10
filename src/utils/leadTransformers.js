@@ -96,6 +96,7 @@ export const transformLeadPayload = (formData, ownerId) => {
                 email: contact.email?.trim() || undefined,
                 phone: buildPhone(contact.phoneExtension, contact.phoneNumber),
                 status: contact.status || "new",
+                droppedReason: contact.droppedReason || undefined,
                 source: contact.source?.trim() || undefined,
                 followUp: formatDate(contact.followUp),
             }
@@ -149,6 +150,7 @@ export const transformLeadUpdatePayload = (
         payload.email = contact.email?.trim() || undefined
         payload.phone = buildPhone(contact.phoneExtension, contact.phoneNumber)
         payload.status = contact.status || "new"
+        payload.droppedReason = contact.droppedReason || undefined
         payload.source = contact.source?.trim() || undefined
         payload.followUp = formatDate(contact.followUp)
 
@@ -167,6 +169,7 @@ export const transformLeadUpdatePayload = (
             email: c.email?.trim() || undefined,
             phone: buildPhone(c.phoneExtension, c.phoneNumber),
             status: c.status || "new",
+            droppedReason: c.droppedReason || undefined,
             source: c.source?.trim() || undefined,
             followUp: formatDate(c.followUp),
             priority: c.priority || contacts.length + idx + 1,

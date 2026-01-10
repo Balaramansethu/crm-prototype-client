@@ -3,40 +3,66 @@
  * Aligned with backend API schema.
  */
 
-// Lead Status Options (enum: new, qualified, contacted, done)
+// Service Type Options for Company
+export const SERVICE_TYPE_OPTIONS = [
+    { value: "hiring_service", label: "hiringService" },
+    { value: "peo_and_eor", label: "peoAndEor" },
+    { value: "digital_marketing", label: "digitalMarketing" },
+    { value: "digital_solutions", label: "digitalSolutions" },
+]
+
+// Lead Status Options (enum: new, qualified, contacted_by_email, dropped)
 export const LEAD_STATUS_OPTIONS = [
-    { value: "new", label: "new", color: "bg-blue-100 text-blue-900" },
+    { value: "new", label: "statusNew", color: "bg-blue-100 text-blue-900" },
     {
         value: "qualified",
-        label: "qualified",
+        label: "statusQualified",
         color: "bg-green-100 text-green-900",
     },
     {
-        value: "contacted",
-        label: "contacted",
+        value: "contacted_by_email",
+        label: "statusContactedByEmail",
         color: "bg-yellow-100 text-yellow-900",
     },
-    { value: "done", label: "done", color: "bg-gray-100 text-gray-900" },
+]
+
+// Lead Status Options for Edit mode (includes dropped)
+export const LEAD_STATUS_OPTIONS_EDIT = [
+    ...LEAD_STATUS_OPTIONS,
+    {
+        value: "dropped",
+        label: "statusDropped",
+        color: "bg-gray-100 text-gray-900",
+    },
 ]
 
 // Call Log Outcome Options
 export const CALL_OUTCOME_OPTIONS = [
     {
         value: "interested",
-        label: "interested",
+        label: "outcomeInterested",
         color: "bg-green-100 text-green-700",
     },
     {
         value: "not_interested",
-        label: "notInterested",
+        label: "outcomeNotInterested",
         color: "bg-red-100 text-red-700",
     },
     {
-        value: "contacted",
-        label: "contacted",
+        value: "follow_up_needed",
+        label: "outcomeFollowUpNeeded",
+        color: "bg-yellow-100 text-yellow-700",
+    },
+    {
+        value: "promoted_to_meeting",
+        label: "outcomePromotedToMeeting",
         color: "bg-blue-100 text-blue-700",
     },
-    { value: "done", label: "done", color: "bg-gray-100 text-gray-700" },
+    {
+        value: "conversion_in_progress",
+        label: "outcomeConversionInProgress",
+        color: "bg-purple-100 text-purple-700",
+    },
 ]
 
 // Default contact form values
@@ -49,6 +75,7 @@ export const DEFAULT_CONTACT_VALUES = {
     source: "",
     followUp: undefined,
     priority: 1,
+    dropReason: "",
 }
 
 // Default company form values
@@ -59,4 +86,5 @@ export const DEFAULT_COMPANY_VALUES = {
     phoneNumber: "",
     website: "",
     socialProfile: "",
+    serviceType: "",
 }

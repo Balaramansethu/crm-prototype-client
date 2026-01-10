@@ -79,3 +79,28 @@ export async function searchLeadsByCompany(companyId, params = {}) {
         throw error
     }
 }
+
+// Search all leads for call log form (simplified - no company filter)
+export async function searchLeads(params = {}) {
+    try {
+        const response = await axiosPrivateInstance.get(
+            "/call-logs/search/leads",
+            { params },
+        )
+        return response.data
+    } catch (error) {
+        throw error
+    }
+}
+
+// Get previous call log data for a specific lead
+export async function getLeadPreviousCallLogs(leadId) {
+    try {
+        const response = await axiosPrivateInstance.get(
+            `/call-logs/${leadId}/previous`,
+        )
+        return response.data
+    } catch (error) {
+        throw error
+    }
+}
