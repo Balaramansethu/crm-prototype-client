@@ -1,4 +1,8 @@
-import { FormInput, FormSelect, CountryCodeSelect } from "@/components/form-fields"
+import {
+    FormInput,
+    FormSelect,
+    CountryCodeSelect,
+} from "@/components/form-fields"
 import {
     FormControl,
     FormField,

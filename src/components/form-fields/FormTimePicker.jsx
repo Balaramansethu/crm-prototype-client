@@ -50,7 +50,8 @@ export function FormTimePicker({
         const h = parseInt(hours24, 10)
         if (h === 0) return { hours: "12", period: "AM" }
         if (h === 12) return { hours: "12", period: "PM" }
-        if (h > 12) return { hours: String(h - 12).padStart(2, "0"), period: "PM" }
+        if (h > 12)
+            return { hours: String(h - 12).padStart(2, "0"), period: "PM" }
         return { hours: String(h).padStart(2, "0"), period: "AM" }
     }
 
@@ -127,7 +128,9 @@ export function FormTimePicker({
                 // Sync temp values when opening popover
                 const handleOpenChange = (isOpen) => {
                     if (isOpen) {
-                        const { hours, minutes, period } = parseTime(field.value)
+                        const { hours, minutes, period } = parseTime(
+                            field.value,
+                        )
                         setTempHours(hours)
                         setTempMinutes(minutes)
                         setTempPeriod(period)
@@ -150,7 +153,9 @@ export function FormTimePicker({
                             <FormLabel>
                                 {label}
                                 {required && (
-                                    <span className="text-destructive ml-1">*</span>
+                                    <span className="text-destructive ml-1">
+                                        *
+                                    </span>
                                 )}
                             </FormLabel>
                         )}
@@ -164,14 +169,16 @@ export function FormTimePicker({
                                         disabled={disabled}
                                         className={cn(
                                             "w-full justify-between font-normal",
-                                            !field.value && "text-muted-foreground"
+                                            !field.value &&
+                                                "text-muted-foreground",
                                         )}
                                     >
                                         <span className="flex items-center gap-2">
                                             <Clock className="h-4 w-4" />
                                             {field.value
                                                 ? formatDisplayTime(field.value)
-                                                : t("selectTime") || "Select time"}
+                                                : t("selectTime") ||
+                                                  "Select time"}
                                         </span>
                                     </Button>
                                 </FormControl>
@@ -192,7 +199,10 @@ export function FormTimePicker({
                                             onChange={handleHoursChange}
                                             onBlur={() =>
                                                 setTempHours(
-                                                    tempHours.padStart(2, "0") || "12"
+                                                    tempHours.padStart(
+                                                        2,
+                                                        "0",
+                                                    ) || "12",
                                                 )
                                             }
                                             className="w-14 text-center text-lg font-medium tabular-nums"
@@ -212,7 +222,10 @@ export function FormTimePicker({
                                             onChange={handleMinutesChange}
                                             onBlur={() =>
                                                 setTempMinutes(
-                                                    tempMinutes.padStart(2, "0") || "00"
+                                                    tempMinutes.padStart(
+                                                        2,
+                                                        "0",
+                                                    ) || "00",
                                                 )
                                             }
                                             className="w-14 text-center text-lg font-medium tabular-nums"
@@ -228,29 +241,41 @@ export function FormTimePicker({
                                         <div className="flex flex-col gap-1">
                                             <Button
                                                 type="button"
-                                                variant={tempPeriod === "AM" ? "default" : "outline"}
+                                                variant={
+                                                    tempPeriod === "AM"
+                                                        ? "default"
+                                                        : "outline"
+                                                }
                                                 size="sm"
                                                 className={cn(
                                                     "h-7 px-3 text-xs font-medium",
-                                                    tempPeriod === "AM" 
-                                                        ? "bg-primary text-primary-foreground" 
-                                                        : "hover:bg-muted"
+                                                    tempPeriod === "AM"
+                                                        ? "bg-primary text-primary-foreground"
+                                                        : "hover:bg-muted",
                                                 )}
-                                                onClick={() => setTempPeriod("AM")}
+                                                onClick={() =>
+                                                    setTempPeriod("AM")
+                                                }
                                             >
                                                 AM
                                             </Button>
                                             <Button
                                                 type="button"
-                                                variant={tempPeriod === "PM" ? "default" : "outline"}
+                                                variant={
+                                                    tempPeriod === "PM"
+                                                        ? "default"
+                                                        : "outline"
+                                                }
                                                 size="sm"
                                                 className={cn(
                                                     "h-7 px-3 text-xs font-medium",
-                                                    tempPeriod === "PM" 
-                                                        ? "bg-primary text-primary-foreground" 
-                                                        : "hover:bg-muted"
+                                                    tempPeriod === "PM"
+                                                        ? "bg-primary text-primary-foreground"
+                                                        : "hover:bg-muted",
                                                 )}
-                                                onClick={() => setTempPeriod("PM")}
+                                                onClick={() =>
+                                                    setTempPeriod("PM")
+                                                }
                                             >
                                                 PM
                                             </Button>

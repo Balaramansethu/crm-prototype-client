@@ -19,7 +19,11 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { FormContainer, CommonDialog, StatusBadge } from "@/components/common"
-import { FormDatePicker, FormSelect, FormTimePicker } from "@/components/form-fields"
+import {
+    FormDatePicker,
+    FormSelect,
+    FormTimePicker,
+} from "@/components/form-fields"
 import { CALL_OUTCOME_OPTIONS } from "@/constants/formOptions"
 import {
     Accordion,
@@ -183,7 +187,10 @@ export default function CallLogForm({
                         const logs = response.data || []
                         setPreviousCallLogs(Array.isArray(logs) ? logs : [])
                     } catch (error) {
-                        console.error("Failed to fetch previous call logs:", error)
+                        console.error(
+                            "Failed to fetch previous call logs:",
+                            error,
+                        )
                         setPreviousCallLogs([])
                     } finally {
                         setLoadingPreviousData(false)
@@ -555,14 +562,36 @@ export default function CallLogForm({
                                                             )}
                                                             onChange={(e) => {
                                                                 // Only allow digits
-                                                                const numericValue = e.target.value.replace(/\D/g, "")
-                                                                const val = parseInt(numericValue, 10)
-                                                                if (numericValue === "") {
-                                                                    field.onChange("")
-                                                                } else if (val >= 0 && val <= 23) {
-                                                                    field.onChange(numericValue)
-                                                                } else if (val > 23) {
-                                                                    field.onChange("23")
+                                                                const numericValue =
+                                                                    e.target.value.replace(
+                                                                        /\D/g,
+                                                                        "",
+                                                                    )
+                                                                const val =
+                                                                    parseInt(
+                                                                        numericValue,
+                                                                        10,
+                                                                    )
+                                                                if (
+                                                                    numericValue ===
+                                                                    ""
+                                                                ) {
+                                                                    field.onChange(
+                                                                        "",
+                                                                    )
+                                                                } else if (
+                                                                    val >= 0 &&
+                                                                    val <= 23
+                                                                ) {
+                                                                    field.onChange(
+                                                                        numericValue,
+                                                                    )
+                                                                } else if (
+                                                                    val > 23
+                                                                ) {
+                                                                    field.onChange(
+                                                                        "23",
+                                                                    )
                                                                 }
                                                             }}
                                                         />
@@ -603,14 +632,36 @@ export default function CallLogForm({
                                                             )}
                                                             onChange={(e) => {
                                                                 // Only allow digits
-                                                                const numericValue = e.target.value.replace(/\D/g, "")
-                                                                const val = parseInt(numericValue, 10)
-                                                                if (numericValue === "") {
-                                                                    field.onChange("")
-                                                                } else if (val >= 0 && val <= 59) {
-                                                                    field.onChange(numericValue)
-                                                                } else if (val > 59) {
-                                                                    field.onChange("59")
+                                                                const numericValue =
+                                                                    e.target.value.replace(
+                                                                        /\D/g,
+                                                                        "",
+                                                                    )
+                                                                const val =
+                                                                    parseInt(
+                                                                        numericValue,
+                                                                        10,
+                                                                    )
+                                                                if (
+                                                                    numericValue ===
+                                                                    ""
+                                                                ) {
+                                                                    field.onChange(
+                                                                        "",
+                                                                    )
+                                                                } else if (
+                                                                    val >= 0 &&
+                                                                    val <= 59
+                                                                ) {
+                                                                    field.onChange(
+                                                                        numericValue,
+                                                                    )
+                                                                } else if (
+                                                                    val > 59
+                                                                ) {
+                                                                    field.onChange(
+                                                                        "59",
+                                                                    )
                                                                 }
                                                             }}
                                                         />
@@ -651,14 +702,36 @@ export default function CallLogForm({
                                                             )}
                                                             onChange={(e) => {
                                                                 // Only allow digits
-                                                                const numericValue = e.target.value.replace(/\D/g, "")
-                                                                const val = parseInt(numericValue, 10)
-                                                                if (numericValue === "") {
-                                                                    field.onChange("")
-                                                                } else if (val >= 0 && val <= 59) {
-                                                                    field.onChange(numericValue)
-                                                                } else if (val > 59) {
-                                                                    field.onChange("59")
+                                                                const numericValue =
+                                                                    e.target.value.replace(
+                                                                        /\D/g,
+                                                                        "",
+                                                                    )
+                                                                const val =
+                                                                    parseInt(
+                                                                        numericValue,
+                                                                        10,
+                                                                    )
+                                                                if (
+                                                                    numericValue ===
+                                                                    ""
+                                                                ) {
+                                                                    field.onChange(
+                                                                        "",
+                                                                    )
+                                                                } else if (
+                                                                    val >= 0 &&
+                                                                    val <= 59
+                                                                ) {
+                                                                    field.onChange(
+                                                                        numericValue,
+                                                                    )
+                                                                } else if (
+                                                                    val > 59
+                                                                ) {
+                                                                    field.onChange(
+                                                                        "59",
+                                                                    )
                                                                 }
                                                             }}
                                                         />
@@ -766,7 +839,7 @@ export default function CallLogForm({
                                                             <div className="flex items-center gap-3 text-left">
                                                                 <div className="flex flex-col min-w-0">
                                                                     {/* Created By Badge */}
-                                                                   
+
                                                                     <span className="text-sm font-medium text-foreground truncate">
                                                                         {
                                                                             selectedLead?.name
@@ -781,53 +854,53 @@ export default function CallLogForm({
                                                                                   "d MMM, h:mm a",
                                                                               )
                                                                             : "-"}
-                                                                             {log.lead
-                                                                        ?.createdBy && (
-                                                                        <Badge
-                                                                            variant="ghost"
-                                                                            className="mb-2 text-[10px] py-2 px-2 h-4 ml-3"
-                                                                        >
-                                                                            {
-                                                                                log
-                                                                                    .createdBy
-                                                                                    .firstName
-                                                                            }{" "}
-                                                                            {
-                                                                                log
-                                                                                    .createdBy
-                                                                                    .lastName
-                                                                            }
-                                                                        </Badge>
-                                                                    )}
+                                                                        {log
+                                                                            .lead
+                                                                            ?.createdBy && (
+                                                                            <Badge
+                                                                                variant="ghost"
+                                                                                className="mb-2 text-[10px] py-2 px-2 h-4 ml-3"
+                                                                            >
+                                                                                {
+                                                                                    log
+                                                                                        .createdBy
+                                                                                        .firstName
+                                                                                }{" "}
+                                                                                {
+                                                                                    log
+                                                                                        .createdBy
+                                                                                        .lastName
+                                                                                }
+                                                                            </Badge>
+                                                                        )}
                                                                     </span>
                                                                 </div>
                                                             </div>
                                                         </AccordionTrigger>
                                                         <AccordionContent className="px-4 pb-4">
-                                                                <div className="mb-2">
-                                                                    <StatusBadge
-                                                                        status={
-                                                                            log.outcome ||
-                                                                            log
-                                                                                .lead
-                                                                                ?.status ||
-                                                                            "interested"
-                                                                        }
-                                                                        className="text-[10px] h-5"
-                                                                    />
-                                                                </div>
-                                                                <div className="text-sm text-foreground bg-muted/50 p-3 rounded-lg border border-border/50">
-                                                                    <p className="text-[10px] font-semibold text-muted-foreground mb-1 uppercase tracking-wider">
-                                                                        {t(
-                                                                            "remarks",
-                                                                        )}
-                                                                    </p>
-                                                                    <p className="whitespace-pre-wrap leading-relaxed">
-                                                                        {
-                                                                            log.remarks
-                                                                        }
-                                                                    </p>
-                                                                </div>
+                                                            <div className="mb-2">
+                                                                <StatusBadge
+                                                                    status={
+                                                                        log.outcome ||
+                                                                        log.lead
+                                                                            ?.status ||
+                                                                        "interested"
+                                                                    }
+                                                                    className="text-[10px] h-5"
+                                                                />
+                                                            </div>
+                                                            <div className="text-sm text-foreground bg-muted/50 p-3 rounded-lg border border-border/50">
+                                                                <p className="text-[10px] font-semibold text-muted-foreground mb-1 uppercase tracking-wider">
+                                                                    {t(
+                                                                        "remarks",
+                                                                    )}
+                                                                </p>
+                                                                <p className="whitespace-pre-wrap leading-relaxed">
+                                                                    {
+                                                                        log.remarks
+                                                                    }
+                                                                </p>
+                                                            </div>
                                                         </AccordionContent>
                                                     </AccordionItem>
                                                 ),

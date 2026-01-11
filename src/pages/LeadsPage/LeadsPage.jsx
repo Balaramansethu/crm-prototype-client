@@ -555,19 +555,33 @@ export default function LeadsPage() {
                                                 ) : (
                                                     // Show contact phone, fall back to company phone if contact has no phone
                                                     <>
-                                                        {lead.contact?.phone?.number ? (
+                                                        {lead.contact?.phone
+                                                            ?.number ? (
                                                             <>
-                                                                {lead.contact.phone.extension
+                                                                {lead.contact
+                                                                    .phone
+                                                                    .extension
                                                                     ? `${lead.contact.phone.extension} `
                                                                     : ""}
-                                                                {lead.contact.phone.number}
+                                                                {
+                                                                    lead.contact
+                                                                        .phone
+                                                                        .number
+                                                                }
                                                             </>
-                                                        ) : lead.company?.phone?.number ? (
+                                                        ) : lead.company?.phone
+                                                              ?.number ? (
                                                             <>
-                                                                {lead.company.phone.extension
+                                                                {lead.company
+                                                                    .phone
+                                                                    .extension
                                                                     ? `${lead.company.phone.extension} `
                                                                     : ""}
-                                                                {lead.company.phone.number}
+                                                                {
+                                                                    lead.company
+                                                                        .phone
+                                                                        .number
+                                                                }
                                                             </>
                                                         ) : (
                                                             "-"

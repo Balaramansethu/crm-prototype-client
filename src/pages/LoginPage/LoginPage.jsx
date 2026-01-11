@@ -47,9 +47,16 @@ export default function LoginPage() {
 
                 // Map backend error codes to form fields
                 if (errorCode === "invalid_password" || errorCode === "2008") {
-                    setBackendErrors({ password: errorData?.message || "Invalid Credentials" })
-                } else if (errorCode === "user_not_found" || errorCode === "2007") {
-                    setBackendErrors({ email: errorData?.message || "User not found" })
+                    setBackendErrors({
+                        password: errorData?.message || "Invalid Credentials",
+                    })
+                } else if (
+                    errorCode === "user_not_found" ||
+                    errorCode === "2007"
+                ) {
+                    setBackendErrors({
+                        email: errorData?.message || "User not found",
+                    })
                 } else if (errorData?.message) {
                     // Generic error - show under password field
                     setBackendErrors({ password: errorData.message })
@@ -71,4 +78,3 @@ export default function LoginPage() {
         />
     )
 }
-

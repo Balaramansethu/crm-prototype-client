@@ -19,7 +19,14 @@ import { Input } from "@/components/ui/input"
 import { Link } from "react-router-dom"
 import { validateLoginFields } from "@/utils/authenticationFieldValidations"
 
-export function LoginForm({ onSubmit, loading, backendErrors = {}, clearBackendErrors, className, ...props }) {
+export function LoginForm({
+    onSubmit,
+    loading,
+    backendErrors = {},
+    clearBackendErrors,
+    className,
+    ...props
+}) {
     const { t } = useTranslation()
 
     const [form, setForm] = useState({
@@ -120,9 +127,11 @@ export function LoginForm({ onSubmit, loading, backendErrors = {}, clearBackendE
                                     </button>
                                 </div>
 
-                                {(errors.password || backendErrors.password) && (
+                                {(errors.password ||
+                                    backendErrors.password) && (
                                     <p className="text-red-500 text-sm mt-1 text-start">
-                                        {backendErrors.password || errors.password}
+                                        {backendErrors.password ||
+                                            errors.password}
                                     </p>
                                 )}
                             </Field>

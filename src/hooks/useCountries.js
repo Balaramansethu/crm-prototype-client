@@ -14,7 +14,7 @@ export function useCountries() {
             try {
                 setLoading(true)
                 const response = await fetch(
-                    "https://restcountries.com/v3.1/all?fields=name,flags,idd,cca2"
+                    "https://restcountries.com/v3.1/all?fields=name,flags,idd,cca2",
                 )
 
                 if (!response.ok) {
@@ -27,7 +27,7 @@ export function useCountries() {
                 const transformedCountries = data
                     .filter(
                         (country) =>
-                            country.idd?.root && country.idd?.suffixes?.length
+                            country.idd?.root && country.idd?.suffixes?.length,
                     )
                     .map((country) => {
                         // Get the primary calling code (root + first suffix)

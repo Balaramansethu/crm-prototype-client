@@ -102,8 +102,14 @@ export default function CompanyActivityCard({ companyId, className }) {
                                                             className="mt-1 text-[10px] py-0.5 px-2 h-4 max-w-[100px] truncate"
                                                             title={`${item.createdBy.firstName || ""} ${item.createdBy.lastName || ""}`.trim()}
                                                         >
-                                                            {item.createdBy.firstName}{" "}
-                                                            {item.createdBy.lastName}
+                                                            {
+                                                                item.createdBy
+                                                                    .firstName
+                                                            }{" "}
+                                                            {
+                                                                item.createdBy
+                                                                    .lastName
+                                                            }
                                                         </Badge>
                                                     )}
                                                 </div>

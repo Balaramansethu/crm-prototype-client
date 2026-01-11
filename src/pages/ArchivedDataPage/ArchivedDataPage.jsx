@@ -498,7 +498,11 @@ function ArchivedPipelinesTable({ page, setPage }) {
                                 {pipeline.company?.name || "-"}
                             </TableCell>
                             <TableCell className="text-black">
-                                {t(getStageTranslationKey(pipeline.opportunityStage)) ||
+                                {t(
+                                    getStageTranslationKey(
+                                        pipeline.opportunityStage,
+                                    ),
+                                ) ||
                                     pipeline.opportunityStage ||
                                     "-"}
                             </TableCell>

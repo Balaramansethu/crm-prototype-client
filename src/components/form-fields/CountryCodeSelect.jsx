@@ -53,7 +53,7 @@ export function CountryCodeSelect({
             (country) =>
                 country.name.toLowerCase().includes(query) ||
                 country.callingCode.includes(query) ||
-                country.code.toLowerCase().includes(query)
+                country.code.toLowerCase().includes(query),
         )
     }, [countries, searchQuery])
 
@@ -63,7 +63,7 @@ export function CountryCodeSelect({
         return countries.find(
             (c) =>
                 c.callingCode === callingCode ||
-                c.callingCode === `+${callingCode.replace("+", "")}`
+                c.callingCode === `+${callingCode.replace("+", "")}`,
         )
     }
 
@@ -87,7 +87,8 @@ export function CountryCodeSelect({
                                         disabled={disabled || loading}
                                         className={cn(
                                             "w-full justify-between font-normal",
-                                            !field.value && "text-muted-foreground"
+                                            !field.value &&
+                                                "text-muted-foreground",
                                         )}
                                     >
                                         {loading ? (
@@ -106,7 +107,9 @@ export function CountryCodeSelect({
                                                     loading="lazy"
                                                 />
                                                 <span className="font-medium">
-                                                    {selectedCountry.callingCode}
+                                                    {
+                                                        selectedCountry.callingCode
+                                                    }
                                                 </span>
                                             </span>
                                         ) : (
@@ -126,7 +129,10 @@ export function CountryCodeSelect({
                                         <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                                         <Input
                                             ref={searchInputRef}
-                                            placeholder={t("searchCountry") || "Search country..."}
+                                            placeholder={
+                                                t("searchCountry") ||
+                                                "Search country..."
+                                            }
                                             value={searchQuery}
                                             onChange={(e) =>
                                                 setSearchQuery(e.target.value)
@@ -140,7 +146,8 @@ export function CountryCodeSelect({
                                 <div className="max-h-[280px] overflow-y-auto">
                                     {filteredCountries.length === 0 ? (
                                         <div className="py-6 text-center text-sm text-muted-foreground">
-                                            {t("noCountryFound") || "No country found"}
+                                            {t("noCountryFound") ||
+                                                "No country found"}
                                         </div>
                                     ) : (
                                         filteredCountries.map((country) => (
@@ -151,11 +158,11 @@ export function CountryCodeSelect({
                                                     "w-full flex items-center gap-3 px-3 py-2.5 text-sm hover:bg-accent transition-colors",
                                                     field.value ===
                                                         country.callingCode &&
-                                                        "bg-accent/50"
+                                                        "bg-accent/50",
                                                 )}
                                                 onClick={() => {
                                                     field.onChange(
-                                                        country.callingCode
+                                                        country.callingCode,
                                                     )
                                                     setOpen(false)
                                                     setSearchQuery("")
