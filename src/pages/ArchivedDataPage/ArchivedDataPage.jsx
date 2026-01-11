@@ -18,6 +18,7 @@ import { Loader2, ChevronLeft, ChevronRight } from "lucide-react"
 import { format } from "date-fns"
 import { cn } from "@/lib/utils"
 import { RowActionsMenu } from "@/components/common/RowActionsMenu"
+import { getStageTranslationKey } from "@/constants/pipelineOptions"
 
 // Chrome-style Tab Component with smooth curved edges
 function ChromeTab({ label, isActive, onClick }) {
@@ -497,7 +498,7 @@ function ArchivedPipelinesTable({ page, setPage }) {
                                 {pipeline.company?.name || "-"}
                             </TableCell>
                             <TableCell className="text-black">
-                                {t(pipeline.opportunityStage) ||
+                                {t(getStageTranslationKey(pipeline.opportunityStage)) ||
                                     pipeline.opportunityStage ||
                                     "-"}
                             </TableCell>

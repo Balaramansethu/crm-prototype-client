@@ -455,16 +455,22 @@ export default function CallLogForm({
                                             <SelectContent
                                                 dir={isRTL ? "rtl" : "ltr"}
                                             >
-                                                {leads.map((lead) => (
-                                                    <SelectItem
-                                                        key={lead._id}
-                                                        value={lead._id}
-                                                    >
-                                                        {formatLeadDisplay(
-                                                            lead,
-                                                        )}
-                                                    </SelectItem>
-                                                ))}
+                                                {leads.length === 0 ? (
+                                                    <div className="py-6 text-center text-sm text-muted-foreground">
+                                                        {t("noLeadsAvailable")}
+                                                    </div>
+                                                ) : (
+                                                    leads.map((lead) => (
+                                                        <SelectItem
+                                                            key={lead._id}
+                                                            value={lead._id}
+                                                        >
+                                                            {formatLeadDisplay(
+                                                                lead,
+                                                            )}
+                                                        </SelectItem>
+                                                    ))
+                                                )}
                                             </SelectContent>
                                         </Select>
                                         <FormMessage />

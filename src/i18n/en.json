@@ -234,6 +234,7 @@
     "nextStep": "Next Step",
     "nextStepPlaceholder": "e.g. Schedule demo, Send proposal",
     "lead": "Lead",
+    "promotedLead": "Promoted Lead",
     "meeting": "Meeting",
     "closed_won": "Closed Won",
     "closed_lost": "Closed Lost",
@@ -388,5 +389,7 @@
     "stageChanged": "Stage changed",
     "stage": "Stage",
     "pipelineAlreadyExistsForCompany": "A pipeline opportunity already exists for this company",
-    "createdBy": "Created By"
+    "createdBy": "Created By",
+    "noCompaniesAvailable": "No companies available",
+    "noLeadsAvailable": "No leads available"
 }

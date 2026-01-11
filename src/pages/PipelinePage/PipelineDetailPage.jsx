@@ -13,6 +13,7 @@ import {
 } from "@/components/common"
 import { getPipelineById } from "@/service/pipelineService"
 import { SERVICE_TYPE_OPTIONS } from "@/constants/formOptions"
+import { getStageTranslationKey } from "@/constants/pipelineOptions"
 import { toast } from "sonner"
 import { Edit, Building2 } from "lucide-react"
 import { cn } from "@/lib/utils"
@@ -68,7 +69,8 @@ export default function PipelineDetailPage() {
     }
 
     const getStageLabel = (stage) => {
-        return t(stage) || stage
+        const translationKey = getStageTranslationKey(stage)
+        return t(translationKey) || stage
     }
 
     const getStageBadgeStyles = (stage) => {

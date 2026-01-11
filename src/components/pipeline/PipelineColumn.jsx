@@ -45,7 +45,7 @@ export default function PipelineColumn({
             <div className="px-3 py-3 border-b border-slate-200/60 shrink-0 bg-slate-50/80 rounded-t-xl">
                 <div className="flex items-center justify-center gap-2">
                     <h3 className="font-semibold text-xs text-slate-700 truncate">
-                        {t(stage.id) || stage.label}
+                        {t(stage.label) || stage.label}
                     </h3>
                     <span className="text-xs font-medium text-slate-500 bg-white px-1.5 py-0.5 rounded-full border border-slate-200">
                         {columnCards.length}

@@ -228,14 +228,20 @@ export default function OpportunityForm({
                                         <SelectContent
                                             dir={isRTL ? "rtl" : "ltr"}
                                         >
-                                            {companies.map((company) => (
-                                                <SelectItem
-                                                    key={company._id}
-                                                    value={company._id}
-                                                >
-                                                    {company.name}
-                                                </SelectItem>
-                                            ))}
+                                            {companies.length === 0 ? (
+                                                <div className="py-6 text-center text-sm text-muted-foreground">
+                                                    {t("noCompaniesAvailable")}
+                                                </div>
+                                            ) : (
+                                                companies.map((company) => (
+                                                    <SelectItem
+                                                        key={company._id}
+                                                        value={company._id}
+                                                    >
+                                                        {company.name}
+                                                    </SelectItem>
+                                                ))
+                                            )}
                                         </SelectContent>
                                     </Select>
                                     <FormMessage />
@@ -251,7 +257,7 @@ export default function OpportunityForm({
                             placeholder={t("selectStage")}
                             options={PIPELINE_STAGES.map((stage) => ({
                                 value: stage.id,
-                                label: t(stage.id) || stage.label,
+                                label: t(stage.label) || stage.label,
                                 color: stage.color,
                             }))}
                             showBadge

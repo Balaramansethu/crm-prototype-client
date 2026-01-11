@@ -234,6 +234,7 @@
     "nextStep": "الخطوة التالية",
     "nextStepPlaceholder": "مثال: جدولة عرض، إرسال عرض",
     "lead": "عميل محتمل",
+    "promotedLead": "عميل محتمل مُرقّى",
     "meeting": "اجتماع",
     "closed_won": "مغلق - فوز",
     "closed_lost": "مغلق - خسارة",
@@ -388,5 +389,7 @@
     "stageChanged": "تم تغيير المرحلة",
     "stage": "المرحلة",
     "pipelineAlreadyExistsForCompany": "توجد فرصة مبيعات لهذه الشركة بالفعل",
-    "createdBy": "أنشئ بواسطة"
+    "createdBy": "أنشئ بواسطة",
+    "noCompaniesAvailable": "لا توجد شركات متاحة",
+    "noLeadsAvailable": "لا يوجد عملاء محتملين متاحين"
 }
