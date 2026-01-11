@@ -391,7 +391,7 @@ export default function CallLogsPage() {
                                         className="hover:bg-muted/30 cursor-pointer"
                                         onClick={() =>
                                             navigate(`/call-logs/${log._id}`, {
-                                                state: { fromPage: page }
+                                                state: { fromPage: page },
                                             })
                                         }
                                     >

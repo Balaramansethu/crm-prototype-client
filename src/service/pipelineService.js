@@ -40,7 +40,7 @@ export const deletePipeline = async (id) => {
  */
 export const searchPipelineCompanies = async () => {
     const response = await axiosPrivateInstance.get(
-        `${API_BASE}/search/company`
+        `${API_BASE}/search/company`,
     )
     return response.data
 }
@@ -51,7 +51,7 @@ export const searchPipelineCompanies = async () => {
  */
 export const getCompanyActivity = async (companyId) => {
     const response = await axiosPrivateInstance.get(
-        `/call-logs/${companyId}/activity`
+        `/call-logs/${companyId}/activity`,
     )
     return response.data
 }

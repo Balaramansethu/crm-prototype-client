@@ -32,9 +32,7 @@ export default function EditOpportunityPage() {
                 const data = response.data || response
                 setInitialData(data)
                 // Set initial company id for activity card
-                setSelectedCompanyId(
-                    data?.company?._id || data?.company || "",
-                )
+                setSelectedCompanyId(data?.company?._id || data?.company || "")
             } catch (error) {
                 console.error(error)
                 toast.error(t("failedToLoadOpportunity"))
@@ -111,4 +109,3 @@ export default function EditOpportunityPage() {
         </div>
     )
 }
-

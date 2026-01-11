@@ -44,8 +44,10 @@ export default function LeadDetailPage() {
     const [loading, setLoading] = useState(true)
 
     // Get the referrer page from location state or use search params as fallback
-    const referrerPage = location.state?.fromPage || 
-        new URLSearchParams(location.search).get("fromPage") || 1
+    const referrerPage =
+        location.state?.fromPage ||
+        new URLSearchParams(location.search).get("fromPage") ||
+        1
     const backPath = referrerPage > 1 ? `/leads?page=${referrerPage}` : "/leads"
 
     // Extract company and main lead from the response

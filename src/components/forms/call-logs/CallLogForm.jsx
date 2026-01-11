@@ -35,7 +35,11 @@ import { useNavigate } from "react-router-dom"
 import { useMemo, useState, useEffect } from "react"
 import { Loader2, FileText } from "lucide-react"
 import { cn, enumToTranslationKey } from "@/lib/utils"
-import { searchLeads, fetchCallLogs, getLeadPreviousCallLogs } from "@/service/callLogsService"
+import {
+    searchLeads,
+    fetchCallLogs,
+    getLeadPreviousCallLogs,
+} from "@/service/callLogsService"
 
 export default function CallLogForm({
     onSubmit,
@@ -540,7 +544,7 @@ export default function CallLogForm({
                                                 {...field}
                                                 type="time"
                                                 className={cn(
-                                                        "w-full cursor-pointer",
+                                                    "w-full cursor-pointer",
                                                     isRTL ? "text-right" : "",
                                                 )}
                                                 onClick={(e) =>
@@ -808,84 +812,105 @@ export default function CallLogForm({
                                             className="w-full"
                                             defaultValue={`item-0`}
                                         >
-                                            {previousCallLogs.map((log, index) => (
-                                                <AccordionItem
-                                                    key={log._id || index}
-                                                    value={`item-${index}`}
-                                                    className="border-b last:border-b-0"
-                                                >
-                                                    <AccordionTrigger className="px-4 py-3 hover:no-underline hover:bg-muted/30">
-                                                        <div className="flex items-center gap-3 text-left">
-                                                            {/* Avatar/Icon */}
-                                                            <div className="shrink-0">
-                                                                <div className="text-[10px] -mt-1 -ml-2 text-muted-foreground">{t("createdBy")} :</div>
-                                                                <div className="mt-2 h-8 w-8 rounded-full bg-green-600 flex items-center justify-center text-white text-[10px] font-medium">
-                                                                    {(
-                                                                        selectedLead?.name ||
-                                                                        "L"
-                                                                    )
-                                                                        .charAt(
-                                                                            0,
+                                            {previousCallLogs.map(
+                                                (log, index) => (
+                                                    <AccordionItem
+                                                        key={log._id || index}
+                                                        value={`item-${index}`}
+                                                        className="border-b last:border-b-0"
+                                                    >
+                                                        <AccordionTrigger className="px-4 hover:no-underline hover:bg-muted/30">
+                                                            <div className="flex items-center gap-3 text-left">
+                                                                {/* Avatar/Icon */}
+                                                                <div className="shrink-0">
+                                                                    <div className="text-[10px] -mt-1 -ml-2 text-muted-foreground">
+                                                                        {t(
+                                                                            "createdBy",
+                                                                        )}{" "}
+                                                                        :
+                                                                    </div>
+                                                                    <div className="mt-2 h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center text-primary text-[10px] font-medium">
+                                                                        {(
+                                                                            selectedLead?.name ||
+                                                                            "L"
                                                                         )
-                                                                        .toUpperCase()}
+                                                                            .charAt(
+                                                                                0,
+                                                                            )
+                                                                            .toUpperCase()}
+                                                                    </div>
+                                                                </div>
+                                                                <div className="flex flex-col min-w-0">
+                                                                    {/* Created By Badge */}
+                                                                    {log.lead
+                                                                        ?.createdBy && (
+                                                                        <Badge
+                                                                            variant="ghost"
+                                                                            className="mb-2 text-[10px] py-2 px-2 h-4"
+                                                                        >
+                                                                            {
+                                                                                log
+                                                                                    .lead
+                                                                                    .createdBy
+                                                                                    .firstName
+                                                                            }{" "}
+                                                                            {
+                                                                                log
+                                                                                    .lead
+                                                                                    .createdBy
+                                                                                    .lastName
+                                                                            }
+                                                                        </Badge>
+                                                                    )}
+                                                                    <span className="text-sm font-medium text-foreground truncate">
+                                                                        {
+                                                                            selectedLead?.name
+                                                                        }
+                                                                    </span>
+                                                                    <span className="text-[10px] text-muted-foreground">
+                                                                        {log.updatedAt
+                                                                            ? format(
+                                                                                  new Date(
+                                                                                      log.updatedAt,
+                                                                                  ),
+                                                                                  "d MMM, h:mm a",
+                                                                              )
+                                                                            : "-"}
+                                                                    </span>
                                                                 </div>
                                                             </div>
-                                                            <div className="flex flex-col min-w-0">
-                                                                {/* Created By Badge */}
-                                                                {log.lead?.createdBy && (
-                                                                    <Badge 
-                                                                        variant="ghost" 
-                                                                        className="mb-2 text-[10px] py-2 px-2 h-4"
-                                                                    >
-                                                                        {log.lead.createdBy.firstName} {log.lead.createdBy.lastName}
-                                                                    </Badge>
-                                                                )}
-                                                                <span className="text-sm font-medium text-foreground truncate">
-                                                                    {
-                                                                        selectedLead?.name
-                                                                    }
-                                                                </span>
-                                                                <span className="text-[10px] text-muted-foreground">
-                                                                    {log.updatedAt
-                                                                        ? format(
-                                                                              new Date(
-                                                                                  log.updatedAt,
-                                                                              ),
-                                                                              "d MMM, h:mm a",
-                                                                          )
-                                                                        : "-"}
-                                                                </span>
+                                                        </AccordionTrigger>
+                                                        <AccordionContent className="px-4 pb-4">
+                                                            <div className="pl-11">
+                                                                <div className="mb-2">
+                                                                    <StatusBadge
+                                                                        status={
+                                                                            log.outcome ||
+                                                                            log
+                                                                                .lead
+                                                                                ?.status ||
+                                                                            "interested"
+                                                                        }
+                                                                        className="text-[10px] h-5"
+                                                                    />
+                                                                </div>
+                                                                <div className="text-sm text-foreground bg-muted/50 p-3 rounded-lg border border-border/50">
+                                                                    <p className="text-[10px] font-semibold text-muted-foreground mb-1 uppercase tracking-wider">
+                                                                        {t(
+                                                                            "remarks",
+                                                                        )}
+                                                                    </p>
+                                                                    <p className="whitespace-pre-wrap leading-relaxed">
+                                                                        {
+                                                                            log.remarks
+                                                                        }
+                                                                    </p>
+                                                                </div>
                                                             </div>
-                                                        </div>
-                                                    </AccordionTrigger>
-                                                    <AccordionContent className="px-4 pb-4">
-                                                        <div className="pl-11">
-                                                            <div className="mb-2">
-                                                                <StatusBadge
-                                                                    status={
-                                                                        log.outcome ||
-                                                                        log.lead?.status ||
-                                                                        "interested"
-                                                                    }
-                                                                    className="text-[10px] h-5"
-                                                                />
-                                                            </div>
-                                                            <div className="text-sm text-foreground bg-muted/50 p-3 rounded-lg border border-border/50">
-                                                                <p className="text-[10px] font-semibold text-muted-foreground mb-1 uppercase tracking-wider">
-                                                                    {t(
-                                                                        "remarks",
-                                                                    )}
-                                                                </p>
-                                                                <p className="whitespace-pre-wrap leading-relaxed">
-                                                                    {
-                                                                        log.remarks
-                                                                    }
-                                                                </p>
-                                                            </div>
-                                                        </div>
-                                                    </AccordionContent>
-                                                </AccordionItem>
-                                            ))}
+                                                        </AccordionContent>
+                                                    </AccordionItem>
+                                                ),
+                                            )}
                                         </Accordion>
                                     </div>
                                 ) : (

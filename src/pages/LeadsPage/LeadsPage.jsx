@@ -509,7 +509,7 @@ export default function LeadsPage() {
                                         className="hover:bg-muted/30 text-black cursor-pointer"
                                         onClick={() =>
                                             navigate(`/leads/${lead._id}`, {
-                                                state: { fromPage: page }
+                                                state: { fromPage: page },
                                             })
                                         }
                                     >

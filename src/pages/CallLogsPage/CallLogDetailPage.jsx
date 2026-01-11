@@ -36,9 +36,12 @@ export default function CallLogDetailPage() {
     const [loading, setLoading] = useState(true)
 
     // Get the referrer page from location state or use search params as fallback
-    const referrerPage = location.state?.fromPage || 
-        new URLSearchParams(location.search).get("fromPage") || 1
-    const backPath = referrerPage > 1 ? `/call-logs?page=${referrerPage}` : "/call-logs"
+    const referrerPage =
+        location.state?.fromPage ||
+        new URLSearchParams(location.search).get("fromPage") ||
+        1
+    const backPath =
+        referrerPage > 1 ? `/call-logs?page=${referrerPage}` : "/call-logs"
 
     // Extract data from response
     const lead = callLogData?.lead || {}
