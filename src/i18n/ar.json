@@ -391,5 +391,10 @@
     "pipelineAlreadyExistsForCompany": "توجد فرصة مبيعات لهذه الشركة بالفعل",
     "createdBy": "أنشئ بواسطة",
     "noCompaniesAvailable": "لا توجد شركات متاحة",
-    "noLeadsAvailable": "لا يوجد عملاء محتملين متاحين"
+    "noLeadsAvailable": "لا يوجد عملاء محتملين متاحين",
+    "searchCountry": "ابحث عن دولة...",
+    "noCountryFound": "لم يتم العثور على دولة",
+    "countryCode": "رمز الدولة",
+    "selectTime": "اختر الوقت",
+    "now": "الآن"
 }

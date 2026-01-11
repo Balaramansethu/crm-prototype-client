@@ -1,6 +1,7 @@
 /**
  * Centralized form options for consistent use across the application.
  * Aligned with backend API schema.
+ * Each option has a unique, distinct color - no duplicates.
  */
 
 // Service Type Options for Company
@@ -8,37 +9,38 @@ export const SERVICE_TYPE_OPTIONS = [
     {
         value: "hiring_service",
         label: "hiringService",
-        color: "bg-blue-100 text-blue-700",
+        color: "bg-sky-100 text-sky-700",
     },
     {
         value: "peo_and_eor",
         label: "peoAndEor",
-        color: "bg-purple-100 text-purple-700",
+        color: "bg-violet-100 text-violet-700",
     },
     {
         value: "digital_marketing",
         label: "digitalMarketing",
-        color: "bg-green-100 text-green-700",
+        color: "bg-teal-100 text-teal-700",
     },
     {
         value: "digital_solutions",
         label: "digitalSolutions",
-        color: "bg-orange-100 text-orange-700",
+        color: "bg-amber-100 text-amber-700",
     },
 ]
 
 // Lead Status Options (enum: new, qualified, contacted_by_email, dropped)
+// Each status has a unique color
 export const LEAD_STATUS_OPTIONS = [
-    { value: "new", label: "statusNew", color: "bg-blue-100 text-blue-900" },
+    { value: "new", label: "statusNew", color: "bg-sky-100 text-sky-800" },
     {
         value: "qualified",
         label: "statusQualified",
-        color: "bg-green-100 text-green-900",
+        color: "bg-emerald-100 text-emerald-800",
     },
     {
         value: "contacted_by_email",
         label: "statusContactedByEmail",
-        color: "bg-yellow-100 text-yellow-900",
+        color: "bg-amber-100 text-amber-800",
     },
 ]
 
@@ -48,36 +50,36 @@ export const LEAD_STATUS_OPTIONS_EDIT = [
     {
         value: "dropped",
         label: "statusDropped",
-        color: "bg-gray-100 text-gray-900",
+        color: "bg-slate-200 text-slate-700",
     },
 ]
 
-// Call Log Outcome Options
+// Call Log Outcome Options - Each outcome has a unique color
 export const CALL_OUTCOME_OPTIONS = [
     {
         value: "interested",
         label: "outcomeInterested",
-        color: "bg-green-100 text-green-700",
+        color: "bg-teal-100 text-teal-700",
     },
     {
         value: "not_interested",
         label: "outcomeNotInterested",
-        color: "bg-red-100 text-red-700",
+        color: "bg-rose-100 text-rose-700",
     },
     {
         value: "follow_up_needed",
         label: "outcomeFollowUpNeeded",
-        color: "bg-yellow-100 text-yellow-700",
+        color: "bg-orange-100 text-orange-700",
     },
     {
         value: "promoted_to_meeting",
         label: "outcomePromotedToMeeting",
-        color: "bg-blue-100 text-blue-700",
+        color: "bg-indigo-100 text-indigo-700",
     },
     {
         value: "conversion_in_progress",
         label: "outcomeConversionInProgress",
-        color: "bg-purple-100 text-purple-700",
+        color: "bg-violet-100 text-violet-700",
     },
 ]
 

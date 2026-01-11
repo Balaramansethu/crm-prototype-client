@@ -260,20 +260,18 @@ export default function LeadDetailPage() {
                                         {t("companyInformation")}
                                     </CardTitle>
                                 </div>
-                                {mainContact && (
-                                    <Button
-                                        variant="ghost"
-                                        size="sm"
-                                        onClick={() =>
-                                            navigate(
-                                                `/leads/edit/${mainContact._id}?focus=company`,
-                                            )
-                                        }
-                                        title={t("edit")}
-                                    >
-                                        <Edit size={14} />
-                                    </Button>
-                                )}
+                                <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() =>
+                                        navigate(
+                                            `/leads/edit/${mainContact?._id || id}?focus=company`,
+                                        )
+                                    }
+                                    title={t("edit")}
+                                >
+                                    <Edit size={14} />
+                                </Button>
                             </div>
                         </CardHeader>
                         <CardContent className="space-y-3">

@@ -1,13 +1,14 @@
 /**
  * Pipeline stage options - maps to backend enum values
+ * Each stage has a unique, distinct color
  */
 export const PIPELINE_STAGES = [
     { id: "lead", label: "promotedLead", color: "bg-smoke border-primary/20" },
-    { id: "meeting", label: "meeting", color: "bg-blue-50 border-blue-300" },
+    { id: "meeting", label: "meeting", color: "bg-sky-50 border-sky-300" },
     {
         id: "proposal",
         label: "proposal",
-        color: "bg-purple-50 border-purple-300",
+        color: "bg-violet-50 border-violet-300",
     },
     {
         id: "negotiation",
@@ -17,12 +18,12 @@ export const PIPELINE_STAGES = [
     {
         id: "closed_won",
         label: "closed_won",
-        color: "bg-green-50 border-green-300",
+        color: "bg-emerald-50 border-emerald-300",
     },
     {
         id: "closed_lost",
         label: "closed_lost",
-        color: "bg-red-50 border-red-300",
+        color: "bg-rose-50 border-rose-300",
     },
 ]
 

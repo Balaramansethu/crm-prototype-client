@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
-import { FormInput, FormSelect, FormDatePicker } from "@/components/form-fields"
+import { FormInput, FormSelect, FormDatePicker, CountryCodeSelect } from "@/components/form-fields"
 import {
     LEAD_STATUS_OPTIONS,
     LEAD_STATUS_OPTIONS_EDIT,
@@ -154,24 +154,13 @@ const ContactPersonForm = forwardRef(function ContactPersonForm(
                     disabled={disabled}
                 />
 
-                <div className="md:col-span-2 grid grid-cols-[100px_1fr] gap-4">
-                    <FormField
+                <div className="md:col-span-2 grid grid-cols-[140px_1fr] gap-4">
+                    <CountryCodeSelect
                         control={control}
                         name={`contacts.${index}.phoneExtension`}
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>{t("extension")}</FormLabel>
-                                <FormControl>
-                                    <Input
-                                        {...field}
-                                        dir="ltr"
-                                        placeholder="+91"
-                                        disabled={disabled}
-                                    />
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )}
+                        label={t("extension")}
+                        disabled={disabled}
+                        placeholder="+966"
                     />
                     <FormField
                         control={control}

@@ -243,6 +243,17 @@ export default function LeadsPage() {
                 {/* Filter Toolbar */}
                 <div className="flex flex-col gap-3 sm:gap-4 border-b p-3 sm:p-4 lg:flex-row lg:items-center lg:justify-between">
                     <div className="flex flex-1 flex-col gap-3 lg:flex-row lg:items-center">
+                        {/* Company Search - First filter */}
+                        <div className="relative flex-1 md:max-w-[200px]">
+                            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-500" />
+                            <Input
+                                placeholder={t("filterByCompany")}
+                                value={company}
+                                onChange={(e) => setCompany(e.target.value)}
+                                className="pl-9 h-9 bg-muted/50 focus:bg-background transition-colors text-black placeholder:text-gray-500"
+                            />
+                        </div>
+
                         {/* Contact Search */}
                         <div className="relative flex-1 md:max-w-[240px]">
                             <User className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-500" />
@@ -250,17 +261,6 @@ export default function LeadsPage() {
                                 placeholder={t("filterByContact")}
                                 value={contact}
                                 onChange={(e) => setContact(e.target.value)}
-                                className="pl-9 h-9 bg-muted/50 focus:bg-background transition-colors text-black placeholder:text-gray-500"
-                            />
-                        </div>
-
-                        {/* Company Search */}
-                        <div className="relative flex-1 md:max-w-[200px]">
-                            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-500" />
-                            <Input
-                                placeholder={t("filterByCompany")}
-                                value={company}
-                                onChange={(e) => setCompany(e.target.value)}
                                 className="pl-9 h-9 bg-muted/50 focus:bg-background transition-colors text-black placeholder:text-gray-500"
                             />
                         </div>
@@ -553,14 +553,25 @@ export default function LeadsPage() {
                                                             ?.number || "-"}
                                                     </>
                                                 ) : (
-                                                    // Show contact phone for lead rows
+                                                    // Show contact phone, fall back to company phone if contact has no phone
                                                     <>
-                                                        {lead.contact?.phone
-                                                            ?.extension
-                                                            ? `${lead.contact.phone.extension} `
-                                                            : ""}
-                                                        {lead.contact?.phone
-                                                            ?.number || "-"}
+                                                        {lead.contact?.phone?.number ? (
+                                                            <>
+                                                                {lead.contact.phone.extension
+                                                                    ? `${lead.contact.phone.extension} `
+                                                                    : ""}
+                                                                {lead.contact.phone.number}
+                                                            </>
+                                                        ) : lead.company?.phone?.number ? (
+                                                            <>
+                                                                {lead.company.phone.extension
+                                                                    ? `${lead.company.phone.extension} `
+                                                                    : ""}
+                                                                {lead.company.phone.number}
+                                                            </>
+                                                        ) : (
+                                                            "-"
+                                                        )}
                                                     </>
                                                 )}
                                             </span>

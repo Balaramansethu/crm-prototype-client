@@ -391,5 +391,10 @@
     "pipelineAlreadyExistsForCompany": "A pipeline opportunity already exists for this company",
     "createdBy": "Created By",
     "noCompaniesAvailable": "No companies available",
-    "noLeadsAvailable": "No leads available"
+    "noLeadsAvailable": "No leads available",
+    "searchCountry": "Search country...",
+    "noCountryFound": "No country found",
+    "countryCode": "Country Code",
+    "selectTime": "Select time",
+    "now": "Now"
 }

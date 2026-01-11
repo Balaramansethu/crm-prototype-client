@@ -19,7 +19,7 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { FormContainer, CommonDialog, StatusBadge } from "@/components/common"
-import { FormDatePicker, FormSelect } from "@/components/form-fields"
+import { FormDatePicker, FormSelect, FormTimePicker } from "@/components/form-fields"
 import { CALL_OUTCOME_OPTIONS } from "@/constants/formOptions"
 import {
     Accordion,
@@ -100,8 +100,18 @@ export default function CallLogForm({
 
     const currentOutcome = watch("outcome")
 
-    // Fetch all leads on mount
+    // Fetch all leads on mount - ONLY in create mode
+    // In edit mode, the lead dropdown is disabled and we use initialData.lead
     useEffect(() => {
+        // Skip fetching leads in edit mode since dropdown is disabled
+        if (isEditMode) {
+            // In edit mode, just use the lead from initialData
+            if (initialData?.lead && typeof initialData.lead === "object") {
+                setLeads([initialData.lead])
+            }
+            return
+        }
+
         const fetchLeads = async () => {
             setLoadingLeads(true)
             try {
@@ -114,35 +124,9 @@ export default function CallLogForm({
                     (lead) => lead.name && lead.name.trim(),
                 )
 
-                // In edit mode, ensure the current lead is in the list
-                if (
-                    isEditMode &&
-                    initialData?.lead &&
-                    typeof initialData.lead === "object"
-                ) {
-                    const currentLead = initialData.lead
-                    if (currentLead.name && currentLead.name.trim()) {
-                        const leadExists = leadsList.some(
-                            (l) => l._id === currentLead._id,
-                        )
-                        if (!leadExists) {
-                            leadsList = [currentLead, ...leadsList]
-                        }
-                    }
-                }
-
                 setLeads(leadsList)
             } catch (error) {
                 console.error("Failed to fetch leads:", error)
-                // In edit mode, still show the current lead
-                if (
-                    isEditMode &&
-                    initialData?.lead &&
-                    typeof initialData.lead === "object" &&
-                    initialData.lead.name
-                ) {
-                    setLeads([initialData.lead])
-                }
             } finally {
                 setLoadingLeads(false)
             }
@@ -188,30 +172,32 @@ export default function CallLogForm({
             }
             form.setValue("lead", selectedLeadId)
 
-            // Fetch all previous call log data for this lead history
-            const fetchPreviousData = async () => {
-                setLoadingPreviousData(true)
-                try {
-                    const response =
-                        await getLeadPreviousCallLogs(selectedLeadId)
-                    // The user's provided JSON shows data is the array
-                    const logs = response.data || []
-                    setPreviousCallLogs(Array.isArray(logs) ? logs : [])
-                } catch (error) {
-                    console.error("Failed to fetch previous call logs:", error)
-                    setPreviousCallLogs([])
-                } finally {
-                    setLoadingPreviousData(false)
+            // Fetch all previous call log data for this lead history - ONLY in create mode
+            if (!isEditMode) {
+                const fetchPreviousData = async () => {
+                    setLoadingPreviousData(true)
+                    try {
+                        const response =
+                            await getLeadPreviousCallLogs(selectedLeadId)
+                        // The user's provided JSON shows data is the array
+                        const logs = response.data || []
+                        setPreviousCallLogs(Array.isArray(logs) ? logs : [])
+                    } catch (error) {
+                        console.error("Failed to fetch previous call logs:", error)
+                        setPreviousCallLogs([])
+                    } finally {
+                        setLoadingPreviousData(false)
+                    }
                 }
+                fetchPreviousData()
             }
-            fetchPreviousData()
         } else {
             setSelectedLead(null)
             setPhoneDisplay("")
             form.setValue("lead", "")
             setPreviousCallLogs([])
         }
-    }, [selectedLeadId, leads, form])
+    }, [selectedLeadId, leads, form, isEditMode])
 
     // Initialize edit mode with existing data
     useEffect(() => {
@@ -536,31 +522,12 @@ export default function CallLogForm({
                                 minDate={new Date()}
                             />
 
-                            {/* Call Start Time - Time only */}
-                            <FormField
+                            {/* Call Start Time - Custom Time Picker with Now and OK buttons */}
+                            <FormTimePicker
                                 control={form.control}
                                 name="callStartTime"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>
-                                            {t("callStartTime")}
-                                        </FormLabel>
-                                        <FormControl>
-                                            <Input
-                                                {...field}
-                                                type="time"
-                                                className={cn(
-                                                    "w-full cursor-pointer",
-                                                    isRTL ? "text-right" : "",
-                                                )}
-                                                onClick={(e) =>
-                                                    e.target.showPicker?.()
-                                                }
-                                            />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
+                                label={t("callStartTime")}
+                                required
                             />
 
                             {/* Call Duration - Hours, Minutes and Seconds side by side */}
@@ -576,37 +543,27 @@ export default function CallLogForm({
                                                     <div className="relative">
                                                         <Input
                                                             {...field}
-                                                            type="number"
-                                                            min="0"
-                                                            max="23"
+                                                            type="text"
+                                                            inputMode="numeric"
                                                             placeholder="0"
+                                                            maxLength={2}
                                                             className={cn(
-                                                                "pr-10",
+                                                                "pr-10 tabular-nums",
                                                                 isRTL
                                                                     ? "text-right pl-10 pr-3"
                                                                     : "",
                                                             )}
                                                             onChange={(e) => {
-                                                                const val =
-                                                                    parseInt(
-                                                                        e.target
-                                                                            .value,
-                                                                        10,
-                                                                    )
-                                                                field.onChange(
-                                                                    e.target
-                                                                        .value ===
-                                                                        ""
-                                                                        ? ""
-                                                                        : Math.min(
-                                                                              Math.max(
-                                                                                  val ||
-                                                                                      0,
-                                                                                  0,
-                                                                              ),
-                                                                              23,
-                                                                          ),
-                                                                )
+                                                                // Only allow digits
+                                                                const numericValue = e.target.value.replace(/\D/g, "")
+                                                                const val = parseInt(numericValue, 10)
+                                                                if (numericValue === "") {
+                                                                    field.onChange("")
+                                                                } else if (val >= 0 && val <= 23) {
+                                                                    field.onChange(numericValue)
+                                                                } else if (val > 23) {
+                                                                    field.onChange("23")
+                                                                }
                                                             }}
                                                         />
                                                         <span
@@ -634,37 +591,27 @@ export default function CallLogForm({
                                                     <div className="relative">
                                                         <Input
                                                             {...field}
-                                                            type="number"
-                                                            min="0"
-                                                            max="59"
+                                                            type="text"
+                                                            inputMode="numeric"
                                                             placeholder="0"
+                                                            maxLength={2}
                                                             className={cn(
-                                                                "pr-12",
+                                                                "pr-12 tabular-nums",
                                                                 isRTL
                                                                     ? "text-right pl-12 pr-3"
                                                                     : "",
                                                             )}
                                                             onChange={(e) => {
-                                                                const val =
-                                                                    parseInt(
-                                                                        e.target
-                                                                            .value,
-                                                                        10,
-                                                                    )
-                                                                field.onChange(
-                                                                    e.target
-                                                                        .value ===
-                                                                        ""
-                                                                        ? ""
-                                                                        : Math.min(
-                                                                              Math.max(
-                                                                                  val ||
-                                                                                      0,
-                                                                                  0,
-                                                                              ),
-                                                                              59,
-                                                                          ),
-                                                                )
+                                                                // Only allow digits
+                                                                const numericValue = e.target.value.replace(/\D/g, "")
+                                                                const val = parseInt(numericValue, 10)
+                                                                if (numericValue === "") {
+                                                                    field.onChange("")
+                                                                } else if (val >= 0 && val <= 59) {
+                                                                    field.onChange(numericValue)
+                                                                } else if (val > 59) {
+                                                                    field.onChange("59")
+                                                                }
                                                             }}
                                                         />
                                                         <span
@@ -692,37 +639,27 @@ export default function CallLogForm({
                                                     <div className="relative">
                                                         <Input
                                                             {...field}
-                                                            type="number"
-                                                            min="0"
-                                                            max="59"
+                                                            type="text"
+                                                            inputMode="numeric"
                                                             placeholder="0"
+                                                            maxLength={2}
                                                             className={cn(
-                                                                "pr-12",
+                                                                "pr-12 tabular-nums",
                                                                 isRTL
                                                                     ? "text-right pl-12 pr-3"
                                                                     : "",
                                                             )}
                                                             onChange={(e) => {
-                                                                const val =
-                                                                    parseInt(
-                                                                        e.target
-                                                                            .value,
-                                                                        10,
-                                                                    )
-                                                                field.onChange(
-                                                                    e.target
-                                                                        .value ===
-                                                                        ""
-                                                                        ? ""
-                                                                        : Math.min(
-                                                                              Math.max(
-                                                                                  val ||
-                                                                                      0,
-                                                                                  0,
-                                                                              ),
-                                                                              59,
-                                                                          ),
-                                                                )
+                                                                // Only allow digits
+                                                                const numericValue = e.target.value.replace(/\D/g, "")
+                                                                const val = parseInt(numericValue, 10)
+                                                                if (numericValue === "") {
+                                                                    field.onChange("")
+                                                                } else if (val >= 0 && val <= 59) {
+                                                                    field.onChange(numericValue)
+                                                                } else if (val > 59) {
+                                                                    field.onChange("59")
+                                                                }
                                                             }}
                                                         />
                                                         <span
