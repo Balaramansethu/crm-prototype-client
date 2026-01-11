@@ -75,7 +75,7 @@ export default function CompanyActivityCard({ companyId, className }) {
                                 return (
                                     <div
                                         key={item._id || index}
-                                        className="flex gap-3 px-4 border-b last:border-b-0 hover:bg-muted/30"
+                                        className="flex gap-3 px-4 py-2 border-b last:border-b-0 hover:bg-muted/30"
                                     >
                                         {/* Avatar/Icon */}
                                         <div className="shrink-0">
