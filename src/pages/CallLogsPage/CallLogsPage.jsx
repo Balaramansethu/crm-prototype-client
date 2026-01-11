@@ -1,6 +1,6 @@
-import { useState, useMemo } from "react"
+import { useState, useMemo, useEffect } from "react"
 import { useTranslation } from "react-i18next"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useSearchParams } from "react-router-dom"
 import { format } from "date-fns"
 import {
     Loader2,
@@ -48,15 +48,30 @@ import { cn, enumToTranslationKey, getOutcomeColor } from "@/lib/utils"
 export default function CallLogsPage() {
     const { t, i18n } = useTranslation()
     const navigate = useNavigate()
+    const [searchParams, setSearchParams] = useSearchParams()
     const user = useUserStore((s) => s.user)
     const isRTL = i18n.dir() === "rtl"
 
+    // Initialize state from URL params
+    const initialPage = parseInt(searchParams.get("page")) || 1
+
     // Filter state
     const [outcome, setOutcome] = useState("all")
-    const [page, setPage] = useState(1)
+    const [page, setPage] = useState(initialPage)
     const [limit] = useState(10)
     const [sort, setSort] = useState("")
     const [order, setOrder] = useState("desc")
+
+    // Sync page state with URL
+    useEffect(() => {
+        const params = new URLSearchParams(searchParams)
+        if (page > 1) {
+            params.set("page", page.toString())
+        } else {
+            params.delete("page")
+        }
+        setSearchParams(params, { replace: true })
+    }, [page, setSearchParams])
 
     // Build query params
     const queryParams = useMemo(() => {
@@ -375,7 +390,9 @@ export default function CallLogsPage() {
                                         key={log._id}
                                         className="hover:bg-muted/30 cursor-pointer"
                                         onClick={() =>
-                                            navigate(`/call-logs/${log._id}`)
+                                            navigate(`/call-logs/${log._id}`, {
+                                                state: { fromPage: page }
+                                            })
                                         }
                                     >
                                         <TableCell className="font-bold text-black pl-4">

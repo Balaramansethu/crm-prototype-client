@@ -1,6 +1,6 @@
-import { useState, useMemo } from "react"
+import { useState, useMemo, useEffect } from "react"
 import { useTranslation } from "react-i18next"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useSearchParams } from "react-router-dom"
 import { useLeads } from "@/hooks/useLeads"
 import { useUserStore } from "@/store/userStore"
 import { useDebounce } from "@/hooks/useDebounce"
@@ -59,11 +59,15 @@ import CommonDialog from "@/components/common/CommonDialog"
 export default function LeadsPage() {
     const { t, i18n } = useTranslation()
     const navigate = useNavigate()
+    const [searchParams, setSearchParams] = useSearchParams()
     const user = useUserStore((s) => s.user)
     const isRTL = i18n.dir() === "rtl"
 
+    // Initialize state from URL params
+    const initialPage = parseInt(searchParams.get("page")) || 1
+
     // State for filters and pagination
-    const [page, setPage] = useState(1)
+    const [page, setPage] = useState(initialPage)
     const [limit, setLimit] = useState(10)
     const [sort, setSort] = useState("createdAt")
     const [order, setOrder] = useState("desc")
@@ -72,6 +76,17 @@ export default function LeadsPage() {
     const [status, setStatus] = useState("")
     const [serviceType, setServiceType] = useState("")
     const [followUp, setFollowUp] = useState()
+
+    // Sync page state with URL
+    useEffect(() => {
+        const params = new URLSearchParams(searchParams)
+        if (page > 1) {
+            params.set("page", page.toString())
+        } else {
+            params.delete("page")
+        }
+        setSearchParams(params, { replace: true })
+    }, [page, setSearchParams])
 
     // Delete confirmation state
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
@@ -493,7 +508,9 @@ export default function LeadsPage() {
                                         key={`${lead.companyId}-${lead.leadIndex}`}
                                         className="hover:bg-muted/30 text-black cursor-pointer"
                                         onClick={() =>
-                                            navigate(`/leads/${lead._id}`)
+                                            navigate(`/leads/${lead._id}`, {
+                                                state: { fromPage: page }
+                                            })
                                         }
                                     >
                                         <TableCell className="font-bold text-black pl-4">

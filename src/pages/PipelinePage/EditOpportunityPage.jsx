@@ -96,8 +96,8 @@ export default function EditOpportunityPage() {
             />
 
             <div className="-mt-8 px-4 lg:px-6">
-                <div className="flex flex-col lg:flex-row lg:items-start gap-4">
-                    <div className="flex-1">
+                <div className="flex flex-col lg:flex-row lg:items-start gap-4 max-w-5xl">
+                    <div className="flex-1 max-w-xl">
                         <OpportunityForm
                             initialData={initialData}
                             onSubmit={onSubmit}

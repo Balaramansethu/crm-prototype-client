@@ -387,5 +387,6 @@
     "activity": "النشاط",
     "stageChanged": "تم تغيير المرحلة",
     "stage": "المرحلة",
-    "pipelineAlreadyExistsForCompany": "توجد فرصة مبيعات لهذه الشركة بالفعل"
+    "pipelineAlreadyExistsForCompany": "توجد فرصة مبيعات لهذه الشركة بالفعل",
+    "createdBy": "أنشئ بواسطة"
 }

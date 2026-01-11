@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { useTranslation } from "react-i18next"
-import { useNavigate, useParams } from "react-router-dom"
+import { useNavigate, useParams, useLocation } from "react-router-dom"
 import { format } from "date-fns"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
@@ -37,10 +37,16 @@ import { enumToTranslationKey } from "@/lib/utils"
 export default function LeadDetailPage() {
     const { t } = useTranslation()
     const navigate = useNavigate()
+    const location = useLocation()
     const { id } = useParams()
 
     const [leadData, setLeadData] = useState(null)
     const [loading, setLoading] = useState(true)
+
+    // Get the referrer page from location state or use search params as fallback
+    const referrerPage = location.state?.fromPage || 
+        new URLSearchParams(location.search).get("fromPage") || 1
+    const backPath = referrerPage > 1 ? `/leads?page=${referrerPage}` : "/leads"
 
     // Extract company and main lead from the response
     const company = leadData?.company || {}
@@ -121,7 +127,7 @@ export default function LeadDetailPage() {
             {/* Breadcrumb Header */}
             <PageHeader
                 breadcrumbs={[
-                    { label: t("leads"), path: "/leads" },
+                    { label: t("leads"), path: backPath },
                     {
                         label:
                             mainContact?.name ||

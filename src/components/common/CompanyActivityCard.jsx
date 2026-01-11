@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next"
 import { format } from "date-fns"
 import { Loader2, Activity } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
 import { cn } from "@/lib/utils"
 import { getCompanyActivity } from "@/service/pipelineService"
 import StatusBadge from "./StatusBadge"
@@ -66,11 +67,11 @@ export default function CompanyActivityCard({ companyId, className }) {
                             {activityData.map((item, index) => {
                                 // Get current status
                                 const currentStatus =
-                                    item.leadDetails?.status || "new"
+                                    item?.outcome || "new"
                                 // Get previous status from next item (older entry) or default to "new"
                                 const nextItem = activityData[index + 1]
                                 const previousStatus =
-                                    nextItem?.leadDetails?.status || "new"
+                                    nextItem?.outcome || "new"
 
                                 return (
                                     <div
@@ -79,7 +80,8 @@ export default function CompanyActivityCard({ companyId, className }) {
                                     >
                                         {/* Avatar/Icon */}
                                         <div className="shrink-0">
-                                            <div className="h-8 w-8 rounded-full bg-green-600 flex items-center justify-center text-white text-xs font-medium">
+                                            <div className="text-[10px] mt-1.5 -ml-2 text-muted-foreground">{t("createdBy")} :</div>
+                                            <div className="mt-2 h-8 w-8 rounded-full bg-green-600 flex items-center justify-center text-white text-xs font-medium">
                                                 {item.leadDetails?.contact?.name?.charAt(
                                                     0,
                                                 ) || "L"}
@@ -88,6 +90,15 @@ export default function CompanyActivityCard({ companyId, className }) {
 
                                         {/* Content */}
                                         <div className="flex-1 min-w-0">
+                                            {/* Created By Badge */}
+                                            {item.leadDetails?.createdBy && (
+                                                <Badge 
+                                                    variant="ghost" 
+                                                    className="mb-2 text-[10px] py-2 px-2 h-4"
+                                                >
+                                                    {item.leadDetails.createdBy.firstName} {item.leadDetails.createdBy.lastName}
+                                                </Badge>
+                                            )}
                                             <div className="flex items-center justify-between gap-2">
                                                 <span className="text-sm font-medium text-foreground truncate">
                                                     {item.leadDetails?.contact

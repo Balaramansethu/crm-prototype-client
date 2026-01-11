@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { useTranslation } from "react-i18next"
-import { useNavigate, useParams } from "react-router-dom"
+import { useNavigate, useParams, useLocation } from "react-router-dom"
 import { format } from "date-fns"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
@@ -29,10 +29,16 @@ import { cn, enumToTranslationKey, getOutcomeColor } from "@/lib/utils"
 export default function CallLogDetailPage() {
     const { t } = useTranslation()
     const navigate = useNavigate()
+    const location = useLocation()
     const { id } = useParams()
 
     const [callLogData, setCallLogData] = useState(null)
     const [loading, setLoading] = useState(true)
+
+    // Get the referrer page from location state or use search params as fallback
+    const referrerPage = location.state?.fromPage || 
+        new URLSearchParams(location.search).get("fromPage") || 1
+    const backPath = referrerPage > 1 ? `/call-logs?page=${referrerPage}` : "/call-logs"
 
     // Extract data from response
     const lead = callLogData?.lead || {}
@@ -124,7 +130,7 @@ export default function CallLogDetailPage() {
             {/* Breadcrumb Header */}
             <PageHeader
                 breadcrumbs={[
-                    { label: t("callLogs"), path: "/call-logs" },
+                    { label: t("callLogs"), path: backPath },
                     {
                         label:
                             lead?.name || company?.name || t("callLogDetails"),

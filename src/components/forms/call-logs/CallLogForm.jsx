@@ -17,6 +17,7 @@ import {
     SelectValue,
 } from "@/components/ui/select"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
 import { FormContainer, CommonDialog, StatusBadge } from "@/components/common"
 import { FormDatePicker, FormSelect } from "@/components/form-fields"
 import { CALL_OUTCOME_OPTIONS } from "@/constants/formOptions"
@@ -399,9 +400,9 @@ export default function CallLogForm({
 
     return (
         <>
-            <div className="flex flex-col lg:flex-row lg:items-start gap-6">
+            <div className="flex flex-col lg:flex-row lg:items-start gap-6 max-w-5xl">
                 {/* Main Form */}
-                <FormContainer className="flex-1">
+                <FormContainer className="flex-1 max-w-xl">
                     <Form {...form}>
                         <form
                             onSubmit={form.handleSubmit(handleSubmit)}
@@ -815,8 +816,10 @@ export default function CallLogForm({
                                                 >
                                                     <AccordionTrigger className="px-4 py-3 hover:no-underline hover:bg-muted/30">
                                                         <div className="flex items-center gap-3 text-left">
+                                                            {/* Avatar/Icon */}
                                                             <div className="shrink-0">
-                                                                <div className="h-8 w-8 rounded-full bg-green-600 flex items-center justify-center text-white text-[10px] font-medium">
+                                                                <div className="text-[10px] -mt-1 -ml-2 text-muted-foreground">{t("createdBy")} :</div>
+                                                                <div className="mt-2 h-8 w-8 rounded-full bg-green-600 flex items-center justify-center text-white text-[10px] font-medium">
                                                                     {(
                                                                         selectedLead?.name ||
                                                                         "L"
@@ -828,6 +831,15 @@ export default function CallLogForm({
                                                                 </div>
                                                             </div>
                                                             <div className="flex flex-col min-w-0">
+                                                                {/* Created By Badge */}
+                                                                {log.lead?.createdBy && (
+                                                                    <Badge 
+                                                                        variant="ghost" 
+                                                                        className="mb-2 text-[10px] py-2 px-2 h-4"
+                                                                    >
+                                                                        {log.lead.createdBy.firstName} {log.lead.createdBy.lastName}
+                                                                    </Badge>
+                                                                )}
                                                                 <span className="text-sm font-medium text-foreground truncate">
                                                                     {
                                                                         selectedLead?.name

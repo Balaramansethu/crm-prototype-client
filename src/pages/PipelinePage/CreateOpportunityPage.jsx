@@ -65,8 +65,8 @@ export default function CreateOpportunityPage() {
             <PageHeader breadcrumbs={breadcrumbs} title={t("addOpportunity")} />
 
             <div className="-mt-8 px-4 lg:px-12">
-                <div className="flex flex-col lg:flex-row lg:items-start gap-4">
-                    <div className="flex-1">
+                <div className="flex flex-col lg:flex-row lg:items-start gap-4 max-w-5xl">
+                    <div className="flex-1 max-w-xl">
                         <OpportunityForm
                             onSubmit={onSubmit}
                             loading={loading}

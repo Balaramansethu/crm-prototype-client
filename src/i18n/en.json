@@ -387,5 +387,6 @@
     "activity": "Activity",
     "stageChanged": "Stage changed",
     "stage": "Stage",
-    "pipelineAlreadyExistsForCompany": "A pipeline opportunity already exists for this company"
+    "pipelineAlreadyExistsForCompany": "A pipeline opportunity already exists for this company",
+    "createdBy": "Created By"
 }
