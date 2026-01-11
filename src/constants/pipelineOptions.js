@@ -2,7 +2,7 @@
  * Pipeline stage options - maps to backend enum values
  */
 export const PIPELINE_STAGES = [
-    { id: "lead", label: "promotedLead", color: "bg-slate-100 border-slate-300" },
+    { id: "lead", label: "promotedLead", color: "bg-smoke border-primary/20" },
     { id: "meeting", label: "meeting", color: "bg-blue-50 border-blue-300" },
     {
         id: "proposal",
