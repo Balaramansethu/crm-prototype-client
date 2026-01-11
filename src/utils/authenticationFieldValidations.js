@@ -108,10 +108,10 @@ export function validateLoginFields(form) {
     const emailErr = validateEmail(form.email)
     if (emailErr) errors.email = emailErr
 
-    // PASSWORD
-    let err = validateRequiredLength("Password", form.password, 8, 25)
-    if (!err) err = validatePasswordRules(form.password)
-    if (err) errors.password = err
+    // PASSWORD - only check if provided, backend will validate credentials
+    if (!form.password?.trim()) {
+        errors.password = "Password is required"
+    }
 
     return errors
 }

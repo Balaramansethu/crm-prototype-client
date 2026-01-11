@@ -77,52 +77,36 @@ export default function CompanyActivityCard({ companyId, className }) {
                                         key={item._id || index}
                                         className="flex gap-3 px-4 py-2 border-b last:border-b-0 hover:bg-muted/30"
                                     >
-                                        {/* Avatar/Icon */}
-                                        <div className="shrink-0">
-                                            <div className="text-[10px] mt-1.5 -ml-2 text-muted-foreground">
-                                                {t("createdBy")} :
-                                            </div>
-                                            <div className="mt-2 h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center text-primary text-xs font-medium">
-                                                {item.leadDetails?.contact?.name?.charAt(
-                                                    0,
-                                                ) || "L"}
-                                            </div>
-                                        </div>
-
                                         {/* Content */}
                                         <div className="flex-1 min-w-0">
-                                            {/* Created By Badge */}
-                                            {item.leadDetails?.createdBy && (
-                                                <Badge
-                                                    variant="ghost"
-                                                    className="mb-2 text-[10px] py-2 px-2 h-4"
-                                                >
-                                                    {
-                                                        item.leadDetails
-                                                            .createdBy.firstName
-                                                    }{" "}
-                                                    {
-                                                        item.leadDetails
-                                                            .createdBy.lastName
-                                                    }
-                                                </Badge>
-                                            )}
-                                            <div className="flex items-center justify-between gap-2">
+                                            <div className="flex items-start justify-between gap-2">
                                                 <span className="text-sm font-medium text-foreground truncate">
                                                     {item.leadDetails?.contact
                                                         ?.name ||
                                                         t("unknownContact")}
                                                 </span>
-                                                <span className="text-xs text-muted-foreground whitespace-nowrap">
-                                                    {item.updatedAt
-                                                        ? format(
-                                                              new Date(
-                                                                  item.updatedAt,
-                                                              ),
-                                                              "d MMM, h:mm a",
-                                                          )
-                                                        : "-"}
-                                                </span>
+                                                <div className="flex flex-col items-end shrink-0">
+                                                    <span className="text-xs text-muted-foreground whitespace-nowrap">
+                                                        {item.updatedAt
+                                                            ? format(
+                                                                  new Date(
+                                                                      item.updatedAt,
+                                                                  ),
+                                                                  "d MMM, h:mm a",
+                                                              )
+                                                            : "-"}
+                                                    </span>
+                                                    {item.createdBy && (
+                                                        <Badge
+                                                            variant="ghost"
+                                                            className="mt-1 text-[10px] py-0.5 px-2 h-4 max-w-[100px] truncate"
+                                                            title={`${item.createdBy.firstName || ""} ${item.createdBy.lastName || ""}`.trim()}
+                                                        >
+                                                            {item.createdBy.firstName}{" "}
+                                                            {item.createdBy.lastName}
+                                                        </Badge>
+                                                    )}
+                                                </div>
                                             </div>
                                             <p className="text-sm text-muted-foreground mt-0.5">
                                                 {t("stageChanged")}

@@ -1,4 +1,4 @@
-import { useEffect } from "react"
+import { useState, useEffect } from "react"
 import { LoginForm } from "@/components/login-form"
 import { useLogin } from "@/hooks/useAuthHooks"
 import { useNavigate } from "react-router-dom"
@@ -9,6 +9,7 @@ export default function LoginPage() {
     const login = useLogin()
     const navigate = useNavigate()
     const user = useUserStore((s) => s.user)
+    const [backendErrors, setBackendErrors] = useState({})
 
     const handleRedirect = () => {
         if (!user) return
@@ -27,6 +28,7 @@ export default function LoginPage() {
     }
 
     const handleLogin = (data) => {
+        setBackendErrors({}) // Clear previous errors
         login.mutate(data, {
             onSuccess: (response) => {
                 const role = response?.user?.role || response?.role
@@ -39,8 +41,34 @@ export default function LoginPage() {
                     navigate("/dashboard")
                 }
             },
+            onError: (error) => {
+                const errorData = error?.response?.data
+                const errorCode = errorData?.error || errorData?.errorCode
+
+                // Map backend error codes to form fields
+                if (errorCode === "invalid_password" || errorCode === "2008") {
+                    setBackendErrors({ password: errorData?.message || "Invalid Credentials" })
+                } else if (errorCode === "user_not_found" || errorCode === "2007") {
+                    setBackendErrors({ email: errorData?.message || "User not found" })
+                } else if (errorData?.message) {
+                    // Generic error - show under password field
+                    setBackendErrors({ password: errorData.message })
+                }
+            },
         })
     }
 
-    return <LoginForm onSubmit={handleLogin} loading={login.isPending} />
+    const clearBackendErrors = () => {
+        setBackendErrors({})
+    }
+
+    return (
+        <LoginForm
+            onSubmit={handleLogin}
+            loading={login.isPending}
+            backendErrors={backendErrors}
+            clearBackendErrors={clearBackendErrors}
+        />
+    )
 }
+

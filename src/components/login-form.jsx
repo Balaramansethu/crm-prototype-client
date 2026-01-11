@@ -19,7 +19,7 @@ import { Input } from "@/components/ui/input"
 import { Link } from "react-router-dom"
 import { validateLoginFields } from "@/utils/authenticationFieldValidations"
 
-export function LoginForm({ onSubmit, loading, className, ...props }) {
+export function LoginForm({ onSubmit, loading, backendErrors = {}, clearBackendErrors, className, ...props }) {
     const { t } = useTranslation()
 
     const [form, setForm] = useState({
@@ -32,6 +32,10 @@ export function LoginForm({ onSubmit, loading, className, ...props }) {
     const handleChange = (e) => {
         setForm({ ...form, [e.target.id]: e.target.value })
         setErrors({ ...errors, [e.target.id]: "" })
+        // Clear backend errors when user starts typing
+        if (clearBackendErrors) {
+            clearBackendErrors()
+        }
     }
 
     const handleSubmit = (e) => {
@@ -76,9 +80,9 @@ export function LoginForm({ onSubmit, loading, className, ...props }) {
                                     placeholder={t("emailPlaceholder")}
                                 />
 
-                                {errors.email && (
+                                {(errors.email || backendErrors.email) && (
                                     <p className="text-red-500 text-sm text-start">
-                                        {errors.email}
+                                        {backendErrors.email || errors.email}
                                     </p>
                                 )}
                             </Field>
@@ -116,9 +120,9 @@ export function LoginForm({ onSubmit, loading, className, ...props }) {
                                     </button>
                                 </div>
 
-                                {errors.password && (
+                                {(errors.password || backendErrors.password) && (
                                     <p className="text-red-500 text-sm mt-1 text-start">
-                                        {errors.password}
+                                        {backendErrors.password || errors.password}
                                     </p>
                                 )}
                             </Field>

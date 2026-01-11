@@ -764,47 +764,9 @@ export default function CallLogForm({
                                                     >
                                                         <AccordionTrigger className="px-4 hover:no-underline hover:bg-muted/30">
                                                             <div className="flex items-center gap-3 text-left">
-                                                                {/* Avatar/Icon */}
-                                                                <div className="shrink-0">
-                                                                    <div className="text-[10px] -mt-1 -ml-2 text-muted-foreground">
-                                                                        {t(
-                                                                            "createdBy",
-                                                                        )}{" "}
-                                                                        :
-                                                                    </div>
-                                                                    <div className="mt-2 h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center text-primary text-[10px] font-medium">
-                                                                        {(
-                                                                            selectedLead?.name ||
-                                                                            "L"
-                                                                        )
-                                                                            .charAt(
-                                                                                0,
-                                                                            )
-                                                                            .toUpperCase()}
-                                                                    </div>
-                                                                </div>
                                                                 <div className="flex flex-col min-w-0">
                                                                     {/* Created By Badge */}
-                                                                    {log.lead
-                                                                        ?.createdBy && (
-                                                                        <Badge
-                                                                            variant="ghost"
-                                                                            className="mb-2 text-[10px] py-2 px-2 h-4"
-                                                                        >
-                                                                            {
-                                                                                log
-                                                                                    .lead
-                                                                                    .createdBy
-                                                                                    .firstName
-                                                                            }{" "}
-                                                                            {
-                                                                                log
-                                                                                    .lead
-                                                                                    .createdBy
-                                                                                    .lastName
-                                                                            }
-                                                                        </Badge>
-                                                                    )}
+                                                                   
                                                                     <span className="text-sm font-medium text-foreground truncate">
                                                                         {
                                                                             selectedLead?.name
@@ -819,12 +781,29 @@ export default function CallLogForm({
                                                                                   "d MMM, h:mm a",
                                                                               )
                                                                             : "-"}
+                                                                             {log.lead
+                                                                        ?.createdBy && (
+                                                                        <Badge
+                                                                            variant="ghost"
+                                                                            className="mb-2 text-[10px] py-2 px-2 h-4 ml-3"
+                                                                        >
+                                                                            {
+                                                                                log
+                                                                                    .createdBy
+                                                                                    .firstName
+                                                                            }{" "}
+                                                                            {
+                                                                                log
+                                                                                    .createdBy
+                                                                                    .lastName
+                                                                            }
+                                                                        </Badge>
+                                                                    )}
                                                                     </span>
                                                                 </div>
                                                             </div>
                                                         </AccordionTrigger>
                                                         <AccordionContent className="px-4 pb-4">
-                                                            <div className="pl-11">
                                                                 <div className="mb-2">
                                                                     <StatusBadge
                                                                         status={
@@ -849,7 +828,6 @@ export default function CallLogForm({
                                                                         }
                                                                     </p>
                                                                 </div>
-                                                            </div>
                                                         </AccordionContent>
                                                     </AccordionItem>
                                                 ),
