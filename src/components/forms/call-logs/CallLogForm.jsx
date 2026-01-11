@@ -74,7 +74,7 @@ export default function CallLogForm({
                 : null,
             callStartTime: initialData?.callStartTime
                 ? new Date(initialData.callStartTime).toTimeString().slice(0, 5)
-                : "",
+                : new Date().toTimeString().slice(0, 5),
             durationHours: initialData?.callDuration
                 ? Math.floor(initialData.callDuration / 3600)
                 : "",
