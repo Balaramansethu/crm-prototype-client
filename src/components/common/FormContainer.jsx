@@ -15,10 +15,11 @@ export default function FormContainer({
 }) {
     return (
         <div className="flex flex-1 flex-col">
-            <div className="px-4 py-6 lg:px-6">
+            {/* Responsive padding: less on mobile, more on larger screens */}
+            <div className="px-2 py-4 sm:px-4 sm:py-6 lg:px-6">
                 <div
                     className={cn(
-                        "rounded-md border bg-white p-6 shadow-sm",
+                        "rounded-md border bg-white p-4 sm:p-6 shadow-sm",
                         maxWidth,
                         className,
                     )}

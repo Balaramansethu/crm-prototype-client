@@ -125,7 +125,7 @@ export default function EditLeadPage() {
         <div className="@container/main flex flex-1 flex-col gap-2">
             <PageHeader breadcrumbs={breadcrumbs} title={t("editLead")} />
 
-            <div className="-mt-8 px-4 lg:px-12">
+            <div className="-mt-8 px-2 sm:px-4 lg:px-12">
                 <LeadForm
                     initialData={initialData}
                     onSubmit={onSubmit}

@@ -136,11 +136,16 @@ export function FloatingSidebar() {
 
             {/* Floating Sidebar Container - Detached from screen edge */}
             {/* Note: dir="ltr" prevents the parent RTL from reversing flex-row */}
+            {/* On mobile: hidden when collapsed (off-screen), slides in when expanded */}
+            {/* On md+: always visible */}
             <div
                 dir="ltr"
                 className={cn(
                     "fixed z-50 flex flex-row transition-all duration-300 ease-in-out",
-                    isRTL ? "right-3" : "left-3"
+                    // Position based on RTL
+                    isRTL ? "right-2 md:right-3" : "left-2 md:left-3",
+                    // Mobile: translate off-screen when collapsed
+                    !isExpanded && (isRTL ? "translate-x-full md:translate-x-0" : "-translate-x-full md:translate-x-0")
                 )}
                 style={{
                     top: "12px",
@@ -319,8 +324,8 @@ function ToggleButton({ onClick, isExpanded, isRTL }) {
 }
 
 // Wrapper for main content that handles auto-collapse
-// Sidebar collapsed width: w-16 (64px) + gap from edge (12px) + toggle (20px) = ~96px
-// Using pl-20 (80px) for a tighter fit
+// On mobile: no padding (sidebar is hidden or overlays)
+// On md+: sidebar visible, so add padding
 export function MainContent({ children, className }) {
     const { collapse, isExpanded } = useFloatingSidebar()
     const { i18n } = useTranslation()
@@ -336,8 +341,8 @@ export function MainContent({ children, className }) {
         <main
             className={cn(
                 "w-full min-h-screen transition-all duration-300",
-                // Add padding on the side where sidebar is located
-                isRTL ? "pr-20" : "pl-20",
+                // No padding on mobile, add padding on md+ screens
+                isRTL ? "md:pr-20" : "md:pl-20",
                 className
             )}
             onClick={handleInteraction}

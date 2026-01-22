@@ -11,14 +11,16 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { IconLogout, IconUserPlus } from "@tabler/icons-react"
+import { IconLogout, IconUserPlus, IconMenu2 } from "@tabler/icons-react"
 import { InviteModal } from "@/components/InviteModal"
+import { useFloatingSidebar } from "@/components/floating-sidebar"
 
 export function SiteHeader() {
     const { t } = useTranslation()
     const user = useUserStore((s) => s.user)
     const logout = useLogout()
     const [inviteModalOpen, setInviteModalOpen] = useState(false)
+    const { expand } = useFloatingSidebar()
 
     // Generate initials for avatar fallback
     const initials =
@@ -28,8 +30,23 @@ export function SiteHeader() {
         <>
             <header className="flex h-14 shrink-0 items-center gap-2 border-b bg-white/80 backdrop-blur-sm sticky top-0 z-30">
                 <div className="flex w-full items-center gap-2 px-4 lg:px-6">
+                    {/* Mobile Menu Button - visible only on mobile */}
+                    <button
+                        onClick={expand}
+                        className="md:hidden flex items-center justify-center p-2 rounded-lg hover:bg-accent transition-colors"
+                        aria-label="Open menu"
+                    >
+                        <IconMenu2 className="h-5 w-5" />
+                    </button>
+
                     {/* Logo and Title */}
                     <div className="flex items-center gap-2">
+                        {/* Logo - visible on mobile only since sidebar has it on desktop */}
+                        <img
+                            src="https://bunny-wp-pullzone-dgpgtislbk.b-cdn.net/wp-content/uploads/2023/12/Datasack_tech_logo4_240X240_72dpi.png"
+                            alt="Datasack Logo"
+                            className="w-7 h-7 rounded object-contain md:hidden"
+                        />
                         <h1 className="text-base font-medium">{t("datasack")}</h1>
                     </div>
 
