@@ -259,7 +259,7 @@ export default function LeadForm({
 
     return (
         <>
-            <FormContainer maxWidth="max-w-5xl" >
+            <FormContainer maxWidth="max-w-5xl">
                 <Form {...form}>
                     <form
                         onSubmit={form.handleSubmit(handleSubmit)}

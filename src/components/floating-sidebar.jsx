@@ -1,5 +1,11 @@
 import * as React from "react"
-import { useState, useEffect, createContext, useContext, useCallback } from "react"
+import {
+    useState,
+    useEffect,
+    createContext,
+    useContext,
+    useCallback,
+} from "react"
 import {
     IconArchive,
     IconChevronRight,
@@ -31,7 +37,9 @@ const FloatingSidebarContext = createContext(null)
 export function useFloatingSidebar() {
     const context = useContext(FloatingSidebarContext)
     if (!context) {
-        throw new Error("useFloatingSidebar must be used within FloatingSidebarProvider")
+        throw new Error(
+            "useFloatingSidebar must be used within FloatingSidebarProvider",
+        )
     }
     return context
 }
@@ -63,10 +71,10 @@ export function FloatingSidebarProvider({ children }) {
     }, [isExpanded, collapse])
 
     return (
-        <FloatingSidebarContext.Provider value={{ isExpanded, collapse, expand, toggle }}>
-            <TooltipProvider delayDuration={0}>
-                {children}
-            </TooltipProvider>
+        <FloatingSidebarContext.Provider
+            value={{ isExpanded, collapse, expand, toggle }}
+        >
+            <TooltipProvider delayDuration={0}>{children}</TooltipProvider>
         </FloatingSidebarContext.Provider>
     )
 }
@@ -145,7 +153,10 @@ export function FloatingSidebar() {
                     // Position based on RTL
                     isRTL ? "right-2 md:right-3" : "left-2 md:left-3",
                     // Mobile: translate off-screen when collapsed
-                    !isExpanded && (isRTL ? "translate-x-full md:translate-x-0" : "-translate-x-full md:translate-x-0")
+                    !isExpanded &&
+                        (isRTL
+                            ? "translate-x-full md:translate-x-0"
+                            : "-translate-x-full md:translate-x-0"),
                 )}
                 style={{
                     top: "12px",
@@ -154,10 +165,10 @@ export function FloatingSidebar() {
             >
                 {/* Toggle Button - Rendered BEFORE sidebar in RTL (appears on left) */}
                 {isRTL && (
-                    <ToggleButton 
-                        onClick={toggle} 
-                        isExpanded={isExpanded} 
-                        isRTL={isRTL} 
+                    <ToggleButton
+                        onClick={toggle}
+                        isExpanded={isExpanded}
+                        isRTL={isRTL}
                     />
                 )}
 
@@ -165,17 +176,23 @@ export function FloatingSidebar() {
                 <div
                     className={cn(
                         "h-full bg-white shadow-xl flex flex-col transition-all duration-300 overflow-hidden rounded-2xl border border-gray-200",
-                        isExpanded ? "w-64" : "w-16"
+                        isExpanded ? "w-64" : "w-16",
                     )}
                     style={{
                         boxShadow: "0 4px 24px rgba(0,0,0,0.12)",
                     }}
                 >
                     {/* Header with Logo */}
-                    <div className={cn(
-                        "flex items-center gap-3 p-4 border-b border-gray-100",
-                        isExpanded ? (isRTL ? "justify-end flex-row-reverse" : "justify-start") : "justify-center"
-                    )}>
+                    <div
+                        className={cn(
+                            "flex items-center gap-3 p-4 border-b border-gray-100",
+                            isExpanded
+                                ? isRTL
+                                    ? "justify-end flex-row-reverse"
+                                    : "justify-start"
+                                : "justify-center",
+                        )}
+                    >
                         <img
                             src="https://bunny-wp-pullzone-dgpgtislbk.b-cdn.net/wp-content/uploads/2023/12/Datasack_tech_logo4_240X240_72dpi.png"
                             alt="Datasack Logo"
@@ -202,34 +219,46 @@ export function FloatingSidebar() {
                                 <li key={item.path}>
                                     {isExpanded ? (
                                         <button
-                                            onClick={() => handleNavClick(item.path)}
+                                            onClick={() =>
+                                                handleNavClick(item.path)
+                                            }
                                             className={cn(
                                                 "w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200",
-                                                isRTL ? "text-right flex-row-reverse" : "text-left",
+                                                isRTL
+                                                    ? "text-right flex-row-reverse"
+                                                    : "text-left",
                                                 item.isActive
                                                     ? "bg-primary text-white shadow-md"
-                                                    : "text-gray-700 hover:bg-gray-100"
+                                                    : "text-gray-700 hover:bg-gray-100",
                                             )}
                                         >
                                             <item.icon className="w-5 h-5 flex-shrink-0" />
-                                            <span className="text-sm font-medium">{item.label}</span>
+                                            <span className="text-sm font-medium">
+                                                {item.label}
+                                            </span>
                                         </button>
                                     ) : (
                                         <Tooltip>
                                             <TooltipTrigger asChild>
                                                 <button
-                                                    onClick={() => handleNavClick(item.path)}
+                                                    onClick={() =>
+                                                        handleNavClick(
+                                                            item.path,
+                                                        )
+                                                    }
                                                     className={cn(
                                                         "w-full flex items-center justify-center p-3 rounded-lg transition-all duration-200",
                                                         item.isActive
                                                             ? "bg-primary text-white shadow-md"
-                                                            : "text-gray-700 hover:bg-gray-100"
+                                                            : "text-gray-700 hover:bg-gray-100",
                                                     )}
                                                 >
                                                     <item.icon className="w-5 h-5" />
                                                 </button>
                                             </TooltipTrigger>
-                                            <TooltipContent side={isRTL ? "left" : "right"}>
+                                            <TooltipContent
+                                                side={isRTL ? "left" : "right"}
+                                            >
                                                 {item.label}
                                             </TooltipContent>
                                         </Tooltip>
@@ -243,10 +272,12 @@ export function FloatingSidebar() {
                     </nav>
 
                     {/* Footer with User Info */}
-                    <div className={cn(
-                        "border-t border-gray-100 p-2",
-                        !isExpanded && "flex justify-center"
-                    )}>
+                    <div
+                        className={cn(
+                            "border-t border-gray-100 p-2",
+                            !isExpanded && "flex justify-center",
+                        )}
+                    >
                         {isExpanded ? (
                             <NavUser />
                         ) : (
@@ -268,10 +299,10 @@ export function FloatingSidebar() {
 
                 {/* Toggle Button - Rendered AFTER sidebar in LTR (appears on right) */}
                 {!isRTL && (
-                    <ToggleButton 
-                        onClick={toggle} 
-                        isExpanded={isExpanded} 
-                        isRTL={isRTL} 
+                    <ToggleButton
+                        onClick={toggle}
+                        isExpanded={isExpanded}
+                        isRTL={isRTL}
                     />
                 )}
             </div>
@@ -292,13 +323,13 @@ function ToggleButton({ onClick, isExpanded, isRTL }) {
                     "flex items-center justify-center w-5 h-14 bg-white cursor-pointer transition-all duration-300 hover:bg-gray-50 border border-gray-200",
                     // RTL: toggle on left of sidebar, so round left edge, remove right border
                     // LTR: toggle on right of sidebar, so round right edge, remove left border
-                    isRTL 
-                        ? "rounded-l-xl border-r-0 -mr-px" 
-                        : "rounded-r-xl border-l-0 -ml-px"
+                    isRTL
+                        ? "rounded-l-xl border-r-0 -mr-px"
+                        : "rounded-r-xl border-l-0 -ml-px",
                 )}
                 style={{
-                    boxShadow: isRTL 
-                        ? "-2px 0 8px rgba(0,0,0,0.06)" 
+                    boxShadow: isRTL
+                        ? "-2px 0 8px rgba(0,0,0,0.06)"
                         : "2px 0 8px rgba(0,0,0,0.06)",
                 }}
             >
@@ -313,9 +344,13 @@ function ToggleButton({ onClick, isExpanded, isRTL }) {
                         "w-4 h-4 text-gray-500 transition-transform duration-300",
                         // In RTL, arrow should point LEFT when collapsed, RIGHT when expanded
                         // In LTR, arrow should point RIGHT when collapsed, LEFT when expanded
-                        isRTL 
-                            ? (isExpanded ? "" : "rotate-180")
-                            : (isExpanded ? "rotate-180" : "")
+                        isRTL
+                            ? isExpanded
+                                ? ""
+                                : "rotate-180"
+                            : isExpanded
+                              ? "rotate-180"
+                              : "",
                     )}
                 />
             </button>
@@ -343,7 +378,7 @@ export function MainContent({ children, className }) {
                 "w-full min-h-screen transition-all duration-300",
                 // No padding on mobile, add padding on md+ screens
                 isRTL ? "md:pr-20" : "md:pl-20",
-                className
+                className,
             )}
             onClick={handleInteraction}
         >

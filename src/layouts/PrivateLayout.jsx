@@ -17,7 +17,10 @@ export default function PrivateLayout() {
 
     return (
         <FloatingSidebarProvider>
-            <div dir={isRTL ? "rtl" : "ltr"} className="min-h-screen bg-background">
+            <div
+                dir={isRTL ? "rtl" : "ltr"}
+                className="min-h-screen bg-background"
+            >
                 {/* Floating Sidebar */}
                 <FloatingSidebar />
 
@@ -32,4 +35,3 @@ export default function PrivateLayout() {
         </FloatingSidebarProvider>
     )
 }
-

@@ -47,7 +47,9 @@ export function SiteHeader() {
                             alt="Datasack Logo"
                             className="w-7 h-7 rounded object-contain md:hidden"
                         />
-                        <h1 className="text-base font-medium">{t("datasack")}</h1>
+                        <h1 className="text-base font-medium">
+                            {t("datasack")}
+                        </h1>
                     </div>
 
                     {/* Spacer to push user menu to the right */}

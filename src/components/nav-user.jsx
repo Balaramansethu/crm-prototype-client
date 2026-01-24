@@ -12,7 +12,9 @@ export function NavUser() {
         `${user?.firstName?.[0] || ""}${user?.lastName?.[0] || ""}`.toUpperCase()
 
     return (
-        <div className={`flex items-center gap-3 px-2 py-2 ${isRTL ? "flex-row-reverse" : ""}`}>
+        <div
+            className={`flex items-center gap-3 px-2 py-2 ${isRTL ? "flex-row-reverse" : ""}`}
+        >
             {/* Avatar */}
             <Avatar className="h-8 w-8 rounded-lg flex-shrink-0">
                 {user?.profileImage ? (
@@ -28,7 +30,9 @@ export function NavUser() {
             </Avatar>
 
             {/* User Details */}
-            <div className={`grid flex-1 text-sm leading-tight min-w-0 ${isRTL ? "text-right" : "text-left"}`}>
+            <div
+                className={`grid flex-1 text-sm leading-tight min-w-0 ${isRTL ? "text-right" : "text-left"}`}
+            >
                 <span className="truncate font-medium text-gray-900">
                     {user?.firstName} {user?.lastName}
                 </span>
@@ -39,4 +43,3 @@ export function NavUser() {
         </div>
     )
 }
-
