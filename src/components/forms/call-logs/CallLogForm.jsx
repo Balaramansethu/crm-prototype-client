@@ -397,9 +397,10 @@ export default function CallLogForm({
 
     return (
         <>
-            <div className="flex flex-col lg:flex-row lg:items-start gap-6 max-w-5xl">
-                {/* Main Form */}
-                <FormContainer className="flex-1 max-w-xl">
+            {/* Main Layout Container */}
+            <div className="flex flex-col lg:flex-row lg:items-start gap-6 w-full">
+                {/* Main Form - Uses standard FormContainer for consistent alignment */}
+                <FormContainer maxWidth="max-w-2xl" className="flex-1">
                     <Form {...form}>
                         <form
                             onSubmit={form.handleSubmit(handleSubmit)}

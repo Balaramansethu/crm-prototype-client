@@ -25,9 +25,10 @@ export default function PrivateLayout() {
                 <FloatingSidebar />
 
                 {/* Main Content Area - Full Screen */}
-                <MainContent className="flex flex-col">
+                <MainContent className="flex flex-col mobile-main-content">
                     <SiteHeader />
-                    <div className="flex flex-1 flex-col p-4 lg:p-6">
+                    {/* Responsive padding: smaller on mobile, larger on desktop */}
+                    <div className="flex flex-1 flex-col p-2 sm:p-4 lg:p-6">
                         <Outlet />
                     </div>
                 </MainContent>

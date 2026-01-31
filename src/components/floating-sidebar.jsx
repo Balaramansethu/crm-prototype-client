@@ -14,6 +14,7 @@ import {
     IconFileWord,
     IconLayoutKanban,
     IconListDetails,
+    IconMenu2,
     IconPhone,
     IconReport,
 } from "@tabler/icons-react"
@@ -24,16 +25,11 @@ import { useUserStore } from "@/store/userStore"
 import { NavUser } from "@/components/nav-user"
 import { useTranslation } from "react-i18next"
 import { cn } from "@/lib/utils"
-import {
-    Tooltip,
-    TooltipContent,
-    TooltipProvider,
-    TooltipTrigger,
-} from "@/components/ui/tooltip"
 
 // Sidebar widths
 const SIDEBAR_COLLAPSED_WIDTH = 64 // px - width when collapsed (icons only)
 const SIDEBAR_EXPANDED_WIDTH = 256 // px - width when expanded
+const MOBILE_BREAKPOINT = 768 // px - mobile breakpoint
 
 // Create context for sidebar state
 const FloatingSidebarContext = createContext(null)
@@ -78,7 +74,7 @@ export function FloatingSidebarProvider({ children }) {
         <FloatingSidebarContext.Provider
             value={{ isExpanded, collapse, expand, toggle }}
         >
-            <TooltipProvider delayDuration={0}>{children}</TooltipProvider>
+            {children}
         </FloatingSidebarContext.Provider>
     )
 }
@@ -92,6 +88,17 @@ export function FloatingSidebar() {
     const isRTL = i18n.language === "ar"
     const sidebarRef = useRef(null)
     const hoverTimeoutRef = useRef(null)
+    const [isMobile, setIsMobile] = useState(false)
+
+    // Track screen size for mobile detection
+    useEffect(() => {
+        const checkMobile = () => {
+            setIsMobile(window.innerWidth < MOBILE_BREAKPOINT)
+        }
+        checkMobile()
+        window.addEventListener("resize", checkMobile)
+        return () => window.removeEventListener("resize", checkMobile)
+    }, [])
 
     // Handle mouse enter - expand sidebar
     const handleMouseEnter = useCallback(() => {
@@ -154,26 +161,38 @@ export function FloatingSidebar() {
 
     const handleNavClick = (path) => {
         navigate(path)
+        // Automatically close sidebar after navigation
+        collapse()
     }
 
     return (
         <>
+            {/* Backdrop overlay for mobile when sidebar is expanded */}
+            {isMobile && isExpanded && (
+                <div 
+                    className="fixed inset-0 bg-black/30 z-40 transition-opacity duration-300"
+                    onClick={collapse}
+                />
+            )}
+            
             {/* Docked Sidebar - Fixed to left edge, expands on hover */}
             <div
                 ref={sidebarRef}
                 dir="ltr"
-                onMouseEnter={handleMouseEnter}
-                onMouseLeave={handleMouseLeave}
+                onMouseEnter={!isMobile ? handleMouseEnter : undefined}
+                onMouseLeave={!isMobile ? handleMouseLeave : undefined}
                 className={cn(
                     "fixed z-50 h-screen bg-white border-gray-200 flex flex-col transition-all duration-300 ease-in-out overflow-hidden shadow-lg",
                     // Position based on RTL - docked to edge (no gaps)
                     isRTL ? "right-0 border-l" : "left-0 border-r",
+                    // Hide on mobile when collapsed, show when expanded
+                    isMobile && !isExpanded && (isRTL ? "-right-16" : "-left-16"),
                 )}
                 style={{
                     width: isExpanded ? `${SIDEBAR_EXPANDED_WIDTH}px` : `${SIDEBAR_COLLAPSED_WIDTH}px`,
                 }}
             >
-                {/* Header with Logo */}
+                {/* Header with Logo or Burger Menu */}
                 <div
                     className={cn(
                         "flex items-center gap-3 p-4 border-b border-gray-100 min-h-[64px]",
@@ -184,19 +203,26 @@ export function FloatingSidebar() {
                             : "justify-center",
                     )}
                 >
-                    <img
-                        src="https://bunny-wp-pullzone-dgpgtislbk.b-cdn.net/wp-content/uploads/2023/12/Datasack_tech_logo4_240X240_72dpi.png"
-                        alt="Datasack Logo"
-                        className="-mt-2 ml-2 w-9 h-9 rounded object-contain flex-shrink-0"
-                    />
-                    <span 
-                        className={cn(
-                            "text-base -mt-1 font-semibold text-gray-900 whitespace-nowrap transition-opacity duration-200",
-                            isExpanded ? "opacity-100" : "opacity-0 w-0"
-                        )}
-                    >
-                        {t("datasack")}
-                    </span>
+                    {/* Show burger icon on mobile collapsed, logo on desktop */}
+                    {isMobile && !isExpanded ? (
+                        <IconMenu2 className="w-6 h-6 text-gray-700 cursor-pointer" />
+                    ) : (
+                        <>
+                            <img
+                                src="https://bunny-wp-pullzone-dgpgtislbk.b-cdn.net/wp-content/uploads/2023/12/Datasack_tech_logo4_240X240_72dpi.png"
+                                alt="Datasack Logo"
+                                className="-mt-2 ml-2 w-9 h-9 rounded object-contain flex-shrink-0"
+                            />
+                            <span 
+                                className={cn(
+                                    "text-base -mt-1 font-semibold text-gray-900 whitespace-nowrap transition-opacity duration-200",
+                                    isExpanded ? "opacity-100" : "opacity-0 w-0"
+                                )}
+                            >
+                                {t("datasack")}
+                            </span>
+                        </>
+                    )}
                 </div>
 
                 {/* Language Toggle - Compact when collapsed, full when expanded */}
@@ -209,24 +235,17 @@ export function FloatingSidebar() {
                     {isExpanded ? (
                         <LanguageToggle />
                     ) : (
-                        <Tooltip>
-                            <TooltipTrigger asChild>
-                                <button
-                                    onClick={() => {
-                                        const newLang = i18n.language === "ar" ? "en" : "ar"
-                                        i18n.changeLanguage(newLang)
-                                        localStorage.setItem("lang", newLang)
-                                        document.documentElement.lang = newLang
-                                    }}
-                                    className="w-10 h-10 rounded-lg bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-sm font-medium text-gray-700 transition-colors"
-                                >
-                                    {i18n.language === "ar" ? "ع" : "EN"}
-                                </button>
-                            </TooltipTrigger>
-                            <TooltipContent side={isRTL ? "left" : "right"} sideOffset={8}>
-                                {i18n.language === "ar" ? "Switch to English" : "التبديل إلى العربية"}
-                            </TooltipContent>
-                        </Tooltip>
+                        <button
+                            onClick={() => {
+                                const newLang = i18n.language === "ar" ? "en" : "ar"
+                                i18n.changeLanguage(newLang)
+                                localStorage.setItem("lang", newLang)
+                                document.documentElement.lang = newLang
+                            }}
+                            className="w-10 h-10 rounded-lg bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-sm font-medium text-gray-700 transition-colors"
+                        >
+                            {i18n.language === "ar" ? "ع" : "EN"}
+                        </button>
                     )}
                 </div>
 
@@ -254,27 +273,17 @@ export function FloatingSidebar() {
                                         </span>
                                     </button>
                                 ) : (
-                                    <Tooltip>
-                                        <TooltipTrigger asChild>
-                                            <button
-                                                onClick={() => handleNavClick(item.path)}
-                                                className={cn(
-                                                    "w-full flex items-center justify-center p-3 rounded-lg transition-all duration-200",
-                                                    item.isActive
-                                                        ? "bg-primary text-white shadow-md"
-                                                        : "text-gray-700 hover:bg-gray-100",
-                                                )}
-                                            >
-                                                <item.icon className="w-5 h-5" />
-                                            </button>
-                                        </TooltipTrigger>
-                                        <TooltipContent
-                                            side={isRTL ? "left" : "right"}
-                                            sideOffset={8}
-                                        >
-                                            {item.label}
-                                        </TooltipContent>
-                                    </Tooltip>
+                                    <button
+                                        onClick={() => handleNavClick(item.path)}
+                                        className={cn(
+                                            "w-full flex items-center justify-center p-3 rounded-lg transition-all duration-200",
+                                            item.isActive
+                                                ? "bg-primary text-white shadow-md"
+                                                : "text-gray-700 hover:bg-gray-100",
+                                        )}
+                                    >
+                                        <item.icon className="w-5 h-5" />
+                                    </button>
                                 )}
                             </li>
                         ))}
@@ -294,18 +303,11 @@ export function FloatingSidebar() {
                     {isExpanded ? (
                         <NavUser />
                     ) : (
-                        <Tooltip>
-                            <TooltipTrigger asChild>
-                                <div className="p-2 cursor-pointer">
-                                    <div className="w-8 h-8 rounded-lg bg-primary/30 flex items-center justify-center text-primary font-medium text-sm">
-                                        {`${user?.firstName?.[0] || ""}${user?.lastName?.[0] || ""}`.toUpperCase()}
-                                    </div>
-                                </div>
-                            </TooltipTrigger>
-                            <TooltipContent side={isRTL ? "left" : "right"} sideOffset={8}>
-                                {user?.firstName} {user?.lastName}
-                            </TooltipContent>
-                        </Tooltip>
+                        <div className="p-2 cursor-pointer">
+                            <div className="w-8 h-8 rounded-lg bg-primary/30 flex items-center justify-center text-primary font-medium text-sm">
+                                {`${user?.firstName?.[0] || ""}${user?.lastName?.[0] || ""}`.toUpperCase()}
+                            </div>
+                        </div>
                     )}
                 </div>
             </div>
@@ -317,6 +319,17 @@ export function FloatingSidebar() {
 export function MainContent({ children, className }) {
     const { i18n } = useTranslation()
     const isRTL = i18n.language === "ar"
+    const [isMobile, setIsMobile] = useState(false)
+
+    // Track screen size for mobile detection
+    useEffect(() => {
+        const checkMobile = () => {
+            setIsMobile(window.innerWidth < MOBILE_BREAKPOINT)
+        }
+        checkMobile()
+        window.addEventListener("resize", checkMobile)
+        return () => window.removeEventListener("resize", checkMobile)
+    }, [])
 
     return (
         <main
@@ -325,9 +338,9 @@ export function MainContent({ children, className }) {
                 className,
             )}
             style={{
-                marginLeft: isRTL ? 0 : SIDEBAR_COLLAPSED_WIDTH,
-                marginRight: isRTL ? SIDEBAR_COLLAPSED_WIDTH : 0,
-                width: `calc(100% - ${SIDEBAR_COLLAPSED_WIDTH}px)`,
+                marginLeft: isMobile ? 0 : (isRTL ? 0 : SIDEBAR_COLLAPSED_WIDTH),
+                marginRight: isMobile ? 0 : (isRTL ? SIDEBAR_COLLAPSED_WIDTH : 0),
+                width: isMobile ? "100%" : `calc(100% - ${SIDEBAR_COLLAPSED_WIDTH}px)`,
             }}
         >
             {children}

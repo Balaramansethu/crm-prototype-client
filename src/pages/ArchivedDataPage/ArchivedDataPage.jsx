@@ -89,6 +89,46 @@ function RoleBadge({ role }) {
     )
 }
 
+// Outcome Badge Component for Call Logs
+function OutcomeBadge({ outcome }) {
+    const { t } = useTranslation()
+
+    const outcomeStyles = {
+        interested: "bg-teal-100 text-teal-800",
+        not_interested: "bg-rose-100 text-rose-800",
+        follow_up_needed: "bg-orange-100 text-orange-800",
+        promoted_to_meeting: "bg-indigo-100 text-indigo-800",
+        conversion_in_progress: "bg-violet-100 text-violet-800",
+        qualified: "bg-emerald-100 text-emerald-800",
+        new: "bg-sky-100 text-sky-800",
+        contacted_by_email: "bg-amber-100 text-amber-800",
+        dropped: "bg-slate-200 text-slate-700",
+    }
+
+    if (!outcome) return <span>-</span>
+
+    // Convert snake_case to translation key format
+    const translationKey = outcome
+        .split("_")
+        .map((word, index) =>
+            index === 0
+                ? word.toLowerCase()
+                : word.charAt(0).toUpperCase() + word.slice(1).toLowerCase(),
+        )
+        .join("")
+
+    return (
+        <span
+            className={cn(
+                "inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium whitespace-nowrap",
+                outcomeStyles[outcome] || "bg-gray-100 text-gray-800",
+            )}
+        >
+            {t(`outcome${translationKey.charAt(0).toUpperCase() + translationKey.slice(1)}`) || t(outcome) || outcome}
+        </span>
+    )
+}
+
 // Pagination Component
 function Pagination({ page, setPage, info, t, isRTL, type = "items" }) {
     const totalPages = info?.totalPages || 1
@@ -372,8 +412,8 @@ function ArchivedCallLogsTable({ page, setPage }) {
                                     ? `${log.lead.phone.extension} ${log.lead.phone.number}`
                                     : "-"}
                             </TableCell>
-                            <TableCell className="text-black">
-                                {t(log.outcome) || log.outcome || "-"}
+                            <TableCell>
+                                <OutcomeBadge outcome={log.outcome} />
                             </TableCell>
                             <TableCell className="text-black">
                                 {log.deleted?.by
