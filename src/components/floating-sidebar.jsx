@@ -169,12 +169,12 @@ export function FloatingSidebar() {
         <>
             {/* Backdrop overlay for mobile when sidebar is expanded */}
             {isMobile && isExpanded && (
-                <div 
+                <div
                     className="fixed inset-0 bg-black/30 z-40 transition-opacity duration-300"
                     onClick={collapse}
                 />
             )}
-            
+
             {/* Docked Sidebar - Fixed to left edge, expands on hover */}
             <div
                 ref={sidebarRef}
@@ -186,10 +186,14 @@ export function FloatingSidebar() {
                     // Position based on RTL - docked to edge (no gaps)
                     isRTL ? "right-0 border-l" : "left-0 border-r",
                     // Hide on mobile when collapsed, show when expanded
-                    isMobile && !isExpanded && (isRTL ? "-right-16" : "-left-16"),
+                    isMobile &&
+                        !isExpanded &&
+                        (isRTL ? "-right-16" : "-left-16"),
                 )}
                 style={{
-                    width: isExpanded ? `${SIDEBAR_EXPANDED_WIDTH}px` : `${SIDEBAR_COLLAPSED_WIDTH}px`,
+                    width: isExpanded
+                        ? `${SIDEBAR_EXPANDED_WIDTH}px`
+                        : `${SIDEBAR_COLLAPSED_WIDTH}px`,
                 }}
             >
                 {/* Header with Logo or Burger Menu */}
@@ -213,10 +217,12 @@ export function FloatingSidebar() {
                                 alt="Datasack Logo"
                                 className="-mt-2 ml-2 w-9 h-9 rounded object-contain flex-shrink-0"
                             />
-                            <span 
+                            <span
                                 className={cn(
                                     "text-base -mt-1 font-semibold text-gray-900 whitespace-nowrap transition-opacity duration-200",
-                                    isExpanded ? "opacity-100" : "opacity-0 w-0"
+                                    isExpanded
+                                        ? "opacity-100"
+                                        : "opacity-0 w-0",
                                 )}
                             >
                                 {t("datasack")}
@@ -226,10 +232,12 @@ export function FloatingSidebar() {
                 </div>
 
                 {/* Language Toggle - Compact when collapsed, full when expanded */}
-                <div 
+                <div
                     className={cn(
                         "border-b border-gray-100 transition-all duration-200",
-                        isExpanded ? "px-4 py-2" : "px-2 py-2 flex justify-center"
+                        isExpanded
+                            ? "px-4 py-2"
+                            : "px-2 py-2 flex justify-center",
                     )}
                 >
                     {isExpanded ? (
@@ -237,7 +245,8 @@ export function FloatingSidebar() {
                     ) : (
                         <button
                             onClick={() => {
-                                const newLang = i18n.language === "ar" ? "en" : "ar"
+                                const newLang =
+                                    i18n.language === "ar" ? "en" : "ar"
                                 i18n.changeLanguage(newLang)
                                 localStorage.setItem("lang", newLang)
                                 document.documentElement.lang = newLang
@@ -256,7 +265,9 @@ export function FloatingSidebar() {
                             <li key={item.path}>
                                 {isExpanded ? (
                                     <button
-                                        onClick={() => handleNavClick(item.path)}
+                                        onClick={() =>
+                                            handleNavClick(item.path)
+                                        }
                                         className={cn(
                                             "w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200",
                                             isRTL
@@ -274,7 +285,9 @@ export function FloatingSidebar() {
                                     </button>
                                 ) : (
                                     <button
-                                        onClick={() => handleNavClick(item.path)}
+                                        onClick={() =>
+                                            handleNavClick(item.path)
+                                        }
                                         className={cn(
                                             "w-full flex items-center justify-center p-3 rounded-lg transition-all duration-200",
                                             item.isActive
@@ -338,9 +351,11 @@ export function MainContent({ children, className }) {
                 className,
             )}
             style={{
-                marginLeft: isMobile ? 0 : (isRTL ? 0 : SIDEBAR_COLLAPSED_WIDTH),
-                marginRight: isMobile ? 0 : (isRTL ? SIDEBAR_COLLAPSED_WIDTH : 0),
-                width: isMobile ? "100%" : `calc(100% - ${SIDEBAR_COLLAPSED_WIDTH}px)`,
+                marginLeft: isMobile ? 0 : isRTL ? 0 : SIDEBAR_COLLAPSED_WIDTH,
+                marginRight: isMobile ? 0 : isRTL ? SIDEBAR_COLLAPSED_WIDTH : 0,
+                width: isMobile
+                    ? "100%"
+                    : `calc(100% - ${SIDEBAR_COLLAPSED_WIDTH}px)`,
             }}
         >
             {children}

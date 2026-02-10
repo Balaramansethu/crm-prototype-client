@@ -124,7 +124,11 @@ function OutcomeBadge({ outcome }) {
                 outcomeStyles[outcome] || "bg-gray-100 text-gray-800",
             )}
         >
-            {t(`outcome${translationKey.charAt(0).toUpperCase() + translationKey.slice(1)}`) || t(outcome) || outcome}
+            {t(
+                `outcome${translationKey.charAt(0).toUpperCase() + translationKey.slice(1)}`,
+            ) ||
+                t(outcome) ||
+                outcome}
         </span>
     )
 }

@@ -501,7 +501,7 @@ body.rtl table {
         .form-grid {
             gap: 1.25rem;
         }
-        
+
         .form-grid-2 {
             grid-template-columns: repeat(2, 1fr);
         }

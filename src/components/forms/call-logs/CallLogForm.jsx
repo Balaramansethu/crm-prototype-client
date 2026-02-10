@@ -38,12 +38,23 @@ import { useTranslation } from "react-i18next"
 import { useNavigate } from "react-router-dom"
 import { useMemo, useState, useEffect } from "react"
 import { Loader2, FileText } from "lucide-react"
-import { cn, enumToTranslationKey } from "@/lib/utils"
-import {
-    searchLeads,
-    fetchCallLogs,
-    getLeadPreviousCallLogs,
-} from "@/service/callLogsService"
+import { cn } from "@/lib/utils"
+import { searchLeads, getLeadPreviousCallLogs } from "@/service/callLogsService"
+
+// Helper to extract phone display string from a lead object
+function getPhoneFromLead(lead) {
+    if (!lead) return ""
+    if (lead.phone?.number) {
+        return `${lead.phone.extension || ""} ${lead.phone.number}`.trim()
+    }
+    if (lead.contact?.phone?.number) {
+        return `${lead.contact.phone.extension || ""} ${lead.contact.phone.number}`.trim()
+    }
+    if (lead.company?.phone?.number) {
+        return `${lead.company.phone.extension || ""} ${lead.company.phone.number}`.trim()
+    }
+    return ""
+}
 
 export default function CallLogForm({
     onSubmit,
@@ -54,20 +65,30 @@ export default function CallLogForm({
     const navigate = useNavigate()
     const isRTL = i18n.dir() === "rtl"
 
+    const isEditMode = !!initialData
+
+    // Derive initial lead data from initialData so state is correct from first render
+    const initLead =
+        initialData?.lead && typeof initialData.lead === "object"
+            ? initialData.lead
+            : null
+
     const [showUnsavedDialog, setShowUnsavedDialog] = useState(false)
 
-    // Lead state
-    const [leads, setLeads] = useState([])
+    // Lead state — initialize from initialData when in edit mode
+    const [leads, setLeads] = useState(() => (initLead ? [initLead] : []))
     const [loadingLeads, setLoadingLeads] = useState(false)
-    const [selectedLeadId, setSelectedLeadId] = useState("")
-    const [selectedLead, setSelectedLead] = useState(null)
+    const [selectedLeadId, setSelectedLeadId] = useState(
+        () => initLead?._id || "",
+    )
+    const [selectedLead, setSelectedLead] = useState(() => initLead)
     const [previousCallLogs, setPreviousCallLogs] = useState([])
     const [loadingPreviousData, setLoadingPreviousData] = useState(false)
 
-    // Phone display
-    const [phoneDisplay, setPhoneDisplay] = useState("")
-
-    const isEditMode = !!initialData
+    // Phone display — initialize from initialData lead
+    const [phoneDisplay, setPhoneDisplay] = useState(() =>
+        getPhoneFromLead(initLead),
+    )
 
     const defaultValues = useMemo(
         () => ({
@@ -158,22 +179,19 @@ export default function CallLogForm({
     // Update phone display and selected lead when lead is selected
     useEffect(() => {
         if (selectedLeadId) {
-            const lead = leads.find((l) => l._id === selectedLeadId)
+            // Find lead in leads array, or fall back to initialData.lead in edit mode
+            const lead =
+                leads.find((l) => l._id === selectedLeadId) ||
+                (isEditMode &&
+                typeof initialData?.lead === "object" &&
+                initialData.lead._id === selectedLeadId
+                    ? initialData.lead
+                    : null)
             setSelectedLead(lead || null)
 
-            if (lead?.phone?.number) {
-                const phone = lead.phone
-                setPhoneDisplay(
-                    `${phone.extension || ""} ${phone.number}`.trim(),
-                )
-            } else if (lead?.company?.phone?.number) {
-                const phone = lead.company.phone
-                setPhoneDisplay(
-                    `${phone.extension || ""} ${phone.number}`.trim(),
-                )
-            } else {
-                setPhoneDisplay("")
-            }
+            // Update phone display from the found lead
+            const phone = getPhoneFromLead(lead)
+            setPhoneDisplay(phone)
             form.setValue("lead", selectedLeadId)
 
             // Fetch all previous call log data for this lead history - ONLY in create mode
@@ -198,17 +216,22 @@ export default function CallLogForm({
                 }
                 fetchPreviousData()
             }
-        } else {
+        } else if (!isEditMode) {
+            // Only clear state in create mode — in edit mode, we want to keep
+            // the state that was initialized from initialData
             setSelectedLead(null)
             setPhoneDisplay("")
             form.setValue("lead", "")
             setPreviousCallLogs([])
         }
-    }, [selectedLeadId, leads, form, isEditMode])
+    }, [selectedLeadId, leads, form, isEditMode, initialData])
 
-    // Initialize edit mode with existing data
+    // Initialize/reset form values when initialData changes (edit mode)
+    // Note: leads, selectedLeadId, selectedLead, phoneDisplay are already
+    // initialized from initialData via useState initializers above.
+    // This effect only handles the form field reset.
     useEffect(() => {
-        if (!initialData || loadingLeads) return
+        if (!initialData) return
 
         // Calculate duration values (HH:MM:SS)
         const totalSeconds = initialData.callDuration || 0
@@ -253,27 +276,17 @@ export default function CallLogForm({
             remarks: initialData.remarks || "",
         })
 
-        // Set lead for edit mode
-        if (initialData.lead) {
-            const lead = initialData.lead
-            if (typeof lead === "object") {
-                setSelectedLeadId(lead._id)
-                setSelectedLead(lead)
-
-                // Set phone display
-                if (lead.phone?.number) {
-                    setPhoneDisplay(
-                        `${lead.phone.extension || ""} ${lead.phone.number}`.trim(),
-                    )
-                } else if (lead.contact?.phone?.number) {
-                    const phone = lead.contact.phone
-                    setPhoneDisplay(
-                        `${phone.extension || ""} ${phone.number}`.trim(),
-                    )
-                }
-            }
+        // Also ensure lead state is set (in case initialData changed after mount)
+        const lead = initialData.lead
+        if (lead && typeof lead === "object") {
+            setLeads((prev) =>
+                prev.some((l) => l._id === lead._id) ? prev : [lead],
+            )
+            setSelectedLeadId(lead._id)
+            setSelectedLead(lead)
+            setPhoneDisplay(getPhoneFromLead(lead))
         }
-    }, [initialData, form, loadingLeads])
+    }, [initialData, form])
 
     useEffect(() => {
         const handleBeforeUnload = (e) => {
@@ -393,7 +406,7 @@ export default function CallLogForm({
         navigate("/call-logs")
     }
 
-    const isSubmitDisabled = loading
+    const isSubmitDisabled = loading || (isEditMode && !isDirty)
 
     return (
         <>
@@ -410,7 +423,7 @@ export default function CallLogForm({
                             <FormField
                                 control={form.control}
                                 name="lead"
-                                render={({ field }) => (
+                                render={() => (
                                     <FormItem>
                                         <FormLabel>
                                             {t("lead")}{" "}
