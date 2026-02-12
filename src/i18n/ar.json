@@ -127,7 +127,6 @@
     "emailRequired": "البريد الإلكتروني مطلوب",
     "emailInvalid": "بريد إلكتروني غير صالح",
     "phoneRequired": "رقم الهاتف مطلوب",
-    "phoneTooShort": "رقم الهاتف قصير جداً",
     "leadCreatedSuccess": "تم إنشاء العميل المحتمل بنجاح",
     "sourcePlaceholder": "مثال: موقع إلكتروني، توصية من صديق",
     "pageNotFound": "الصفحة غير موجودة",

@@ -11,16 +11,16 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { IconLogout, IconUserPlus, IconMenu2 } from "@tabler/icons-react"
+import { LogOut, UserPlus } from "lucide-react"
+import { Separator } from "@/components/ui/separator"
+import { SidebarTrigger } from "@/components/ui/sidebar"
 import { InviteModal } from "@/components/InviteModal"
-import { useFloatingSidebar } from "@/components/floating-sidebar"
 
 export function SiteHeader() {
     const { t } = useTranslation()
     const user = useUserStore((s) => s.user)
     const logout = useLogout()
     const [inviteModalOpen, setInviteModalOpen] = useState(false)
-    const { expand } = useFloatingSidebar()
 
     // Generate initials for avatar fallback
     const initials =
@@ -28,31 +28,17 @@ export function SiteHeader() {
 
     return (
         <>
-            <header className="flex h-14 shrink-0 items-center gap-2 border-b bg-white/80 backdrop-blur-sm sticky top-0 z-30">
+            <header className="flex h-14 shrink-0 items-center gap-2 border-b bg-background/80 backdrop-blur-sm sticky top-0 z-30 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
                 <div className="flex w-full items-center gap-2 px-4 lg:px-6">
-                    {/* Mobile Menu Button - visible only on mobile */}
-                    <button
-                        onClick={expand}
-                        className="md:hidden flex items-center justify-center p-2 rounded-lg hover:bg-accent transition-colors"
-                        aria-label="Open menu"
-                    >
-                        <IconMenu2 className="h-5 w-5" />
-                    </button>
+                    {/* Sidebar Toggle */}
+                    <SidebarTrigger className="-ml-1" />
+                    <Separator
+                        orientation="vertical"
+                        className="mx-2 data-[orientation=vertical]:h-4"
+                    />
 
-                    {/* Logo and Title */}
-                    <div className="flex items-center gap-2">
-                        {/* Logo - visible on mobile only since sidebar has it on desktop */}
-                        <img
-                            src="https://bunny-wp-pullzone-dgpgtislbk.b-cdn.net/wp-content/uploads/2023/12/Datasack_tech_logo4_240X240_72dpi.png"
-                            alt="Datasack Logo"
-                            className="w-7 h-7 rounded object-contain md:hidden"
-                        />
-                        <h1 className="text-base font-medium">
-                            {t("datasack")}
-                        </h1>
-                    </div>
 
-                    {/* Spacer to push user menu to the right */}
+                    {/* Spacer */}
                     <div className="flex-1" />
 
                     {/* User Profile Dropdown */}
@@ -66,7 +52,7 @@ export function SiteHeader() {
                                             alt={`${user?.firstName} ${user?.lastName}`}
                                         />
                                     ) : (
-                                        <AvatarFallback className="rounded-m bg-primary/30 text-primary">
+                                        <AvatarFallback className="rounded-lg bg-primary/30 text-primary">
                                             {initials}
                                         </AvatarFallback>
                                     )}
@@ -79,7 +65,7 @@ export function SiteHeader() {
                             align="end"
                             sideOffset={8}
                         >
-                            {/* User Info Label */}
+                            {/* User Info */}
                             <DropdownMenuLabel className="p-0 font-normal">
                                 <div className="flex items-center gap-2 px-2 py-2 text-left text-sm">
                                     <Avatar className="h-8 w-8 rounded-lg">
@@ -89,7 +75,7 @@ export function SiteHeader() {
                                                 alt={`${user?.firstName} ${user?.lastName}`}
                                             />
                                         ) : (
-                                            <AvatarFallback className="rounded-m bg-primary/30 text-primary">
+                                            <AvatarFallback className="rounded-lg bg-primary/30 text-primary">
                                                 {initials}
                                             </AvatarFallback>
                                         )}
@@ -107,14 +93,16 @@ export function SiteHeader() {
 
                             <DropdownMenuSeparator />
 
-                            {/* Invite Button - Only visible for super_admin */}
+                            {/* Invite - super_admin only */}
                             {user?.role === "super_admin" && (
                                 <>
                                     <DropdownMenuItem
-                                        onClick={() => setInviteModalOpen(true)}
+                                        onClick={() =>
+                                            setInviteModalOpen(true)
+                                        }
                                         className="cursor-pointer"
                                     >
-                                        <IconUserPlus className="mr-2 h-4 w-4" />
+                                        <UserPlus className="mr-2 h-4 w-4" />
                                         {t("invite")}
                                     </DropdownMenuItem>
                                     <DropdownMenuSeparator />
@@ -126,7 +114,7 @@ export function SiteHeader() {
                                 onClick={() => logout.mutate(null)}
                                 className="cursor-pointer text-destructive focus:text-destructive"
                             >
-                                <IconLogout className="mr-2 h-4 w-4" />
+                                <LogOut className="mr-2 h-4 w-4" />
                                 {t("logout")}
                             </DropdownMenuItem>
                         </DropdownMenuContent>

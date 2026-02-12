@@ -130,7 +130,6 @@
     "emailRequired": "Email is required",
     "emailInvalid": "Invalid email address",
     "phoneRequired": "Phone number is required",
-    "phoneTooShort": "Phone number is too short",
     "leadCreatedSuccess": "Lead created successfully",
     "sourcePlaceholder": "e.g. Website, Referred by friend",
     "pageNotFound": "Page Not Found",

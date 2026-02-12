@@ -2,11 +2,8 @@ import { Navigate, Outlet } from "react-router-dom"
 import { useUserStore } from "@/store/userStore"
 import { useTranslation } from "react-i18next"
 import { SiteHeader } from "@/components/site-header"
-import {
-    FloatingSidebar,
-    FloatingSidebarProvider,
-    MainContent,
-} from "@/components/floating-sidebar"
+import { AppSidebar } from "@/components/app-sidebar"
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
 
 export default function PrivateLayout() {
     const user = useUserStore((s) => s.user)
@@ -16,23 +13,23 @@ export default function PrivateLayout() {
     if (!user) return <Navigate to="/" replace />
 
     return (
-        <FloatingSidebarProvider>
+        <SidebarProvider>
             <div
                 dir={isRTL ? "rtl" : "ltr"}
-                className="min-h-screen bg-background"
+                className="flex min-h-screen w-full bg-background"
             >
-                {/* Floating Sidebar */}
-                <FloatingSidebar />
+                {/* shadcn Sidebar */}
+                <AppSidebar />
 
-                {/* Main Content Area - Full Screen */}
-                <MainContent className="flex flex-col mobile-main-content">
+                {/* Main Content Area */}
+                <SidebarInset>
                     <SiteHeader />
                     {/* Responsive padding: smaller on mobile, larger on desktop */}
                     <div className="flex flex-1 flex-col p-2 sm:p-4 lg:p-6">
                         <Outlet />
                     </div>
-                </MainContent>
+                </SidebarInset>
             </div>
-        </FloatingSidebarProvider>
+        </SidebarProvider>
     )
 }

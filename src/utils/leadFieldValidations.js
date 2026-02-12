@@ -41,12 +41,6 @@ export function validateCompanyDetails(company, setError, t) {
             message: t("phoneRequired"),
         })
         hasErrors = true
-    } else if (!validatePhoneNumber(company.phoneNumber)) {
-        setError("companyDetails.phoneNumber", {
-            type: "manual",
-            message: t("phoneTooShort"),
-        })
-        hasErrors = true
     }
 
     // Optional fields - only validate format if provided
@@ -121,13 +115,7 @@ export function validateContact(contact, index, setError, t) {
     if (
         contact.phoneNumber?.trim() &&
         !validatePhoneNumber(contact.phoneNumber)
-    ) {
-        setError(`contacts.${index}.phoneNumber`, {
-            type: "manual",
-            message: t("phoneTooShort"),
-        })
-        hasErrors = true
-    }
+    )
 
     if (
         contact.phoneExtension?.trim() &&
