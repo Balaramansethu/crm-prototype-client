@@ -316,28 +316,26 @@ export default function LeadsPage() {
                                     align="start"
                                 >
                                     <div className="flex flex-col gap-1">
-                                        {SERVICE_TYPE_OPTIONS.map(
-                                            (option) => (
-                                                <label
-                                                    key={option.value}
-                                                    className="flex items-center gap-2.5 px-2 py-1.5 rounded-md cursor-pointer hover:bg-muted/60 transition-colors"
-                                                >
-                                                    <Checkbox
-                                                        checked={serviceTypes.includes(
+                                        {SERVICE_TYPE_OPTIONS.map((option) => (
+                                            <label
+                                                key={option.value}
+                                                className="flex items-center gap-2.5 px-2 py-1.5 rounded-md cursor-pointer hover:bg-muted/60 transition-colors"
+                                            >
+                                                <Checkbox
+                                                    checked={serviceTypes.includes(
+                                                        option.value,
+                                                    )}
+                                                    onCheckedChange={() =>
+                                                        toggleServiceType(
                                                             option.value,
-                                                        )}
-                                                        onCheckedChange={() =>
-                                                            toggleServiceType(
-                                                                option.value,
-                                                            )
-                                                        }
-                                                    />
-                                                    <span className="text-sm text-foreground">
-                                                        {t(option.label)}
-                                                    </span>
-                                                </label>
-                                            ),
-                                        )}
+                                                        )
+                                                    }
+                                                />
+                                                <span className="text-sm text-foreground">
+                                                    {t(option.label)}
+                                                </span>
+                                            </label>
+                                        ))}
                                         {serviceTypes.length > 0 && (
                                             <>
                                                 <div className="border-t my-1" />

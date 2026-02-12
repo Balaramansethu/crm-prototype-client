@@ -191,9 +191,11 @@
 @layer components {
     .card {
         backdrop-filter: blur(12px);
-        background: linear-gradient(135deg,
-                oklch(1 0.003 30 / 0.95) 0%,
-                oklch(0.99 0.005 25 / 0.98) 100%);
+        background: linear-gradient(
+            135deg,
+            oklch(1 0.003 30 / 0.95) 0%,
+            oklch(0.99 0.005 25 / 0.98) 100%
+        );
         box-shadow:
             0 1px 3px oklch(0.38 0.12 10 / 0.04),
             0 10px 30px oklch(0.38 0.12 10 / 0.06);
@@ -201,9 +203,11 @@
     }
 
     .dark .card {
-        background: linear-gradient(135deg,
-                oklch(0.18 0.02 20 / 0.95) 0%,
-                oklch(0.2 0.025 15 / 0.98) 100%);
+        background: linear-gradient(
+            135deg,
+            oklch(0.18 0.02 20 / 0.95) 0%,
+            oklch(0.2 0.025 15 / 0.98) 100%
+        );
         box-shadow:
             0 1px 3px oklch(0 0 0 / 0.3),
             0 10px 30px oklch(0.55 0.14 10 / 0.12);
@@ -237,12 +241,13 @@
 
 /* Premium Burgundy button styling */
 @layer components {
-
     button[class*="bg-primary"],
     .btn-primary {
-        background: linear-gradient(135deg,
-                oklch(0.42 0.13 10) 0%,
-                oklch(0.35 0.11 5) 100%);
+        background: linear-gradient(
+            135deg,
+            oklch(0.42 0.13 10) 0%,
+            oklch(0.35 0.11 5) 100%
+        );
         box-shadow:
             0 2px 8px oklch(0.38 0.12 10 / 0.25),
             inset 0 1px 0 oklch(1 0 0 / 0.1);
@@ -251,9 +256,11 @@
 
     button[class*="bg-primary"]:hover,
     .btn-primary:hover {
-        background: linear-gradient(135deg,
-                oklch(0.45 0.14 10) 0%,
-                oklch(0.38 0.12 5) 100%);
+        background: linear-gradient(
+            135deg,
+            oklch(0.45 0.14 10) 0%,
+            oklch(0.38 0.12 5) 100%
+        );
         box-shadow:
             0 4px 12px oklch(0.38 0.12 10 / 0.35),
             inset 0 1px 0 oklch(1 0 0 / 0.15);
@@ -295,9 +302,11 @@
         content: "";
         position: absolute;
         inset: 0;
-        background: linear-gradient(135deg,
-                oklch(0.42 0.13 10 / 0.03) 0%,
-                oklch(0.35 0.11 5 / 0.05) 100%);
+        background: linear-gradient(
+            135deg,
+            oklch(0.42 0.13 10 / 0.03) 0%,
+            oklch(0.35 0.11 5 / 0.05) 100%
+        );
         pointer-events: none;
         border-radius: inherit;
     }
@@ -349,7 +358,6 @@ body.rtl table {
 
 /* Mobile-first responsive utilities */
 @layer utilities {
-
     /* Better touch targets for mobile */
     .touch-target {
         min-height: 44px;
@@ -397,7 +405,7 @@ body.rtl table {
             gap: 0.5rem;
         }
 
-        .mobile-header-actions>* {
+        .mobile-header-actions > * {
             flex: 1;
         }
     }
@@ -467,10 +475,8 @@ body.rtl table {
    MOBILE SIDEBAR HANDLING
    ======================================== */
 @layer components {
-
     /* Hide sidebar on mobile by default */
     @media (max-width: 767px) {
-
         /* Ensure main content takes full width on mobile */
         .mobile-main-content {
             margin-left: 0 !important;
@@ -484,7 +490,6 @@ body.rtl table {
    FORM RESPONSIVENESS
    ======================================== */
 @layer components {
-
     /* Form grid layouts */
     .form-grid {
         display: grid;
@@ -521,7 +526,6 @@ body.rtl table {
 
     /* Form input improvements for mobile */
     @media (max-width: 640px) {
-
         /* Make inputs full width on mobile */
         input[type="text"],
         input[type="email"],
@@ -542,7 +546,7 @@ body.rtl table {
             gap: 0.75rem !important;
         }
 
-        .form-row>* {
+        .form-row > * {
             width: 100% !important;
         }
     }
@@ -553,7 +557,6 @@ body.rtl table {
    ======================================== */
 @layer components {
     @media (max-width: 767px) {
-
         /* Make tables scrollable on mobile */
         .table-container {
             overflow-x: auto;
@@ -574,7 +577,6 @@ body.rtl table {
    ======================================== */
 @layer components {
     @media (max-width: 640px) {
-
         /* Make modals full-width on mobile */
         .mobile-modal-full {
             width: calc(100% - 1rem) !important;
@@ -588,7 +590,6 @@ body.rtl table {
    PAGE LAYOUT RESPONSIVENESS
    ======================================== */
 @layer components {
-
     /* Main page container */
     .page-container {
         padding: 0.75rem;

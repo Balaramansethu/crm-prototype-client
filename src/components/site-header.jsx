@@ -37,7 +37,6 @@ export function SiteHeader() {
                         className="mx-2 data-[orientation=vertical]:h-4"
                     />
 
-
                     {/* Spacer */}
                     <div className="flex-1" />
 
@@ -97,9 +96,7 @@ export function SiteHeader() {
                             {user?.role === "super_admin" && (
                                 <>
                                     <DropdownMenuItem
-                                        onClick={() =>
-                                            setInviteModalOpen(true)
-                                        }
+                                        onClick={() => setInviteModalOpen(true)}
                                         className="cursor-pointer"
                                     >
                                         <UserPlus className="mr-2 h-4 w-4" />

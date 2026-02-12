@@ -75,7 +75,7 @@ export default function LeadForm({
                 _id: initialData._id,
                 name: initialData.name || "",
                 email: initialData.email || "",
-                phoneExtension: initialData.phone?.extension || "",
+                phoneExtension: initialData.phone?.extension || "+966",
                 phoneNumber: initialData.phone?.number || "",
                 status: initialData.status || "new",
                 source: initialData.source || "",
@@ -92,7 +92,7 @@ export default function LeadForm({
                     _id: lead._id,
                     name: lead.name || "",
                     email: lead.email || "",
-                    phoneExtension: lead.phone?.extension || "",
+                    phoneExtension: lead.phone?.extension || "+966",
                     phoneNumber: lead.phone?.number || "",
                     status: lead.status || "new",
                     source: lead.source || "",
@@ -123,7 +123,7 @@ export default function LeadForm({
                     _id: lead._id,
                     name: lead.name || "",
                     email: lead.email || "",
-                    phoneExtension: lead.phone?.extension || "",
+                    phoneExtension: lead.phone?.extension || "+966",
                     phoneNumber: lead.phone?.number || "",
                     status: lead.status || "new",
                     source: lead.source || "",
@@ -146,7 +146,7 @@ export default function LeadForm({
                     phoneExtension:
                         legacyContact.phone?.extension ||
                         initialData?.phone?.extension ||
-                        "",
+                        "+966",
                     phoneNumber:
                         legacyContact.phone?.number ||
                         initialData?.phone?.number ||
@@ -165,7 +165,7 @@ export default function LeadForm({
                 {
                     name: "",
                     email: "",
-                    phoneExtension: "",
+                    phoneExtension: "+966",
                     phoneNumber: "",
                     status: "new",
                     source: "",
@@ -183,7 +183,7 @@ export default function LeadForm({
                         ? initialData.company
                         : ""),
                 email: company.email || "",
-                phoneExtension: company.phone?.extension || "",
+                phoneExtension: company.phone?.extension || "+966",
                 phoneNumber: company.phone?.number || "",
                 website: company.website || initialData?.website || "",
                 socialProfile:

@@ -31,7 +31,7 @@ export function CountryCodeSelect({
 }) {
     const { t, i18n } = useTranslation()
     const isRTL = i18n.dir() === "rtl"
-    const { countries, loading } = useCountries()
+    const { countries, loading, error } = useCountries()
     const [open, setOpen] = useState(false)
     const [searchQuery, setSearchQuery] = useState("")
     const searchInputRef = useRef(null)
@@ -74,6 +74,33 @@ export function CountryCodeSelect({
             render={({ field }) => {
                 const selectedCountry = findCountryByCode(field.value)
 
+                // If the API failed and no fallback countries loaded, show manual input
+                if (error && countries.length === 0) {
+                    return (
+                        <FormItem className="flex flex-col">
+                            {label && <FormLabel>{label}</FormLabel>}
+                            <FormControl>
+                                <Input
+                                    {...field}
+                                    value={field.value || "+966"}
+                                    placeholder={placeholder}
+                                    disabled={disabled}
+                                    className="font-medium"
+                                    onChange={(e) => {
+                                        let val = e.target.value
+                                        // Ensure value starts with +
+                                        if (val && !val.startsWith("+")) {
+                                            val = "+" + val
+                                        }
+                                        field.onChange(val)
+                                    }}
+                                />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )
+                }
+
                 return (
                     <FormItem className="flex flex-col">
                         {label && <FormLabel>{label}</FormLabel>}
@@ -113,7 +140,9 @@ export function CountryCodeSelect({
                                                 </span>
                                             </span>
                                         ) : (
-                                            <span>{placeholder}</span>
+                                            <span>
+                                                {field.value || placeholder}
+                                            </span>
                                         )}
                                         <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                                     </Button>

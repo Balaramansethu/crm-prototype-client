@@ -87,7 +87,7 @@ export const CALL_OUTCOME_OPTIONS = [
 export const DEFAULT_CONTACT_VALUES = {
     name: "",
     email: "",
-    phoneExtension: "",
+    phoneExtension: "+966",
     phoneNumber: "",
     status: "new",
     source: "",
@@ -100,7 +100,7 @@ export const DEFAULT_CONTACT_VALUES = {
 export const DEFAULT_COMPANY_VALUES = {
     name: "",
     email: "",
-    phoneExtension: "",
+    phoneExtension: "+966",
     phoneNumber: "",
     website: "",
     socialProfile: "",

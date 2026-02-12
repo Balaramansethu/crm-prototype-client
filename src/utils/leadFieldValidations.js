@@ -116,17 +116,16 @@ export function validateContact(contact, index, setError, t) {
         contact.phoneNumber?.trim() &&
         !validatePhoneNumber(contact.phoneNumber)
     )
-
-    if (
-        contact.phoneExtension?.trim() &&
-        !validatePhoneExtension(contact.phoneExtension)
-    ) {
-        setError(`contacts.${index}.phoneExtension`, {
-            type: "manual",
-            message: t("invalidFormat"),
-        })
-        hasErrors = true
-    }
+        if (
+            contact.phoneExtension?.trim() &&
+            !validatePhoneExtension(contact.phoneExtension)
+        ) {
+            setError(`contacts.${index}.phoneExtension`, {
+                type: "manual",
+                message: t("invalidFormat"),
+            })
+            hasErrors = true
+        }
 
     if (
         contact.source?.trim() &&
