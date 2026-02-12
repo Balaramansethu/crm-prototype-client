@@ -159,7 +159,7 @@ const ContactPersonForm = forwardRef(function ContactPersonForm(
                     disabled={disabled}
                 />
 
-                <div className="md:col-span-2 grid grid-cols-[140px_1fr] gap-4">
+                <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-[140px_1fr] gap-4">
                     <CountryCodeSelect
                         control={control}
                         name={`contacts.${index}.phoneExtension`}

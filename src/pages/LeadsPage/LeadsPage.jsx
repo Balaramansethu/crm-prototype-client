@@ -53,6 +53,7 @@ import {
     Edit,
     Briefcase,
     Calendar,
+    SlidersHorizontal,
 } from "lucide-react"
 import DatePicker from "react-datepicker"
 import "react-datepicker/dist/react-datepicker.css"
@@ -83,6 +84,7 @@ export default function LeadsPage() {
     const [status, setStatus] = useState("")
     const [serviceTypes, setServiceTypes] = useState([])
     const [followUp, setFollowUp] = useState()
+    const [showFilters, setShowFilters] = useState(false)
 
     // Sync page state with URL
     useEffect(() => {
@@ -258,43 +260,80 @@ export default function LeadsPage() {
             <div className="flex flex-col rounded-xl border bg-card text-card-foreground shadow-sm">
                 {/* Filter Toolbar */}
                 <div className="flex flex-col gap-3 sm:gap-4 border-b p-3 sm:p-4 lg:flex-row lg:items-center lg:justify-between">
-                    <div className="flex flex-1 flex-col gap-3 lg:flex-row lg:items-center">
-                        {/* Company Search - First filter */}
+                    {/* Mobile Filter Toggle Button */}
+                    <div className="flex items-center justify-between md:hidden">
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setShowFilters((prev) => !prev)}
+                            className="h-9 gap-2"
+                        >
+                            <SlidersHorizontal className="h-4 w-4" />
+                            {t("filters")}
+                            {hasActiveFilters && (
+                                <span className="ml-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground">
+                                    {[
+                                        contact,
+                                        company,
+                                        status && status !== "all",
+                                        serviceTypes.length > 0,
+                                        followUp,
+                                    ].filter(Boolean).length}
+                                </span>
+                            )}
+                        </Button>
+                        {hasActiveFilters && (
+                            <Button
+                                variant="ghost"
+                                onClick={clearFilters}
+                                size="sm"
+                                className="h-9 px-2 text-black hover:text-black md:hidden"
+                            >
+                                <X className="h-3.5 w-3.5" />
+                            </Button>
+                        )}
+                    </div>
+
+                    <div className={cn(
+                        "flex flex-1 flex-col gap-3 lg:flex-row lg:items-center",
+                        showFilters ? "flex" : "hidden md:flex",
+                    )}>
+                        {/* Company Search */}
                         <div className="relative flex-1 md:max-w-[200px]">
-                            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-500" />
+                            <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500 pointer-events-none" />
                             <Input
                                 placeholder={t("filterByCompany")}
                                 value={company}
                                 onChange={(e) => setCompany(e.target.value)}
-                                className="pl-9 h-9 bg-muted/50 focus:bg-background transition-colors text-black placeholder:text-gray-500"
+                                className="pl-9 h-9 text-sm bg-muted/50 focus:bg-background transition-colors text-black placeholder:text-gray-500"
                             />
                         </div>
 
                         {/* Contact Search */}
                         <div className="relative flex-1 md:max-w-[240px]">
-                            <User className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-500" />
+                            <User className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500 pointer-events-none" />
                             <Input
                                 placeholder={t("filterByContact")}
                                 value={contact}
                                 onChange={(e) => setContact(e.target.value)}
-                                className="pl-9 h-9 bg-muted/50 focus:bg-background transition-colors text-black placeholder:text-gray-500"
+                                className="pl-9 h-9 text-sm bg-muted/50 focus:bg-background transition-colors text-black placeholder:text-gray-500"
                             />
                         </div>
 
                         {/* Service Type Filter - Multi-select with Checkboxes */}
-                        <div className="md:w-[230px]">
+                        <div className="relative md:w-[230px]">
                             <Popover>
                                 <PopoverTrigger asChild>
                                     <button
                                         className={cn(
-                                            "flex items-center gap-2 w-full h-9 px-3 rounded-md border border-input bg-muted/50 text-sm transition-colors hover:bg-background",
+                                            "flex items-center w-full h-9 rounded-md border border-input bg-muted/50 text-sm transition-colors hover:bg-background",
                                             serviceTypes.length > 0
                                                 ? "text-black"
                                                 : "text-gray-500",
                                         )}
                                     >
-                                        <Briefcase className="h-3.5 w-3.5 text-gray-500 shrink-0" />
-                                        <span className="truncate text-left flex-1">
+                                        <Briefcase className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500 shrink-0 pointer-events-none" />
+                                        <span className="truncate text-left flex-1 pl-9 pr-8 text-sm">
                                             {serviceTypes.length > 0
                                                 ? serviceTypes.length === 1
                                                     ? t(
@@ -308,7 +347,7 @@ export default function LeadsPage() {
                                                     : `${serviceTypes.length} ${t("selected")}`
                                                 : t("filterByServiceType")}
                                         </span>
-                                        <ChevronsUpDown className="h-3.5 w-3.5 text-gray-400 shrink-0" />
+                                        <ChevronsUpDown className="absolute right-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 shrink-0 pointer-events-none" />
                                     </button>
                                 </PopoverTrigger>
                                 <PopoverContent
@@ -356,24 +395,22 @@ export default function LeadsPage() {
                         </div>
 
                         {/* Status Filter */}
-                        <div className="md:w-[170px]">
+                        <div className="relative md:w-[170px]">
+                            <Filter className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500 pointer-events-none z-10" />
                             <Select value={status} onValueChange={setStatus}>
-                                <SelectTrigger className="h-9 bg-muted/50 focus:bg-background border-input">
-                                    <div className="flex items-center gap-2 w-full overflow-hidden">
-                                        <Filter className="h-3.5 w-3.5 text-gray-500 shrink-0" />
-                                        <span
-                                            className={cn(
-                                                "truncate text-left flex-1",
-                                                status && status !== "all"
-                                                    ? "text-black"
-                                                    : "text-gray-500",
-                                            )}
-                                        >
-                                            {status && status !== "all"
-                                                ? t(status) || status
-                                                : t("status")}
-                                        </span>
-                                    </div>
+                                <SelectTrigger className="h-9 pl-9 bg-muted/50 focus:bg-background border-input text-sm">
+                                    <span
+                                        className={cn(
+                                            "truncate text-left flex-1",
+                                            status && status !== "all"
+                                                ? "text-black"
+                                                : "text-gray-500",
+                                        )}
+                                    >
+                                        {status && status !== "all"
+                                            ? t(status) || status
+                                            : t("status")}
+                                    </span>
                                 </SelectTrigger>
                                 <SelectContent>
                                     <SelectItem value="all">
@@ -397,12 +434,11 @@ export default function LeadsPage() {
 
                         {/* Date Filter */}
                         <div className="relative md:w-[180px]">
-                            <Calendar className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-500 pointer-events-none z-10" />
+                            <Calendar className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500 pointer-events-none z-10" />
                             <DatePicker
                                 selected={followUp}
                                 onChange={(date) => {
                                     if (date) {
-                                        // Create date at local noon to avoid timezone shifts
                                         const newDate = new Date(
                                             date.getFullYear(),
                                             date.getMonth(),
@@ -426,13 +462,13 @@ export default function LeadsPage() {
                         </div>
                     </div>
 
-                    {/* Clear Filters - Only show if active */}
+                    {/* Clear Filters - Only show if active (desktop) */}
                     {hasActiveFilters && (
                         <Button
                             variant="ghost"
                             onClick={clearFilters}
                             size="sm"
-                            className="h-9 px-3 text-black hover:text-black shrink-0"
+                            className="h-9 px-3 text-black hover:text-black shrink-0 hidden md:flex"
                         >
                             <X className="mr-2 h-3.5 w-3.5" />
                             {t("clearFilters")}
@@ -697,8 +733,8 @@ export default function LeadsPage() {
 
                 {/* Footer / Pagination */}
                 {!isLoading && leads.length > 0 && (
-                    <div className="flex items-center justify-between border-t p-4">
-                        <div className="text-sm text-black">
+                    <div className="flex flex-col sm:flex-row items-center justify-between border-t p-4 gap-4">
+                        <div className="text-sm text-black text-center sm:text-left">
                             {t("showingLeads", {
                                 start: (page - 1) * limit + 1,
                                 end: Math.min(page * limit, info.total),
