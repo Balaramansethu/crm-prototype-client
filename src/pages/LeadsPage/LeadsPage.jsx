@@ -21,6 +21,12 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from "@/components/ui/popover"
+import { Checkbox } from "@/components/ui/checkbox"
 import { format } from "date-fns"
 import {
     DropdownMenu,
@@ -46,6 +52,7 @@ import {
     Globe,
     Edit,
     Briefcase,
+    Calendar,
 } from "lucide-react"
 import DatePicker from "react-datepicker"
 import "react-datepicker/dist/react-datepicker.css"
@@ -74,7 +81,7 @@ export default function LeadsPage() {
     const [contact, setContact] = useState("")
     const [company, setCompany] = useState("")
     const [status, setStatus] = useState("")
-    const [serviceType, setServiceType] = useState("")
+    const [serviceTypes, setServiceTypes] = useState([])
     const [followUp, setFollowUp] = useState()
 
     // Sync page state with URL
@@ -106,7 +113,7 @@ export default function LeadsPage() {
         contact: debouncedContact,
         company: debouncedCompany,
         status: status === "all" ? "" : status,
-        serviceType: serviceType === "all" ? "" : serviceType,
+        ...(serviceTypes.length > 0 && { serviceType: serviceTypes }),
         followUp: followUp ? format(followUp, "yyyy-MM-dd") : "",
     })
 
@@ -194,11 +201,20 @@ export default function LeadsPage() {
         }
     }
 
+    const toggleServiceType = (value) => {
+        setServiceTypes((prev) =>
+            prev.includes(value)
+                ? prev.filter((v) => v !== value)
+                : [...prev, value],
+        )
+        setPage(1)
+    }
+
     const clearFilters = () => {
         setContact("")
         setCompany("")
         setStatus("")
-        setServiceType("")
+        setServiceTypes([])
         setFollowUp(undefined)
         setPage(1)
     }
@@ -217,7 +233,7 @@ export default function LeadsPage() {
         contact ||
         company ||
         (status && status !== "all") ||
-        (serviceType && serviceType !== "all") ||
+        serviceTypes.length > 0 ||
         followUp
 
     return (
@@ -265,57 +281,80 @@ export default function LeadsPage() {
                             />
                         </div>
 
-                        {/* Service Type Filter */}
+                        {/* Service Type Filter - Multi-select with Checkboxes */}
                         <div className="md:w-[230px]">
-                            <Select
-                                value={serviceType}
-                                onValueChange={setServiceType}
-                            >
-                                <SelectTrigger className="h-9 bg-muted/50 focus:bg-background border-input">
-                                    <div className="flex items-center gap-2 w-full overflow-hidden">
+                            <Popover>
+                                <PopoverTrigger asChild>
+                                    <button
+                                        className={cn(
+                                            "flex items-center gap-2 w-full h-9 px-3 rounded-md border border-input bg-muted/50 text-sm transition-colors hover:bg-background",
+                                            serviceTypes.length > 0
+                                                ? "text-black"
+                                                : "text-gray-500",
+                                        )}
+                                    >
                                         <Briefcase className="h-3.5 w-3.5 text-gray-500 shrink-0" />
-                                        <span
-                                            className={cn(
-                                                "truncate text-left flex-1",
-                                                serviceType &&
-                                                    serviceType !== "all"
-                                                    ? "text-black"
-                                                    : "text-gray-500",
-                                            )}
-                                        >
-                                            {serviceType &&
-                                            serviceType !== "all"
-                                                ? SERVICE_TYPE_OPTIONS.find(
-                                                      (opt) =>
-                                                          opt.value ===
-                                                          serviceType,
-                                                  )?.label
+                                        <span className="truncate text-left flex-1">
+                                            {serviceTypes.length > 0
+                                                ? serviceTypes.length === 1
                                                     ? t(
                                                           SERVICE_TYPE_OPTIONS.find(
-                                                              (opt) =>
-                                                                  opt.value ===
-                                                                  serviceType,
-                                                          ).label,
+                                                              (o) =>
+                                                                  o.value ===
+                                                                  serviceTypes[0],
+                                                          )?.label ||
+                                                              serviceTypes[0],
                                                       )
-                                                    : serviceType
+                                                    : `${serviceTypes.length} ${t("selected")}`
                                                 : t("filterByServiceType")}
                                         </span>
+                                        <ChevronsUpDown className="h-3.5 w-3.5 text-gray-400 shrink-0" />
+                                    </button>
+                                </PopoverTrigger>
+                                <PopoverContent
+                                    className="w-[230px] p-2"
+                                    align="start"
+                                >
+                                    <div className="flex flex-col gap-1">
+                                        {SERVICE_TYPE_OPTIONS.map(
+                                            (option) => (
+                                                <label
+                                                    key={option.value}
+                                                    className="flex items-center gap-2.5 px-2 py-1.5 rounded-md cursor-pointer hover:bg-muted/60 transition-colors"
+                                                >
+                                                    <Checkbox
+                                                        checked={serviceTypes.includes(
+                                                            option.value,
+                                                        )}
+                                                        onCheckedChange={() =>
+                                                            toggleServiceType(
+                                                                option.value,
+                                                            )
+                                                        }
+                                                    />
+                                                    <span className="text-sm text-foreground">
+                                                        {t(option.label)}
+                                                    </span>
+                                                </label>
+                                            ),
+                                        )}
+                                        {serviceTypes.length > 0 && (
+                                            <>
+                                                <div className="border-t my-1" />
+                                                <button
+                                                    onClick={() =>
+                                                        setServiceTypes([])
+                                                    }
+                                                    className="flex items-center gap-2 px-2 py-1.5 text-sm text-muted-foreground hover:text-foreground hover:bg-muted/60 rounded-md transition-colors"
+                                                >
+                                                    <X className="h-3.5 w-3.5" />
+                                                    {t("clearFilters")}
+                                                </button>
+                                            </>
+                                        )}
                                     </div>
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="all">
-                                        {t("all")}
-                                    </SelectItem>
-                                    {SERVICE_TYPE_OPTIONS.map((option) => (
-                                        <SelectItem
-                                            key={option.value}
-                                            value={option.value}
-                                        >
-                                            {t(option.label)}
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
+                                </PopoverContent>
+                            </Popover>
                         </div>
 
                         {/* Status Filter */}
@@ -359,7 +398,8 @@ export default function LeadsPage() {
                         </div>
 
                         {/* Date Filter */}
-                        <div className="md:w-[180px]">
+                        <div className="relative md:w-[180px]">
+                            <Calendar className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-500 pointer-events-none z-10" />
                             <DatePicker
                                 selected={followUp}
                                 onChange={(date) => {
@@ -380,7 +420,7 @@ export default function LeadsPage() {
                                 }}
                                 placeholderText={t("followUp")}
                                 dateFormat="dd-MM-yyyy"
-                                className="w-full h-9 px-3 rounded-md border border-input bg-muted/50 text-sm focus:bg-background transition-colors text-black placeholder:text-gray-500"
+                                className="w-full h-9 pl-9 pr-3 rounded-md border border-input bg-muted/50 text-sm focus:bg-background transition-colors text-black placeholder:text-gray-500"
                                 wrapperClassName="w-full"
                                 showPopperArrow={false}
                                 isClearable

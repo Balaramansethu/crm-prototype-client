@@ -6,6 +6,9 @@ import { useUserStore } from "@/store/userStore"
 const axiosPrivateInstance = axios.create({
     baseURL: BASE_URL,
     withCredentials: true,
+    paramsSerializer: {
+        indexes: null,
+    },
 })
 
 axiosPrivateInstance.interceptors.request.use(

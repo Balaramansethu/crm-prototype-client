@@ -395,5 +395,6 @@
     "noCountryFound": "لم يتم العثور على دولة",
     "countryCode": "رمز الدولة",
     "selectTime": "اختر الوقت",
-    "now": "الآن"
+    "now": "الآن",
+    "selected": "محدد"
 }

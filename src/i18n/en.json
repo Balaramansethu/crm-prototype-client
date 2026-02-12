@@ -395,5 +395,6 @@
     "noCountryFound": "No country found",
     "countryCode": "Country Code",
     "selectTime": "Select time",
-    "now": "Now"
+    "now": "Now",
+    "selected": "selected"
 }
