@@ -257,9 +257,9 @@ export default function LeadsPage() {
             </div>
 
             {/* Main Content Card */}
-            <div className="flex flex-col rounded-xl border bg-card text-card-foreground shadow-sm min-w-0 overflow-hidden">
+            <div className="flex flex-col rounded-xl border bg-card text-card-foreground shadow-sm min-w-0">
                 {/* Filter Toolbar */}
-                <div className="flex flex-col gap-3 sm:gap-4 border-b p-3 sm:p-4 lg:flex-row lg:items-center lg:justify-between">
+                <div className="flex flex-col gap-3 sm:gap-4 border-b p-3 sm:p-4">
                     {/* Mobile Filter Toggle Button */}
                     <div className="flex items-center justify-between md:hidden">
                         <Button
@@ -298,12 +298,12 @@ export default function LeadsPage() {
 
                     <div
                         className={cn(
-                            "flex flex-1 flex-col gap-3 lg:flex-row lg:items-center",
+                            "flex flex-1 flex-col gap-3 md:flex-row md:flex-wrap md:items-center",
                             showFilters ? "flex" : "hidden md:flex",
                         )}
                     >
                         {/* Company Search */}
-                        <div className="relative flex-1 md:max-w-[200px]">
+                        <div className="relative flex-1 min-w-[140px] max-w-full md:max-w-[200px]">
                             <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500 pointer-events-none" />
                             <Input
                                 placeholder={t("filterByCompany")}
@@ -314,7 +314,7 @@ export default function LeadsPage() {
                         </div>
 
                         {/* Contact Search */}
-                        <div className="relative flex-1 md:max-w-[240px]">
+                        <div className="relative flex-1 min-w-[140px] max-w-full md:max-w-[240px]">
                             <User className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500 pointer-events-none" />
                             <Input
                                 placeholder={t("filterByContact")}
@@ -325,7 +325,7 @@ export default function LeadsPage() {
                         </div>
 
                         {/* Service Type Filter - Multi-select with Checkboxes */}
-                        <div className="relative md:w-[230px]">
+                        <div className="relative flex-1 min-w-[160px] max-w-full md:max-w-[230px]">
                             <Popover>
                                 <PopoverTrigger asChild>
                                     <button
@@ -399,7 +399,7 @@ export default function LeadsPage() {
                         </div>
 
                         {/* Status Filter */}
-                        <div className="relative md:w-[170px]">
+                        <div className="relative flex-1 min-w-[130px] max-w-full md:max-w-[170px]">
                             <Filter className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500 pointer-events-none z-10" />
                             <Select value={status} onValueChange={setStatus}>
                                 <SelectTrigger className="h-9 pl-9 bg-muted/50 focus:bg-background border-input text-sm">
@@ -437,7 +437,7 @@ export default function LeadsPage() {
                         </div>
 
                         {/* Date Filter */}
-                        <div className="relative md:w-[180px]">
+                        <div className="relative flex-1 min-w-[150px] max-w-full md:max-w-[180px]">
                             <Calendar className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500 pointer-events-none z-10" />
                             <DatePicker
                                 selected={followUp}
@@ -464,20 +464,20 @@ export default function LeadsPage() {
                                 isClearable
                             />
                         </div>
-                    </div>
 
-                    {/* Clear Filters - Only show if active (desktop) */}
-                    {hasActiveFilters && (
-                        <Button
-                            variant="ghost"
-                            onClick={clearFilters}
-                            size="sm"
-                            className="h-9 px-3 text-black hover:text-black shrink-0 hidden md:flex"
-                        >
-                            <X className="mr-2 h-3.5 w-3.5" />
-                            {t("clearFilters")}
-                        </Button>
-                    )}
+                        {/* Clear Filters - inline at the end */}
+                        {hasActiveFilters && (
+                            <Button
+                                variant="ghost"
+                                onClick={clearFilters}
+                                size="sm"
+                                className="h-9 px-3 text-black hover:text-black shrink-0 hidden md:flex"
+                            >
+                                <X className="mr-2 h-3.5 w-3.5" />
+                                {t("clearFilters")}
+                            </Button>
+                        )}
+                    </div>
                 </div>
 
                 {/* Table */}
