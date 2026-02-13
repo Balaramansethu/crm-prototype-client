@@ -1,16 +1,10 @@
 import {
     FormInput,
     FormSelect,
-    CountryCodeSelect,
+    PhoneInputGroup,
+    AddressFields,
 } from "@/components/form-fields"
-import {
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
-} from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
+
 import { SERVICE_TYPE_OPTIONS } from "@/constants/formOptions"
 import { useTranslation } from "react-i18next"
 import { cn } from "@/lib/utils"
@@ -62,32 +56,14 @@ export default function CompanyDetailsForm({
                     disabled={disabled}
                 />
 
-                <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-[140px_1fr] gap-4">
-                    <CountryCodeSelect
-                        control={control}
-                        name="companyDetails.phoneExtension"
-                        label={t("extension")}
-                        disabled={disabled}
-                        placeholder="+966"
-                    />
-                    <FormField
-                        control={control}
-                        name="companyDetails.phoneNumber"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>{t("phone")} *</FormLabel>
-                                <FormControl>
-                                    <Input
-                                        {...field}
-                                        dir="ltr"
-                                        disabled={disabled}
-                                    />
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-                </div>
+                {/* Phone: Using reusable PhoneInputGroup */}
+                <PhoneInputGroup
+                    control={control}
+                    namePrefix="companyDetails"
+                    required={true}
+                    disabled={disabled}
+                    showExtension={true}
+                />
 
                 {/* Service Type Dropdown */}
                 <FormSelect
@@ -115,6 +91,13 @@ export default function CompanyDetailsForm({
                     name="companyDetails.socialProfile"
                     label={t("socialProfile")}
                     placeholder={t("socialProfilePlaceholder")}
+                    disabled={disabled}
+                />
+
+                {/* Address Section */}
+                <AddressFields
+                    control={control}
+                    namePrefix="companyDetails.address"
                     disabled={disabled}
                 />
             </div>

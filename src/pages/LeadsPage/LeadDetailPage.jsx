@@ -64,6 +64,8 @@ export default function LeadDetailPage() {
               source: leadData.source,
               followUp: leadData.followUp,
               priority: leadData.priority,
+              department: leadData.department,
+              remarks: leadData.remarks,
           }
         : null
     // Other contacts are in company.leads
@@ -95,7 +97,23 @@ export default function LeadDetailPage() {
 
     const formatPhone = (phone) => {
         if (!phone?.number) return "-"
-        return `${phone.extension || ""} ${phone.number}`.trim()
+        const parts = []
+        if (phone.countryCode) parts.push(phone.countryCode)
+        parts.push(phone.number)
+        if (phone.extension && phone.extension !== phone.countryCode)
+            parts.push(`x${phone.extension}`)
+        return parts.join(" ")
+    }
+
+    const formatAddress = (address) => {
+        if (!address) return "-"
+        const parts = []
+        if (address.door) parts.push(address.door)
+        if (address.street) parts.push(address.street)
+        if (address.area) parts.push(address.area)
+        if (address.city) parts.push(address.city)
+        if (address.pincode) parts.push(address.pincode)
+        return parts.length > 0 ? parts.join(", ") : "-"
     }
 
     const formatDate = (dateString) => {
@@ -150,14 +168,14 @@ export default function LeadDetailPage() {
                                 <Calendar size={14} />
                                 <span>{t("createdAt")}:</span>
                                 <span className="font-medium text-foreground">
-                                    {formatDateTime(company.createdAt)}
+                                    {formatDateTime(leadData.createdAt)}
                                 </span>
                             </div>
                             <div className="flex items-center gap-2 text-sm text-muted-foreground">
                                 <Clock size={14} />
                                 <span>{t("updatedAt")}:</span>
                                 <span className="font-medium text-foreground">
-                                    {formatDateTime(company.updatedAt)}
+                                    {formatDateTime(leadData.updatedAt)}
                                 </span>
                             </div>
                         </div>
@@ -211,6 +229,16 @@ export default function LeadDetailPage() {
                                 <FieldRow
                                     label={t("phone")}
                                     value={formatPhone(mainContact.phone)}
+                                />
+                                <Separator />
+                                <FieldRow
+                                    label={t("department")}
+                                    value={mainContact.department}
+                                />
+                                <Separator />
+                                <FieldRow
+                                    label={t("remarks")}
+                                    value={mainContact.remarks}
                                 />
                                 <Separator />
                                 <FieldRow
@@ -312,6 +340,51 @@ export default function LeadDetailPage() {
                                 label={t("socialProfile")}
                                 value={company?.socialProfile}
                             />
+
+                            {/* Address Section */}
+                            {(company?.address ||
+                                leadData?.benificiary) && <Separator />}
+                            {company?.address && (
+                                <>
+                                    <div className="font-medium text-sm pt-2">
+                                        {t("address")}
+                                    </div>
+                                    <FieldRow
+                                        label={t("fullAddress")}
+                                        value={formatAddress(company.address)}
+                                    />
+                                    <FieldRow
+                                        label={t("shortAddress")}
+                                        value={company.address.shortAddress}
+                                    />
+                                    {company.address.location && (
+                                        <FieldRow
+                                            label={t("location")}
+                                            value={`${company.address.location.latitude}, ${company.address.location.longitude}`}
+                                        />
+                                    )}
+                                </>
+                            )}
+
+                            {/* Beneficiary Section */}
+                            {leadData?.benificiary && (
+                                <>
+                                    <Separator />
+                                    <div className="font-medium text-sm pt-2">
+                                        {t("beneficiary")}
+                                    </div>
+                                    <FieldRow
+                                        label={t("name")}
+                                        value={leadData.benificiary.name}
+                                    />
+                                    <FieldRow
+                                        label={t("phone")}
+                                        value={formatPhone(
+                                            leadData.benificiary.phone,
+                                        )}
+                                    />
+                                </>
+                            )}
                         </CardContent>
                     </Card>
                 </div>

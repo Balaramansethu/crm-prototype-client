@@ -1,10 +1,15 @@
 import { Button } from "@/components/ui/button"
 import { Form } from "@/components/ui/form"
 import { FormContainer, CommonDialog } from "@/components/common"
-import { DEFAULT_CONTACT_VALUES } from "@/constants/formOptions"
+import {
+    DEFAULT_CONTACT_VALUES,
+    DEFAULT_BENEFICIARY_VALUES,
+    DEFAULT_ADDRESS_VALUES,
+} from "@/constants/formOptions"
 import { validateLeadForm } from "@/utils/leadFieldValidations"
 import CompanyDetailsForm from "./CompanyDetailsForm"
 import ContactPersonForm from "./ContactPersonForm"
+import { BeneficiarySection } from "@/components/form-fields"
 
 import { Loader2, UserPlus } from "lucide-react"
 import { useFieldArray, useForm } from "react-hook-form"
@@ -56,6 +61,27 @@ export default function LeadForm({
     }, [])
 
     const defaultValues = useMemo(() => {
+        // Helper to normalize phone data with migration logic for old records
+        const normalizePhone = (phone) => {
+            let countryCode = phone?.countryCode || "+966"
+            let extension = phone?.extension || ""
+            const number = phone?.number || ""
+
+            // Old records stored country code in extension field (e.g. "+966")
+            // If countryCode is missing from API AND extension looks like a country code
+            if (!phone?.countryCode && extension.startsWith("+")) {
+                countryCode = extension
+                extension = ""
+            }
+
+            // Also clear extension if it's explicitly the default "+966" (legacy artifact)
+            if (extension === "+966") {
+                extension = ""
+            }
+
+            return { phoneCountryCode: countryCode, phoneExtension: extension, phoneNumber: number }
+        }
+
         const company = initialData?.company || {}
         // Get leads from company.leads (other contacts)
         const companyLeads = company?.leads || []
@@ -71,17 +97,19 @@ export default function LeadForm({
 
         if (hasRootLevelLead) {
             // The current lead is at root level
+            const phone = normalizePhone(initialData.phone)
             const currentLead = {
                 _id: initialData._id,
                 name: initialData.name || "",
                 email: initialData.email || "",
-                phoneExtension: initialData.phone?.extension || "+966",
-                phoneNumber: initialData.phone?.number || "",
+                ...phone,
                 status: initialData.status || "new",
                 source: initialData.source || "",
                 followUp: initialData.followUp
                     ? new Date(initialData.followUp)
                     : undefined,
+                department: initialData.department || "",
+                remarks: initialData.remarks || "",
                 priority: initialData.priority || 1,
             }
 
@@ -92,13 +120,14 @@ export default function LeadForm({
                     _id: lead._id,
                     name: lead.name || "",
                     email: lead.email || "",
-                    phoneExtension: lead.phone?.extension || "+966",
-                    phoneNumber: lead.phone?.number || "",
+                    ...normalizePhone(lead.phone),
                     status: lead.status || "new",
                     source: lead.source || "",
                     followUp: lead.followUp
                         ? new Date(lead.followUp)
                         : undefined,
+                    department: lead.department || "",
+                    remarks: lead.remarks || "",
                     priority: lead.priority || 2,
                 }))
 
@@ -123,17 +152,19 @@ export default function LeadForm({
                     _id: lead._id,
                     name: lead.name || "",
                     email: lead.email || "",
-                    phoneExtension: lead.phone?.extension || "+966",
-                    phoneNumber: lead.phone?.number || "",
+                    ...normalizePhone(lead.phone),
                     status: lead.status || "new",
                     source: lead.source || "",
                     followUp: lead.followUp
                         ? new Date(lead.followUp)
                         : undefined,
+                    department: lead.department || "",
+                    remarks: lead.remarks || "",
                     priority: lead.priority || index + 1,
                 }))
         } else if (legacyContact.name || initialData?.contact) {
             // Fallback to legacy single contact structure
+            const legacyPhone = normalizePhone(legacyContact.phone || initialData?.phone)
             contacts = [
                 {
                     _id: initialData?._id || legacyContact?._id,
@@ -143,19 +174,18 @@ export default function LeadForm({
                             ? initialData.contact
                             : ""),
                     email: legacyContact.email || initialData?.email || "",
-                    phoneExtension:
-                        legacyContact.phone?.extension ||
-                        initialData?.phone?.extension ||
-                        "+966",
-                    phoneNumber:
-                        legacyContact.phone?.number ||
-                        initialData?.phone?.number ||
-                        "",
+                    ...legacyPhone,
                     status: initialData?.status || "new",
                     source: initialData?.source || "",
                     followUp: initialData?.followUp
                         ? new Date(initialData.followUp)
                         : undefined,
+                    department:
+                        legacyContact.department ||
+                        initialData?.department ||
+                        "",
+                    remarks:
+                        legacyContact.remarks || initialData?.remarks || "",
                     priority: legacyContact.priority || 1,
                 },
             ]
@@ -165,15 +195,21 @@ export default function LeadForm({
                 {
                     name: "",
                     email: "",
-                    phoneExtension: "+966",
+                    phoneCountryCode: "+966",
+                    phoneExtension: "",
                     phoneNumber: "",
                     status: "new",
                     source: "",
                     followUp: undefined,
+                    department: "",
+                    remarks: "",
                     priority: 1,
                 },
             ]
         }
+
+        const companyPhone = normalizePhone(company.phone)
+        const beneficiaryPhone = normalizePhone(initialData?.benificiary?.phone)
 
         return {
             companyDetails: {
@@ -183,15 +219,19 @@ export default function LeadForm({
                         ? initialData.company
                         : ""),
                 email: company.email || "",
-                phoneExtension: company.phone?.extension || "+966",
-                phoneNumber: company.phone?.number || "",
+                ...companyPhone,
                 website: company.website || initialData?.website || "",
                 socialProfile:
                     company.socialProfile || initialData?.socialProfile || "",
                 serviceType:
                     company.serviceType || initialData?.serviceType || "",
+                address: company.address || { ...DEFAULT_ADDRESS_VALUES },
             },
             contacts,
+            beneficiary: {
+                name: initialData?.benificiary?.name || "",
+                ...beneficiaryPhone,
+            },
         }
     }, [initialData])
 
@@ -269,6 +309,12 @@ export default function LeadForm({
                         <CompanyDetailsForm
                             control={form.control}
                             isHighlighted={preventIdsScroll}
+                        />
+
+                        <BeneficiarySection
+                            control={form.control}
+                            defaultOpen={!!initialData?.benificiary}
+                            disabled={loading}
                         />
 
                         {fields.length > 0 && (

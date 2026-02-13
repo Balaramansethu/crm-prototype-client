@@ -63,6 +63,7 @@ import { SERVICE_TYPE_OPTIONS } from "@/constants/formOptions"
 import { deleteLead } from "@/service/leadsService"
 import { toast } from "sonner"
 import CommonDialog from "@/components/common/CommonDialog"
+import { formatPhoneDisplay } from "@/utils/leadTransformers"
 
 export default function LeadsPage() {
     const { t, i18n } = useTranslation()
@@ -500,6 +501,15 @@ export default function LeadsPage() {
                                     </div>
                                 </TableHead>
                                 <TableHead
+                                    className="cursor-pointer hover:bg-muted/50 transition-colors hidden md:table-cell"
+                                    onClick={() => handleSort("department")}
+                                >
+                                    <div className="flex items-center text-xs font-bold uppercase tracking-wider text-black">
+                                        {t("department")}
+                                        {renderSortIcon("department")}
+                                    </div>
+                                </TableHead>
+                                <TableHead
                                     className="cursor-pointer hover:bg-muted/50 transition-colors"
                                     onClick={() => handleSort("contact")}
                                 >
@@ -517,15 +527,6 @@ export default function LeadsPage() {
                                     <div className="flex items-center text-xs font-bold uppercase tracking-wider text-black">
                                         {t("serviceType")}
                                         {renderSortIcon("company.serviceType")}
-                                    </div>
-                                </TableHead>
-                                <TableHead
-                                    className="cursor-pointer hover:bg-muted/50 transition-colors hidden lg:table-cell"
-                                    onClick={() => handleSort("email")}
-                                >
-                                    <div className="flex items-center text-xs font-bold uppercase tracking-wider text-black">
-                                        {t("email")}
-                                        {renderSortIcon("email")}
                                     </div>
                                 </TableHead>
                                 <TableHead className="hidden xl:table-cell text-xs font-bold uppercase tracking-wider text-black">
@@ -599,6 +600,9 @@ export default function LeadsPage() {
                                         <TableCell className="font-bold text-black pl-4">
                                             {lead.company?.name || ""}
                                         </TableCell>
+                                        <TableCell className="hidden md:table-cell text-black text-sm">
+                                            {lead.contact?.department || "-"}
+                                        </TableCell>
                                         <TableCell className="text-black">
                                             {lead.isCompanyOnly ? (
                                                 <span className="text-gray-400 italic">
@@ -618,59 +622,20 @@ export default function LeadsPage() {
                                                   )
                                                 : "-"}
                                         </TableCell>
-                                        <TableCell className="hidden lg:table-cell text-black text-sm">
-                                            {lead.contact?.email ||
-                                                lead.company?.email ||
-                                                "-"}
-                                        </TableCell>
                                         <TableCell className="hidden xl:table-cell text-sm text-black tabular-nums">
                                             <span dir="ltr">
-                                                {lead.isCompanyOnly ? (
-                                                    // Show company phone for company-only rows
-                                                    <>
-                                                        {lead.company?.phone
-                                                            ?.extension
-                                                            ? `${lead.company.phone.extension} `
-                                                            : ""}
-                                                        {lead.company?.phone
-                                                            ?.number || "-"}
-                                                    </>
-                                                ) : (
-                                                    // Show contact phone, fall back to company phone if contact has no phone
-                                                    <>
-                                                        {lead.contact?.phone
-                                                            ?.number ? (
-                                                            <>
-                                                                {lead.contact
+                                                {lead.isCompanyOnly
+                                                    ? formatPhoneDisplay(
+                                                          lead.company?.phone,
+                                                      )
+                                                    : formatPhoneDisplay(
+                                                          lead.contact?.phone
+                                                              ?.number
+                                                              ? lead.contact
                                                                     .phone
-                                                                    .extension
-                                                                    ? `${lead.contact.phone.extension} `
-                                                                    : ""}
-                                                                {
-                                                                    lead.contact
-                                                                        .phone
-                                                                        .number
-                                                                }
-                                                            </>
-                                                        ) : lead.company?.phone
-                                                              ?.number ? (
-                                                            <>
-                                                                {lead.company
-                                                                    .phone
-                                                                    .extension
-                                                                    ? `${lead.company.phone.extension} `
-                                                                    : ""}
-                                                                {
-                                                                    lead.company
-                                                                        .phone
-                                                                        .number
-                                                                }
-                                                            </>
-                                                        ) : (
-                                                            "-"
-                                                        )}
-                                                    </>
-                                                )}
+                                                              : lead.company
+                                                                    ?.phone,
+                                                      )}
                                             </span>
                                         </TableCell>
                                         <TableCell>

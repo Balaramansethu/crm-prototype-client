@@ -40,19 +40,15 @@ import { useMemo, useState, useEffect } from "react"
 import { Loader2, FileText } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { searchLeads, getLeadPreviousCallLogs } from "@/service/callLogsService"
+import { formatPhoneDisplay } from "@/utils/leadTransformers"
 
+// Helper to extract phone display string from a lead object
 // Helper to extract phone display string from a lead object
 function getPhoneFromLead(lead) {
     if (!lead) return ""
-    if (lead.phone?.number) {
-        return `${lead.phone.extension || ""} ${lead.phone.number}`.trim()
-    }
-    if (lead.contact?.phone?.number) {
-        return `${lead.contact.phone.extension || ""} ${lead.contact.phone.number}`.trim()
-    }
-    if (lead.company?.phone?.number) {
-        return `${lead.company.phone.extension || ""} ${lead.company.phone.number}`.trim()
-    }
+    if (lead.phone?.number) return formatPhoneDisplay(lead.phone)
+    if (lead.contact?.phone?.number) return formatPhoneDisplay(lead.contact.phone)
+    if (lead.company?.phone?.number) return formatPhoneDisplay(lead.company.phone)
     return ""
 }
 

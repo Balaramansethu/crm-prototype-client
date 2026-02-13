@@ -13,7 +13,7 @@ import {
     FormInput,
     FormSelect,
     FormDatePicker,
-    CountryCodeSelect,
+    PhoneInputGroup,
 } from "@/components/form-fields"
 import {
     LEAD_STATUS_OPTIONS,
@@ -159,32 +159,20 @@ const ContactPersonForm = forwardRef(function ContactPersonForm(
                     disabled={disabled}
                 />
 
-                <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-[140px_1fr] gap-4">
-                    <CountryCodeSelect
-                        control={control}
-                        name={`contacts.${index}.phoneExtension`}
-                        label={t("extension")}
-                        disabled={disabled}
-                        placeholder="+966"
-                    />
-                    <FormField
-                        control={control}
-                        name={`contacts.${index}.phoneNumber`}
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>{t("phone")}</FormLabel>
-                                <FormControl>
-                                    <Input
-                                        {...field}
-                                        dir="ltr"
-                                        disabled={disabled}
-                                    />
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-                </div>
+                <PhoneInputGroup
+                    control={control}
+                    namePrefix={`contacts.${index}`}
+                    disabled={disabled}
+                    showExtension={true}
+                />
+
+                <FormInput
+                    control={control}
+                    name={`contacts.${index}.department`}
+                    label={t("department")}
+                    placeholder={t("departmentPlaceholder") || "e.g. Sales, identifying..."}
+                    disabled={disabled}
+                />
 
                 <FormSelect
                     control={control}
@@ -260,6 +248,30 @@ const ContactPersonForm = forwardRef(function ContactPersonForm(
                         />
                     </div>
                 )}
+
+                <div className="md:col-span-2">
+                    <FormField
+                        control={control}
+                        name={`contacts.${index}.remarks`}
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>{t("remarks")}</FormLabel>
+                                <FormControl>
+                                    <Textarea
+                                        {...field}
+                                        placeholder={t("remarksPlaceholder")}
+                                        className={cn(
+                                            "min-h-[80px]",
+                                            isRTL ? "text-right" : "",
+                                        )}
+                                        disabled={disabled}
+                                    />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                </div>
             </div>
         </div>
     )

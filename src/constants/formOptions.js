@@ -87,8 +87,11 @@ export const CALL_OUTCOME_OPTIONS = [
 export const DEFAULT_CONTACT_VALUES = {
     name: "",
     email: "",
+    phoneCountryCode: "+966",
     phoneExtension: "+966",
     phoneNumber: "",
+    department: "",
+    remarks: "",
     status: "new",
     source: "",
     followUp: undefined,
@@ -96,13 +99,35 @@ export const DEFAULT_CONTACT_VALUES = {
     dropReason: "",
 }
 
+// Default address form values
+export const DEFAULT_ADDRESS_VALUES = {
+    door: "",
+    street: "",
+    area: "",
+    city: "",
+    pincode: "",
+    latitude: "",
+    longitude: "",
+    shortAddress: "",
+}
+
+// Default beneficiary form values
+export const DEFAULT_BENEFICIARY_VALUES = {
+    name: "",
+    phoneCountryCode: "+966",
+    phoneNumber: "",
+    phoneExtension: "",
+}
+
 // Default company form values
 export const DEFAULT_COMPANY_VALUES = {
     name: "",
     email: "",
+    phoneCountryCode: "+966",
     phoneExtension: "+966",
     phoneNumber: "",
     website: "",
     socialProfile: "",
     serviceType: "",
+    address: { ...DEFAULT_ADDRESS_VALUES },
 }

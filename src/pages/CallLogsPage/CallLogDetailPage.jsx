@@ -25,6 +25,7 @@ import {
     Globe,
 } from "lucide-react"
 import { cn, enumToTranslationKey, getOutcomeColor } from "@/lib/utils"
+import { formatPhoneDisplay } from "@/utils/leadTransformers"
 
 export default function CallLogDetailPage() {
     const { t } = useTranslation()
@@ -63,10 +64,8 @@ export default function CallLogDetailPage() {
         if (id) fetchCallLog()
     }, [id, navigate, t])
 
-    const formatPhone = (phone) => {
-        if (!phone?.number) return "-"
-        return `${phone.extension || ""} ${phone.number}`.trim()
-    }
+    // Removed formatPhone in favor of utility
+
 
     const formatDate = (dateString) => {
         if (!dateString) return "-"
@@ -245,7 +244,7 @@ export default function CallLogDetailPage() {
                         <Separator />
                         <FieldRow
                             label={t("phone")}
-                            value={formatPhone(lead?.phone)}
+                            value={formatPhoneDisplay(lead?.phone)}
                         />
                         <Separator />
                         <FieldRow label={t("email")} value={lead?.email} />
@@ -302,7 +301,7 @@ export default function CallLogDetailPage() {
                                 dir="ltr"
                             >
                                 <Phone className="h-4 w-4 text-muted-foreground" />
-                                <span>{formatPhone(company?.phone)}</span>
+                                <span>{formatPhoneDisplay(company?.phone)}</span>
                             </div>
                         </div>
                         <div className="space-y-1">

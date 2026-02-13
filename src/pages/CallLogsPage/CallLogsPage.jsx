@@ -44,6 +44,7 @@ import { toast } from "sonner"
 import CommonDialog from "@/components/common/CommonDialog"
 import { CALL_OUTCOME_OPTIONS } from "@/constants/formOptions"
 import { cn, enumToTranslationKey, getOutcomeColor } from "@/lib/utils"
+import { formatPhoneDisplay } from "@/utils/leadTransformers"
 
 export default function CallLogsPage() {
     const { t, i18n } = useTranslation()
@@ -146,10 +147,8 @@ export default function CallLogsPage() {
         return t(enumToTranslationKey(outcomeVal, "outcome"))
     }
 
-    const formatPhone = (phone) => {
-        if (!phone?.number) return "-"
-        return `${phone.extension || ""} ${phone.number}`.trim()
-    }
+    // Removed formatPhone in favor of utility
+
 
     const formatDate = (dateString) => {
         if (!dateString) return "-"
@@ -198,9 +197,9 @@ export default function CallLogsPage() {
     // Get phone from lead
     const getLeadPhone = (lead) => {
         if (!lead) return "-"
-        if (lead.phone?.number) return formatPhone(lead.phone)
-        if (lead.contact?.phone?.number) return formatPhone(lead.contact.phone)
-        if (lead.company?.phone?.number) return formatPhone(lead.company.phone)
+        if (lead.phone?.number) return formatPhoneDisplay(lead.phone)
+        if (lead.contact?.phone?.number) return formatPhoneDisplay(lead.contact.phone)
+        if (lead.company?.phone?.number) return formatPhoneDisplay(lead.company.phone)
         return "-"
     }
 
