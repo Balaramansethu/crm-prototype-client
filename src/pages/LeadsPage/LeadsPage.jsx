@@ -465,18 +465,23 @@ export default function LeadsPage() {
                             />
                         </div>
 
-                        {/* Clear Filters - inline at the end */}
-                        {hasActiveFilters && (
-                            <Button
-                                variant="ghost"
-                                onClick={clearFilters}
-                                size="sm"
-                                className="h-9 px-3 text-black hover:text-black shrink-0 hidden md:flex"
-                            >
-                                <X className="mr-2 h-3.5 w-3.5" />
-                                {t("clearFilters")}
-                            </Button>
-                        )}
+                        {/* Clear Filters - always rendered, visibility toggled to prevent layout shift */}
+                        <Button
+                            variant="ghost"
+                            onClick={clearFilters}
+                            size="sm"
+                            className={cn(
+                                "h-9 px-3 text-black hover:text-black shrink-0 hidden md:flex transition-opacity duration-150",
+                                hasActiveFilters
+                                    ? "visible opacity-100"
+                                    : "invisible opacity-0 pointer-events-none",
+                            )}
+                            tabIndex={hasActiveFilters ? 0 : -1}
+                            aria-hidden={!hasActiveFilters}
+                        >
+                            <X className="mr-2 h-3.5 w-3.5" />
+                            {t("clearFilters")}
+                        </Button>
                     </div>
                 </div>
 
