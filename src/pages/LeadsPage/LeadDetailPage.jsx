@@ -33,12 +33,16 @@ import {
     Mail,
 } from "lucide-react"
 import { enumToTranslationKey } from "@/lib/utils"
+import { useUserStore } from "@/store/userStore"
 
 export default function LeadDetailPage() {
     const { t } = useTranslation()
     const navigate = useNavigate()
     const location = useLocation()
     const { id } = useParams()
+    const user = useUserStore((s) => s.user)
+    const isSuperAdminUser =
+        user?.role === "SUPER_ADMIN" || user?.role === "super_admin"
 
     const [leadData, setLeadData] = useState(null)
     const [loading, setLoading] = useState(true)
@@ -163,13 +167,26 @@ export default function LeadDetailPage() {
                 {/* Meta Card - Full Width */}
                 <Card className="bg-muted/30">
                     <CardContent className="py-3 px-4">
-                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-4">
-                            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                                <Calendar size={14} />
-                                <span>{t("createdAt")}:</span>
-                                <span className="font-medium text-foreground">
-                                    {formatDateTime(leadData.createdAt)}
-                                </span>
+                        <div className="flex items-center justify-between gap-4">
+                            <div className="flex flex-col gap-1.5">
+                                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                                    <Calendar size={14} />
+                                    <span>{t("createdAt")}:</span>
+                                    <span className="font-medium text-foreground">
+                                        {formatDateTime(leadData.createdAt)}
+                                    </span>
+                                </div>
+                                {isSuperAdminUser && (
+                                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                                        <User size={14} />
+                                        <span>{t("createdBy")}:</span>
+                                        <span className="font-medium text-foreground">
+                                            {leadData.createdBy
+                                                ? `${leadData.createdBy.firstName} ${leadData.createdBy.lastName}`
+                                                : "-"}
+                                        </span>
+                                    </div>
+                                )}
                             </div>
                             <div className="flex items-center gap-2 text-sm text-muted-foreground">
                                 <Clock size={14} />

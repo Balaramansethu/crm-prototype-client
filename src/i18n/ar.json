@@ -114,6 +114,7 @@
     "filterBySource": "تصفية حسب المصدر...",
     "filterByServiceType": "تصفية حسب نوع الخدمة...",
     "filterByOutcome": "تصفية حسب النتيجة...",
+    "filterByOwner": "تصفية حسب المالك...",
     "clearFilters": "مسح التصفيات",
     "loadingLeads": "جاري تحميل البيانات...",
     "failedToLoadLeads": "فشل تحميل البيانات. يرجى المحاولة مرة أخرى.",
@@ -426,7 +427,6 @@
     "shortAddressInvalid": "يجب أن يتكون العنوان المختصر من 4 أحرف و4 أرقام",
     "latitudeInvalid": "يجب أن يكون خط العرض بين -90 و 90",
     "longitudeInvalid": "يجب أن يكون خط الطول بين -180 و 180",
-    "countryCode": "الرمز",
     "getLocation": "احصل على الموقع",
     "noLocation": "لم يتم تحديد الموقع"
 }

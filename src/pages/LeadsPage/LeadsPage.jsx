@@ -86,6 +86,34 @@ export default function LeadsPage() {
     const [serviceTypes, setServiceTypes] = useState([])
     const [followUp, setFollowUp] = useState()
     const [showFilters, setShowFilters] = useState(false)
+    const [ownerSearch, setOwnerSearch] = useState(
+        searchParams.get("owner") || "",
+    )
+
+    const isSuperAdminUser =
+        user?.role === "SUPER_ADMIN" || user?.role === "super_admin"
+    console.log(
+        "Current User Role:",
+        user?.role,
+        "Is Super Admin:",
+        isSuperAdminUser,
+    )
+    const debouncedOwner = useDebounce(ownerSearch, 500)
+
+    // Sync owner search to URL
+    useEffect(() => {
+        if (!isSuperAdminUser) return
+
+        const params = new URLSearchParams(searchParams)
+        if (debouncedOwner) {
+            if (searchParams.get("owner") !== debouncedOwner) setPage(1)
+            params.set("owner", debouncedOwner)
+        } else {
+            if (searchParams.get("owner")) setPage(1)
+            params.delete("owner")
+        }
+        setSearchParams(params, { replace: true })
+    }, [debouncedOwner, isSuperAdminUser, setSearchParams, searchParams])
 
     // Sync page state with URL
     useEffect(() => {
@@ -115,6 +143,7 @@ export default function LeadsPage() {
         order,
         contact: debouncedContact,
         company: debouncedCompany,
+        owner: isSuperAdminUser ? debouncedOwner : undefined,
         status: status === "all" ? "" : status,
         ...(serviceTypes.length > 0 && { serviceType: serviceTypes }),
         followUp: followUp ? format(followUp, "yyyy-MM-dd") : "",
@@ -303,6 +332,21 @@ export default function LeadsPage() {
                             showFilters ? "flex" : "hidden md:flex",
                         )}
                     >
+                        {/* Owner Search (Super Admin Only) */}
+                        {isSuperAdminUser && (
+                            <div className="relative flex-1 min-w-[140px] max-w-full md:max-w-[200px]">
+                                <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500 pointer-events-none" />
+                                <Input
+                                    placeholder={t("filterByOwner")}
+                                    value={ownerSearch}
+                                    onChange={(e) =>
+                                        setOwnerSearch(e.target.value)
+                                    }
+                                    className="pl-9 h-9 text-sm bg-muted/50 focus:bg-background transition-colors text-black placeholder:text-gray-500"
+                                />
+                            </div>
+                        )}
+
                         {/* Company Search */}
                         <div className="relative flex-1 min-w-[140px] max-w-full md:max-w-[200px]">
                             <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500 pointer-events-none" />
@@ -550,6 +594,11 @@ export default function LeadsPage() {
                                         {renderSortIcon("followUp")}
                                     </div>
                                 </TableHead>
+                                {isSuperAdminUser && (
+                                    <TableHead className="hidden md:table-cell text-xs font-bold uppercase tracking-wider text-black">
+                                        {t("createdBy")}
+                                    </TableHead>
+                                )}
                                 <TableHead className="w-[50px]"></TableHead>
                             </TableRow>
                         </TableHeader>
@@ -649,6 +698,13 @@ export default function LeadsPage() {
                                                   )
                                                 : "-"}
                                         </TableCell>
+                                        {isSuperAdminUser && (
+                                            <TableCell className="hidden md:table-cell text-black text-sm">
+                                                {lead.contact?.createdBy
+                                                    ? `${lead.contact.createdBy.firstName} ${lead.contact.createdBy.lastName}`
+                                                    : "-"}
+                                            </TableCell>
+                                        )}
                                         <TableCell
                                             onClick={(e) => e.stopPropagation()}
                                         >
