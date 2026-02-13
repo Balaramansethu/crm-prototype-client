@@ -167,6 +167,12 @@
         @apply border-border outline-ring/50;
     }
 
+    html,
+    body {
+        overflow-x: hidden;
+        width: 100%;
+    }
+
     body {
         @apply bg-background text-foreground;
         font-family:
@@ -220,22 +226,123 @@
         border-color: var(--sidebar-border) !important;
     }
 
+    /* Default sidebar text color */
     [data-sidebar] * {
         color: var(--sidebar-foreground);
     }
 
-    [data-sidebar-menu-button] {
+    [data-sidebar="menu-button"] {
         color: var(--sidebar-foreground) !important;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    [data-sidebar-menu-button]:hover {
+    [data-sidebar="menu-button"]:hover {
         background: var(--sidebar-accent) !important;
         color: var(--sidebar-accent-foreground) !important;
+        border-radius: 0.5rem;
     }
 
-    [data-sidebar-menu-button][data-active="true"] {
-        background: var(--sidebar-primary) !important;
-        color: var(--sidebar-primary-foreground) !important;
+    /* Suppress the global outer outline — use subtle inset glow instead */
+    [data-sidebar="menu-button"]:focus-visible {
+        outline: none !important;
+        box-shadow: inset 0 0 0 1.5px oklch(23.518% 0.08615 11.939 / 0.25);
+        border-radius: 0.5rem;
+    }
+
+    /* When active + focused, blend focus into the active gradient */
+    [data-sidebar="menu-button"][data-active="true"]:focus-visible {
+        outline: none !important;
+        box-shadow:
+            inset 0 0 0 1.5px oklch(13.232% 0.0403 4.488 / 0.18),
+            inset 0 1px 2px oklch(0.38 0.12 10 / 0.06),
+            0 1px 3px oklch(19.29% 0.05924 8.514 / 0.05);
+    }
+
+    .dark [data-sidebar="menu-button"]:focus-visible {
+        box-shadow: inset 0 0 0 1.5px oklch(20.029% 0.04903 9.81 / 0.3);
+    }
+
+    .dark [data-sidebar="menu-button"][data-active="true"]:focus-visible {
+        box-shadow:
+            inset 0 0 0 1.5px oklch(0.55 0.14 10 / 0.22),
+            inset 0 1px 2px oklch(0.55 0.14 10 / 0.08),
+            0 1px 3px oklch(0 0 0 / 0.15);
+    }
+
+    /* ─── Active state: soft burgundy gradient ─── */
+    [data-sidebar="menu-button"][data-active="true"] {
+        /* Soft burgundy gradient background — light tint, not heavy */
+        background: linear-gradient(
+            135deg,
+            oklch(0.38 0.12 10 / 0.1) 0%,
+            oklch(0.38 0.12 10 / 0.16) 100%
+        ) !important;
+        /* Dark burgundy text for elegant contrast */
+        color: oklch(0.32 0.11 10) !important;
+        /* Clean pill shape */
+        border-radius: 0.5rem;
+        /* Subtle left accent bar */
+        border-left: 2.5px solid oklch(0.38 0.12 10 / 0.55);
+        border-right: none;
+        border-top: none;
+        border-bottom: none;
+        /* Minimal depth */
+        box-shadow:
+            inset 0 1px 2px oklch(0.38 0.12 10 / 0.06),
+            0 1px 3px oklch(0.38 0.12 10 / 0.05);
+    }
+
+    /* Icons + text inside active item inherit burgundy */
+    [data-sidebar="menu-button"][data-active="true"] svg,
+    [data-sidebar="menu-button"][data-active="true"] span {
+        color: oklch(0.35 0.11 10) !important;
+    }
+
+    /* Hover on active item — slightly deeper tint */
+    [data-sidebar="menu-button"][data-active="true"]:hover {
+        background: linear-gradient(
+            135deg,
+            oklch(0.38 0.12 10 / 0.14) 0%,
+            oklch(0.38 0.12 10 / 0.22) 100%
+        ) !important;
+    }
+
+    /* RTL support — flip the accent bar */
+    [dir="rtl"] [data-sidebar="menu-button"][data-active="true"] {
+        border-left: none;
+        border-right: 2.5px solid oklch(0.38 0.12 10 / 0.55);
+    }
+
+    /* ─── Dark mode active state ─── */
+    .dark [data-sidebar="menu-button"][data-active="true"] {
+        background: linear-gradient(
+            135deg,
+            oklch(0.55 0.14 10 / 0.12) 0%,
+            oklch(0.55 0.14 10 / 0.22) 100%
+        ) !important;
+        color: oklch(0.78 0.1 10) !important;
+        border-left-color: oklch(0.55 0.14 10 / 0.55);
+        box-shadow:
+            inset 0 1px 2px oklch(0.55 0.14 10 / 0.08),
+            0 1px 3px oklch(0 0 0 / 0.15);
+    }
+
+    .dark [data-sidebar="menu-button"][data-active="true"] svg,
+    .dark [data-sidebar="menu-button"][data-active="true"] span {
+        color: oklch(0.72 0.11 10) !important;
+    }
+
+    .dark [data-sidebar="menu-button"][data-active="true"]:hover {
+        background: linear-gradient(
+            135deg,
+            oklch(0.55 0.14 10 / 0.18) 0%,
+            oklch(0.55 0.14 10 / 0.28) 100%
+        ) !important;
+    }
+
+    [dir="rtl"] .dark [data-sidebar="menu-button"][data-active="true"] {
+        border-left-color: transparent;
+        border-right-color: oklch(0.55 0.14 10 / 0.55);
     }
 }
 
@@ -292,26 +399,6 @@
     animation: fadeIn 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Smooth Burgundy gradient overlays for premium feel */
-@layer utilities {
-    .gradient-overlay {
-        position: relative;
-    }
-
-    .gradient-overlay::before {
-        content: "";
-        position: absolute;
-        inset: 0;
-        background: linear-gradient(
-            135deg,
-            oklch(0.42 0.13 10 / 0.03) 0%,
-            oklch(0.35 0.11 5 / 0.05) 100%
-        );
-        pointer-events: none;
-        border-radius: inherit;
-    }
-}
-
 /* RTL Support */
 html[dir="rtl"] {
     direction: rtl;
@@ -356,177 +443,17 @@ body.rtl table {
     }
 }
 
-/* Mobile-first responsive utilities */
 @layer utilities {
     /* Better touch targets for mobile */
     .touch-target {
         min-height: 44px;
         min-width: 44px;
     }
+}
 
-    /* Mobile-optimized spacing */
+/* Mobile input full-width */
+@layer components {
     @media (max-width: 640px) {
-        .mobile-compact {
-            padding: 1rem !important;
-        }
-
-        .mobile-gap-sm {
-            gap: 0.75rem !important;
-        }
-
-        .mobile-gap-md {
-            gap: 1rem !important;
-        }
-
-        /* Mobile text sizes */
-        .mobile-text-sm {
-            font-size: 0.875rem !important;
-        }
-
-        .mobile-text-base {
-            font-size: 1rem !important;
-        }
-
-        /* Mobile card improvements */
-        .mobile-card-compact {
-            padding: 0.875rem !important;
-        }
-
-        /* Mobile header improvements */
-        .mobile-header-compact {
-            flex-direction: column;
-            align-items: flex-start !important;
-            gap: 1rem;
-        }
-
-        .mobile-header-actions {
-            width: 100%;
-            display: flex;
-            gap: 0.5rem;
-        }
-
-        .mobile-header-actions > * {
-            flex: 1;
-        }
-    }
-
-    /* Tablet optimizations */
-    @media (min-width: 641px) and (max-width: 1024px) {
-        .tablet-grid-1 {
-            grid-template-columns: repeat(1, minmax(0, 1fr)) !important;
-        }
-
-        .tablet-grid-2 {
-            grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-        }
-    }
-}
-
-/* Improved responsive card layouts */
-@layer components {
-    .responsive-detail-grid {
-        display: grid;
-        gap: 1.5rem;
-        grid-template-columns: 1fr;
-    }
-
-    @media (min-width: 768px) {
-        .responsive-detail-grid {
-            grid-template-columns: repeat(2, 1fr);
-        }
-    }
-
-    @media (min-width: 1024px) {
-        .responsive-detail-grid.three-col {
-            grid-template-columns: repeat(3, 1fr);
-        }
-    }
-
-    /* Mobile-friendly field rows */
-    .field-row-mobile {
-        display: flex;
-        flex-direction: column;
-        gap: 0.25rem;
-        padding: 0.75rem 0;
-    }
-
-    @media (min-width: 640px) {
-        .field-row-mobile {
-            flex-direction: row;
-            justify-content: space-between;
-            align-items: start;
-            gap: 1rem;
-        }
-    }
-
-    /* Better mobile buttons */
-    .mobile-btn-full {
-        width: 100%;
-    }
-
-    @media (min-width: 640px) {
-        .mobile-btn-full {
-            width: auto;
-        }
-    }
-}
-
-/* ========================================
-   MOBILE SIDEBAR HANDLING
-   ======================================== */
-@layer components {
-    /* Hide sidebar on mobile by default */
-    @media (max-width: 767px) {
-        /* Ensure main content takes full width on mobile */
-        .mobile-main-content {
-            margin-left: 0 !important;
-            margin-right: 0 !important;
-            width: 100% !important;
-        }
-    }
-}
-
-/* ========================================
-   FORM RESPONSIVENESS
-   ======================================== */
-@layer components {
-    /* Form grid layouts */
-    .form-grid {
-        display: grid;
-        gap: 1rem;
-        grid-template-columns: 1fr;
-    }
-
-    @media (min-width: 640px) {
-        .form-grid {
-            gap: 1.25rem;
-        }
-
-        .form-grid-2 {
-            grid-template-columns: repeat(2, 1fr);
-        }
-    }
-
-    @media (min-width: 768px) {
-        .form-grid {
-            gap: 1.5rem;
-        }
-    }
-
-    /* Form field spacing on mobile */
-    .form-field {
-        margin-bottom: 0.75rem;
-    }
-
-    @media (min-width: 640px) {
-        .form-field {
-            margin-bottom: 1rem;
-        }
-    }
-
-    /* Form input improvements for mobile */
-    @media (max-width: 640px) {
-        /* Make inputs full width on mobile */
         input[type="text"],
         input[type="email"],
         input[type="tel"],
@@ -538,88 +465,6 @@ body.rtl table {
         select {
             width: 100% !important;
             min-width: 0 !important;
-        }
-
-        /* Improve form layout on mobile */
-        .form-row {
-            flex-direction: column !important;
-            gap: 0.75rem !important;
-        }
-
-        .form-row > * {
-            width: 100% !important;
-        }
-    }
-}
-
-/* ========================================
-   RESPONSIVE TABLE IMPROVEMENTS
-   ======================================== */
-@layer components {
-    @media (max-width: 767px) {
-        /* Make tables scrollable on mobile */
-        .table-container {
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-        }
-
-        /* Reduce table cell padding on mobile */
-        .mobile-table-compact th,
-        .mobile-table-compact td {
-            padding: 0.5rem 0.75rem !important;
-            font-size: 0.8125rem !important;
-        }
-    }
-}
-
-/* ========================================
-   RESPONSIVE MODAL/DIALOG IMPROVEMENTS
-   ======================================== */
-@layer components {
-    @media (max-width: 640px) {
-        /* Make modals full-width on mobile */
-        .mobile-modal-full {
-            width: calc(100% - 1rem) !important;
-            max-width: calc(100% - 1rem) !important;
-            margin: 0.5rem !important;
-        }
-    }
-}
-
-/* ========================================
-   PAGE LAYOUT RESPONSIVENESS
-   ======================================== */
-@layer components {
-    /* Main page container */
-    .page-container {
-        padding: 0.75rem;
-    }
-
-    @media (min-width: 640px) {
-        .page-container {
-            padding: 1rem;
-        }
-    }
-
-    @media (min-width: 1024px) {
-        .page-container {
-            padding: 1.5rem;
-        }
-    }
-
-    /* Page header responsiveness */
-    .page-header {
-        display: flex;
-        flex-direction: column;
-        gap: 0.75rem;
-    }
-
-    @media (min-width: 640px) {
-        .page-header {
-            flex-direction: row;
-            align-items: center;
-            justify-content: space-between;
-            gap: 1rem;
         }
     }
 }

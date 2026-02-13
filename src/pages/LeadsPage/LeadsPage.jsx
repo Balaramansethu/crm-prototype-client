@@ -239,7 +239,7 @@ export default function LeadsPage() {
         followUp
 
     return (
-        <div className="flex flex-1 flex-col gap-4 sm:gap-6 p-4 sm:p-6">
+        <div className="flex flex-1 flex-col gap-4 sm:gap-6 p-4 sm:p-6 min-w-0">
             {/* Header */}
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
                 <div>
@@ -257,7 +257,7 @@ export default function LeadsPage() {
             </div>
 
             {/* Main Content Card */}
-            <div className="flex flex-col rounded-xl border bg-card text-card-foreground shadow-sm">
+            <div className="flex flex-col rounded-xl border bg-card text-card-foreground shadow-sm min-w-0 overflow-hidden">
                 {/* Filter Toolbar */}
                 <div className="flex flex-col gap-3 sm:gap-4 border-b p-3 sm:p-4 lg:flex-row lg:items-center lg:justify-between">
                     {/* Mobile Filter Toggle Button */}
@@ -272,13 +272,15 @@ export default function LeadsPage() {
                             {t("filters")}
                             {hasActiveFilters && (
                                 <span className="ml-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground">
-                                    {[
-                                        contact,
-                                        company,
-                                        status && status !== "all",
-                                        serviceTypes.length > 0,
-                                        followUp,
-                                    ].filter(Boolean).length}
+                                    {
+                                        [
+                                            contact,
+                                            company,
+                                            status && status !== "all",
+                                            serviceTypes.length > 0,
+                                            followUp,
+                                        ].filter(Boolean).length
+                                    }
                                 </span>
                             )}
                         </Button>
@@ -294,10 +296,12 @@ export default function LeadsPage() {
                         )}
                     </div>
 
-                    <div className={cn(
-                        "flex flex-1 flex-col gap-3 lg:flex-row lg:items-center",
-                        showFilters ? "flex" : "hidden md:flex",
-                    )}>
+                    <div
+                        className={cn(
+                            "flex flex-1 flex-col gap-3 lg:flex-row lg:items-center",
+                            showFilters ? "flex" : "hidden md:flex",
+                        )}
+                    >
                         {/* Company Search */}
                         <div className="relative flex-1 md:max-w-[200px]">
                             <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500 pointer-events-none" />

@@ -16,7 +16,7 @@ export default function PrivateLayout() {
         <SidebarProvider>
             <div
                 dir={isRTL ? "rtl" : "ltr"}
-                className="flex min-h-screen w-full bg-background"
+                className="flex min-h-screen w-full bg-background overflow-hidden"
             >
                 {/* shadcn Sidebar */}
                 <AppSidebar />
@@ -25,7 +25,8 @@ export default function PrivateLayout() {
                 <SidebarInset>
                     <SiteHeader />
                     {/* Responsive padding: smaller on mobile, larger on desktop */}
-                    <div className="flex flex-1 flex-col p-2 sm:p-4 lg:p-6">
+                    {/* min-w-0 lets the flex child shrink below content width */}
+                    <div className="flex flex-1 flex-col min-w-0 p-2 sm:p-4 lg:p-6">
                         <Outlet />
                     </div>
                 </SidebarInset>

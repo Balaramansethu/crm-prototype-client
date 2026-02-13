@@ -205,7 +205,7 @@ export default function CallLogsPage() {
     }
 
     return (
-        <div className="flex flex-1 flex-col gap-4 sm:gap-6 p-4 sm:p-6">
+        <div className="flex flex-1 flex-col gap-4 sm:gap-6 p-4 sm:p-6 min-w-0">
             {/* Header */}
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
                 <div>
