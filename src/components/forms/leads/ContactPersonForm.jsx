@@ -14,6 +14,7 @@ import {
     FormSelect,
     FormDatePicker,
     PhoneInputGroup,
+    BeneficiarySection,
 } from "@/components/form-fields"
 import {
     LEAD_STATUS_OPTIONS,
@@ -204,6 +205,15 @@ const ContactPersonForm = forwardRef(function ContactPersonForm(
                     minDate={new Date()}
                     disabled={disabled}
                 />
+
+                <div className="md:col-span-2">
+                    <BeneficiarySection
+                        control={control}
+                        namePrefix={`contacts.${index}.beneficiary`}
+                        disabled={disabled}
+                        defaultOpen={!!control._defaultValues?.contacts?.[index]?.beneficiary}
+                    />
+                </div>
 
                 {/* Conditional Drop Reason Field - Only shown when status is 'dropped' */}
                 {isDropped && (

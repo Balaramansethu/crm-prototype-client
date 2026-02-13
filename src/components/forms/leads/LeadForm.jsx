@@ -115,6 +115,12 @@ export default function LeadForm({
                 department: initialData.department || "",
                 remarks: initialData.remarks || "",
                 priority: initialData.priority || 1,
+                beneficiary: initialData.benificiary
+                    ? {
+                          name: initialData.benificiary.name || "",
+                          ...normalizePhone(initialData.benificiary.phone),
+                      }
+                    : undefined,
             }
 
             // Convert company.leads to the same format, filtering out unnamed ones
@@ -133,6 +139,12 @@ export default function LeadForm({
                     department: lead.department || "",
                     remarks: lead.remarks || "",
                     priority: lead.priority || 2,
+                    beneficiary: lead.benificiary
+                        ? {
+                              name: lead.benificiary.name || "",
+                              ...normalizePhone(lead.benificiary.phone),
+                          }
+                        : undefined,
                 }))
 
             // Combine all leads and sort by priority
@@ -165,6 +177,12 @@ export default function LeadForm({
                     department: lead.department || "",
                     remarks: lead.remarks || "",
                     priority: lead.priority || index + 1,
+                    beneficiary: lead.benificiary
+                        ? {
+                              name: lead.benificiary.name || "",
+                              ...normalizePhone(lead.benificiary.phone),
+                          }
+                        : undefined,
                 }))
         } else if (legacyContact.name || initialData?.contact) {
             // Fallback to legacy single contact structure
@@ -193,6 +211,12 @@ export default function LeadForm({
                     remarks:
                         legacyContact.remarks || initialData?.remarks || "",
                     priority: legacyContact.priority || 1,
+                    beneficiary: initialData?.benificiary
+                        ? {
+                              name: initialData.benificiary.name || "",
+                              ...normalizePhone(initialData.benificiary.phone),
+                          }
+                        : undefined,
                 },
             ]
         } else {
@@ -234,10 +258,6 @@ export default function LeadForm({
                 address: company.address || { ...DEFAULT_ADDRESS_VALUES },
             },
             contacts,
-            beneficiary: {
-                name: initialData?.benificiary?.name || "",
-                ...beneficiaryPhone,
-            },
         }
     }, [initialData])
 
@@ -317,11 +337,7 @@ export default function LeadForm({
                             isHighlighted={preventIdsScroll}
                         />
 
-                        <BeneficiarySection
-                            control={form.control}
-                            defaultOpen={!!initialData?.benificiary}
-                            disabled={loading}
-                        />
+                        {/* BeneficiarySection moved to ContactPersonForm */}
 
                         {fields.length > 0 && (
                             <div className="space-y-6">
@@ -346,6 +362,9 @@ export default function LeadForm({
                                             control={form.control}
                                             index={index}
                                             onRemove={() => remove(index)}
+                                            beneficiaryDefaultOpen={
+                                                !!field.beneficiary
+                                            }
                                             showRemoveButton={
                                                 !isEditMode
                                                     ? index > 0

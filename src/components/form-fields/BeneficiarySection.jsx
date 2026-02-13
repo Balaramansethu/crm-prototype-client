@@ -16,6 +16,7 @@ import { useState } from "react"
  */
 export default function BeneficiarySection({
     control,
+    namePrefix = "beneficiary",
     disabled = false,
     defaultOpen = false,
 }) {
@@ -53,7 +54,7 @@ export default function BeneficiarySection({
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <FormInput
                             control={control}
-                            name="beneficiary.name"
+                            name={`${namePrefix}.name`}
                             label={t("beneficiaryName")}
                             placeholder={
                                 t("beneficiaryNamePlaceholder") ||
@@ -64,7 +65,7 @@ export default function BeneficiarySection({
                         <div /> {/* Spacer for grid alignment */}
                         <PhoneInputGroup
                             control={control}
-                            namePrefix="beneficiary"
+                            namePrefix={namePrefix}
                             disabled={disabled}
                             showExtension={true}
                         />

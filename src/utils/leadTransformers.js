@@ -135,10 +135,7 @@ const cleanObject = (obj) => {
  * - benificiary: { name, phone }
  */
 export const transformLeadPayload = (formData, ownerId) => {
-    const { companyDetails, contacts, beneficiary } = formData
-
-    // Build beneficiary once (API uses "benificiary" spelling)
-    const benificiary = buildBeneficiary(beneficiary)
+    const { companyDetails, contacts } = formData
 
     const payload = {
         company: {
@@ -165,6 +162,9 @@ export const transformLeadPayload = (formData, ownerId) => {
         contacts.forEach((contact, index) => {
             if (!contact.name?.trim()) return
 
+            // Build per-contact beneficiary
+            const benificiary = buildBeneficiary(contact.beneficiary)
+
             const leadData = {
                 name: contact.name.trim(),
                 email: contact.email?.trim() || undefined,
@@ -181,8 +181,8 @@ export const transformLeadPayload = (formData, ownerId) => {
                 remarks: contact.remarks?.trim() || undefined,
             }
 
-            // Attach beneficiary to the first contact/lead only
-            if (index === 0 && benificiary) {
+            // Attach beneficiary to the lead
+            if (benificiary) {
                 leadData.benificiary = benificiary
             }
 
@@ -210,7 +210,7 @@ export const transformLeadUpdatePayload = (
     formData,
     editableContactIndex = null,
 ) => {
-    const { companyDetails, contacts, beneficiary } = formData
+    const { companyDetails, contacts } = formData
 
     const payload = {
         company: {
@@ -226,12 +226,6 @@ export const transformLeadUpdatePayload = (
             serviceType: companyDetails?.serviceType?.trim() || undefined,
             address: buildAddress(companyDetails?.address),
         },
-    }
-
-    // Add beneficiary if present (API uses "benificiary" spelling)
-    const benificiary = buildBeneficiary(beneficiary)
-    if (benificiary) {
-        payload.benificiary = benificiary
     }
 
     // 1. Handle the primary contact being edited (sent at root level)
@@ -254,6 +248,12 @@ export const transformLeadUpdatePayload = (
         payload.department = contact.department?.trim() || undefined
         payload.remarks = contact.remarks?.trim() || undefined
 
+        // Add beneficiary if present
+        const benificiary = buildBeneficiary(contact.beneficiary)
+        if (benificiary) {
+            payload.benificiary = benificiary
+        }
+
         if (contacts.length > 1) {
             payload.priority = contact.priority || contactIndex + 1
         }
@@ -264,22 +264,31 @@ export const transformLeadUpdatePayload = (
         contacts?.filter((c, idx) => !c._id && c.name?.trim()) || []
 
     if (newContacts.length > 0) {
-        payload.leads = newContacts.map((c, idx) => ({
-            name: c.name.trim(),
-            email: c.email?.trim() || undefined,
-            phone: buildPhone(
-                c.phoneCountryCode,
-                c.phoneExtension,
-                c.phoneNumber,
-            ),
-            status: c.status || "new",
-            droppedReason: c.droppedReason || undefined,
-            source: c.source?.trim() || undefined,
-            followUp: formatDate(c.followUp),
-            department: c.department?.trim() || undefined,
-            remarks: c.remarks?.trim() || undefined,
-            priority: c.priority || contacts.length + idx + 1,
-        }))
+        payload.leads = newContacts.map((c, idx) => {
+            const benificiary = buildBeneficiary(c.beneficiary)
+            const leadData = {
+                name: c.name.trim(),
+                email: c.email?.trim() || undefined,
+                phone: buildPhone(
+                    c.phoneCountryCode,
+                    c.phoneExtension,
+                    c.phoneNumber,
+                ),
+                status: c.status || "new",
+                droppedReason: c.droppedReason || undefined,
+                source: c.source?.trim() || undefined,
+                followUp: formatDate(c.followUp),
+                department: c.department?.trim() || undefined,
+                remarks: c.remarks?.trim() || undefined,
+                priority: c.priority || contacts.length + idx + 1,
+            }
+
+            if (benificiary) {
+                leadData.benificiary = benificiary
+            }
+
+            return leadData
+        })
     }
 
     return cleanObject(payload)

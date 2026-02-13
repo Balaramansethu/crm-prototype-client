@@ -359,9 +359,7 @@ export default function LeadDetailPage() {
                             />
 
                             {/* Address Section */}
-                            {(company?.address || leadData?.benificiary) && (
-                                <Separator />
-                            )}
+                            {company?.address && <Separator />}
                             {company?.address && (
                                 <>
                                     <div className="font-medium text-sm pt-2">
@@ -384,28 +382,36 @@ export default function LeadDetailPage() {
                                 </>
                             )}
 
-                            {/* Beneficiary Section */}
-                            {leadData?.benificiary && (
-                                <>
-                                    <Separator />
-                                    <div className="font-medium text-sm pt-2">
-                                        {t("beneficiary")}
-                                    </div>
-                                    <FieldRow
-                                        label={t("name")}
-                                        value={leadData.benificiary.name}
-                                    />
-                                    <FieldRow
-                                        label={t("phone")}
-                                        value={formatPhone(
-                                            leadData.benificiary.phone,
-                                        )}
-                                    />
-                                </>
-                            )}
                         </CardContent>
                     </Card>
                 </div>
+                
+                {/* Beneficiary Details - Full Width Card */}
+                {leadData?.benificiary && (
+                    <Card>
+                        <CardHeader className="pb-3">
+                            <div className="flex items-center gap-2">
+                                <div className="flex h-9 w-9 items-center justify-center rounded-full bg-purple-500/10">
+                                    <User className="h-5 w-5 text-purple-500" />
+                                </div>
+                                <CardTitle className="text-lg">
+                                    {t("beneficiary")}
+                                </CardTitle>
+                            </div>
+                        </CardHeader>
+                        <CardContent className="space-y-3">
+                            <FieldRow
+                                label={t("name")}
+                                value={leadData.benificiary.name}
+                            />
+                            <Separator />
+                            <FieldRow
+                                label={t("phone")}
+                                value={formatPhone(leadData.benificiary.phone)}
+                            />
+                        </CardContent>
+                    </Card>
+                )}
 
                 {/* Other Contacts - Full Width Card */}
                 {otherContacts.length > 0 && (

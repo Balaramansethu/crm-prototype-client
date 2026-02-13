@@ -270,6 +270,17 @@ export function validateContact(contact, index, setError, t) {
         hasErrors = true
     }
 
+    // Validate beneficiary for this contact
+    const beneficiaryValid = validateBeneficiary(
+        contact.beneficiary,
+        `contacts.${index}.beneficiary`,
+        setError,
+        t,
+    )
+    if (!beneficiaryValid) {
+        hasErrors = true
+    }
+
     return !hasErrors
 }
 
@@ -277,7 +288,7 @@ export function validateContact(contact, index, setError, t) {
  * Validates beneficiary section from the form
  * All fields optional, validate format only if provided
  */
-export function validateBeneficiary(beneficiary, setError, t) {
+export function validateBeneficiary(beneficiary, namePrefix, setError, t) {
     if (!beneficiary) return true
     let hasErrors = false
 
@@ -290,7 +301,7 @@ export function validateBeneficiary(beneficiary, setError, t) {
         beneficiary.name?.trim() &&
         !validateLength(beneficiary.name, FIELD_LIMITS.BENEFICIARY_NAME)
     ) {
-        setError("beneficiary.name", {
+        setError(`${namePrefix}.name`, {
             type: "manual",
             message: t("invalidFormat"),
         })
@@ -301,7 +312,7 @@ export function validateBeneficiary(beneficiary, setError, t) {
         beneficiary.phoneNumber?.trim() &&
         !validatePhoneNumber(beneficiary.phoneNumber)
     ) {
-        setError("beneficiary.phoneNumber", {
+        setError(`${namePrefix}.phoneNumber`, {
             type: "manual",
             message: t("invalidFormat"),
         })
@@ -312,7 +323,7 @@ export function validateBeneficiary(beneficiary, setError, t) {
         beneficiary.phoneCountryCode?.trim() &&
         !validateCountryCode(beneficiary.phoneCountryCode)
     ) {
-        setError("beneficiary.phoneCountryCode", {
+        setError(`${namePrefix}.phoneCountryCode`, {
             type: "manual",
             message: t("invalidFormat"),
         })
@@ -332,14 +343,9 @@ export function validateLeadForm(data, setError, t) {
         t,
     )
 
-    let contactsValid = true
-    data.contacts?.forEach((contact, index) => {
-        if (!validateContact(contact, index, setError, t)) {
-            contactsValid = false
-        }
-    })
+    const contactsValid = data.contacts?.reduce((isValid, contact, index) => {
+        return validateContact(contact, index, setError, t) && isValid
+    }, true)
 
-    const beneficiaryValid = validateBeneficiary(data.beneficiary, setError, t)
-
-    return companyValid && contactsValid && beneficiaryValid
+    return companyValid && contactsValid
 }
