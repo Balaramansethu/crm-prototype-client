@@ -47,8 +47,10 @@ import { formatPhoneDisplay } from "@/utils/leadTransformers"
 function getPhoneFromLead(lead) {
     if (!lead) return ""
     if (lead.phone?.number) return formatPhoneDisplay(lead.phone)
-    if (lead.contact?.phone?.number) return formatPhoneDisplay(lead.contact.phone)
-    if (lead.company?.phone?.number) return formatPhoneDisplay(lead.company.phone)
+    if (lead.contact?.phone?.number)
+        return formatPhoneDisplay(lead.contact.phone)
+    if (lead.company?.phone?.number)
+        return formatPhoneDisplay(lead.company.phone)
     return ""
 }
 

@@ -170,7 +170,10 @@ const ContactPersonForm = forwardRef(function ContactPersonForm(
                     control={control}
                     name={`contacts.${index}.department`}
                     label={t("department")}
-                    placeholder={t("departmentPlaceholder") || "e.g. Sales, identifying..."}
+                    placeholder={
+                        t("departmentPlaceholder") ||
+                        "e.g. Sales, identifying..."
+                    }
                     disabled={disabled}
                 />
 

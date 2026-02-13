@@ -55,7 +55,10 @@ export default function BeneficiarySection({
                             control={control}
                             name="beneficiary.name"
                             label={t("beneficiaryName")}
-                            placeholder={t("beneficiaryNamePlaceholder") || "Enter beneficiary name"}
+                            placeholder={
+                                t("beneficiaryNamePlaceholder") ||
+                                "Enter beneficiary name"
+                            }
                             disabled={disabled}
                         />
                         <div /> {/* Spacer for grid alignment */}

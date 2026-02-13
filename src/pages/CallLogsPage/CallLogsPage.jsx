@@ -149,7 +149,6 @@ export default function CallLogsPage() {
 
     // Removed formatPhone in favor of utility
 
-
     const formatDate = (dateString) => {
         if (!dateString) return "-"
         try {
@@ -198,8 +197,10 @@ export default function CallLogsPage() {
     const getLeadPhone = (lead) => {
         if (!lead) return "-"
         if (lead.phone?.number) return formatPhoneDisplay(lead.phone)
-        if (lead.contact?.phone?.number) return formatPhoneDisplay(lead.contact.phone)
-        if (lead.company?.phone?.number) return formatPhoneDisplay(lead.company.phone)
+        if (lead.contact?.phone?.number)
+            return formatPhoneDisplay(lead.contact.phone)
+        if (lead.company?.phone?.number)
+            return formatPhoneDisplay(lead.company.phone)
         return "-"
     }
 

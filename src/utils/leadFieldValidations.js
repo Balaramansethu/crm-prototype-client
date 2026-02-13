@@ -93,7 +93,10 @@ export function validateCompanyDetails(company, setError, t) {
 
     // Address validation (all optional, format-only)
     if (company.address) {
-        if (company.address.city?.trim() && !validateCity(company.address.city)) {
+        if (
+            company.address.city?.trim() &&
+            !validateCity(company.address.city)
+        ) {
             setError("companyDetails.address.city", {
                 type: "manual",
                 message: t("cityInvalid") || t("invalidFormat"),
@@ -336,11 +339,7 @@ export function validateLeadForm(data, setError, t) {
         }
     })
 
-    const beneficiaryValid = validateBeneficiary(
-        data.beneficiary,
-        setError,
-        t,
-    )
+    const beneficiaryValid = validateBeneficiary(data.beneficiary, setError, t)
 
     return companyValid && contactsValid && beneficiaryValid
 }

@@ -45,12 +45,14 @@ const buildAddress = (address) => {
         result.shortAddress = address.shortAddress.trim()
 
     // Build location sub-object
-    const lat = address.latitude !== "" && address.latitude != null
-        ? Number(address.latitude)
-        : undefined
-    const lng = address.longitude !== "" && address.longitude != null
-        ? Number(address.longitude)
-        : undefined
+    const lat =
+        address.latitude !== "" && address.latitude != null
+            ? Number(address.latitude)
+            : undefined
+    const lng =
+        address.longitude !== "" && address.longitude != null
+            ? Number(address.longitude)
+            : undefined
 
     if (lat !== undefined || lng !== undefined) {
         result.location = {}
@@ -265,7 +267,11 @@ export const transformLeadUpdatePayload = (
         payload.leads = newContacts.map((c, idx) => ({
             name: c.name.trim(),
             email: c.email?.trim() || undefined,
-            phone: buildPhone(c.phoneCountryCode, c.phoneExtension, c.phoneNumber),
+            phone: buildPhone(
+                c.phoneCountryCode,
+                c.phoneExtension,
+                c.phoneNumber,
+            ),
             status: c.status || "new",
             droppedReason: c.droppedReason || undefined,
             source: c.source?.trim() || undefined,
@@ -387,8 +393,7 @@ export const normalizeLeadData = (lead) => {
             ? {
                   name: lead.benificiary?.name || "",
                   phone: {
-                      countryCode:
-                          lead.benificiary?.phone?.countryCode || "",
+                      countryCode: lead.benificiary?.phone?.countryCode || "",
                       number: lead.benificiary?.phone?.number || "",
                       extension: lead.benificiary?.phone?.extension || "",
                   },

@@ -13,7 +13,11 @@ import FormInput from "./FormInput"
  * @param {string} props.namePrefix - Field name prefix (e.g. "companyDetails.address")
  * @param {boolean} [props.disabled=false] - Whether fields are disabled
  */
-export default function AddressFields({ control, namePrefix, disabled = false }) {
+export default function AddressFields({
+    control,
+    namePrefix,
+    disabled = false,
+}) {
     const { t } = useTranslation()
     const { register, setValue, getValues } = useFormContext()
 
@@ -25,16 +29,25 @@ export default function AddressFields({ control, namePrefix, disabled = false })
         const currentLat = getValues(latName)
         const currentLng = getValues(lngName)
 
-        if (!currentLat && !currentLng && "geolocation" in navigator && !disabled) {
+        if (
+            !currentLat &&
+            !currentLng &&
+            "geolocation" in navigator &&
+            !disabled
+        ) {
             navigator.geolocation.getCurrentPosition(
                 (position) => {
-                    setValue(latName, position.coords.latitude, { shouldDirty: true })
-                    setValue(lngName, position.coords.longitude, { shouldDirty: true })
+                    setValue(latName, position.coords.latitude, {
+                        shouldDirty: true,
+                    })
+                    setValue(lngName, position.coords.longitude, {
+                        shouldDirty: true,
+                    })
                 },
                 (error) => {
                     console.error("Error auto-fetching location:", error)
                     // Silently fail as per "no need to show" requirement
-                }
+                },
             )
         }
     }, [latName, lngName, getValues, setValue, disabled])
@@ -87,7 +100,7 @@ export default function AddressFields({ control, namePrefix, disabled = false })
                     placeholder="AAAA1234"
                     disabled={disabled}
                 />
-                
+
                 {/* Hidden inputs for lat/lng to ensure they are registered */}
                 <input type="hidden" {...register(latName)} />
                 <input type="hidden" {...register(lngName)} />

@@ -79,7 +79,11 @@ export default function LeadForm({
                 extension = ""
             }
 
-            return { phoneCountryCode: countryCode, phoneExtension: extension, phoneNumber: number }
+            return {
+                phoneCountryCode: countryCode,
+                phoneExtension: extension,
+                phoneNumber: number,
+            }
         }
 
         const company = initialData?.company || {}
@@ -164,7 +168,9 @@ export default function LeadForm({
                 }))
         } else if (legacyContact.name || initialData?.contact) {
             // Fallback to legacy single contact structure
-            const legacyPhone = normalizePhone(legacyContact.phone || initialData?.phone)
+            const legacyPhone = normalizePhone(
+                legacyContact.phone || initialData?.phone,
+            )
             contacts = [
                 {
                     _id: initialData?._id || legacyContact?._id,

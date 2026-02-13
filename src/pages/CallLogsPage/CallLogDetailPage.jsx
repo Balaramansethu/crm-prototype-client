@@ -66,7 +66,6 @@ export default function CallLogDetailPage() {
 
     // Removed formatPhone in favor of utility
 
-
     const formatDate = (dateString) => {
         if (!dateString) return "-"
         try {
@@ -301,7 +300,9 @@ export default function CallLogDetailPage() {
                                 dir="ltr"
                             >
                                 <Phone className="h-4 w-4 text-muted-foreground" />
-                                <span>{formatPhoneDisplay(company?.phone)}</span>
+                                <span>
+                                    {formatPhoneDisplay(company?.phone)}
+                                </span>
                             </div>
                         </div>
                         <div className="space-y-1">

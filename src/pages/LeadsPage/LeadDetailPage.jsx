@@ -359,8 +359,9 @@ export default function LeadDetailPage() {
                             />
 
                             {/* Address Section */}
-                            {(company?.address ||
-                                leadData?.benificiary) && <Separator />}
+                            {(company?.address || leadData?.benificiary) && (
+                                <Separator />
+                            )}
                             {company?.address && (
                                 <>
                                     <div className="font-medium text-sm pt-2">
