@@ -36,7 +36,6 @@
     "datasack": "Datasack",
     "last": "Last",
     "months": "Months",
-    "days": "Days",
     "for": "For",
     "the": "The",
     "jan": "January",
@@ -442,5 +441,18 @@
     "alphanumericOnly": "Alphanumeric only, no spaces",
     "proposalDescription": "Enter details for the proposal stage.",
     "droppedBy": "Dropped By",
-    "dropReasonHeader": "Dropped Reason"
+    "dropReasonHeader": "Dropped Reason",
+    "droppedAt": "Dropped At",
+    "fetchLocation": "Fetch Location",
+    "fetching": "Fetching...",
+    "locationFetchedSuccessfully": "Location Fetched Successfully",
+    "retryFetchLocation": "Fetch Location",
+    "locationFetchError": "Unable to fetch location. Please allow location access.",
+    "beneficiaryContactDetails": "Beneficiary Contact Details",
+    "filterByAssignee": "Filter by assignee...",
+    "day": "day",
+    "days": "days",
+    "hour": "hour",
+    "hours": "hours",
+    "minute": "minute"
 }

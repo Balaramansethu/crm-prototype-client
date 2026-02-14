@@ -65,35 +65,48 @@ export default function CompanyActivityCard({ companyId, className }) {
                     ) : (
                         <div className="max-h-[500px] overflow-y-auto">
                             {activityData.map((item, index) => {
-                                // Get current status
                                 const currentStatus = item?.outcome || "new"
-                                // Get previous status from next item (older entry) or default to "new"
                                 const nextItem = activityData[index + 1]
-                                const previousStatus =
-                                    nextItem?.outcome || "new"
+                                const previousStatus = nextItem?.outcome || "new"
+
+                                const currentDate = new Date(item.updatedAt)
+                                const previousDate = nextItem?.updatedAt ? new Date(nextItem.updatedAt) : null
+
+                                let gapText = null
+                                if (previousDate) {
+                                  const diffTime = Math.abs(currentDate - previousDate);
+                                  const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24)); 
+                                  const diffHours = Math.floor((diffTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                                  const diffMinutes = Math.floor((diffTime % (1000 * 60 * 60)) / (1000 * 60));
+                                  
+                                  const parts = [];
+                                  if (diffDays > 0) {
+                                      parts.push(`${diffDays} ${diffDays === 1 ? t("day") : t("days")}`);
+                                      if (diffHours > 0) parts.push(`${diffHours} ${diffHours === 1 ? t("hour") : t("hours")}`);
+                                  } else if (diffHours > 0) {
+                                      parts.push(`${diffHours} ${diffHours === 1 ? t("hour") : t("hours")}`);
+                                      if (diffMinutes > 0) parts.push(`${diffMinutes} ${diffMinutes === 1 ? t("minute") : t("minutes")}`);
+                                  } else {
+                                      parts.push(`${diffMinutes} ${diffMinutes === 1 ? t("minute") : t("minutes")}`);
+                                  }
+                                  
+                                  gapText = `(${parts.join(" ")})`
+                                }
 
                                 return (
                                     <div
                                         key={item._id || index}
                                         className="flex gap-3 px-4 py-2 border-b last:border-b-0 hover:bg-muted/30"
                                     >
-                                        {/* Content */}
                                         <div className="flex-1 min-w-0">
                                             <div className="flex items-start justify-between gap-2">
                                                 <span className="text-sm font-medium text-foreground truncate">
-                                                    {item.leadDetails?.contact
-                                                        ?.name ||
-                                                        t("unknownContact")}
+                                                    {item.leadDetails?.contact?.name || t("unknownContact")}
                                                 </span>
                                                 <div className="flex flex-col items-end shrink-0">
                                                     <span className="text-xs text-muted-foreground whitespace-nowrap">
                                                         {item.updatedAt
-                                                            ? format(
-                                                                  new Date(
-                                                                      item.updatedAt,
-                                                                  ),
-                                                                  "d MMM, h:mm a",
-                                                              )
+                                                            ? format(new Date(item.updatedAt), "d MMM, h:mm a")
                                                             : "-"}
                                                     </span>
                                                     {item.createdBy && (
@@ -102,14 +115,7 @@ export default function CompanyActivityCard({ companyId, className }) {
                                                             className="mt-1 text-[10px] py-0.5 px-2 h-4 max-w-[100px] truncate"
                                                             title={`${item.createdBy.firstName || ""} ${item.createdBy.lastName || ""}`.trim()}
                                                         >
-                                                            {
-                                                                item.createdBy
-                                                                    .firstName
-                                                            }{" "}
-                                                            {
-                                                                item.createdBy
-                                                                    .lastName
-                                                            }
+                                                            {item.createdBy.firstName} {item.createdBy.lastName}
                                                         </Badge>
                                                     )}
                                                 </div>
@@ -119,19 +125,14 @@ export default function CompanyActivityCard({ companyId, className }) {
                                             </p>
                                             <div className="flex items-center gap-1.5 mt-1 flex-wrap">
                                                 <StatusBadge
-                                                    status={previousStatus}
-                                                    className="text-xs"
-                                                />
-                                                <span className="text-muted-foreground">
-                                                    →
-                                                </span>
-                                                <StatusBadge
                                                     status={currentStatus}
                                                     className="text-xs"
                                                 />
-                                                <span className="text-xs text-muted-foreground">
-                                                    ({t("stage")})
-                                                </span>
+                                                {gapText && (
+                                                    <span className="text-xs text-muted-foreground">
+                                                        {gapText}
+                                                    </span>
+                                                )}
                                             </div>
                                         </div>
                                     </div>

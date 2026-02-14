@@ -3,6 +3,7 @@ import {
     FormSelect,
     PhoneInputGroup,
     AddressFields,
+    LocationFetchButton,
 } from "@/components/form-fields"
 
 import { SERVICE_TYPE_OPTIONS } from "@/constants/formOptions"
@@ -78,19 +79,27 @@ export default function CompanyDetailsForm({
                     disabled={disabled}
                 />
 
-                <FormInput
-                    control={control}
-                    name="companyDetails.website"
-                    label={t("website")}
-                    placeholder={t("websitePlaceholder")}
-                    dir="ltr"
-                    disabled={disabled}
-                />
+                <div className="md:col-span-2">
+                    <FormInput
+                        control={control}
+                        name="companyDetails.website"
+                        label={t("website")}
+                        placeholder={t("websitePlaceholder")}
+                        dir="ltr"
+                        disabled={disabled}
+                    />
+                </div>
                 <FormInput
                     control={control}
                     name="companyDetails.socialProfile"
                     label={t("socialProfile")}
                     placeholder={t("socialProfilePlaceholder")}
+                    disabled={disabled}
+                />
+                
+                {/* Location Fetch Button - Placed next to Social Profile */}
+                <LocationFetchButton 
+                    namePrefix="companyDetails.address"
                     disabled={disabled}
                 />
 

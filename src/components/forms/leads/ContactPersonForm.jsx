@@ -207,13 +207,34 @@ const ContactPersonForm = forwardRef(function ContactPersonForm(
                 />
 
                 <div className="md:col-span-2">
-                    <BeneficiarySection
+                    <FormField
                         control={control}
-                        namePrefix={`contacts.${index}.beneficiary`}
-                        disabled={disabled}
-                        defaultOpen={true}
+                        name={`contacts.${index}.remarks`}
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>{t("remarks")}</FormLabel>
+                                <FormControl>
+                                    <Textarea
+                                        {...field}
+                                        placeholder={t("remarksPlaceholder")}
+                                        className={cn(
+                                            "min-h-[80px]",
+                                            isRTL ? "text-right" : "",
+                                        )}
+                                        disabled={disabled}
+                                    />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
                     />
                 </div>
+
+                <BeneficiarySection
+                    control={control}
+                    namePrefix={`contacts.${index}.beneficiary`}
+                    disabled={disabled}
+                />
 
                 {/* Conditional Drop Reason Field - Only shown when status is 'dropped' */}
                 {isDropped && (
@@ -262,29 +283,7 @@ const ContactPersonForm = forwardRef(function ContactPersonForm(
                     </div>
                 )}
 
-                <div className="md:col-span-2">
-                    <FormField
-                        control={control}
-                        name={`contacts.${index}.remarks`}
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>{t("remarks")}</FormLabel>
-                                <FormControl>
-                                    <Textarea
-                                        {...field}
-                                        placeholder={t("remarksPlaceholder")}
-                                        className={cn(
-                                            "min-h-[80px]",
-                                            isRTL ? "text-right" : "",
-                                        )}
-                                        disabled={disabled}
-                                    />
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
-                </div>
+
             </div>
         </div>
     )

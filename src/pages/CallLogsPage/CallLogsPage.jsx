@@ -321,6 +321,11 @@ export default function CallLogsPage() {
                                 </TableHead>
                                 <TableHead className="hidden md:table-cell">
                                     <div className="text-xs font-bold uppercase tracking-wider text-black">
+                                        {t("createdBy")}
+                                    </div>
+                                </TableHead>
+                                <TableHead className="hidden md:table-cell">
+                                    <div className="text-xs font-bold uppercase tracking-wider text-black">
                                         {t("phone")}
                                     </div>
                                 </TableHead>
@@ -355,7 +360,7 @@ export default function CallLogsPage() {
                             {isLoading ? (
                                 <TableRow>
                                     <TableCell
-                                        colSpan={8}
+                                        colSpan={9} // Updated colSpan
                                         className="h-40 text-center"
                                     >
                                         <div className="flex flex-col items-center justify-center gap-2 text-black">
@@ -369,7 +374,7 @@ export default function CallLogsPage() {
                             ) : isError ? (
                                 <TableRow>
                                     <TableCell
-                                        colSpan={8}
+                                        colSpan={9} // Updated colSpan
                                         className="h-40 text-center text-red-600 font-bold"
                                     >
                                         {t("failedToLoadCallLog")}
@@ -378,7 +383,7 @@ export default function CallLogsPage() {
                             ) : callLogs.length === 0 ? (
                                 <TableRow>
                                     <TableCell
-                                        colSpan={8}
+                                        colSpan={9} // Updated colSpan
                                         className="h-40 text-center text-black"
                                     >
                                         {t("noDataAvailable")}
@@ -400,6 +405,13 @@ export default function CallLogsPage() {
                                         </TableCell>
                                         <TableCell className="text-black">
                                             {getContactName(log.lead)}
+                                        </TableCell>
+                                        <TableCell className="hidden md:table-cell text-black text-sm">
+                                            {log.createdBy
+                                                ? `${log.createdBy.firstName} ${
+                                                      log.createdBy.lastName || ""
+                                                  }`
+                                                : "-"}
                                         </TableCell>
                                         <TableCell className="hidden md:table-cell">
                                             <div

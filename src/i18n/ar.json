@@ -442,5 +442,18 @@
     "alphanumericOnly": "أرقام وحروف فقط، بدون مسافات",
     "proposalDescription": "أدخل تفاصيل مرحلة العرض.",
     "droppedBy": "تم الإلغاء بواسطة",
-    "dropReasonHeader": "سبب الإلغاء"
+    "dropReasonHeader": "سبب الإلغاء",
+    "droppedAt": "تاريخ الإلغاء",
+    "fetchLocation": "جلب الموقع",
+    "fetching": "جاري الجلب...",
+    "locationFetchedSuccessfully": "تم جلب الموقع بنجاح",
+    "retryFetchLocation": "جلب الموقع",
+    "locationFetchError": "تعذر جلب الموقع. يرجى السماح بالوصول إلى الموقع.",
+    "beneficiaryContactDetails": "تفاصيل اتصال المستفيد",
+    "filterByAssignee": "تصفية حسب المسؤول...",
+    "day": "يوم",
+    "days": "أيام",
+    "hour": "ساعة",
+    "hours": "ساعات",
+    "minute": "دقيقة"
 }

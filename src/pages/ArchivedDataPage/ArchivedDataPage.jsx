@@ -404,7 +404,7 @@ function DroppedLeadsTable({ page, setPage }) {
                             {t("droppedBy")}
                         </TableHead>
                         <TableHead className="text-xs font-bold uppercase tracking-wider text-black whitespace-nowrap w-auto">
-                            {t("deletedAt")}
+                            {t("droppedAt")}
                         </TableHead>
                         <TableHead className="text-xs font-bold uppercase tracking-wider text-black w-[30%]">
                             {t("dropReasonHeader")}

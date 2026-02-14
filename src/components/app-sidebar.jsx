@@ -4,6 +4,7 @@ import {
     IconListDetails,
     IconPhone,
 } from "@tabler/icons-react"
+import { LogOut } from "lucide-react"
 import {
     Sidebar,
     SidebarContent,
@@ -14,8 +15,10 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
     SidebarSeparator,
+    SidebarFooter,
     useSidebar,
 } from "@/components/ui/sidebar"
+import { useLogout } from "@/hooks/useAuthHooks"
 import LanguageToggle from "@/components/LanguageToggle"
 import { useNavigate, useLocation } from "react-router-dom"
 import { useUserStore } from "@/store/userStore"
@@ -25,6 +28,7 @@ export function AppSidebar({ ...props }) {
     const { t, i18n } = useTranslation()
     const isRTL = i18n.dir() === "rtl"
     const navigate = useNavigate()
+    const logout = useLogout()
     const location = useLocation()
     const user = useUserStore((s) => s.user)
     const { setOpenMobile, isMobile } = useSidebar()
@@ -138,6 +142,23 @@ export function AppSidebar({ ...props }) {
                     </SidebarGroupContent>
                 </SidebarGroup>
             </SidebarContent>
+
+
+            {/* ─── Footer: Logout ─── */}
+            <SidebarFooter>
+                <SidebarMenu>
+                    <SidebarMenuItem>
+                        <SidebarMenuButton
+                            onClick={() => logout.mutate(null)}
+                            tooltip={t("logout")}
+                            className="text-destructive hover:bg-destructive/10 hover:text-destructive"
+                        >
+                            <LogOut className="size-4" />
+                            <span>{t("logout")}</span>
+                        </SidebarMenuButton>
+                    </SidebarMenuItem>
+                </SidebarMenu>
+            </SidebarFooter>
         </Sidebar>
     )
 }

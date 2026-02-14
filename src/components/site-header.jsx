@@ -90,11 +90,10 @@ export function SiteHeader() {
                                 </div>
                             </DropdownMenuLabel>
 
-                            <DropdownMenuSeparator />
-
                             {/* Invite - super_admin only */}
                             {user?.role === "super_admin" && (
                                 <>
+                                    <DropdownMenuSeparator />
                                     <DropdownMenuItem
                                         onClick={() => setInviteModalOpen(true)}
                                         className="cursor-pointer"
@@ -102,18 +101,8 @@ export function SiteHeader() {
                                         <UserPlus className="mr-2 h-4 w-4" />
                                         {t("invite")}
                                     </DropdownMenuItem>
-                                    <DropdownMenuSeparator />
                                 </>
                             )}
-
-                            {/* Logout */}
-                            <DropdownMenuItem
-                                onClick={() => logout.mutate(null)}
-                                className="cursor-pointer text-destructive focus:text-destructive"
-                            >
-                                <LogOut className="mr-2 h-4 w-4" />
-                                {t("logout")}
-                            </DropdownMenuItem>
                         </DropdownMenuContent>
                     </DropdownMenu>
                 </div>

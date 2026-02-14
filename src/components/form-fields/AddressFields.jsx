@@ -1,12 +1,9 @@
-import { useFormContext } from "react-hook-form"
 import { useTranslation } from "react-i18next"
-import { useEffect } from "react"
 import FormInput from "./FormInput"
 
 /**
  * Reusable address fields section.
  * Renders door, street, area, city, pincode, short address.
- * Automatically captures latitude and longitude from browser if available and not already set.
  *
  * @param {Object} props
  * @param {Object} props.control - React Hook Form control (Used for FormInput)
@@ -19,38 +16,6 @@ export default function AddressFields({
     disabled = false,
 }) {
     const { t } = useTranslation()
-    const { register, setValue, getValues } = useFormContext()
-
-    const latName = `${namePrefix}.latitude`
-    const lngName = `${namePrefix}.longitude`
-
-    useEffect(() => {
-        // Automatically fetch location if not already set
-        const currentLat = getValues(latName)
-        const currentLng = getValues(lngName)
-
-        if (
-            !currentLat &&
-            !currentLng &&
-            "geolocation" in navigator &&
-            !disabled
-        ) {
-            navigator.geolocation.getCurrentPosition(
-                (position) => {
-                    setValue(latName, position.coords.latitude, {
-                        shouldDirty: true,
-                    })
-                    setValue(lngName, position.coords.longitude, {
-                        shouldDirty: true,
-                    })
-                },
-                (error) => {
-                    console.error("Error auto-fetching location:", error)
-                    // Silently fail as per "no need to show" requirement
-                },
-            )
-        }
-    }, [latName, lngName, getValues, setValue, disabled])
 
     return (
         <div className="md:col-span-2 space-y-4">
@@ -100,10 +65,6 @@ export default function AddressFields({
                     placeholder="AAAA1234"
                     disabled={disabled}
                 />
-
-                {/* Hidden inputs for lat/lng to ensure they are registered */}
-                <input type="hidden" {...register(latName)} />
-                <input type="hidden" {...register(lngName)} />
             </div>
         </div>
     )

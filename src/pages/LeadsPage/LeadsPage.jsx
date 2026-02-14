@@ -325,20 +325,7 @@ export default function LeadsPage() {
                             showFilters ? "flex" : "hidden md:flex",
                         )}
                     >
-                        {/* Owner Search (Super Admin Only) */}
-                        {isSuperAdminUser && (
-                            <div className="relative flex-1 min-w-[140px] max-w-full md:max-w-[200px]">
-                                <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500 pointer-events-none" />
-                                <Input
-                                    placeholder={t("filterByOwner")}
-                                    value={ownerSearch}
-                                    onChange={(e) =>
-                                        setOwnerSearch(e.target.value)
-                                    }
-                                    className="pl-9 h-9 text-sm bg-muted/50 focus:bg-background transition-colors text-black placeholder:text-gray-500"
-                                />
-                            </div>
-                        )}
+
 
                         {/* Company Search */}
                         <div className="relative flex-1 min-w-[140px] max-w-full md:max-w-[200px]">
@@ -502,6 +489,21 @@ export default function LeadsPage() {
                                 isClearable
                             />
                         </div>
+
+                        {/* Owner Search (Super Admin Only) */}
+                        {isSuperAdminUser && (
+                            <div className="relative flex-1 min-w-[140px] max-w-full md:max-w-[200px]">
+                                <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500 pointer-events-none" />
+                                <Input
+                                    placeholder={t("filterByAssignee")}
+                                    value={ownerSearch}
+                                    onChange={(e) =>
+                                        setOwnerSearch(e.target.value)
+                                    }
+                                    className="pl-9 h-9 text-sm bg-muted/50 focus:bg-background transition-colors text-black placeholder:text-gray-500"
+                                />
+                            </div>
+                        )}
 
                         {/* Clear Filters - always rendered, visibility toggled to prevent layout shift */}
                         <Button
