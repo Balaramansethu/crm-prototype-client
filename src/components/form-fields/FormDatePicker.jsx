@@ -61,7 +61,7 @@ export default function FormDatePicker({
                             dateFormat={dateFormat}
                             disabled={disabled}
                             className={cn(
-                                "h-10 w-full rounded-md border px-3 text-sm",
+                                "h-10 w-full rounded-md border px-3 text-sm placeholder:text-muted-foreground/50",
                                 isRTL ? "text-right" : "",
                                 disabled &&
                                     "opacity-50 cursor-not-allowed bg-muted",

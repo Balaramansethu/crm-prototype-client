@@ -5,6 +5,7 @@ import {
     DEFAULT_CONTACT_VALUES,
     DEFAULT_BENEFICIARY_VALUES,
     DEFAULT_ADDRESS_VALUES,
+    DEFAULT_COMPANY_VALUES,
 } from "@/constants/formOptions"
 import { validateLeadForm } from "@/utils/leadFieldValidations"
 import CompanyDetailsForm from "./CompanyDetailsForm"
@@ -234,6 +235,7 @@ export default function LeadForm({
                     department: "",
                     remarks: "",
                     priority: 1,
+                    beneficiary: { ...DEFAULT_BENEFICIARY_VALUES },
                 },
             ]
         }
@@ -243,19 +245,36 @@ export default function LeadForm({
 
         return {
             companyDetails: {
+                ...DEFAULT_COMPANY_VALUES,
                 name:
                     company.name ||
                     (typeof initialData?.company === "string"
                         ? initialData.company
-                        : ""),
-                email: company.email || "",
-                ...companyPhone,
-                website: company.website || initialData?.website || "",
+                        : "") ||
+                    DEFAULT_COMPANY_VALUES.name,
+                email: company.email || DEFAULT_COMPANY_VALUES.email,
+                phoneCountryCode:
+                    companyPhone.phoneCountryCode ||
+                    DEFAULT_COMPANY_VALUES.phoneCountryCode,
+                phoneExtension:
+                    companyPhone.phoneExtension ||
+                    DEFAULT_COMPANY_VALUES.phoneExtension,
+                phoneNumber:
+                    companyPhone.phoneNumber ||
+                    DEFAULT_COMPANY_VALUES.phoneNumber,
+                website:
+                    company.website ||
+                    initialData?.website ||
+                    DEFAULT_COMPANY_VALUES.website,
                 socialProfile:
-                    company.socialProfile || initialData?.socialProfile || "",
+                    company.socialProfile ||
+                    initialData?.socialProfile ||
+                    DEFAULT_COMPANY_VALUES.socialProfile,
                 serviceType:
-                    company.serviceType || initialData?.serviceType || "",
-                address: company.address || { ...DEFAULT_ADDRESS_VALUES },
+                    company.serviceType ||
+                    initialData?.serviceType ||
+                    DEFAULT_COMPANY_VALUES.serviceType,
+                address: company.address || DEFAULT_COMPANY_VALUES.address,
             },
             contacts,
         }

@@ -211,7 +211,7 @@ const ContactPersonForm = forwardRef(function ContactPersonForm(
                         control={control}
                         namePrefix={`contacts.${index}.beneficiary`}
                         disabled={disabled}
-                        defaultOpen={!!control._defaultValues?.contacts?.[index]?.beneficiary}
+                        defaultOpen={true}
                     />
                 </div>
 

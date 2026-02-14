@@ -22,7 +22,7 @@ const buildPhone = (countryCode, extension, number) => {
 
     return {
         countryCode: countryCode?.trim() || undefined,
-        extension: extension?.trim() || "",
+        extension: extension?.trim() || undefined,
         number: cleanNumber,
     }
 }

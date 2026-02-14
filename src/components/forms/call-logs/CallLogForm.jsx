@@ -382,8 +382,8 @@ export default function CallLogForm({
         const payload = {
             lead: selectedLeadId,
             outcome: data.outcome,
-            followUp: data.followUp,
-            remarks: data.remarks,
+            followUp: data.followUp || undefined,
+            remarks: data.remarks || undefined,
             callStartTime: formattedCallStartTime,
             callDuration: totalDurationSeconds,
         }

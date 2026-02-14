@@ -168,7 +168,17 @@ export default function OpportunityForm({
             return
         }
 
-        onSubmit(data)
+        const payload = {
+            ...data,
+            estimatedValue: data.estimatedValue || undefined,
+            probability: data.probability || undefined,
+            expectedRevenue: data.expectedRevenue || undefined,
+            nextStep: data.nextStep?.trim() || undefined,
+            remarks: data.remarks?.trim() || undefined,
+            followUp: data.followUp || undefined,
+        }
+
+        onSubmit(payload)
     }
 
     const handleCancel = () => {
