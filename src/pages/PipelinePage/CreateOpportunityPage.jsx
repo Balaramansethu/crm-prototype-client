@@ -23,27 +23,28 @@ export default function CreateOpportunityPage() {
         { label: t("addOpportunity") },
     ]
 
-    const onSubmit = async (data) => {
+    const onSubmit = async (formData) => {
         setLoading(true)
         try {
             const ownerId = user?._id || user?.id
 
-            const payload = {
-                company: data.company,
-                opportunityStage: data.opportunityStage,
-                estimatedValue: Number(data.estimatedValue) || 0,
-                probability: Number(data.probability) || 0,
-                expectedRevnue: Number(data.expectedRevenue) || 0, // Note: backend typo
-                nextStep: data.nextStep || "",
-                remarks: data.remarks || "",
-                owner: ownerId,
+            // Append owner to the formData object coming from OpportunityForm
+            if (ownerId) {
+                formData.append("owner", ownerId)
+            }
+            // Note: expectedRevenue backend typo handling should likely be done in service or by ensuring consistent naming. 
+            // If backend strictly expects 'expectedRevnue' (typo), we should handle it.
+            // But standard fields are already appended. 
+            // Let's assume 'expectedRevenue' (correct spelling) or check if we need to alias it.
+            // Previous code had: expectedRevnue: Number(data.expectedRevenue)
+            // So let's append the typo version just in case, or rename it in FormData loop if needed.
+            // Actually, let's append the typo version manually if 'expectedRevenue' exists in formData
+            if (formData.has("expectedRevenue")) {
+                const val = formData.get("expectedRevenue")
+                 formData.append("expectedRevnue", val) // Handle backend typo compatibility
             }
 
-            if (data.followUp) {
-                payload.followUp = format(data.followUp, "yyyy-MM-dd")
-            }
-
-            await createPipeline(payload)
+            await createPipeline(formData)
 
             // Invalidate pipelines cache so the list refreshes
             await queryClient.invalidateQueries({ queryKey: ["pipelines"] })

@@ -44,24 +44,16 @@ export default function EditOpportunityPage() {
         if (id) fetchPipeline()
     }, [id, navigate, t])
 
-    const onSubmit = async (data) => {
+    const onSubmit = async (formData) => {
         setLoading(true)
         try {
-            const payload = {
-                company: data.company,
-                opportunityStage: data.opportunityStage,
-                estimatedValue: Number(data.estimatedValue) || 0,
-                probability: Number(data.probability) || 0,
-                expectedRevnue: Number(data.expectedRevenue) || 0, // Note: backend typo
-                nextStep: data.nextStep || "",
-                remarks: data.remarks || "",
+            // Handle backend typo compatibility for 'expectedRevnue'
+            if (formData.has("expectedRevenue")) {
+                 const val = formData.get("expectedRevenue")
+                 formData.append("expectedRevnue", val)
             }
 
-            if (data.followUp) {
-                payload.followUp = format(data.followUp, "yyyy-MM-dd")
-            }
-
-            await updatePipeline(id, payload)
+            await updatePipeline(id, formData)
 
             // Invalidate pipelines cache so the list refreshes
             await queryClient.invalidateQueries({ queryKey: ["pipelines"] })

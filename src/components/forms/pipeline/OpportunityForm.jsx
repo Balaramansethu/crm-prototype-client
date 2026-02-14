@@ -25,8 +25,11 @@ import { useTranslation } from "react-i18next"
 import { useNavigate } from "react-router-dom"
 import { useMemo, useState, useEffect } from "react"
 import { Loader2 } from "lucide-react"
+import { format } from "date-fns"
 import { cn } from "@/lib/utils"
 import { searchPipelineCompanies } from "@/service/pipelineService"
+
+import ProposalUploadSection from "./ProposalUploadSection"
 
 export default function OpportunityForm({
     onSubmit,
@@ -98,21 +101,29 @@ export default function OpportunityForm({
                 ? new Date(initialData.followUp)
                 : null,
             remarks: initialData?.remarks || "",
+            // Proposal fields
+            proposalNumber: initialData?.proposalNumber || "",
+            proposalDocument: undefined, // Always start undefined for file input
         }),
         [initialData],
     )
 
     const form = useForm({
         defaultValues,
+        mode: "onChange",
+        shouldUnregister: false,
     })
 
     const {
         formState: { isDirty, isSubmitting },
         watch,
+        setValue,
+        control,
     } = form
 
     const estimatedValue = watch("estimatedValue")
     const probability = watch("probability")
+    const opportunityStage = watch("opportunityStage")
 
     // Auto-calculate expected revenue
     useEffect(() => {
@@ -154,6 +165,8 @@ export default function OpportunityForm({
                     ? new Date(initialData.followUp)
                     : null,
                 remarks: initialData.remarks || "",
+                proposalNumber: initialData.proposalNumber || "",
+                proposalDocument: undefined,
             })
         }
     }, [initialData, form])
@@ -168,17 +181,32 @@ export default function OpportunityForm({
             return
         }
 
-        const payload = {
-            ...data,
-            estimatedValue: data.estimatedValue || undefined,
-            probability: data.probability || undefined,
-            expectedRevenue: data.expectedRevenue || undefined,
-            nextStep: data.nextStep?.trim() || undefined,
-            remarks: data.remarks?.trim() || undefined,
-            followUp: data.followUp || undefined,
+        const formData = new FormData()
+        
+        // Append standard fields
+        formData.append("company", data.company)
+        formData.append("opportunityStage", data.opportunityStage)
+        // Use loose check for values including 0
+        if (data.estimatedValue !== "" && data.estimatedValue !== undefined && data.estimatedValue !== null) formData.append("estimatedValue", data.estimatedValue)
+        if (data.probability !== "" && data.probability !== undefined && data.probability !== null) formData.append("probability", data.probability)
+        if (data.expectedRevenue !== "" && data.expectedRevenue !== undefined && data.expectedRevenue !== null) formData.append("expectedRevenue", data.expectedRevenue)
+        if (data.nextStep?.trim()) formData.append("nextStep", data.nextStep.trim())
+        if (data.remarks?.trim()) formData.append("remarks", data.remarks.trim())
+        if (data.followUp) formData.append("followUp", format(data.followUp, "yyyy-MM-dd"))
+
+        // Handle Proposal Fields
+        if (data.opportunityStage === "proposal") {
+            // Validation is handled by RHF in ProposalUploadSection, but double check here if needed
+            if (data.proposalNumber) {
+                formData.append("proposalNumber", data.proposalNumber)
+            }
+            
+            if (data.proposalDocument instanceof File) {
+                formData.append("proposalDocument", data.proposalDocument)
+            }
         }
 
-        onSubmit(payload)
+        onSubmit(formData)
     }
 
     const handleCancel = () => {
@@ -193,6 +221,12 @@ export default function OpportunityForm({
         setShowUnsavedDialog(false)
         navigate("/pipeline")
     }
+
+    // Determine if we should show proposal section
+    const showProposalSection = opportunityStage === "proposal"
+
+    // If stage is changed away from proposal, we hide the section but RHF keeps values by default
+    // ideally.
 
     const isSubmitDisabled = loading || (isEditMode && !isDirty)
 
@@ -272,6 +306,17 @@ export default function OpportunityForm({
                             }))}
                             showBadge
                         />
+
+                        {/* Proposal Upload Section - Conditional */}
+                        {showProposalSection && (
+                            <ProposalUploadSection 
+                                control={control}
+                                setValue={setValue}
+                                watch={watch}
+                                existingProposalDocument={initialData?.proposalDocument}
+                                isEditMode={isEditMode}
+                            />
+                        )}
 
                         {/* Financial Values Grid */}
                         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">

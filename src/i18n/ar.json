@@ -428,5 +428,17 @@
     "latitudeInvalid": "يجب أن يكون خط العرض بين -90 و 90",
     "longitudeInvalid": "يجب أن يكون خط الطول بين -180 و 180",
     "getLocation": "احصل على الموقع",
-    "noLocation": "لم يتم تحديد الموقع"
+    "noLocation": "لم يتم تحديد الموقع",
+    "proposalDetails": "تفاصيل العرض",
+    "proposalNumber": "رقم العرض",
+    "proposalDocument": "ملف العرض",
+    "proposalNumberRequired": "رقم العرض مطلوب",
+    "proposalDocumentRequired": "ملف العرض مطلوب",
+    "uploadProposal": "تحميل ملف العرض",
+    "proposalFile": "ملف العرض",
+    "replaceFile": "استبدال الملف",
+    "currentDocument": "الملف الحالي",
+    "cancelReplace": "إلغاء الاستبدال",
+    "alphanumericOnly": "أرقام وحروف فقط، بدون مسافات",
+    "proposalDescription": "أدخل تفاصيل مرحلة العرض."
 }

@@ -428,5 +428,17 @@
     "longitudeInvalid": "Longitude must be between -180 and 180",
     "countryCode": "Code",
     "getLocation": "Get Location",
-    "noLocation": "No location set"
+    "noLocation": "No location set",
+    "proposalDetails": "Proposal Details",
+    "proposalNumber": "Proposal Number",
+    "proposalDocument": "Proposal Document",
+    "proposalNumberRequired": "Proposal Number is required",
+    "proposalDocumentRequired": "Proposal document is required",
+    "uploadProposal": "Upload Proposal Document",
+    "proposalFile": "Proposal File",
+    "replaceFile": "Replace File",
+    "currentDocument": "Current Document",
+    "cancelReplace": "Cancel replace",
+    "alphanumericOnly": "Alphanumeric only, no spaces",
+    "proposalDescription": "Enter details for the proposal stage."
 }

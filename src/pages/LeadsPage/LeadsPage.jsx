@@ -90,14 +90,7 @@ export default function LeadsPage() {
         searchParams.get("owner") || "",
     )
 
-    const isSuperAdminUser =
-        user?.role === "SUPER_ADMIN" || user?.role === "super_admin"
-    console.log(
-        "Current User Role:",
-        user?.role,
-        "Is Super Admin:",
-        isSuperAdminUser,
-    )
+    const isSuperAdminUser = user?.role === "SUPER_ADMIN" || user?.role === "super_admin"
     const debouncedOwner = useDebounce(ownerSearch, 500)
 
     // Sync owner search to URL
