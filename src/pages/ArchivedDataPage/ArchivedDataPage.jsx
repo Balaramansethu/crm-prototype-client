@@ -2,6 +2,7 @@ import { useState, useMemo } from "react"
 import { useTranslation } from "react-i18next"
 import {
     useArchivedLeads,
+    useDroppedArchivedLeads,
     useArchivedCallLogs,
     useArchivedPipelines,
 } from "@/hooks/useArchivedData"
@@ -19,6 +20,12 @@ import { format } from "date-fns"
 import { cn } from "@/lib/utils"
 import { RowActionsMenu } from "@/components/common/RowActionsMenu"
 import { getStageTranslationKey } from "@/constants/pipelineOptions"
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+} from "@/components/ui/tooltip"
 
 // Chrome-style Tab Component with smooth curved edges
 function ChromeTab({ label, isActive, onClick }) {
@@ -321,6 +328,145 @@ function ArchivedLeadsTable({ page, setPage }) {
     )
 }
 
+// Dropped Leads Table (Reuses ArchivedLeadsTable structure)
+function DroppedLeadsTable({ page, setPage }) {
+    const { t, i18n } = useTranslation()
+    const isRTL = i18n.dir() === "rtl"
+    // Use the new hook for dropped leads
+    const { data, isLoading, isError } = useDroppedArchivedLeads({ page, limit: 10 })
+
+    // Reuse the same parsing logic as ArchivedLeadsTable
+    const { leads, info } = useMemo(() => {
+        if (!data) return { leads: [], info: {} }
+
+        // Adjust property access if API response differs, but assuming "leads" key or similar structure
+        // If API returns "droppedLeads", we might need to check that. 
+        // Based on prompt "Use same column renderers", we assume similar shape.
+        const rawLeads = data.leads || data.droppedLeads || []
+        const flattened = []
+
+        rawLeads.forEach((item) => {
+            const company = item.company || {}
+            const contactLeads = item.leads || []
+            contactLeads.forEach((lead) => {
+                flattened.push({
+                    ...lead,
+                    companyName: company.name || "-",
+                })
+            })
+        })
+
+        return {
+            leads: flattened,
+            info: data.info || { total: 0, totalPages: 1 },
+        }
+    }, [data])
+
+    if (isLoading) {
+        return (
+            <div className="flex flex-col items-center justify-center py-12 gap-2">
+                <Loader2 className="h-6 w-6 animate-spin text-gray-500" />
+                <span className="text-sm text-gray-500">
+                    {t("loadingArchivedData")}
+                </span>
+            </div>
+        )
+    }
+
+    if (isError) {
+        return (
+            <div className="text-center py-12 text-red-600">
+                {t("failedToLoadLeads")}
+            </div>
+        )
+    }
+
+    if (leads.length === 0) {
+        return (
+            <div className="text-center py-12 text-gray-500">
+                {t("noArchivedData")}
+            </div>
+        )
+    }
+
+    return (
+        <TooltipProvider>
+            <Table>
+                <TableHeader className="bg-muted/30">
+                    <TableRow>
+                        <TableHead className="text-xs font-bold uppercase tracking-wider text-black pl-4 w-[20%]">
+                            {t("company")}
+                        </TableHead>
+                        <TableHead className="text-xs font-bold uppercase tracking-wider text-black w-[20%]">
+                            {t("contact")}
+                        </TableHead>
+                        <TableHead className="text-xs font-bold uppercase tracking-wider text-black whitespace-nowrap w-auto">
+                            {t("droppedBy")}
+                        </TableHead>
+                        <TableHead className="text-xs font-bold uppercase tracking-wider text-black whitespace-nowrap w-auto">
+                            {t("deletedAt")}
+                        </TableHead>
+                        <TableHead className="text-xs font-bold uppercase tracking-wider text-black w-[30%]">
+                            {t("dropReasonHeader")}
+                        </TableHead>
+                    </TableRow>
+                </TableHeader>
+                <TableBody>
+                    {leads.map((lead) => (
+                        <TableRow key={lead._id} className="hover:bg-muted/30">
+                            <TableCell className="font-medium text-black pl-4">
+                                {lead.companyName}
+                            </TableCell>
+                            <TableCell className="text-black">
+                                {lead.name || "-"}
+                            </TableCell>
+                            <TableCell className="text-black whitespace-nowrap">
+                                {lead.dropped?.by
+                                    ? `${lead.dropped.by.firstName} ${lead.dropped.by.lastName}`
+                                    : lead.deleted?.by 
+                                        ? `${lead.deleted.by.firstName} ${lead.deleted.by.lastName}`
+                                        : "-"}
+                            </TableCell>
+                            <TableCell className="text-black whitespace-nowrap">
+                                {(lead.deleted?.at || lead.dropped?.at)
+                                    ? format(
+                                          new Date(lead.deleted?.at || lead.dropped?.at),
+                                          "dd-MM-yyyy HH:mm",
+                                      )
+                                    : "-"}
+                            </TableCell>
+                            <TableCell className="max-w-[200px]">
+                                {lead.droppedReason ? (
+                                    <Tooltip>
+                                        <TooltipTrigger asChild>
+                                            <div className="truncate cursor-help">
+                                                {lead.droppedReason}
+                                            </div>
+                                        </TooltipTrigger>
+                                        <TooltipContent side="top" className="max-w-[300px] break-words">
+                                            <p className="text-sm">{lead.droppedReason}</p>
+                                        </TooltipContent>
+                                    </Tooltip>
+                                ) : (
+                                    <span className="text-muted-foreground">-</span>
+                                )}
+                            </TableCell>
+                        </TableRow>
+                    ))}
+                </TableBody>
+            </Table>
+            <Pagination
+                page={page}
+                setPage={setPage}
+                info={info}
+                t={t}
+                isRTL={isRTL}
+                type={t("leads")}
+            />
+        </TooltipProvider>
+    )
+}
+
 // Archived Call Logs Table
 function ArchivedCallLogsTable({ page, setPage }) {
     const { t, i18n } = useTranslation()
@@ -601,11 +747,13 @@ export default function ArchivedDataPage() {
 
     // Separate pagination state for each tab
     const [leadsPage, setLeadsPage] = useState(1)
+    const [droppedLeadsPage, setDroppedLeadsPage] = useState(1)
     const [callLogsPage, setCallLogsPage] = useState(1)
     const [pipelinesPage, setPipelinesPage] = useState(1)
 
     const tabs = [
         { id: "leads", label: t("leads") },
+        { id: "dropped", label: t("dropped") },
         { id: "callLogs", label: t("callLogs") },
         { id: "pipeline", label: t("pipeline") },
     ]
@@ -642,6 +790,12 @@ export default function ArchivedDataPage() {
                             <ArchivedLeadsTable
                                 page={leadsPage}
                                 setPage={setLeadsPage}
+                            />
+                        )}
+                        {activeTab === "dropped" && (
+                            <DroppedLeadsTable
+                                page={droppedLeadsPage}
+                                setPage={setDroppedLeadsPage}
                             />
                         )}
                         {activeTab === "callLogs" && (

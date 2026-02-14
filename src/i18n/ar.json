@@ -440,5 +440,7 @@
     "currentDocument": "الملف الحالي",
     "cancelReplace": "إلغاء الاستبدال",
     "alphanumericOnly": "أرقام وحروف فقط، بدون مسافات",
-    "proposalDescription": "أدخل تفاصيل مرحلة العرض."
+    "proposalDescription": "أدخل تفاصيل مرحلة العرض.",
+    "droppedBy": "تم الإلغاء بواسطة",
+    "dropReasonHeader": "سبب الإلغاء"
 }

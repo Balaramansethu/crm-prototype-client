@@ -440,5 +440,7 @@
     "currentDocument": "Current Document",
     "cancelReplace": "Cancel replace",
     "alphanumericOnly": "Alphanumeric only, no spaces",
-    "proposalDescription": "Enter details for the proposal stage."
+    "proposalDescription": "Enter details for the proposal stage.",
+    "droppedBy": "Dropped By",
+    "dropReasonHeader": "Dropped Reason"
 }

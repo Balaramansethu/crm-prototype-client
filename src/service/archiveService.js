@@ -11,6 +11,20 @@ export async function fetchArchivedLeads(params = {}) {
     }
 }
 
+export async function fetchDroppedArchivedLeads(params = {}) {
+    try {
+        const response = await axiosPrivateInstance.get(
+            "/archive/dropped-leads",
+            {
+                params,
+            },
+        )
+        return response.data
+    } catch (error) {
+        throw error
+    }
+}
+
 export async function fetchArchivedCallLogs(params = {}) {
     try {
         const response = await axiosPrivateInstance.get("/archive/call-logs", {
