@@ -46,7 +46,6 @@ export function getOutcomeColor(outcome) {
     // Legacy/Fallback mapping
     const lower = outcome.toLowerCase()
     if (lower === "contacted") return "bg-blue-100 text-blue-700"
-    if (lower === "done") return "bg-gray-100 text-gray-700"
 
     return "bg-gray-100 text-gray-700"
 }

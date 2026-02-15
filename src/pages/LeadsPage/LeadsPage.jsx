@@ -453,9 +453,6 @@ export default function LeadsPage() {
                                     <SelectItem value="contacted_by_email">
                                         {t("contactedByEmail")}
                                     </SelectItem>
-                                    <SelectItem value="done">
-                                        {t("done")}
-                                    </SelectItem>
                                 </SelectContent>
                             </Select>
                         </div>

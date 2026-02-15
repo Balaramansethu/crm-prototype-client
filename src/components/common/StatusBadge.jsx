@@ -22,7 +22,6 @@ const STATUS_VARIANTS = {
 
     // Legacy/Pipeline statuses
     contacted: "bg-yellow-100 text-yellow-800 hover:bg-yellow-100",
-    done: "bg-zinc-100 text-zinc-800 hover:bg-zinc-100",
     won: "bg-lime-100 text-lime-800 hover:bg-lime-100",
     lost: "bg-red-100 text-red-800 hover:bg-red-100",
 }
