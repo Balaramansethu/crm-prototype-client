@@ -32,7 +32,8 @@ import {
     Phone,
     Mail,
 } from "lucide-react"
-import { enumToTranslationKey } from "@/lib/utils"
+import { enumToTranslationKey, cn } from "@/lib/utils"
+import { formatPhoneDisplay } from "@/utils/leadTransformers"
 import { useUserStore } from "@/store/userStore"
 
 export default function LeadDetailPage() {
@@ -98,16 +99,6 @@ export default function LeadDetailPage() {
         }
         if (id) fetchLead()
     }, [id, navigate, t])
-
-    const formatPhone = (phone) => {
-        if (!phone?.number) return "-"
-        const parts = []
-        if (phone.countryCode) parts.push(phone.countryCode)
-        parts.push(phone.number)
-        if (phone.extension && phone.extension !== phone.countryCode)
-            parts.push(`x${phone.extension}`)
-        return parts.join(" ")
-    }
 
     const formatAddress = (address) => {
         if (!address) return "-"
@@ -245,7 +236,7 @@ export default function LeadDetailPage() {
                                 <Separator />
                                 <FieldRow
                                     label={t("phone")}
-                                    value={formatPhone(mainContact.phone)}
+                                    value={formatPhoneDisplay(mainContact.phone)}
                                 />
                                 <Separator />
                                 <FieldRow
@@ -332,7 +323,7 @@ export default function LeadDetailPage() {
                             <Separator />
                             <FieldRow
                                 label={t("phone")}
-                                value={formatPhone(company?.phone)}
+                                value={formatPhoneDisplay(company?.phone)}
                             />
                             <Separator />
                             <FieldRow
@@ -407,7 +398,7 @@ export default function LeadDetailPage() {
                             <Separator />
                             <FieldRow
                                 label={t("phone")}
-                                value={formatPhone(leadData.benificiary.phone)}
+                                value={formatPhoneDisplay(leadData.benificiary.phone)}
                             />
                         </CardContent>
                     </Card>
@@ -484,7 +475,7 @@ export default function LeadDetailPage() {
                                                         dir="ltr"
                                                     >
                                                         <Phone className="h-3.5 w-3.5" />
-                                                        {formatPhone(
+                                                        {formatPhoneDisplay(
                                                             contact.phone,
                                                         )}
                                                     </div>

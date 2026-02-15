@@ -17,6 +17,7 @@ import { getStageTranslationKey } from "@/constants/pipelineOptions"
 import { toast } from "sonner"
 import { Edit, Building2, FileIcon, ExternalLink } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { formatPhoneDisplay } from "@/utils/leadTransformers"
 
 export default function PipelineDetailPage() {
     const { t } = useTranslation()
@@ -44,14 +45,7 @@ export default function PipelineDetailPage() {
         if (id) fetchPipeline()
     }, [id, navigate, t])
 
-    const formatPhone = (phone) => {
-        if (!phone?.number) return "-"
-        const parts = []
-        if (phone.countryCode) parts.push(phone.countryCode)
-        parts.push(phone.number)
-        if (phone.extension) parts.push(phone.extension)
-        return parts.join(" - ")
-    }
+
 
     const formatDate = (dateString) => {
         if (!dateString) return null
@@ -283,7 +277,7 @@ export default function PipelineDetailPage() {
                     <Separator />
                     <FieldRow
                         label={t("phone")}
-                        value={formatPhone(company.phone)}
+                        value={formatPhoneDisplay(company.phone)}
                     />
                     {company.socialProfile && (
                         <>

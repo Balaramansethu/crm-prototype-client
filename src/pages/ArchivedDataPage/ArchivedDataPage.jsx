@@ -19,6 +19,7 @@ import { Loader2, ChevronLeft, ChevronRight } from "lucide-react"
 import { format } from "date-fns"
 import { cn } from "@/lib/utils"
 import { RowActionsMenu } from "@/components/common/RowActionsMenu"
+import { formatPhoneDisplay } from "@/utils/leadTransformers"
 import { getStageTranslationKey } from "@/constants/pipelineOptions"
 import {
     Tooltip,
@@ -557,10 +558,7 @@ function ArchivedCallLogsTable({ page, setPage }) {
                                 className="text-black tabular-nums"
                                 dir="ltr"
                             >
-                                {log.lead?.phone?.extension &&
-                                log.lead?.phone?.number
-                                    ? `${log.lead.phone.extension} ${log.lead.phone.number}`
-                                    : "-"}
+                                {formatPhoneDisplay(log.lead?.phone)}
                             </TableCell>
                             <TableCell>
                                 <OutcomeBadge outcome={log.outcome} />

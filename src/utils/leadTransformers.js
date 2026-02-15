@@ -350,9 +350,9 @@ export const formatPhoneDisplay = (phone) => {
     if (code) parts.push(code)
     parts.push(phone.number)
 
-    if (ext && ext !== code) parts.push(`x${ext}`)
+    if (ext && ext !== code) parts.push(ext)
 
-    return parts.join(" ")
+    return parts.join(" - ")
 }
 
 /**

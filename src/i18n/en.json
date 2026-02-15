@@ -441,7 +441,7 @@
     "alphanumericOnly": "Alphanumeric only, no spaces",
     "proposalDescription": "Enter details for the proposal stage.",
     "droppedBy": "Dropped By",
-    "dropReasonHeader": "Dropped Reason",
+    "dropReasonHeader": "Reason for drop",
     "droppedAt": "Dropped At",
     "fetchLocation": "Fetch Location",
     "fetching": "Fetching...",
