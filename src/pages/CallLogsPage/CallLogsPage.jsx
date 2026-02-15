@@ -14,7 +14,10 @@ import {
     ChevronLeft,
     ChevronRight,
     ArrowUpDown,
+    Search,
 } from "lucide-react"
+import { Input } from "@/components/ui/input"
+import { useDebounce } from "@/hooks/useDebounce"
 import { Button } from "@/components/ui/button"
 import {
     Select,
@@ -63,6 +66,25 @@ export default function CallLogsPage() {
     const [limit] = useState(10)
     const [sort, setSort] = useState("")
     const [order, setOrder] = useState("desc")
+    const [ownerSearch, setOwnerSearch] = useState(
+        searchParams.get("owner") || "",
+    )
+    const debouncedOwner = useDebounce(ownerSearch, 300)
+
+    // Sync owner search to URL
+    useEffect(() => {
+        if (!shouldShowCreatedBy) return
+
+        const params = new URLSearchParams(searchParams)
+        if (debouncedOwner) {
+            if (searchParams.get("owner") !== debouncedOwner) setPage(1)
+            params.set("owner", debouncedOwner)
+        } else {
+            if (searchParams.get("owner")) setPage(1)
+            params.delete("owner")
+        }
+        setSearchParams(params, { replace: true })
+    }, [debouncedOwner, shouldShowCreatedBy, setSearchParams, searchParams])
 
     // Sync page state with URL
     useEffect(() => {
@@ -85,8 +107,11 @@ export default function CallLogsPage() {
             params.sort = sort
             params.order = order
         }
+        if (shouldShowCreatedBy && debouncedOwner) {
+            params.owner = debouncedOwner
+        }
         return params
-    }, [page, limit, outcome, sort, order])
+    }, [page, limit, outcome, sort, order, shouldShowCreatedBy, debouncedOwner])
 
     const { data, isLoading, isFetching, isError } = useCallLogs(queryParams)
     const deleteCallLogMutation = useDeleteCallLog()
@@ -119,6 +144,7 @@ export default function CallLogsPage() {
 
     const clearFilters = () => {
         setOutcome("all")
+        setOwnerSearch("")
         setPage(1)
     }
 
@@ -141,7 +167,8 @@ export default function CallLogsPage() {
         )
     }
 
-    const hasActiveFilters = outcome && outcome !== "all"
+    const hasActiveFilters =
+        (outcome && outcome !== "all") || (shouldShowCreatedBy && ownerSearch)
 
     const getOutcomeText = (outcomeVal) => {
         if (!outcomeVal) return "-"
@@ -281,6 +308,20 @@ export default function CallLogsPage() {
                                 </SelectContent>
                             </Select>
                         </div>
+
+                        {shouldShowCreatedBy && (
+                            <div className="relative w-full md:w-[250px]">
+                                <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500 pointer-events-none" />
+                                <Input
+                                    placeholder="Search by Assignee"
+                                    value={ownerSearch}
+                                    onChange={(e) =>
+                                        setOwnerSearch(e.target.value)
+                                    }
+                                    className="pl-9 h-9 bg-muted/50 focus:bg-background border-input text-black placeholder:text-gray-500"
+                                />
+                            </div>
+                        )}
                     </div>
 
                     {/* Clear Filters */}
