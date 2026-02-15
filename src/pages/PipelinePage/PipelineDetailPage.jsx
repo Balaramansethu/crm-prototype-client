@@ -128,8 +128,8 @@ export default function PipelineDetailPage() {
 
             {/* Main Grid */}
             <div className="grid gap-4 sm:gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 px-4 lg:px-6 pb-6">
-                {/* Proposal Details Card - Only visible in proposal stage */}
-                {pipeline.opportunityStage === "proposal" && (
+                {/* Proposal Details Card - Visible if data exists */}
+                {(pipeline.proposalNumber || pipeline.proposalDocument) && (
                     <SectionCard
                         title={t("proposalDetails")}
                         className="md:col-span-2 bg-purple-50/50 border-purple-100 dark:bg-purple-950/20 dark:border-purple-900/50"

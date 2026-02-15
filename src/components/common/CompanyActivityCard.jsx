@@ -159,9 +159,6 @@ export default function CompanyActivityCard({ companyId, className }) {
                                                     )}
                                                 </div>
                                             </div>
-                                            <p className="text-sm text-muted-foreground mt-0.5 ml-1.5">
-                                                {t("stageChanged")}
-                                            </p>
                                             <div className="flex items-center gap-1.5 mt-1 flex-wrap">
                                                 <StatusBadge
                                                     status={currentStatus}

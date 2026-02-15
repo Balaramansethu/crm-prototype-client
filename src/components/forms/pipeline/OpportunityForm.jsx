@@ -28,6 +28,7 @@ import { Loader2 } from "lucide-react"
 import { format } from "date-fns"
 import { cn } from "@/lib/utils"
 import { searchPipelineCompanies } from "@/service/pipelineService"
+import { useUserStore } from "@/store/userStore"
 
 import ProposalUploadSection from "./ProposalUploadSection"
 
@@ -41,6 +42,10 @@ export default function OpportunityForm({
     const navigate = useNavigate()
     const isRTL = i18n.dir() === "rtl"
     const isEditMode = !!initialData
+    const user = useUserStore((state) => state.user)
+
+    const isAdminOrSuperAdmin = ["admin", "super_admin"].includes(user?.role)
+
 
     const [showUnsavedDialog, setShowUnsavedDialog] = useState(false)
     const [companies, setCompanies] = useState([])
@@ -241,7 +246,8 @@ export default function OpportunityForm({
     }
 
     // Determine if we should show proposal section
-    const showProposalSection = opportunityStage === "proposal"
+    const showProposalSection =
+        opportunityStage === "proposal" && isAdminOrSuperAdmin
 
     // If stage is changed away from proposal, we hide the section but RHF keeps values by default
     // ideally.

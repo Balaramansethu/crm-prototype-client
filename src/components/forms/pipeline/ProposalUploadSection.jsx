@@ -99,7 +99,7 @@ export default function ProposalUploadSection({
 
                 {!isReplacing && existingProposalDocument ? (
                     <div className="rounded-lg border border-border p-4 bg-muted/30">
-                        <div className="flex items-center justify-between">
+                        <div className="flex flex-col gap-4">
                             <div className="flex items-center gap-3 overflow-hidden">
                                 <div className="h-10 w-10 shrink-0 rounded-lg bg-primary/10 flex items-center justify-center">
                                     <FileIcon className="h-5 w-5 text-primary" />
@@ -116,7 +116,7 @@ export default function ProposalUploadSection({
                                     </p>
                                 </div>
                             </div>
-                            <div className="flex items-center gap-2 shrink-0">
+                            <div className="flex items-center gap-2 shrink-0 justify-start">
                                 <Button
                                     type="button"
                                     variant="outline"

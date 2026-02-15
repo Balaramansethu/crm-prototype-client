@@ -86,7 +86,7 @@ export default function PipelineCard({
                         className="font-semibold text-sm text-slate-800 leading-snug cursor-pointer hover:text-primary truncate flex-1"
                         onClick={() => navigate(`/pipeline/${pipeline._id}`)}
                     >
-                        {pipeline.nextStep || companyName}
+                        {companyName}
                     </h4>
                     <DropdownMenu dir={isRTL ? "rtl" : "ltr"}>
                         <DropdownMenuTrigger asChild>
@@ -137,10 +137,12 @@ export default function PipelineCard({
                     {formatCurrency(expectedRevenue)}
                 </p>
 
-                {/* Company Name */}
-                <p className="text-sm text-slate-500 mb-2 truncate">
-                    {companyName}
-                </p>
+                {/* Next Step */}
+                {pipeline.nextStep && (
+                    <p className="text-sm text-slate-500 mb-2 truncate">
+                        {pipeline.nextStep}
+                    </p>
+                )}
 
                 {/* Service Type Badges */}
                 {serviceTypeOption && (
