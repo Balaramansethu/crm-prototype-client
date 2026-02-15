@@ -48,6 +48,7 @@ export default function CommonDialog({
     hideCancel = false,
     showIcon = true,
     hideCloseButton = false,
+    icon: customIcon,
 }) {
     const { i18n } = useTranslation()
     const isRTL = i18n.dir() === "rtl"
@@ -96,8 +97,10 @@ export default function CommonDialog({
         }
     }
 
-    const { icon, buttonVariant, headerColor, isCentered, iconBgColor } =
+    const { icon: variantIcon, buttonVariant, headerColor, isCentered, iconBgColor } =
         getVariantStyles()
+
+    const icon = customIcon || variantIcon
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
