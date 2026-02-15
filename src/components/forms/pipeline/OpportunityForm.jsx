@@ -119,7 +119,7 @@ export default function OpportunityForm({
     })
 
     const {
-        formState: { isDirty, isSubmitting },
+        formState: { isDirty, isSubmitting, dirtyFields },
         watch,
         setValue,
         control,
@@ -187,43 +187,67 @@ export default function OpportunityForm({
 
         const formData = new FormData()
 
+        // Helper to check if field should be included
+        const shouldInclude = (key) => !isEditMode || dirtyFields[key]
+
         // Append standard fields
-        formData.append("company", data.company)
-        formData.append("opportunityStage", data.opportunityStage)
+        if (shouldInclude("company")) formData.append("company", data.company)
+
+        if (shouldInclude("opportunityStage"))
+            formData.append("opportunityStage", data.opportunityStage)
+
         // Use loose check for values including 0
         if (
+            shouldInclude("estimatedValue") &&
             data.estimatedValue !== "" &&
             data.estimatedValue !== undefined &&
             data.estimatedValue !== null
         )
             formData.append("estimatedValue", data.estimatedValue)
+
         if (
+            shouldInclude("probability") &&
             data.probability !== "" &&
             data.probability !== undefined &&
             data.probability !== null
         )
             formData.append("probability", data.probability)
+
+        // Include expectedRevenue if it's dirty OR if its dependencies (estimatedValue/probability) are dirty
+        const shouldIncludeRevenue =
+            !isEditMode ||
+            dirtyFields.expectedRevenue ||
+            dirtyFields.estimatedValue ||
+            dirtyFields.probability
         if (
+            shouldIncludeRevenue &&
             data.expectedRevenue !== "" &&
             data.expectedRevenue !== undefined &&
             data.expectedRevenue !== null
         )
             formData.append("expectedRevenue", data.expectedRevenue)
-        if (data.nextStep?.trim())
+
+        if (shouldInclude("nextStep") && data.nextStep?.trim())
             formData.append("nextStep", data.nextStep.trim())
-        if (data.remarks?.trim())
+
+        if (shouldInclude("remarks") && data.remarks?.trim())
             formData.append("remarks", data.remarks.trim())
-        if (data.followUp)
+
+        if (shouldInclude("followUp") && data.followUp)
             formData.append("followUp", format(data.followUp, "yyyy-MM-dd"))
 
         // Handle Proposal Fields
+        // Only include if stage is proposal AND fields are dirty (or create mode)
         if (data.opportunityStage === "proposal") {
             // Validation is handled by RHF in ProposalUploadSection, but double check here if needed
-            if (data.proposalNumber) {
+            if (shouldInclude("proposalNumber") && data.proposalNumber) {
                 formData.append("proposalNumber", data.proposalNumber)
             }
 
-            if (data.proposalDocument instanceof File) {
+            if (
+                shouldInclude("proposalDocument") &&
+                data.proposalDocument instanceof File
+            ) {
                 formData.append("proposalDocument", data.proposalDocument)
             }
         }
