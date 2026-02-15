@@ -46,7 +46,6 @@ export default function OpportunityForm({
 
     const isAdminOrSuperAdmin = ["admin", "super_admin"].includes(user?.role)
 
-
     const [showUnsavedDialog, setShowUnsavedDialog] = useState(false)
     const [companies, setCompanies] = useState([])
     const [loadingCompanies, setLoadingCompanies] = useState(false)
