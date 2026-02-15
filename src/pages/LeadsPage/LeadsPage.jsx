@@ -450,8 +450,8 @@ export default function LeadsPage() {
                                     <SelectItem value="qualified">
                                         {t("qualified")}
                                     </SelectItem>
-                                    <SelectItem value="contacted">
-                                        {t("contacted")}
+                                    <SelectItem value="contacted_by_email">
+                                        {t("contactedByEmail")}
                                     </SelectItem>
                                     <SelectItem value="done">
                                         {t("done")}

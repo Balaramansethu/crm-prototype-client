@@ -52,6 +52,7 @@ export default function CallLogsPage() {
     const [searchParams, setSearchParams] = useSearchParams()
     const user = useUserStore((s) => s.user)
     const isRTL = i18n.dir() === "rtl"
+    const shouldShowCreatedBy = ["admin", "super_admin", "SUPER_ADMIN", "ADMIN"].includes(user?.role)
 
     // Initialize state from URL params
     const initialPage = parseInt(searchParams.get("page")) || 1
@@ -249,11 +250,11 @@ export default function CallLogsPage() {
                                         >
                                             {outcome && outcome !== "all"
                                                 ? t(
-                                                      enumToTranslationKey(
-                                                          outcome,
-                                                          "outcome",
-                                                      ),
-                                                  )
+                                                    enumToTranslationKey(
+                                                        outcome,
+                                                        "outcome",
+                                                    ),
+                                                )
                                                 : t("filterByOutcome")}
                                         </span>
                                     </div>
@@ -319,11 +320,7 @@ export default function CallLogsPage() {
                                         {renderSortIcon("contact")}
                                     </div>
                                 </TableHead>
-                                <TableHead className="hidden md:table-cell">
-                                    <div className="text-xs font-bold uppercase tracking-wider text-black">
-                                        {t("createdBy")}
-                                    </div>
-                                </TableHead>
+
                                 <TableHead className="hidden md:table-cell">
                                     <div className="text-xs font-bold uppercase tracking-wider text-black">
                                         {t("phone")}
@@ -353,6 +350,13 @@ export default function CallLogsPage() {
                                         {t("callDuration")}
                                     </div>
                                 </TableHead>
+                                {shouldShowCreatedBy && (
+                                    <TableHead className="hidden md:table-cell">
+                                        <div className="text-xs font-bold uppercase tracking-wider text-black">
+                                            {t("createdBy")}
+                                        </div>
+                                    </TableHead>
+                                )}
                                 <TableHead className="w-[60px]"></TableHead>
                             </TableRow>
                         </TableHeader>
@@ -360,7 +364,7 @@ export default function CallLogsPage() {
                             {isLoading ? (
                                 <TableRow>
                                     <TableCell
-                                        colSpan={9} // Updated colSpan
+                                        colSpan={shouldShowCreatedBy ? 9 : 8}
                                         className="h-40 text-center"
                                     >
                                         <div className="flex flex-col items-center justify-center gap-2 text-black">
@@ -374,7 +378,7 @@ export default function CallLogsPage() {
                             ) : isError ? (
                                 <TableRow>
                                     <TableCell
-                                        colSpan={9} // Updated colSpan
+                                        colSpan={shouldShowCreatedBy ? 9 : 8}
                                         className="h-40 text-center text-red-600 font-bold"
                                     >
                                         {t("failedToLoadCallLog")}
@@ -383,7 +387,7 @@ export default function CallLogsPage() {
                             ) : callLogs.length === 0 ? (
                                 <TableRow>
                                     <TableCell
-                                        colSpan={9} // Updated colSpan
+                                        colSpan={shouldShowCreatedBy ? 9 : 8}
                                         className="h-40 text-center text-black"
                                     >
                                         {t("noDataAvailable")}
@@ -406,14 +410,7 @@ export default function CallLogsPage() {
                                         <TableCell className="text-black">
                                             {getContactName(log.lead)}
                                         </TableCell>
-                                        <TableCell className="hidden md:table-cell text-black text-sm">
-                                            {log.createdBy
-                                                ? `${log.createdBy.firstName} ${
-                                                      log.createdBy.lastName ||
-                                                      ""
-                                                  }`
-                                                : "-"}
-                                        </TableCell>
+
                                         <TableCell className="hidden md:table-cell">
                                             <div
                                                 className="flex items-center gap-1.5 text-sm text-black tabular-nums"
@@ -429,13 +426,13 @@ export default function CallLogsPage() {
                                                     "px-2.5 py-1 rounded-full text-xs font-semibold",
                                                     getOutcomeColor(
                                                         log.outcome ||
-                                                            log.lead?.status,
+                                                        log.lead?.status,
                                                     ),
                                                 )}
                                             >
                                                 {getOutcomeText(
                                                     log.outcome ||
-                                                        log.lead?.status,
+                                                    log.lead?.status,
                                                 )}
                                             </span>
                                         </TableCell>
@@ -448,6 +445,15 @@ export default function CallLogsPage() {
                                         <TableCell className="hidden md:table-cell text-black text-sm tabular-nums">
                                             {formatDuration(log.callDuration)}
                                         </TableCell>
+                                        {shouldShowCreatedBy && (
+                                            <TableCell className="hidden md:table-cell text-black text-sm">
+                                                {log.createdBy
+                                                    ? `${log.createdBy.firstName} ${log.createdBy.lastName ||
+                                                    ""
+                                                    }`
+                                                    : "-"}
+                                            </TableCell>
+                                        )}
                                         <TableCell
                                             onClick={(e) => e.stopPropagation()}
                                         >
@@ -476,18 +482,18 @@ export default function CallLogsPage() {
                                                     </DropdownMenuItem>
                                                     {user.role !==
                                                         "employee" && (
-                                                        <DropdownMenuItem
-                                                            onClick={() =>
-                                                                handleDeleteClick(
-                                                                    log._id,
-                                                                )
-                                                            }
-                                                            className="text-primary focus:text-primary"
-                                                        >
-                                                            <Archive className="mr-2 h-4 w-4" />
-                                                            {t("archive")}
-                                                        </DropdownMenuItem>
-                                                    )}
+                                                            <DropdownMenuItem
+                                                                onClick={() =>
+                                                                    handleDeleteClick(
+                                                                        log._id,
+                                                                    )
+                                                                }
+                                                                className="text-primary focus:text-primary"
+                                                            >
+                                                                <Archive className="mr-2 h-4 w-4" />
+                                                                {t("archive")}
+                                                            </DropdownMenuItem>
+                                                        )}
                                                 </DropdownMenuContent>
                                             </DropdownMenu>
                                         </TableCell>
