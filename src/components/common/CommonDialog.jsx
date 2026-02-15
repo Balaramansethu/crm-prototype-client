@@ -97,8 +97,13 @@ export default function CommonDialog({
         }
     }
 
-    const { icon: variantIcon, buttonVariant, headerColor, isCentered, iconBgColor } =
-        getVariantStyles()
+    const {
+        icon: variantIcon,
+        buttonVariant,
+        headerColor,
+        isCentered,
+        iconBgColor,
+    } = getVariantStyles()
 
     const icon = customIcon || variantIcon
 

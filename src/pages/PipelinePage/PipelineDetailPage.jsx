@@ -128,8 +128,6 @@ export default function PipelineDetailPage() {
 
             {/* Main Grid */}
             <div className="grid gap-4 sm:gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 px-4 lg:px-6 pb-6">
-
-
                 {/* Opportunity Details Card */}
                 <SectionCard title={t("opportunityDetails")}>
                     <FieldRow label={t("opportunityStage")}>

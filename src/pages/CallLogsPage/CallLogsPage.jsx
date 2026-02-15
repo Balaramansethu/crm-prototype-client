@@ -55,7 +55,12 @@ export default function CallLogsPage() {
     const [searchParams, setSearchParams] = useSearchParams()
     const user = useUserStore((s) => s.user)
     const isRTL = i18n.dir() === "rtl"
-    const shouldShowCreatedBy = ["admin", "super_admin", "SUPER_ADMIN", "ADMIN"].includes(user?.role)
+    const shouldShowCreatedBy = [
+        "admin",
+        "super_admin",
+        "SUPER_ADMIN",
+        "ADMIN",
+    ].includes(user?.role)
 
     // Initialize state from URL params
     const initialPage = parseInt(searchParams.get("page")) || 1
@@ -277,11 +282,11 @@ export default function CallLogsPage() {
                                         >
                                             {outcome && outcome !== "all"
                                                 ? t(
-                                                    enumToTranslationKey(
-                                                        outcome,
-                                                        "outcome",
-                                                    ),
-                                                )
+                                                      enumToTranslationKey(
+                                                          outcome,
+                                                          "outcome",
+                                                      ),
+                                                  )
                                                 : t("filterByOutcome")}
                                         </span>
                                     </div>
@@ -467,13 +472,13 @@ export default function CallLogsPage() {
                                                     "px-2.5 py-1 rounded-full text-xs font-semibold",
                                                     getOutcomeColor(
                                                         log.outcome ||
-                                                        log.lead?.status,
+                                                            log.lead?.status,
                                                     ),
                                                 )}
                                             >
                                                 {getOutcomeText(
                                                     log.outcome ||
-                                                    log.lead?.status,
+                                                        log.lead?.status,
                                                 )}
                                             </span>
                                         </TableCell>
@@ -489,9 +494,10 @@ export default function CallLogsPage() {
                                         {shouldShowCreatedBy && (
                                             <TableCell className="hidden md:table-cell text-black text-sm">
                                                 {log.createdBy
-                                                    ? `${log.createdBy.firstName} ${log.createdBy.lastName ||
-                                                    ""
-                                                    }`
+                                                    ? `${log.createdBy.firstName} ${
+                                                          log.createdBy
+                                                              .lastName || ""
+                                                      }`
                                                     : "-"}
                                             </TableCell>
                                         )}
@@ -523,18 +529,18 @@ export default function CallLogsPage() {
                                                     </DropdownMenuItem>
                                                     {user.role !==
                                                         "employee" && (
-                                                            <DropdownMenuItem
-                                                                onClick={() =>
-                                                                    handleDeleteClick(
-                                                                        log._id,
-                                                                    )
-                                                                }
-                                                                className="text-primary focus:text-primary"
-                                                            >
-                                                                <Archive className="mr-2 h-4 w-4" />
-                                                                {t("archive")}
-                                                            </DropdownMenuItem>
-                                                        )}
+                                                        <DropdownMenuItem
+                                                            onClick={() =>
+                                                                handleDeleteClick(
+                                                                    log._id,
+                                                                )
+                                                            }
+                                                            className="text-primary focus:text-primary"
+                                                        >
+                                                            <Archive className="mr-2 h-4 w-4" />
+                                                            {t("archive")}
+                                                        </DropdownMenuItem>
+                                                    )}
                                                 </DropdownMenuContent>
                                             </DropdownMenu>
                                         </TableCell>

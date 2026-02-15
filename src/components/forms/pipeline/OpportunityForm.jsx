@@ -275,7 +275,6 @@ export default function OpportunityForm({
         isAdminOrSuperAdmin &&
         (opportunityStage === "proposal" || hasExistingProposalData)
 
-
     // If stage is changed away from proposal, we hide the section but RHF keeps values by default
     // ideally.
 
