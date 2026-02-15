@@ -128,63 +128,7 @@ export default function PipelineDetailPage() {
 
             {/* Main Grid */}
             <div className="grid gap-4 sm:gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-2 px-4 lg:px-6 pb-6">
-                {/* Proposal Details Card - Visible if data exists */}
-                {(pipeline.proposalNumber || pipeline.proposalDocument) && (
-                    <SectionCard
-                        title={t("proposalDetails")}
-                        className="md:col-span-2 bg-purple-50/50 border-purple-100 dark:bg-purple-950/20 dark:border-purple-900/50"
-                    >
-                        <div className="flex flex-col gap-6">
-                            <div className="flex items-center gap-2 text-sm">
-                                <span className="text-muted-foreground font-medium">
-                                    {t("proposalNumber")} :
-                                </span>
-                                <span className="font-medium text-foreground">
-                                    {pipeline.proposalNumber}
-                                </span>
-                            </div>
 
-                            {pipeline.proposalDocument && (
-                                <div className="space-y-1">
-                                    <span className="text-sm font-medium text-muted-foreground">
-                                        {t("proposalFile")}:
-                                    </span>
-                                    <div className="flex items-center gap-3 p-3 rounded-md border bg-background/50 backdrop-blur-sm w-full max-w-md">
-                                        <div className="h-8 w-8 rounded bg-primary/10 flex items-center justify-center">
-                                            <FileIcon className="h-4 w-4 text-primary" />
-                                        </div>
-                                        <div className="flex-1 min-w-0">
-                                            <p className="text-sm font-medium truncate">
-                                                {pipeline.proposalDocument
-                                                    .originalname ||
-                                                    "proposal_document.pdf"}
-                                            </p>
-                                            <p className="text-xs text-muted-foreground">
-                                                {pipeline.proposalDocument.size
-                                                    ? `${(pipeline.proposalDocument.size / 1024).toFixed(1)} KB`
-                                                    : t("documents")}
-                                            </p>
-                                        </div>
-                                        <Button
-                                            variant="ghost"
-                                            size="sm"
-                                            onClick={() =>
-                                                window.open(
-                                                    pipeline.proposalDocument
-                                                        .s3Url,
-                                                    "_blank",
-                                                    "noopener,noreferrer",
-                                                )
-                                            }
-                                        >
-                                            <ExternalLink className="h-4 w-4" />
-                                        </Button>
-                                    </div>
-                                </div>
-                            )}
-                        </div>
-                    </SectionCard>
-                )}
 
                 {/* Opportunity Details Card */}
                 <SectionCard title={t("opportunityDetails")}>
@@ -307,6 +251,64 @@ export default function PipelineDetailPage() {
                         </>
                     )}
                 </SectionCard>
+
+                {/* Proposal Details Card - Visible if data exists */}
+                {(pipeline.proposalNumber || pipeline.proposalDocument) && (
+                    <SectionCard
+                        title={t("proposalDetails")}
+                        className="md:col-span-2 bg-purple-50/50 border-purple-100 dark:bg-purple-950/20 dark:border-purple-900/50"
+                    >
+                        <div className="flex flex-col gap-6">
+                            <div className="flex items-center gap-2 text-sm">
+                                <span className="text-muted-foreground font-medium">
+                                    {t("proposalNumber")} :
+                                </span>
+                                <span className="font-medium text-foreground">
+                                    {pipeline.proposalNumber}
+                                </span>
+                            </div>
+
+                            {pipeline.proposalDocument && (
+                                <div className="space-y-1">
+                                    <span className="text-sm font-medium text-muted-foreground">
+                                        {t("proposalFile")}:
+                                    </span>
+                                    <div className="flex items-center gap-3 p-3 rounded-md border bg-background/50 backdrop-blur-sm w-full max-w-md">
+                                        <div className="h-8 w-8 rounded bg-primary/10 flex items-center justify-center">
+                                            <FileIcon className="h-4 w-4 text-primary" />
+                                        </div>
+                                        <div className="flex-1 min-w-0">
+                                            <p className="text-sm font-medium truncate">
+                                                {pipeline.proposalDocument
+                                                    .originalname ||
+                                                    "proposal_document.pdf"}
+                                            </p>
+                                            <p className="text-xs text-muted-foreground">
+                                                {pipeline.proposalDocument.size
+                                                    ? `${(pipeline.proposalDocument.size / 1024).toFixed(1)} KB`
+                                                    : t("documents")}
+                                            </p>
+                                        </div>
+                                        <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            onClick={() =>
+                                                window.open(
+                                                    pipeline.proposalDocument
+                                                        .s3Url,
+                                                    "_blank",
+                                                    "noopener,noreferrer",
+                                                )
+                                            }
+                                        >
+                                            <ExternalLink className="h-4 w-4" />
+                                        </Button>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    </SectionCard>
+                )}
             </div>
         </div>
     )

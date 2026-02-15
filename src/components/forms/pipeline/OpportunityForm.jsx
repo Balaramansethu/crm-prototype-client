@@ -237,8 +237,8 @@ export default function OpportunityForm({
             formData.append("followUp", format(data.followUp, "yyyy-MM-dd"))
 
         // Handle Proposal Fields
-        // Only include if stage is proposal AND fields are dirty (or create mode)
-        if (data.opportunityStage === "proposal") {
+        // Only include if user is admin
+        if (isAdminOrSuperAdmin) {
             // Validation is handled by RHF in ProposalUploadSection, but double check here if needed
             if (shouldInclude("proposalNumber") && data.proposalNumber) {
                 formData.append("proposalNumber", data.proposalNumber)
@@ -269,8 +269,12 @@ export default function OpportunityForm({
     }
 
     // Determine if we should show proposal section
+    const hasExistingProposalData =
+        !!initialData?.proposalNumber || !!initialData?.proposalDocument
     const showProposalSection =
-        opportunityStage === "proposal" && isAdminOrSuperAdmin
+        isAdminOrSuperAdmin &&
+        (opportunityStage === "proposal" || hasExistingProposalData)
+
 
     // If stage is changed away from proposal, we hide the section but RHF keeps values by default
     // ideally.
