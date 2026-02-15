@@ -11,7 +11,11 @@ export default function LocationFetchButton({
     disabled = false,
 }) {
     const { t } = useTranslation()
-    const { setValue, register, formState: { errors } } = useFormContext()
+    const {
+        setValue,
+        register,
+        formState: { errors },
+    } = useFormContext()
     const [status, setStatus] = useState("idle") // idle, loading, success, error
     const [fetchedCoords, setFetchedCoords] = useState(null)
     const [copied, setCopied] = useState(false)
@@ -20,7 +24,9 @@ export default function LocationFetchButton({
         e.preventDefault()
         e.stopPropagation()
         if (fetchedCoords) {
-            navigator.clipboard.writeText(`${fetchedCoords.latitude}, ${fetchedCoords.longitude}`)
+            navigator.clipboard.writeText(
+                `${fetchedCoords.latitude}, ${fetchedCoords.longitude}`,
+            )
             setCopied(true)
             setTimeout(() => setCopied(false), 2000)
         }
@@ -60,7 +66,9 @@ export default function LocationFetchButton({
 
     // Access nested errors for latitude/longitude if they exist
     // namePrefix e.g. "companyDetails.address"
-    const addressErrors = namePrefix.split('.').reduce((obj, key) => obj && obj[key], errors)
+    const addressErrors = namePrefix
+        .split(".")
+        .reduce((obj, key) => obj && obj[key], errors)
     const latError = addressErrors?.latitude
     const lngError = addressErrors?.longitude
     const anyLocationError = latError || lngError
@@ -76,26 +84,33 @@ export default function LocationFetchButton({
                     <div
                         className={cn(
                             "w-full h-10 px-4 py-2 rounded-md flex items-center justify-between transition-all duration-200",
-                            "bg-green-600 text-white border border-green-600"
+                            "bg-green-600 text-white border border-green-600",
                         )}
                     >
                         <div className="flex items-center gap-2 font-mono text-xs truncate mr-2">
-                             <span>Lat: {fetchedCoords?.latitude}, Long: {fetchedCoords?.longitude}</span>
+                            <span>
+                                Lat: {fetchedCoords?.latitude}, Long:{" "}
+                                {fetchedCoords?.longitude}
+                            </span>
                         </div>
                         <div className="relative shrink-0">
-                             <button
+                            <button
                                 type="button"
                                 onClick={handleCopy}
                                 className="p-1 hover:bg-green-700 rounded transition-colors text-white focus:outline-none focus:ring-1 focus:ring-white/50"
                                 title="Copy coordinates"
-                             >
-                                {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
-                             </button>
-                             {copied && (
+                            >
+                                {copied ? (
+                                    <Check className="h-4 w-4" />
+                                ) : (
+                                    <Copy className="h-4 w-4" />
+                                )}
+                            </button>
+                            {copied && (
                                 <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 px-2 py-1 bg-black text-white text-[10px] rounded shadow-sm whitespace-nowrap animate-in fade-in slide-in-from-bottom-1 z-10">
                                     Copied!
                                 </div>
-                             )}
+                            )}
                         </div>
                     </div>
                 ) : (
@@ -104,13 +119,11 @@ export default function LocationFetchButton({
                         variant="outline"
                         className={cn(
                             "w-full justify-start transition-all duration-200",
-                            (anyLocationError || status === "error") && "border-destructive text-destructive hover:bg-destructive/10"
+                            (anyLocationError || status === "error") &&
+                                "border-destructive text-destructive hover:bg-destructive/10",
                         )}
                         onClick={fetchLocation}
-                        disabled={
-                            disabled ||
-                            status === "loading"
-                        }
+                        disabled={disabled || status === "loading"}
                     >
                         {status === "idle" && (
                             <>
@@ -132,7 +145,7 @@ export default function LocationFetchButton({
                         )}
                     </Button>
                 )}
-                
+
                 {/* Geolocation API Error */}
                 {status === "error" && (
                     <p className="text-destructive text-[0.8rem] font-medium mt-1.5 animate-in fade-in slide-in-from-top-1">
@@ -140,15 +153,15 @@ export default function LocationFetchButton({
                             "Unable to fetch location. Please allow location access."}
                     </p>
                 )}
-                
+
                 {/* Form Validation Error (if any) */}
                 {anyLocationError && (
-                     <p className="text-destructive text-[0.8rem] font-medium mt-1.5 animate-in fade-in slide-in-from-top-1">
+                    <p className="text-destructive text-[0.8rem] font-medium mt-1.5 animate-in fade-in slide-in-from-top-1">
                         {anyLocationError.message || t("invalidFormat")}
-                     </p>
+                    </p>
                 )}
             </div>
-            
+
             <input type="hidden" {...register(`${namePrefix}.latitude`)} />
             <input type="hidden" {...register(`${namePrefix}.longitude`)} />
         </div>

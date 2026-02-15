@@ -90,7 +90,8 @@ export default function LeadsPage() {
         searchParams.get("owner") || "",
     )
 
-    const isSuperAdminUser = user?.role === "SUPER_ADMIN" || user?.role === "super_admin"
+    const isSuperAdminUser =
+        user?.role === "SUPER_ADMIN" || user?.role === "super_admin"
     const debouncedOwner = useDebounce(ownerSearch, 500)
 
     // Sync owner search to URL
@@ -325,8 +326,6 @@ export default function LeadsPage() {
                             showFilters ? "flex" : "hidden md:flex",
                         )}
                     >
-
-
                         {/* Company Search */}
                         <div className="relative flex-1 min-w-[140px] max-w-full md:max-w-[200px]">
                             <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500 pointer-events-none" />

@@ -49,8 +49,8 @@ export default function EditOpportunityPage() {
         try {
             // Handle backend typo compatibility for 'expectedRevnue'
             if (formData.has("expectedRevenue")) {
-                 const val = formData.get("expectedRevenue")
-                 formData.append("expectedRevnue", val)
+                const val = formData.get("expectedRevenue")
+                formData.append("expectedRevnue", val)
             }
 
             await updatePipeline(id, formData)

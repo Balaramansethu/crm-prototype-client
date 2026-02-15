@@ -149,7 +149,8 @@ export default function FileDropzone({
                 className={cn(
                     "relative flex cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-muted-foreground/25 bg-muted/5 p-6 transition-colors hover:bg-muted/10",
                     isDragging && "border-primary bg-primary/5",
-                    disabled && "cursor-not-allowed opacity-50 hover:bg-muted/5",
+                    disabled &&
+                        "cursor-not-allowed opacity-50 hover:bg-muted/5",
                     error && "border-destructive/50 bg-destructive/5",
                 )}
             >

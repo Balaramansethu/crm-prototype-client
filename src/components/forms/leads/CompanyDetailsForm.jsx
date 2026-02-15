@@ -96,9 +96,9 @@ export default function CompanyDetailsForm({
                     placeholder={t("socialProfilePlaceholder")}
                     disabled={disabled}
                 />
-                
+
                 {/* Location Fetch Button - Placed next to Social Profile */}
-                <LocationFetchButton 
+                <LocationFetchButton
                     namePrefix="companyDetails.address"
                     disabled={disabled}
                 />

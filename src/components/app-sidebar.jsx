@@ -143,7 +143,6 @@ export function AppSidebar({ ...props }) {
                 </SidebarGroup>
             </SidebarContent>
 
-
             {/* ─── Footer: Logout ─── */}
             <SidebarFooter>
                 <SidebarMenu>

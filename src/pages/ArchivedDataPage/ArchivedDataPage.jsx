@@ -334,14 +334,17 @@ function DroppedLeadsTable({ page, setPage }) {
     const { t, i18n } = useTranslation()
     const isRTL = i18n.dir() === "rtl"
     // Use the new hook for dropped leads
-    const { data, isLoading, isError } = useDroppedArchivedLeads({ page, limit: 10 })
+    const { data, isLoading, isError } = useDroppedArchivedLeads({
+        page,
+        limit: 10,
+    })
 
     // Reuse the same parsing logic as ArchivedLeadsTable
     const { leads, info } = useMemo(() => {
         if (!data) return { leads: [], info: {} }
 
         // Adjust property access if API response differs, but assuming "leads" key or similar structure
-        // If API returns "droppedLeads", we might need to check that. 
+        // If API returns "droppedLeads", we might need to check that.
         // Based on prompt "Use same column renderers", we assume similar shape.
         const rawLeads = data.leads || data.droppedLeads || []
         const flattened = []
@@ -424,14 +427,17 @@ function DroppedLeadsTable({ page, setPage }) {
                             <TableCell className="text-black whitespace-nowrap">
                                 {lead.dropped?.by
                                     ? `${lead.dropped.by.firstName} ${lead.dropped.by.lastName}`
-                                    : lead.deleted?.by 
-                                        ? `${lead.deleted.by.firstName} ${lead.deleted.by.lastName}`
-                                        : "-"}
+                                    : lead.deleted?.by
+                                      ? `${lead.deleted.by.firstName} ${lead.deleted.by.lastName}`
+                                      : "-"}
                             </TableCell>
                             <TableCell className="text-black whitespace-nowrap">
-                                {(lead.deleted?.at || lead.dropped?.at)
+                                {lead.deleted?.at || lead.dropped?.at
                                     ? format(
-                                          new Date(lead.deleted?.at || lead.dropped?.at),
+                                          new Date(
+                                              lead.deleted?.at ||
+                                                  lead.dropped?.at,
+                                          ),
                                           "dd-MM-yyyy HH:mm",
                                       )
                                     : "-"}
@@ -444,12 +450,19 @@ function DroppedLeadsTable({ page, setPage }) {
                                                 {lead.droppedReason}
                                             </div>
                                         </TooltipTrigger>
-                                        <TooltipContent side="top" className="max-w-[300px] break-words">
-                                            <p className="text-sm">{lead.droppedReason}</p>
+                                        <TooltipContent
+                                            side="top"
+                                            className="max-w-[300px] break-words"
+                                        >
+                                            <p className="text-sm">
+                                                {lead.droppedReason}
+                                            </p>
                                         </TooltipContent>
                                     </Tooltip>
                                 ) : (
-                                    <span className="text-muted-foreground">-</span>
+                                    <span className="text-muted-foreground">
+                                        -
+                                    </span>
                                 )}
                             </TableCell>
                         </TableRow>

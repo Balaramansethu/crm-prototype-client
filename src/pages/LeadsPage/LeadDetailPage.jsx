@@ -236,7 +236,9 @@ export default function LeadDetailPage() {
                                 <Separator />
                                 <FieldRow
                                     label={t("phone")}
-                                    value={formatPhoneDisplay(mainContact.phone)}
+                                    value={formatPhoneDisplay(
+                                        mainContact.phone,
+                                    )}
                                 />
                                 <Separator />
                                 <FieldRow
@@ -372,11 +374,10 @@ export default function LeadDetailPage() {
                                     )}
                                 </>
                             )}
-
                         </CardContent>
                     </Card>
                 </div>
-                
+
                 {/* Beneficiary Details - Full Width Card */}
                 {leadData?.benificiary && (
                     <Card>
@@ -398,7 +399,9 @@ export default function LeadDetailPage() {
                             <Separator />
                             <FieldRow
                                 label={t("phone")}
-                                value={formatPhoneDisplay(leadData.benificiary.phone)}
+                                value={formatPhoneDisplay(
+                                    leadData.benificiary.phone,
+                                )}
                             />
                         </CardContent>
                     </Card>

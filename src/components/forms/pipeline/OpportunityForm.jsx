@@ -182,17 +182,35 @@ export default function OpportunityForm({
         }
 
         const formData = new FormData()
-        
+
         // Append standard fields
         formData.append("company", data.company)
         formData.append("opportunityStage", data.opportunityStage)
         // Use loose check for values including 0
-        if (data.estimatedValue !== "" && data.estimatedValue !== undefined && data.estimatedValue !== null) formData.append("estimatedValue", data.estimatedValue)
-        if (data.probability !== "" && data.probability !== undefined && data.probability !== null) formData.append("probability", data.probability)
-        if (data.expectedRevenue !== "" && data.expectedRevenue !== undefined && data.expectedRevenue !== null) formData.append("expectedRevenue", data.expectedRevenue)
-        if (data.nextStep?.trim()) formData.append("nextStep", data.nextStep.trim())
-        if (data.remarks?.trim()) formData.append("remarks", data.remarks.trim())
-        if (data.followUp) formData.append("followUp", format(data.followUp, "yyyy-MM-dd"))
+        if (
+            data.estimatedValue !== "" &&
+            data.estimatedValue !== undefined &&
+            data.estimatedValue !== null
+        )
+            formData.append("estimatedValue", data.estimatedValue)
+        if (
+            data.probability !== "" &&
+            data.probability !== undefined &&
+            data.probability !== null
+        )
+            formData.append("probability", data.probability)
+        if (
+            data.expectedRevenue !== "" &&
+            data.expectedRevenue !== undefined &&
+            data.expectedRevenue !== null
+        )
+            formData.append("expectedRevenue", data.expectedRevenue)
+        if (data.nextStep?.trim())
+            formData.append("nextStep", data.nextStep.trim())
+        if (data.remarks?.trim())
+            formData.append("remarks", data.remarks.trim())
+        if (data.followUp)
+            formData.append("followUp", format(data.followUp, "yyyy-MM-dd"))
 
         // Handle Proposal Fields
         if (data.opportunityStage === "proposal") {
@@ -200,7 +218,7 @@ export default function OpportunityForm({
             if (data.proposalNumber) {
                 formData.append("proposalNumber", data.proposalNumber)
             }
-            
+
             if (data.proposalDocument instanceof File) {
                 formData.append("proposalDocument", data.proposalDocument)
             }
@@ -309,11 +327,13 @@ export default function OpportunityForm({
 
                         {/* Proposal Upload Section - Conditional */}
                         {showProposalSection && (
-                            <ProposalUploadSection 
+                            <ProposalUploadSection
                                 control={control}
                                 setValue={setValue}
                                 watch={watch}
-                                existingProposalDocument={initialData?.proposalDocument}
+                                existingProposalDocument={
+                                    initialData?.proposalDocument
+                                }
                                 isEditMode={isEditMode}
                             />
                         )}

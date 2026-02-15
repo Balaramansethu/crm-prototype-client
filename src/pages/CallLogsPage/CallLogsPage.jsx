@@ -409,7 +409,8 @@ export default function CallLogsPage() {
                                         <TableCell className="hidden md:table-cell text-black text-sm">
                                             {log.createdBy
                                                 ? `${log.createdBy.firstName} ${
-                                                      log.createdBy.lastName || ""
+                                                      log.createdBy.lastName ||
+                                                      ""
                                                   }`
                                                 : "-"}
                                         </TableCell>

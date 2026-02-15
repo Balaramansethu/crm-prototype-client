@@ -32,16 +32,16 @@ export default function CreateOpportunityPage() {
             if (ownerId) {
                 formData.append("owner", ownerId)
             }
-            // Note: expectedRevenue backend typo handling should likely be done in service or by ensuring consistent naming. 
+            // Note: expectedRevenue backend typo handling should likely be done in service or by ensuring consistent naming.
             // If backend strictly expects 'expectedRevnue' (typo), we should handle it.
-            // But standard fields are already appended. 
+            // But standard fields are already appended.
             // Let's assume 'expectedRevenue' (correct spelling) or check if we need to alias it.
             // Previous code had: expectedRevnue: Number(data.expectedRevenue)
             // So let's append the typo version just in case, or rename it in FormData loop if needed.
             // Actually, let's append the typo version manually if 'expectedRevenue' exists in formData
             if (formData.has("expectedRevenue")) {
                 const val = formData.get("expectedRevenue")
-                 formData.append("expectedRevnue", val) // Handle backend typo compatibility
+                formData.append("expectedRevnue", val) // Handle backend typo compatibility
             }
 
             await createPipeline(formData)
