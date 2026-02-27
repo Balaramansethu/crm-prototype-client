@@ -69,10 +69,8 @@ export async function searchCompanies(params = {}) {
 export async function searchLeadsByCompany(companyId, params = {}) {
     try {
         const response = await axiosPrivateInstance.get(
-            "/call-logs/search/leads",
-            {
-                params: { companyId, ...params },
-            },
+            `/call-logs/search/leads/${companyId}`,
+            { params },
         )
         return response.data
     } catch (error) {

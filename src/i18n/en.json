@@ -453,5 +453,7 @@
     "days": "days",
     "hour": "hour",
     "hours": "hours",
-    "minute": "minute"
+    "minute": "minute",
+    "selectContactPerson": "Select a contact person",
+    "selectCompanyFirst": "Select a company first"
 }

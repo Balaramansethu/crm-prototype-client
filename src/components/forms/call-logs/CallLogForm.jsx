@@ -39,7 +39,7 @@ import { useNavigate } from "react-router-dom"
 import { useMemo, useState, useEffect } from "react"
 import { Loader2, FileText } from "lucide-react"
 import { cn } from "@/lib/utils"
-import { searchLeads, getLeadPreviousCallLogs } from "@/service/callLogsService"
+import { searchCompanies, searchLeadsByCompany, getLeadPreviousCallLogs } from "@/service/callLogsService"
 import { formatPhoneDisplay } from "@/utils/leadTransformers"
 
 // Helper to extract phone display string from a lead object
@@ -71,9 +71,21 @@ export default function CallLogForm({
             ? initialData.lead
             : null
 
+    // Derive initial company from lead data
+    const initCompanyId = (() => {
+        if (!initLead) return ""
+        if (typeof initLead.company === "object") return initLead.company?._id || ""
+        return initLead.company || ""
+    })()
+
     const [showUnsavedDialog, setShowUnsavedDialog] = useState(false)
 
-    // Lead state — initialize from initialData when in edit mode
+    // Company state
+    const [companies, setCompanies] = useState([])
+    const [loadingCompanies, setLoadingCompanies] = useState(false)
+    const [selectedCompanyId, setSelectedCompanyId] = useState(() => initCompanyId)
+
+    // Lead (contact person) state — initialize from initialData when in edit mode
     const [leads, setLeads] = useState(() => (initLead ? [initLead] : []))
     const [loadingLeads, setLoadingLeads] = useState(false)
     const [selectedLeadId, setSelectedLeadId] = useState(
@@ -123,22 +135,58 @@ export default function CallLogForm({
 
     const currentOutcome = watch("outcome")
 
-    // Fetch all leads on mount - ONLY in create mode
-    // In edit mode, the lead dropdown is disabled and we use initialData.lead
+    // Fetch companies on mount
     useEffect(() => {
-        // Skip fetching leads in edit mode since dropdown is disabled
+        const fetchCompaniesData = async () => {
+            setLoadingCompanies(true)
+            try {
+                const response = await searchCompanies()
+                const data = response.data || response
+                let companiesList = Array.isArray(data)
+                    ? data
+                    : data.companies || []
+
+                // In edit mode, ensure the current company is in the list
+                if (isEditMode && initLead?.company && typeof initLead.company === "object") {
+                    const currentCompany = initLead.company
+                    const companyExists = companiesList.some(
+                        (c) => c._id === currentCompany._id,
+                    )
+                    if (!companyExists) {
+                        companiesList = [currentCompany, ...companiesList]
+                    }
+                }
+
+                setCompanies(companiesList)
+            } catch (error) {
+                console.error("Failed to fetch companies:", error)
+                setCompanies([])
+            } finally {
+                setLoadingCompanies(false)
+            }
+        }
+        fetchCompaniesData()
+    }, [isEditMode, initLead])
+
+    // Fetch leads (contact persons) when a company is selected
+    useEffect(() => {
+        if (!selectedCompanyId) {
+            setLeads([])
+            return
+        }
+
+        // In edit mode, just use the lead from initialData
         if (isEditMode) {
-            // In edit mode, just use the lead from initialData
             if (initialData?.lead && typeof initialData.lead === "object") {
                 setLeads([initialData.lead])
             }
             return
         }
 
-        const fetchLeads = async () => {
+        const fetchLeadsByCompany = async () => {
             setLoadingLeads(true)
             try {
-                const response = await searchLeads({ limit: 200 })
+                const response = await searchLeadsByCompany(selectedCompanyId)
                 const data = response.data || response
                 let leadsList = Array.isArray(data) ? data : data.leads || []
 
@@ -150,12 +198,13 @@ export default function CallLogForm({
                 setLeads(leadsList)
             } catch (error) {
                 console.error("Failed to fetch leads:", error)
+                setLeads([])
             } finally {
                 setLoadingLeads(false)
             }
         }
-        fetchLeads()
-    }, [isEditMode, initialData])
+        fetchLeadsByCompany()
+    }, [selectedCompanyId, isEditMode, initialData])
 
     // Get company name from lead
     const getCompanyName = (lead) => {
@@ -274,9 +323,16 @@ export default function CallLogForm({
             remarks: initialData.remarks || "",
         })
 
-        // Also ensure lead state is set (in case initialData changed after mount)
+        // Also ensure lead/company state is set (in case initialData changed after mount)
         const lead = initialData.lead
         if (lead && typeof lead === "object") {
+            // Set company
+            const companyId =
+                typeof lead.company === "object"
+                    ? lead.company?._id
+                    : lead.company || ""
+            if (companyId) setSelectedCompanyId(companyId)
+
             setLeads((prev) =>
                 prev.some((l) => l._id === lead._id) ? prev : [lead],
             )
@@ -298,6 +354,16 @@ export default function CallLogForm({
         return () =>
             window.removeEventListener("beforeunload", handleBeforeUnload)
     }, [isDirty, isSubmitting])
+
+    const handleCompanyChange = (companyId) => {
+        setSelectedCompanyId(companyId)
+        // Reset contact person when company changes
+        setSelectedLeadId("")
+        setSelectedLead(null)
+        setPhoneDisplay("")
+        form.setValue("lead", "")
+        setPreviousCallLogs([])
+    }
 
     const handleLeadChange = (leadId) => {
         setSelectedLeadId(leadId)
@@ -417,14 +483,71 @@ export default function CallLogForm({
                             onSubmit={form.handleSubmit(handleSubmit)}
                             className="grid gap-6"
                         >
-                            {/* Lead Select - Shows "LeadName (CompanyName)" */}
+                            {/* Company Select */}
+                            <FormItem>
+                                <FormLabel>
+                                    {t("company")}{" "}
+                                    <span className="text-destructive">
+                                        *
+                                    </span>
+                                </FormLabel>
+                                <Select
+                                    onValueChange={handleCompanyChange}
+                                    value={selectedCompanyId}
+                                    disabled={
+                                        isEditMode || loadingCompanies
+                                    }
+                                >
+                                    <FormControl>
+                                        <SelectTrigger
+                                            className={cn(
+                                                isRTL
+                                                    ? "text-right"
+                                                    : "",
+                                                isEditMode &&
+                                                    "bg-muted !cursor-not-allowed",
+                                            )}
+                                        >
+                                            <SelectValue
+                                                placeholder={
+                                                    loadingCompanies
+                                                        ? t("loading")
+                                                        : t(
+                                                              "selectCompany",
+                                                          )
+                                                }
+                                            />
+                                        </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent
+                                        dir={isRTL ? "rtl" : "ltr"}
+                                    >
+                                        {companies.length === 0 ? (
+                                            <div className="py-6 text-center text-sm text-muted-foreground">
+                                                {t("noCompaniesAvailable")}
+                                            </div>
+                                        ) : (
+                                            companies.map((company) => (
+                                                <SelectItem
+                                                    key={company._id}
+                                                    value={company._id}
+                                                >
+                                                    {company.name}
+                                                </SelectItem>
+                                            ))
+                                        )}
+                                    </SelectContent>
+                                </Select>
+                            </FormItem>
+
+                            {/* Contact Person Select */}
                             <FormField
                                 control={form.control}
                                 name="lead"
                                 render={() => (
                                     <FormItem>
                                         <FormLabel>
-                                            {t("lead")}{" "}
+                                            {t("contactPerson")}{" "}
                                             <span className="text-destructive">
                                                 *
                                             </span>
@@ -433,7 +556,7 @@ export default function CallLogForm({
                                             onValueChange={handleLeadChange}
                                             value={selectedLeadId}
                                             disabled={
-                                                isEditMode || loadingLeads
+                                                isEditMode || loadingLeads || !selectedCompanyId
                                             }
                                         >
                                             <FormControl>
@@ -442,17 +565,19 @@ export default function CallLogForm({
                                                         isRTL
                                                             ? "text-right"
                                                             : "",
-                                                        isEditMode &&
+                                                        (isEditMode || !selectedCompanyId) &&
                                                             "bg-muted !cursor-not-allowed",
                                                     )}
                                                 >
                                                     <SelectValue
                                                         placeholder={
-                                                            loadingLeads
-                                                                ? t("loading")
-                                                                : t(
-                                                                      "selectLead",
-                                                                  )
+                                                            !selectedCompanyId
+                                                                ? t("selectCompanyFirst")
+                                                                : loadingLeads
+                                                                    ? t("loading")
+                                                                    : t(
+                                                                          "selectContactPerson",
+                                                                      )
                                                         }
                                                     />
                                                 </SelectTrigger>
@@ -470,9 +595,7 @@ export default function CallLogForm({
                                                             key={lead._id}
                                                             value={lead._id}
                                                         >
-                                                            {formatLeadDisplay(
-                                                                lead,
-                                                            )}
+                                                            {lead.name}
                                                         </SelectItem>
                                                     ))
                                                 )}
