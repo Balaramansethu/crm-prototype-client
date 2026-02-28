@@ -88,95 +88,31 @@ export default function LeadForm({
         }
 
         const company = initialData?.company || {}
-        // Get leads from company.leads (other contacts)
-        const companyLeads = company?.leads || []
         const legacyContact = initialData?.contact || {}
 
-        // Check if this is a single lead edit (contact fields at root level)
-        // This happens when we fetch a lead by its ID - the lead data is at root
-        const hasRootLevelLead = initialData?.name && initialData?._id
+        // New format: { company: {...}, leads: [{ _id, contact: { name, ... }, status, priority, ... }] }
+        const hasLeadsArray = initialData?.leads?.length > 0
 
         // Build contacts array
         let contacts = []
-        let allLeadsWithIds = [] // Track lead IDs for finding editable index
 
-        if (hasRootLevelLead) {
-            // The current lead is at root level
-            const phone = normalizePhone(initialData.phone)
-            const currentLead = {
-                _id: initialData._id,
-                name: initialData.name || "",
-                email: initialData.email || "",
-                ...phone,
-                status: initialData.status || "new",
-                source: initialData.source || "",
-                followUp: initialData.followUp
-                    ? new Date(initialData.followUp)
-                    : undefined,
-                department: initialData.department || "",
-                remarks: initialData.remarks || "",
-                priority: initialData.priority || 1,
-                beneficiary: initialData.benificiary
-                    ? {
-                          name: initialData.benificiary.name || "",
-                          ...normalizePhone(initialData.benificiary.phone),
-                      }
-                    : undefined,
-            }
-
-            // Convert company.leads to the same format, filtering out unnamed ones
-            const otherLeads = companyLeads
-                .filter((lead) => lead.name && lead.name.trim())
-                .map((lead) => ({
-                    _id: lead._id,
-                    name: lead.name || "",
-                    email: lead.email || "",
-                    ...normalizePhone(lead.phone),
-                    status: lead.status || "new",
-                    source: lead.source || "",
-                    followUp: lead.followUp
-                        ? new Date(lead.followUp)
-                        : undefined,
-                    department: lead.department || "",
-                    remarks: lead.remarks || "",
-                    priority: lead.priority || 2,
-                    beneficiary: lead.benificiary
-                        ? {
-                              name: lead.benificiary.name || "",
-                              ...normalizePhone(lead.benificiary.phone),
-                          }
-                        : undefined,
-                }))
-
-            // Combine all leads and sort by priority
-            allLeadsWithIds = [currentLead, ...otherLeads]
-            allLeadsWithIds.sort(
-                (a, b) => (a.priority || 99) - (b.priority || 99),
-            )
-
-            // Keep _id in contacts to identify existing ones in edit mode
-            contacts = allLeadsWithIds.map((lead) => ({ ...lead }))
-
-            // Store lead IDs for editable index calculation (will be used below)
-            if (typeof window !== "undefined") {
-                window.__leadIdsOrder = allLeadsWithIds.map((l) => l._id)
-            }
-        } else if (initialData?.leads?.length > 0) {
-            // Response already has leads array at root (company-level fetch)
-            contacts = initialData.leads
-                .filter((lead) => lead.name && lead.name.trim())
+        if (hasLeadsArray) {
+            // Map leads from the new format, sorting by priority
+            contacts = [...initialData.leads]
+                .filter((lead) => lead.contact?.name && lead.contact.name.trim())
+                .sort((a, b) => (a.priority || 99) - (b.priority || 99))
                 .map((lead, index) => ({
                     _id: lead._id,
-                    name: lead.name || "",
-                    email: lead.email || "",
-                    ...normalizePhone(lead.phone),
+                    name: lead.contact?.name || "",
+                    email: lead.contact?.email || "",
+                    ...normalizePhone(lead.contact?.phone),
                     status: lead.status || "new",
                     source: lead.source || "",
                     followUp: lead.followUp
                         ? new Date(lead.followUp)
                         : undefined,
-                    department: lead.department || "",
-                    remarks: lead.remarks || "",
+                    department: lead.contact?.department || "",
+                    remarks: lead.contact?.remarks || "",
                     priority: lead.priority || index + 1,
                     beneficiary: lead.benificiary
                         ? {

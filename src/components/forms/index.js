@@ -2,3 +2,4 @@
 export * from "./leads"
 export * from "./call-logs"
 export * from "./pipeline"
+export * from "./prospectus"

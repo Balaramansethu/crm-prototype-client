@@ -95,6 +95,12 @@ export default function CallLogForm({
     const [previousCallLogs, setPreviousCallLogs] = useState([])
     const [loadingPreviousData, setLoadingPreviousData] = useState(false)
 
+    // Whether the selected company has contact persons (leads)
+    // null = not yet determined (loading / no company selected), true/false after fetch
+    const [hasContacts, setHasContacts] = useState(() =>
+        initLead ? true : null,
+    )
+
     // Phone display — initialize from initialData lead
     const [phoneDisplay, setPhoneDisplay] = useState(() =>
         getPhoneFromLead(initLead),
@@ -168,10 +174,18 @@ export default function CallLogForm({
         fetchCompaniesData()
     }, [isEditMode, initLead])
 
+    // Helper: get phone display from the selected company object
+    const getPhoneFromCompany = (companyId) => {
+        const company = companies.find((c) => c._id === companyId)
+        if (!company?.phone?.number) return ""
+        return formatPhoneDisplay(company.phone)
+    }
+
     // Fetch leads (contact persons) when a company is selected
     useEffect(() => {
         if (!selectedCompanyId) {
             setLeads([])
+            setHasContacts(null)
             return
         }
 
@@ -179,6 +193,7 @@ export default function CallLogForm({
         if (isEditMode) {
             if (initialData?.lead && typeof initialData.lead === "object") {
                 setLeads([initialData.lead])
+                setHasContacts(true)
             }
             return
         }
@@ -188,23 +203,43 @@ export default function CallLogForm({
             try {
                 const response = await searchLeadsByCompany(selectedCompanyId)
                 const data = response.data || response
-                let leadsList = Array.isArray(data) ? data : data.leads || []
+                const rawLeads = Array.isArray(data) ? data : data.leads || []
 
                 // Filter out leads with null/empty names
-                leadsList = leadsList.filter(
+                const leadsList = rawLeads.filter(
                     (lead) => lead.name && lead.name.trim(),
                 )
 
                 setLeads(leadsList)
+                const companyHasContacts = leadsList.length > 0
+                setHasContacts(companyHasContacts)
+
+                // If no contacts, auto-bind company phone from the API response
+                if (!companyHasContacts) {
+                    // Extract phone from the raw response's company object
+                    const companyObj = rawLeads[0]?.company
+                    const companyPhone =
+                        companyObj?.phone?.number
+                            ? formatPhoneDisplay(companyObj.phone)
+                            : getPhoneFromCompany(selectedCompanyId)
+                    setPhoneDisplay(companyPhone)
+                    setSelectedLeadId("")
+                    setSelectedLead(null)
+                    form.setValue("lead", "")
+                }
             } catch (error) {
                 console.error("Failed to fetch leads:", error)
                 setLeads([])
+                setHasContacts(false)
+                // Fallback: bind company phone on error
+                const companyPhone = getPhoneFromCompany(selectedCompanyId)
+                setPhoneDisplay(companyPhone)
             } finally {
                 setLoadingLeads(false)
             }
         }
         fetchLeadsByCompany()
-    }, [selectedCompanyId, isEditMode, initialData])
+    }, [selectedCompanyId, isEditMode, initialData, companies])
 
     // Get company name from lead
     const getCompanyName = (lead) => {
@@ -267,11 +302,14 @@ export default function CallLogForm({
             // Only clear state in create mode — in edit mode, we want to keep
             // the state that was initialized from initialData
             setSelectedLead(null)
-            setPhoneDisplay("")
+            // Don't clear phone if company has no contacts — company phone is already bound
+            if (hasContacts !== false) {
+                setPhoneDisplay("")
+            }
             form.setValue("lead", "")
             setPreviousCallLogs([])
         }
-    }, [selectedLeadId, leads, form, isEditMode, initialData])
+    }, [selectedLeadId, leads, form, isEditMode, initialData, hasContacts])
 
     // Initialize/reset form values when initialData changes (edit mode)
     // Note: leads, selectedLeadId, selectedLead, phoneDisplay are already
@@ -363,6 +401,7 @@ export default function CallLogForm({
         setPhoneDisplay("")
         form.setValue("lead", "")
         setPreviousCallLogs([])
+        setHasContacts(null) // Reset until leads are fetched
     }
 
     const handleLeadChange = (leadId) => {
@@ -370,8 +409,8 @@ export default function CallLogForm({
     }
 
     const handleSubmit = (data) => {
-        // Validate lead selection
-        if (!selectedLeadId) {
+        // Validate lead selection — only required when company has contacts
+        if (hasContacts !== false && !selectedLeadId) {
             form.setError("lead", {
                 type: "required",
                 message: t("leadRequired"),
@@ -540,71 +579,73 @@ export default function CallLogForm({
                                 </Select>
                             </FormItem>
 
-                            {/* Contact Person Select */}
-                            <FormField
-                                control={form.control}
-                                name="lead"
-                                render={() => (
-                                    <FormItem>
-                                        <FormLabel>
-                                            {t("contactPerson")}{" "}
-                                            <span className="text-destructive">
-                                                *
-                                            </span>
-                                        </FormLabel>
-                                        <Select
-                                            onValueChange={handleLeadChange}
-                                            value={selectedLeadId}
-                                            disabled={
-                                                isEditMode || loadingLeads || !selectedCompanyId
-                                            }
-                                        >
-                                            <FormControl>
-                                                <SelectTrigger
-                                                    className={cn(
-                                                        isRTL
-                                                            ? "text-right"
-                                                            : "",
-                                                        (isEditMode || !selectedCompanyId) &&
-                                                            "bg-muted !cursor-not-allowed",
-                                                    )}
-                                                >
-                                                    <SelectValue
-                                                        placeholder={
-                                                            !selectedCompanyId
-                                                                ? t("selectCompanyFirst")
-                                                                : loadingLeads
-                                                                    ? t("loading")
-                                                                    : t(
-                                                                          "selectContactPerson",
-                                                                      )
-                                                        }
-                                                    />
-                                                </SelectTrigger>
-                                            </FormControl>
-                                            <SelectContent
-                                                dir={isRTL ? "rtl" : "ltr"}
+                            {/* Contact Person Select — hidden when company has no contacts */}
+                            {(hasContacts !== false || isEditMode) && (
+                                <FormField
+                                    control={form.control}
+                                    name="lead"
+                                    render={() => (
+                                        <FormItem>
+                                            <FormLabel>
+                                                {t("contactPerson")}{" "}
+                                                <span className="text-destructive">
+                                                    *
+                                                </span>
+                                            </FormLabel>
+                                            <Select
+                                                onValueChange={handleLeadChange}
+                                                value={selectedLeadId}
+                                                disabled={
+                                                    isEditMode || loadingLeads || !selectedCompanyId
+                                                }
                                             >
-                                                {leads.length === 0 ? (
-                                                    <div className="py-6 text-center text-sm text-muted-foreground">
-                                                        {t("noLeadsAvailable")}
-                                                    </div>
-                                                ) : (
-                                                    leads.map((lead) => (
-                                                        <SelectItem
-                                                            key={lead._id}
-                                                            value={lead._id}
-                                                        >
-                                                            {lead.name}
-                                                        </SelectItem>
-                                                    ))
-                                                )}
-                                            </SelectContent>
-                                        </Select>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
+                                                <FormControl>
+                                                    <SelectTrigger
+                                                        className={cn(
+                                                            isRTL
+                                                                ? "text-right"
+                                                                : "",
+                                                            (isEditMode || !selectedCompanyId) &&
+                                                                "bg-muted !cursor-not-allowed",
+                                                        )}
+                                                    >
+                                                        <SelectValue
+                                                            placeholder={
+                                                                !selectedCompanyId
+                                                                    ? t("selectCompanyFirst")
+                                                                    : loadingLeads
+                                                                        ? t("loading")
+                                                                        : t(
+                                                                              "selectContactPerson",
+                                                                          )
+                                                            }
+                                                        />
+                                                    </SelectTrigger>
+                                                </FormControl>
+                                                <SelectContent
+                                                    dir={isRTL ? "rtl" : "ltr"}
+                                                >
+                                                    {leads.length === 0 ? (
+                                                        <div className="py-6 text-center text-sm text-muted-foreground">
+                                                            {t("noLeadsAvailable")}
+                                                        </div>
+                                                    ) : (
+                                                        leads.map((lead) => (
+                                                            <SelectItem
+                                                                key={lead._id}
+                                                                value={lead._id}
+                                                            >
+                                                                {lead.name}
+                                                            </SelectItem>
+                                                        ))
+                                                    )}
+                                                </SelectContent>
+                                            </Select>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                            )}
 
                             {/* Phone Display (read-only) */}
                             <FormItem>
@@ -616,7 +657,11 @@ export default function CallLogForm({
                                         readOnly
                                         className="tabular-nums bg-muted !cursor-not-allowed"
                                         dir="ltr"
-                                        placeholder={t("selectLeadFirst")}
+                                        placeholder={
+                                            hasContacts === false
+                                                ? t("companyPhone")
+                                                : t("selectLeadFirst")
+                                        }
                                     />
                                 </FormControl>
                             </FormItem>

@@ -35,44 +35,24 @@ export default function EditLeadPage() {
                     return
                 }
 
-                // Check if this is a root-level lead with company.leads
-                const hasRootLevelLead = leadData?.name && leadData?._id
-                const companyLeads = leadData?.company?.leads || []
+                // New format: { company: {...}, leads: [...] }
+                // Sort leads by priority and find the one being edited
+                const allLeads = leadData?.leads || []
 
-                if (hasRootLevelLead) {
-                    // Build the combined leads list same as LeadForm does
-                    const currentLead = {
-                        _id: leadData._id,
-                        priority: leadData.priority || 1,
-                    }
-                    const otherLeads = companyLeads.map((lead) => ({
-                        _id: lead._id,
-                        priority: lead.priority || 2,
-                    }))
-
-                    // Combine and sort by priority (same logic as LeadForm)
-                    const allLeads = [currentLead, ...otherLeads]
-                    allLeads.sort(
+                if (allLeads.length > 0) {
+                    // Sort by priority (same logic as LeadForm)
+                    const sorted = [...allLeads].sort(
                         (a, b) => (a.priority || 99) - (b.priority || 99),
                     )
 
                     // Find index of the current lead in sorted array
-                    const contactIndex = allLeads.findIndex(
-                        (lead) => lead._id === id,
-                    )
-                    setEditableContactIndex(
-                        contactIndex !== -1 ? contactIndex : 0,
-                    )
-                } else if (leadData?.leads?.length > 0) {
-                    // Response already has leads array at root (company-level fetch)
-                    const contactIndex = leadData.leads.findIndex(
+                    const contactIndex = sorted.findIndex(
                         (lead) => lead._id === id,
                     )
                     setEditableContactIndex(
                         contactIndex !== -1 ? contactIndex : 0,
                     )
                 } else {
-                    // Single lead, it's the only one
                     setEditableContactIndex(0)
                 }
 

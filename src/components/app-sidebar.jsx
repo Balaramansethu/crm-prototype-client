@@ -4,6 +4,7 @@ import {
     IconLayoutKanban,
     IconListDetails,
     IconPhone,
+    IconNotebook,
 } from "@tabler/icons-react"
 import { LogOut } from "lucide-react"
 import {
@@ -38,6 +39,12 @@ export function AppSidebar({ ...props }) {
 
     // Primary navigation items
     const mainNavItems = [
+        {
+            icon: IconNotebook,
+            label: t("prospectus"),
+            path: "/prospectus",
+            isActive: location.pathname.startsWith("/prospectus"),
+        },
         {
             icon: IconListDetails,
             label: t("leads"),

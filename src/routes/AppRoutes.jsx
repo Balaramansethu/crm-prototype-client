@@ -24,6 +24,10 @@ import {
     EditOpportunityPage,
     PipelineDetailPage,
 } from "@/pages/PipelinePage"
+import ProspectusListPage from "@/pages/ProspectusPage/ProspectusListPage"
+import CreateProspectusPage from "@/pages/ProspectusPage/CreateProspectusPage"
+import EditProspectusPage from "@/pages/ProspectusPage/EditProspectusPage"
+import ProspectusDetailPage from "@/pages/ProspectusPage/ProspectusDetailPage"
 import ArchivedDataPage from "@/pages/ArchivedDataPage/ArchivedDataPage"
 import NotFoundPage from "@/pages/NotFoundPage/NotFoundPage"
 import Unauthorized from "@/components/unauthorized"
@@ -91,6 +95,27 @@ export default function AppRoutes() {
                         <Route
                             path="edit/:id"
                             element={<EditOpportunityPage />}
+                        />
+                    </Route>
+
+                    {/* PROSPECTUS */}
+                    <Route
+                        path="/prospectus"
+                        element={
+                            <ProtectedRoute
+                                roles={["employee", "admin", "super_admin"]}
+                            />
+                        }
+                    >
+                        <Route index element={<ProspectusListPage />} />
+                        <Route path="new" element={<CreateProspectusPage />} />
+                        <Route
+                            path=":id"
+                            element={<ProspectusDetailPage />}
+                        />
+                        <Route
+                            path="edit/:id"
+                            element={<EditProspectusPage />}
                         />
                     </Route>
 

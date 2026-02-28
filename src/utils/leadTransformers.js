@@ -3,9 +3,8 @@
  * Transforms between form data and API payload formats.
  *
  * API Structure:
- * - company: { name, phone: { countryCode, number, extension }, address, email, website, socialProfile, serviceType }
- * - leads: [{ name, phone, email, status, source, followUp, priority, department, remarks }]
- * - benificiary: { name, phone: { countryCode, number, extension } }
+ * - company: { name, phone, address, email, website, socialProfile, serviceType }
+ * - leads: [{ contact: { name, phone, email, department, remarks }, status, source, followUp, priority, benificiary }]
  */
 import { format } from "date-fns"
 
@@ -126,13 +125,11 @@ const cleanObject = (obj) => {
 
 /**
  * Transforms form data to API payload for creating a lead.
- * Each lead (contact person) has its own status, source, followUp.
- * Priority is only included when there are multiple leads (1-based).
+ * Each lead has a `contact` object and lead-level fields.
  *
  * API Structure:
  * - company: { name, phone, address, email, website, socialProfile, serviceType }
- * - leads: [{ name, phone, email, status, source, followUp, priority?, department?, remarks? }]
- * - benificiary: { name, phone }
+ * - leads: [{ contact: { name, phone, email, department, remarks }, status, source, followUp, priority?, benificiary }]
  */
 export const transformLeadPayload = (formData, ownerId) => {
     const { companyDetails, contacts } = formData
@@ -159,36 +156,35 @@ export const transformLeadPayload = (formData, ownerId) => {
     const includesPriority = contacts?.length > 1
 
     if (contacts?.length > 0) {
-        contacts.forEach((contact, index) => {
-            if (!contact.name?.trim()) return
+        contacts.forEach((c, index) => {
+            if (!c.name?.trim()) return
 
-            // Build per-contact beneficiary
-            const benificiary = buildBeneficiary(contact.beneficiary)
+            const benificiary = buildBeneficiary(c.beneficiary)
 
             const leadData = {
-                name: contact.name.trim(),
-                email: contact.email?.trim() || undefined,
-                phone: buildPhone(
-                    contact.phoneCountryCode,
-                    contact.phoneExtension,
-                    contact.phoneNumber,
-                ),
-                status: contact.status || "new",
-                droppedReason: contact.droppedReason || undefined,
-                source: contact.source?.trim() || undefined,
-                followUp: formatDate(contact.followUp),
-                department: contact.department?.trim() || undefined,
-                remarks: contact.remarks?.trim() || undefined,
+                contact: {
+                    name: c.name.trim(),
+                    email: c.email?.trim() || undefined,
+                    phone: buildPhone(
+                        c.phoneCountryCode,
+                        c.phoneExtension,
+                        c.phoneNumber,
+                    ),
+                    department: c.department?.trim() || undefined,
+                    remarks: c.remarks?.trim() || undefined,
+                },
+                status: c.status || "new",
+                droppedReason: c.droppedReason || undefined,
+                source: c.source?.trim() || undefined,
+                followUp: formatDate(c.followUp),
             }
 
-            // Attach beneficiary to the lead
             if (benificiary) {
                 leadData.benificiary = benificiary
             }
 
-            // Add priority only when there are multiple leads (1-based)
             if (includesPriority) {
-                leadData.priority = contact.priority || index + 1
+                leadData.priority = c.priority || index + 1
             }
 
             payload.leads.push(leadData)
@@ -200,11 +196,10 @@ export const transformLeadPayload = (formData, ownerId) => {
 
 /**
  * Transforms form data for updating a lead.
- * Sends the edited contact's data to the backend.
- * The lead ID is passed in the URL, so we just need to send the data.
+ * Contact fields go inside a `contact` object; lead-level fields at root.
  *
- * @param {Object} formData - Form data from the lead form
- * @param {number|null} editableContactIndex - Index of the contact being edited in the form
+ * PATCH payload: { company, contact: { name, phone, ... }, status, source, ... }
+ * New contacts via leads array: { leads: [{ contact: {...}, status, ... }] }
  */
 export const transformLeadUpdatePayload = (
     formData,
@@ -228,59 +223,65 @@ export const transformLeadUpdatePayload = (
         },
     }
 
-    // 1. Handle the primary contact being edited (sent at root level)
+    // 1. Handle the primary contact being edited
     const contactIndex =
         editableContactIndex !== null ? editableContactIndex : 0
-    const contact = contacts?.[contactIndex]
+    const c = contacts?.[contactIndex]
 
-    if (contact) {
-        payload.name = contact.name?.trim() || undefined
-        payload.email = contact.email?.trim() || undefined
-        payload.phone = buildPhone(
-            contact.phoneCountryCode,
-            contact.phoneExtension,
-            contact.phoneNumber,
-        )
-        payload.status = contact.status || "new"
-        payload.droppedReason = contact.droppedReason || undefined
-        payload.source = contact.source?.trim() || undefined
-        payload.followUp = formatDate(contact.followUp)
-        payload.department = contact.department?.trim() || undefined
-        payload.remarks = contact.remarks?.trim() || undefined
+    if (c) {
+        // Contact-level fields nested inside `contact` object
+        payload.contact = {
+            name: c.name?.trim() || undefined,
+            email: c.email?.trim() || undefined,
+            phone: buildPhone(
+                c.phoneCountryCode,
+                c.phoneExtension,
+                c.phoneNumber,
+            ),
+            department: c.department?.trim() || undefined,
+            remarks: c.remarks?.trim() || undefined,
+        }
 
-        // Add beneficiary if present
-        const benificiary = buildBeneficiary(contact.beneficiary)
+        // Lead-level fields at root
+        payload.status = c.status || "new"
+        payload.droppedReason = c.droppedReason || undefined
+        payload.source = c.source?.trim() || undefined
+        payload.followUp = formatDate(c.followUp)
+
+        const benificiary = buildBeneficiary(c.beneficiary)
         if (benificiary) {
             payload.benificiary = benificiary
         }
 
         if (contacts.length > 1) {
-            payload.priority = contact.priority || contactIndex + 1
+            payload.priority = c.priority || contactIndex + 1
         }
     }
 
     // 2. Handle new contacts (those without _id)
     const newContacts =
-        contacts?.filter((c, idx) => !c._id && c.name?.trim()) || []
+        contacts?.filter((ct) => !ct._id && ct.name?.trim()) || []
 
     if (newContacts.length > 0) {
-        payload.leads = newContacts.map((c, idx) => {
-            const benificiary = buildBeneficiary(c.beneficiary)
+        payload.leads = newContacts.map((ct, idx) => {
+            const benificiary = buildBeneficiary(ct.beneficiary)
             const leadData = {
-                name: c.name.trim(),
-                email: c.email?.trim() || undefined,
-                phone: buildPhone(
-                    c.phoneCountryCode,
-                    c.phoneExtension,
-                    c.phoneNumber,
-                ),
-                status: c.status || "new",
-                droppedReason: c.droppedReason || undefined,
-                source: c.source?.trim() || undefined,
-                followUp: formatDate(c.followUp),
-                department: c.department?.trim() || undefined,
-                remarks: c.remarks?.trim() || undefined,
-                priority: c.priority || contacts.length + idx + 1,
+                contact: {
+                    name: ct.name.trim(),
+                    email: ct.email?.trim() || undefined,
+                    phone: buildPhone(
+                        ct.phoneCountryCode,
+                        ct.phoneExtension,
+                        ct.phoneNumber,
+                    ),
+                    department: ct.department?.trim() || undefined,
+                    remarks: ct.remarks?.trim() || undefined,
+                },
+                status: ct.status || "new",
+                droppedReason: ct.droppedReason || undefined,
+                source: ct.source?.trim() || undefined,
+                followUp: formatDate(ct.followUp),
+                priority: ct.priority || contacts.length + idx + 1,
             }
 
             if (benificiary) {
@@ -365,15 +366,20 @@ export const formatPhoneDisplay = (phone) => {
 export const normalizeLeadData = (lead) => {
     if (!lead) return null
 
+    const contact = lead.contact || {}
+
     return {
         ...lead,
-        phone: {
-            countryCode: lead.phone?.countryCode || "",
-            number: lead.phone?.number || "",
-            extension: lead.phone?.extension || "",
+        contact: {
+            ...contact,
+            phone: {
+                countryCode: contact.phone?.countryCode || "",
+                number: contact.phone?.number || "",
+                extension: contact.phone?.extension || "",
+            },
+            department: contact.department || "",
+            remarks: contact.remarks || "",
         },
-        department: lead.department || "",
-        remarks: lead.remarks || "",
         company: lead.company
             ? {
                   ...lead.company,

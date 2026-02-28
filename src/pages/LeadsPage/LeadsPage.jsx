@@ -146,52 +146,29 @@ export default function LeadsPage() {
     const rawLeads = data?.leads || []
     const info = data?.info || { total: 0, totalPages: 1 }
 
-    // Flatten the nested structure: each company with its leads becomes multiple rows
-    // Each row: { company, lead, companyId, leadIndex }
+    // Each company group from the API becomes a single grid row
+    // Use the first lead's _id for navigation (GET-by-ID returns all contacts)
     const leads = useMemo(() => {
-        const flattened = []
-        rawLeads.forEach((item) => {
+        return rawLeads.map((item) => {
             const company = item.company || {}
             const contactLeads = item.leads || []
-
-            // Filter out leads with null/empty names (company-only placeholder entries)
-            const validLeads = contactLeads.filter(
-                (lead) => lead.name && lead.name.trim(),
+            // Sort by priority to pick the primary lead
+            const sorted = [...contactLeads].sort(
+                (a, b) => (a.priority || 99) - (b.priority || 99),
             )
+            const firstLead = sorted[0] || null
 
-            if (validLeads.length > 0) {
-                validLeads.forEach((lead, index) => {
-                    flattened.push({
-                        _id: lead._id,
-                        companyId: company._id,
-                        company,
-                        contact: lead,
-                        leadIndex: index,
-                        source: lead.source,
-                        status: lead.status,
-                        followUp: lead.followUp,
-                        isCompanyOnly: false,
-                    })
-                })
-            } else {
-                // Company with no valid contacts - show company only
-                // If there's a placeholder lead (name: null), use its ID
-                const firstLead = contactLeads[0]
-                flattened.push({
-                    _id: firstLead?._id || company._id, // Use lead ID if available, fallback to company ID
-                    companyId: company._id,
-                    company,
-                    contact: firstLead || null,
-                    leadIndex: 0,
-                    source: firstLead?.source || company.socialProfile || "",
-                    status: firstLead?.status || "new",
-                    followUp: firstLead?.followUp || null,
-                    isCompanyOnly: true,
-                    email: firstLead?.email || company.email || "",
-                })
+            return {
+                _id: firstLead?._id || company._id,
+                companyId: company._id,
+                company,
+                leadsCount: contactLeads.length,
+                // Use first lead's data for status/followUp/createdBy columns
+                status: firstLead?.status || "new",
+                followUp: firstLead?.followUp || null,
+                createdBy: firstLead?.createdBy || null,
             }
         })
-        return flattened
     }, [rawLeads])
 
     const handleDeleteClick = (id) => {
@@ -535,24 +512,7 @@ export default function LeadsPage() {
                                         {renderSortIcon("company")}
                                     </div>
                                 </TableHead>
-                                <TableHead
-                                    className="cursor-pointer hover:bg-muted/50 transition-colors hidden md:table-cell"
-                                    onClick={() => handleSort("department")}
-                                >
-                                    <div className="flex items-center text-xs font-bold uppercase tracking-wider text-black">
-                                        {t("department")}
-                                        {renderSortIcon("department")}
-                                    </div>
-                                </TableHead>
-                                <TableHead
-                                    className="cursor-pointer hover:bg-muted/50 transition-colors"
-                                    onClick={() => handleSort("contact")}
-                                >
-                                    <div className="flex items-center text-xs font-bold uppercase tracking-wider text-black">
-                                        {t("contact")}
-                                        {renderSortIcon("contact")}
-                                    </div>
-                                </TableHead>
+
                                 <TableHead
                                     className="cursor-pointer hover:bg-muted/50 transition-colors hidden md:table-cell"
                                     onClick={() =>
@@ -597,7 +557,7 @@ export default function LeadsPage() {
                             {isLoading ? (
                                 <TableRow>
                                     <TableCell
-                                        colSpan={8}
+                                        colSpan={6}
                                         className="h-40 text-center"
                                     >
                                         <div className="flex flex-col items-center justify-center gap-2 text-black">
@@ -611,7 +571,7 @@ export default function LeadsPage() {
                             ) : isError ? (
                                 <TableRow>
                                     <TableCell
-                                        colSpan={8}
+                                        colSpan={6}
                                         className="h-40 text-center text-red-600 font-bold"
                                     >
                                         {t("failedToLoadLeads")}
@@ -620,7 +580,7 @@ export default function LeadsPage() {
                             ) : leads.length === 0 ? (
                                 <TableRow>
                                     <TableCell
-                                        colSpan={8}
+                                        colSpan={6}
                                         className="h-40 text-center text-black"
                                     >
                                         {t("noLeadsFound")}
@@ -629,7 +589,7 @@ export default function LeadsPage() {
                             ) : (
                                 leads.map((lead) => (
                                     <TableRow
-                                        key={`${lead.companyId}-${lead.leadIndex}`}
+                                        key={lead.companyId}
                                         className="hover:bg-muted/30 text-black cursor-pointer"
                                         onClick={() =>
                                             navigate(`/leads/${lead._id}`, {
@@ -640,18 +600,7 @@ export default function LeadsPage() {
                                         <TableCell className="font-bold text-black pl-4">
                                             {lead.company?.name || ""}
                                         </TableCell>
-                                        <TableCell className="hidden md:table-cell text-black text-sm">
-                                            {lead.contact?.department || "-"}
-                                        </TableCell>
-                                        <TableCell className="text-black">
-                                            {lead.isCompanyOnly ? (
-                                                <span className="text-gray-400 italic">
-                                                    {t("noLeads")}
-                                                </span>
-                                            ) : (
-                                                lead.contact?.name || "-"
-                                            )}
-                                        </TableCell>
+
                                         <TableCell className="hidden md:table-cell text-black text-sm">
                                             {lead.company?.serviceType
                                                 ? t(
@@ -664,18 +613,9 @@ export default function LeadsPage() {
                                         </TableCell>
                                         <TableCell className="hidden xl:table-cell text-sm text-black tabular-nums">
                                             <span dir="ltr">
-                                                {lead.isCompanyOnly
-                                                    ? formatPhoneDisplay(
-                                                          lead.company?.phone,
-                                                      )
-                                                    : formatPhoneDisplay(
-                                                          lead.contact?.phone
-                                                              ?.number
-                                                              ? lead.contact
-                                                                    .phone
-                                                              : lead.company
-                                                                    ?.phone,
-                                                      )}
+                                                {formatPhoneDisplay(
+                                                    lead.company?.phone,
+                                                )}
                                             </span>
                                         </TableCell>
                                         <TableCell>
@@ -691,8 +631,9 @@ export default function LeadsPage() {
                                         </TableCell>
                                         {isSuperAdminUser && (
                                             <TableCell className="hidden md:table-cell text-black text-sm">
-                                                {lead.contact?.createdBy
-                                                    ? `${lead.contact.createdBy.firstName} ${lead.contact.createdBy.lastName}`
+                                                {lead.createdBy &&
+                                                typeof lead.createdBy === "object"
+                                                    ? `${lead.createdBy.firstName} ${lead.createdBy.lastName}`
                                                     : "-"}
                                             </TableCell>
                                         )}

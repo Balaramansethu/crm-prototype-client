@@ -55,28 +55,39 @@ export default function LeadDetailPage() {
         1
     const backPath = referrerPage > 1 ? `/leads?page=${referrerPage}` : "/leads"
 
-    // Extract company and main lead from the response
+    // Extract company and leads from the response
+    // New format: { company: {...}, leads: [{ _id, contact: { name, ... }, status, priority, ... }] }
     const company = leadData?.company || {}
-    // Main contact is at root level when fetched by lead ID
-    const mainContact = leadData?.name
+    const allLeads = leadData?.leads || []
+
+    // Sort leads by priority (ascending — 1 is highest priority)
+    const sortedLeads = [...allLeads]
+        .filter((lead) => lead.contact?.name && lead.contact.name.trim())
+        .sort((a, b) => (a.priority || 99) - (b.priority || 99))
+
+    // The lead clicked from the grid (matched by URL :id) is the main contact
+    // Fallback to the first (highest priority) lead
+    const mainLead =
+        sortedLeads.find((lead) => lead._id === id) || sortedLeads[0] || null
+    const mainContact = mainLead
         ? {
-              _id: leadData._id,
-              name: leadData.name,
-              email: leadData.email,
-              phone: leadData.phone,
-              status: leadData.status,
-              droppedReason: leadData.droppedReason,
-              source: leadData.source,
-              followUp: leadData.followUp,
-              priority: leadData.priority,
-              department: leadData.department,
-              remarks: leadData.remarks,
+              _id: mainLead._id,
+              name: mainLead.contact?.name,
+              email: mainLead.contact?.email,
+              phone: mainLead.contact?.phone,
+              department: mainLead.contact?.department,
+              remarks: mainLead.contact?.remarks,
+              status: mainLead.status,
+              droppedReason: mainLead.droppedReason,
+              source: mainLead.source,
+              followUp: mainLead.followUp,
+              priority: mainLead.priority,
           }
         : null
-    // Other contacts are in company.leads
-    // Filter out placeholder leads (those with no name) and the current lead itself
-    const otherContacts = (company?.leads || []).filter(
-        (contact) => contact.name && contact.name.trim() && contact._id !== id,
+
+    // Other contacts = all leads except the main one
+    const otherContacts = sortedLeads.filter(
+        (lead) => lead._id !== mainLead?._id,
     )
 
     const breadcrumbs = [
@@ -145,7 +156,6 @@ export default function LeadDetailPage() {
                     { label: t("leads"), path: backPath },
                     {
                         label:
-                            mainContact?.name ||
                             company?.name ||
                             t("leadDetails"),
                     },
@@ -164,7 +174,7 @@ export default function LeadDetailPage() {
                                     <Calendar size={14} />
                                     <span>{t("createdAt")}:</span>
                                     <span className="font-medium text-foreground">
-                                        {formatDateTime(leadData.createdAt)}
+                                        {formatDateTime(mainLead?.createdAt)}
                                     </span>
                                 </div>
                                 {isSuperAdminUser && (
@@ -172,8 +182,8 @@ export default function LeadDetailPage() {
                                         <User size={14} />
                                         <span>{t("createdBy")}:</span>
                                         <span className="font-medium text-foreground">
-                                            {leadData.createdBy
-                                                ? `${leadData.createdBy.firstName} ${leadData.createdBy.lastName}`
+                                            {mainLead?.createdBy
+                                                ? `${mainLead.createdBy.firstName} ${mainLead.createdBy.lastName}`
                                                 : "-"}
                                         </span>
                                     </div>
@@ -183,15 +193,106 @@ export default function LeadDetailPage() {
                                 <Clock size={14} />
                                 <span>{t("updatedAt")}:</span>
                                 <span className="font-medium text-foreground">
-                                    {formatDateTime(leadData.updatedAt)}
+                                    {formatDateTime(mainLead?.updatedAt)}
                                 </span>
                             </div>
                         </div>
                     </CardContent>
                 </Card>
 
-                {/* Main Contact & Company - Side by Side */}
+                {/* Company & Main Contact - Side by Side */}
                 <div className="grid gap-4 grid-cols-1 md:grid-cols-2">
+                    {/* Company Info Card */}
+                    <Card>
+                        <CardHeader className="pb-3">
+                            <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-2">
+                                    <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary/10">
+                                        <Building2 className="h-5 w-5 text-primary" />
+                                    </div>
+                                    <CardTitle className="text-lg">
+                                        {t("companyInformation")}
+                                    </CardTitle>
+                                </div>
+                                <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() =>
+                                        navigate(
+                                            `/leads/edit/${mainContact?._id || id}?focus=company`,
+                                        )
+                                    }
+                                    title={t("edit")}
+                                >
+                                    <Edit size={14} />
+                                </Button>
+                            </div>
+                        </CardHeader>
+                        <CardContent className="space-y-3">
+                            <FieldRow
+                                label={t("company")}
+                                value={company?.name}
+                            />
+                            <Separator />
+                            <FieldRow
+                                label={t("email")}
+                                value={company?.email}
+                            />
+                            <Separator />
+                            <FieldRow
+                                label={t("phone")}
+                                value={formatPhoneDisplay(company?.phone)}
+                            />
+                            <Separator />
+                            <FieldRow
+                                label={t("serviceType")}
+                                value={
+                                    company?.serviceType
+                                        ? t(
+                                              enumToTranslationKey(
+                                                  company.serviceType,
+                                              ),
+                                          )
+                                        : "-"
+                                }
+                            />
+                            <Separator />
+                            <FieldRow
+                                label={t("website")}
+                                value={company?.website}
+                            />
+                            <Separator />
+                            <FieldRow
+                                label={t("socialProfile")}
+                                value={company?.socialProfile}
+                            />
+
+                            {/* Address Section */}
+                            {company?.address && <Separator />}
+                            {company?.address && (
+                                <>
+                                    <div className="font-medium text-sm pt-2">
+                                        {t("address")}
+                                    </div>
+                                    <FieldRow
+                                        label={t("fullAddress")}
+                                        value={formatAddress(company.address)}
+                                    />
+                                    <FieldRow
+                                        label={t("shortAddress")}
+                                        value={company.address.shortAddress}
+                                    />
+                                    {company.address.location && (
+                                        <FieldRow
+                                            label={t("location")}
+                                            value={`${company.address.location.latitude}, ${company.address.location.longitude}`}
+                                        />
+                                    )}
+                                </>
+                            )}
+                        </CardContent>
+                    </Card>
+
                     {/* Main Contact Card */}
                     {mainContact && (
                         <Card>
@@ -285,101 +386,10 @@ export default function LeadDetailPage() {
                             </CardContent>
                         </Card>
                     )}
-
-                    {/* Company Info Card */}
-                    <Card>
-                        <CardHeader className="pb-3">
-                            <div className="flex items-center justify-between">
-                                <div className="flex items-center gap-2">
-                                    <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary/10">
-                                        <Building2 className="h-5 w-5 text-primary" />
-                                    </div>
-                                    <CardTitle className="text-lg">
-                                        {t("companyInformation")}
-                                    </CardTitle>
-                                </div>
-                                <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    onClick={() =>
-                                        navigate(
-                                            `/leads/edit/${mainContact?._id || id}?focus=company`,
-                                        )
-                                    }
-                                    title={t("edit")}
-                                >
-                                    <Edit size={14} />
-                                </Button>
-                            </div>
-                        </CardHeader>
-                        <CardContent className="space-y-3">
-                            <FieldRow
-                                label={t("company")}
-                                value={company?.name}
-                            />
-                            <Separator />
-                            <FieldRow
-                                label={t("email")}
-                                value={company?.email}
-                            />
-                            <Separator />
-                            <FieldRow
-                                label={t("phone")}
-                                value={formatPhoneDisplay(company?.phone)}
-                            />
-                            <Separator />
-                            <FieldRow
-                                label={t("serviceType")}
-                                value={
-                                    company?.serviceType
-                                        ? t(
-                                              enumToTranslationKey(
-                                                  company.serviceType,
-                                              ),
-                                          )
-                                        : "-"
-                                }
-                            />
-                            <Separator />
-                            <FieldRow
-                                label={t("website")}
-                                value={company?.website}
-                            />
-                            <Separator />
-                            <FieldRow
-                                label={t("socialProfile")}
-                                value={company?.socialProfile}
-                            />
-
-                            {/* Address Section */}
-                            {company?.address && <Separator />}
-                            {company?.address && (
-                                <>
-                                    <div className="font-medium text-sm pt-2">
-                                        {t("address")}
-                                    </div>
-                                    <FieldRow
-                                        label={t("fullAddress")}
-                                        value={formatAddress(company.address)}
-                                    />
-                                    <FieldRow
-                                        label={t("shortAddress")}
-                                        value={company.address.shortAddress}
-                                    />
-                                    {company.address.location && (
-                                        <FieldRow
-                                            label={t("location")}
-                                            value={`${company.address.location.latitude}, ${company.address.location.longitude}`}
-                                        />
-                                    )}
-                                </>
-                            )}
-                        </CardContent>
-                    </Card>
                 </div>
 
                 {/* Beneficiary Details - Full Width Card */}
-                {leadData?.benificiary && (
+                {mainLead?.benificiary && (
                     <Card>
                         <CardHeader className="pb-3">
                             <div className="flex items-center gap-2">
@@ -394,13 +404,13 @@ export default function LeadDetailPage() {
                         <CardContent className="space-y-3">
                             <FieldRow
                                 label={t("name")}
-                                value={leadData.benificiary.name}
+                                value={mainLead.benificiary.name}
                             />
                             <Separator />
                             <FieldRow
                                 label={t("phone")}
                                 value={formatPhoneDisplay(
-                                    leadData.benificiary.phone,
+                                    mainLead.benificiary.phone,
                                 )}
                             />
                         </CardContent>
@@ -462,14 +472,14 @@ export default function LeadDetailPage() {
                                                             <User className="h-3.5 w-3.5 text-muted-foreground" />
                                                         </div>
                                                         <span className="font-medium">
-                                                            {contact.name}
+                                                            {contact.contact?.name || "-"}
                                                         </span>
                                                     </div>
                                                 </TableCell>
                                                 <TableCell>
                                                     <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
                                                         <Mail className="h-3.5 w-3.5" />
-                                                        {contact.email || "-"}
+                                                        {contact.contact?.email || "-"}
                                                     </div>
                                                 </TableCell>
                                                 <TableCell>
@@ -479,7 +489,7 @@ export default function LeadDetailPage() {
                                                     >
                                                         <Phone className="h-3.5 w-3.5" />
                                                         {formatPhoneDisplay(
-                                                            contact.phone,
+                                                            contact.contact?.phone,
                                                         )}
                                                     </div>
                                                 </TableCell>
