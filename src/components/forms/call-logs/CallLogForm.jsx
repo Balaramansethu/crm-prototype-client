@@ -39,7 +39,11 @@ import { useNavigate } from "react-router-dom"
 import { useMemo, useState, useEffect } from "react"
 import { Loader2, FileText } from "lucide-react"
 import { cn } from "@/lib/utils"
-import { searchCompanies, searchLeadsByCompany, getLeadPreviousCallLogs } from "@/service/callLogsService"
+import {
+    searchCompanies,
+    searchLeadsByCompany,
+    getLeadPreviousCallLogs,
+} from "@/service/callLogsService"
 import { formatPhoneDisplay } from "@/utils/leadTransformers"
 
 // Helper to extract phone display string from a lead object
@@ -74,7 +78,8 @@ export default function CallLogForm({
     // Derive initial company from lead data
     const initCompanyId = (() => {
         if (!initLead) return ""
-        if (typeof initLead.company === "object") return initLead.company?._id || ""
+        if (typeof initLead.company === "object")
+            return initLead.company?._id || ""
         return initLead.company || ""
     })()
 
@@ -83,7 +88,9 @@ export default function CallLogForm({
     // Company state
     const [companies, setCompanies] = useState([])
     const [loadingCompanies, setLoadingCompanies] = useState(false)
-    const [selectedCompanyId, setSelectedCompanyId] = useState(() => initCompanyId)
+    const [selectedCompanyId, setSelectedCompanyId] = useState(
+        () => initCompanyId,
+    )
 
     // Lead (contact person) state — initialize from initialData when in edit mode
     const [leads, setLeads] = useState(() => (initLead ? [initLead] : []))
@@ -153,7 +160,11 @@ export default function CallLogForm({
                     : data.companies || []
 
                 // In edit mode, ensure the current company is in the list
-                if (isEditMode && initLead?.company && typeof initLead.company === "object") {
+                if (
+                    isEditMode &&
+                    initLead?.company &&
+                    typeof initLead.company === "object"
+                ) {
                     const currentCompany = initLead.company
                     const companyExists = companiesList.some(
                         (c) => c._id === currentCompany._id,
@@ -218,10 +229,9 @@ export default function CallLogForm({
                 if (!companyHasContacts) {
                     // Extract phone from the raw response's company object
                     const companyObj = rawLeads[0]?.company
-                    const companyPhone =
-                        companyObj?.phone?.number
-                            ? formatPhoneDisplay(companyObj.phone)
-                            : getPhoneFromCompany(selectedCompanyId)
+                    const companyPhone = companyObj?.phone?.number
+                        ? formatPhoneDisplay(companyObj.phone)
+                        : getPhoneFromCompany(selectedCompanyId)
                     setPhoneDisplay(companyPhone)
                     setSelectedLeadId("")
                     setSelectedLead(null)
@@ -526,23 +536,17 @@ export default function CallLogForm({
                             <FormItem>
                                 <FormLabel>
                                     {t("company")}{" "}
-                                    <span className="text-destructive">
-                                        *
-                                    </span>
+                                    <span className="text-destructive">*</span>
                                 </FormLabel>
                                 <Select
                                     onValueChange={handleCompanyChange}
                                     value={selectedCompanyId}
-                                    disabled={
-                                        isEditMode || loadingCompanies
-                                    }
+                                    disabled={isEditMode || loadingCompanies}
                                 >
                                     <FormControl>
                                         <SelectTrigger
                                             className={cn(
-                                                isRTL
-                                                    ? "text-right"
-                                                    : "",
+                                                isRTL ? "text-right" : "",
                                                 isEditMode &&
                                                     "bg-muted !cursor-not-allowed",
                                             )}
@@ -551,16 +555,12 @@ export default function CallLogForm({
                                                 placeholder={
                                                     loadingCompanies
                                                         ? t("loading")
-                                                        : t(
-                                                              "selectCompany",
-                                                          )
+                                                        : t("selectCompany")
                                                 }
                                             />
                                         </SelectTrigger>
                                     </FormControl>
-                                    <SelectContent
-                                        dir={isRTL ? "rtl" : "ltr"}
-                                    >
+                                    <SelectContent dir={isRTL ? "rtl" : "ltr"}>
                                         {companies.length === 0 ? (
                                             <div className="py-6 text-center text-sm text-muted-foreground">
                                                 {t("noCompaniesAvailable")}
@@ -596,7 +596,9 @@ export default function CallLogForm({
                                                 onValueChange={handleLeadChange}
                                                 value={selectedLeadId}
                                                 disabled={
-                                                    isEditMode || loadingLeads || !selectedCompanyId
+                                                    isEditMode ||
+                                                    loadingLeads ||
+                                                    !selectedCompanyId
                                                 }
                                             >
                                                 <FormControl>
@@ -605,19 +607,24 @@ export default function CallLogForm({
                                                             isRTL
                                                                 ? "text-right"
                                                                 : "",
-                                                            (isEditMode || !selectedCompanyId) &&
+                                                            (isEditMode ||
+                                                                !selectedCompanyId) &&
                                                                 "bg-muted !cursor-not-allowed",
                                                         )}
                                                     >
                                                         <SelectValue
                                                             placeholder={
                                                                 !selectedCompanyId
-                                                                    ? t("selectCompanyFirst")
+                                                                    ? t(
+                                                                          "selectCompanyFirst",
+                                                                      )
                                                                     : loadingLeads
-                                                                        ? t("loading")
-                                                                        : t(
-                                                                              "selectContactPerson",
-                                                                          )
+                                                                      ? t(
+                                                                            "loading",
+                                                                        )
+                                                                      : t(
+                                                                            "selectContactPerson",
+                                                                        )
                                                             }
                                                         />
                                                     </SelectTrigger>
@@ -627,7 +634,9 @@ export default function CallLogForm({
                                                 >
                                                     {leads.length === 0 ? (
                                                         <div className="py-6 text-center text-sm text-muted-foreground">
-                                                            {t("noLeadsAvailable")}
+                                                            {t(
+                                                                "noLeadsAvailable",
+                                                            )}
                                                         </div>
                                                     ) : (
                                                         leads.map((lead) => (

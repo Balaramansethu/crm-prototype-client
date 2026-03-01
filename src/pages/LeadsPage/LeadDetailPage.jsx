@@ -155,9 +155,7 @@ export default function LeadDetailPage() {
                 breadcrumbs={[
                     { label: t("leads"), path: backPath },
                     {
-                        label:
-                            company?.name ||
-                            t("leadDetails"),
+                        label: company?.name || t("leadDetails"),
                     },
                 ]}
                 title={company?.name || t("leadDetails")}
@@ -472,14 +470,16 @@ export default function LeadDetailPage() {
                                                             <User className="h-3.5 w-3.5 text-muted-foreground" />
                                                         </div>
                                                         <span className="font-medium">
-                                                            {contact.contact?.name || "-"}
+                                                            {contact.contact
+                                                                ?.name || "-"}
                                                         </span>
                                                     </div>
                                                 </TableCell>
                                                 <TableCell>
                                                     <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
                                                         <Mail className="h-3.5 w-3.5" />
-                                                        {contact.contact?.email || "-"}
+                                                        {contact.contact
+                                                            ?.email || "-"}
                                                     </div>
                                                 </TableCell>
                                                 <TableCell>
@@ -489,7 +489,8 @@ export default function LeadDetailPage() {
                                                     >
                                                         <Phone className="h-3.5 w-3.5" />
                                                         {formatPhoneDisplay(
-                                                            contact.contact?.phone,
+                                                            contact.contact
+                                                                ?.phone,
                                                         )}
                                                     </div>
                                                 </TableCell>

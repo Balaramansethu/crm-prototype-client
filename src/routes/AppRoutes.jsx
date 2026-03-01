@@ -109,10 +109,7 @@ export default function AppRoutes() {
                     >
                         <Route index element={<ProspectusListPage />} />
                         <Route path="new" element={<CreateProspectusPage />} />
-                        <Route
-                            path=":id"
-                            element={<ProspectusDetailPage />}
-                        />
+                        <Route path=":id" element={<ProspectusDetailPage />} />
                         <Route
                             path="edit/:id"
                             element={<EditProspectusPage />}

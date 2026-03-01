@@ -1,10 +1,13 @@
 import { useEffect, useState, useRef } from "react"
 import { useTranslation } from "react-i18next"
-import { useNavigate, useParams } from "react-router-dom"
+import { useNavigate, useParams, useLocation } from "react-router-dom"
 import { Loader2 } from "lucide-react"
 import { PageHeader } from "@/components/common"
 import { ProspectusForm } from "@/components/forms/prospectus"
-import { getProspectusById, updateProspectus } from "@/service/prospectusService"
+import {
+    getProspectusById,
+    updateProspectus,
+} from "@/service/prospectusService"
 import {
     extractFormDefaults,
     transformProspectusUpdatePayload,
@@ -18,6 +21,7 @@ export default function EditProspectusPage() {
     const [loading, setLoading] = useState(false)
     const [fetching, setFetching] = useState(true)
     const [initialData, setInitialData] = useState(null)
+    const [editableContactIndex, setEditableContactIndex] = useState(null)
     const originalDataRef = useRef(null)
 
     const breadcrumbs = [
@@ -38,6 +42,13 @@ export default function EditProspectusPage() {
                 }
 
                 const formDefaults = extractFormDefaults(data)
+
+                // Find index of the current prospectus in sorted array
+                const contactIndex = formDefaults.contacts?.findIndex(
+                    (c) => c._id === id,
+                )
+                setEditableContactIndex(contactIndex !== -1 ? contactIndex : 0)
+
                 originalDataRef.current = formDefaults
                 setInitialData(formDefaults)
             } catch (error) {
@@ -57,6 +68,7 @@ export default function EditProspectusPage() {
             const payload = transformProspectusUpdatePayload(
                 data,
                 originalDataRef.current,
+                editableContactIndex,
             )
 
             if (Object.keys(payload).length === 0) {
@@ -78,6 +90,10 @@ export default function EditProspectusPage() {
         }
     }
 
+    const { search } = useLocation()
+    const searchParams = new URLSearchParams(search)
+    const focus = searchParams.get("focus")
+
     if (fetching) {
         return (
             <div className="flex h-full items-center justify-center">
@@ -88,10 +104,7 @@ export default function EditProspectusPage() {
 
     return (
         <div className="@container/main flex flex-1 flex-col gap-2">
-            <PageHeader
-                breadcrumbs={breadcrumbs}
-                title={t("editProspectus")}
-            />
+            <PageHeader breadcrumbs={breadcrumbs} title={t("editProspectus")} />
 
             <div className="-mt-8 px-2 sm:px-4 lg:px-12">
                 <ProspectusForm
@@ -99,6 +112,8 @@ export default function EditProspectusPage() {
                     onSubmit={onSubmit}
                     loading={loading}
                     submitLabel={t("saveChanges")}
+                    editableContactIndex={editableContactIndex}
+                    preventIdsScroll={focus === "company"}
                 />
             </div>
         </div>

@@ -99,7 +99,9 @@ export default function LeadForm({
         if (hasLeadsArray) {
             // Map leads from the new format, sorting by priority
             contacts = [...initialData.leads]
-                .filter((lead) => lead.contact?.name && lead.contact.name.trim())
+                .filter(
+                    (lead) => lead.contact?.name && lead.contact.name.trim(),
+                )
                 .sort((a, b) => (a.priority || 99) - (b.priority || 99))
                 .map((lead, index) => ({
                     _id: lead._id,

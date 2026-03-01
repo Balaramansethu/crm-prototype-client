@@ -1,47 +1,60 @@
 import { Button } from "@/components/ui/button"
 import { Form } from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import {
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
-} from "@/components/ui/form"
 import { FormContainer, CommonDialog } from "@/components/common"
 import {
-    FormInput,
-    FormSelect,
-    FormDatePicker,
-    CountryCodeSelect,
-    BeneficiarySection,
-} from "@/components/form-fields"
-import {
     DEFAULT_COMPANY_VALUES,
-    DEFAULT_BENEFICIARY_VALUES,
+    DEFAULT_CONTACT_VALUES,
 } from "@/constants/formOptions"
-import { PROSPECTUS_STATUS_OPTIONS } from "@/utils/prospectusTransformers"
 import { validateProspectusForm } from "@/utils/prospectusValidations"
+import { PROSPECTUS_STATUS_OPTIONS } from "@/utils/prospectusTransformers"
 import CompanyDetailsForm from "@/components/forms/leads/CompanyDetailsForm"
+import ContactPersonForm from "@/components/forms/leads/ContactPersonForm"
 
-import { Loader2 } from "lucide-react"
-import { useForm } from "react-hook-form"
+import { Loader2, UserPlus } from "lucide-react"
+import { useForm, useFieldArray } from "react-hook-form"
 import { useTranslation } from "react-i18next"
 import { useNavigate } from "react-router-dom"
-import { useMemo, useEffect, useState } from "react"
+import { useMemo, useEffect, useState, useRef, useCallback } from "react"
 
 export default function ProspectusForm({
     initialData,
     onSubmit,
     loading = false,
     submitLabel,
-}){
+    editableContactIndex = null,
+    preventIdsScroll = false,
+}) {
     const { t } = useTranslation()
     const navigate = useNavigate()
     const isEditMode = !!initialData
+    const hasRestrictedEdit = isEditMode && editableContactIndex !== null
 
     const [showUnsavedDialog, setShowUnsavedDialog] = useState(false)
+    const contactRefs = useRef([])
+
+    // Scroll to highlighted contact on mount
+    useEffect(() => {
+        if (
+            !preventIdsScroll &&
+            hasRestrictedEdit &&
+            editableContactIndex !== null
+        ) {
+            const timer = setTimeout(() => {
+                const targetRef = contactRefs.current[editableContactIndex]
+                if (targetRef) {
+                    targetRef.scrollIntoView({
+                        behavior: "smooth",
+                        block: "center",
+                    })
+                }
+            }, 100)
+            return () => clearTimeout(timer)
+        }
+    }, [hasRestrictedEdit, editableContactIndex, preventIdsScroll])
+
+    const setContactRef = useCallback((el, index) => {
+        contactRefs.current[index] = el
+    }, [])
 
     const defaultValues = useMemo(() => {
         if (initialData) {
@@ -51,18 +64,12 @@ export default function ProspectusForm({
         // New form defaults
         return {
             companyDetails: { ...DEFAULT_COMPANY_VALUES },
-            name: "",
-            email: "",
-            phoneCountryCode: "+966",
-            phoneExtension: "",
-            phoneNumber: "",
-            department: "",
-            remarks: "",
-            status: "new",
-            source: "",
-            followUp: undefined,
-            priority: 0,
-            beneficiary: { ...DEFAULT_BENEFICIARY_VALUES },
+            contacts: [
+                {
+                    ...DEFAULT_CONTACT_VALUES,
+                    priority: 1,
+                },
+            ],
         }
     }, [initialData])
 
@@ -73,7 +80,13 @@ export default function ProspectusForm({
 
     const {
         formState: { isDirty, isSubmitting },
+        control,
     } = form
+
+    const { fields, append, remove } = useFieldArray({
+        control,
+        name: "contacts",
+    })
 
     // Warn about unsaved changes
     useEffect(() => {
@@ -90,7 +103,22 @@ export default function ProspectusForm({
 
     const handleSubmit = (data) => {
         if (!validateProspectusForm(data, form.setError, t)) return
-        onSubmit(data)
+
+        // Filter out completely empty contacts (if user just clicks Add Contact but leaves it blank)
+        // A contact is considered entered if they provided at least a name, email, or a phone number.
+        const validContacts = data.contacts.filter(
+            (c) => c.name?.trim() || c.email?.trim() || c.phoneNumber?.trim(),
+        )
+        // If they cleared the only contact, we'll still pass it to transformers so it handles the company-only logic
+        const submissionData = {
+            ...data,
+            contacts:
+                validContacts.length > 0
+                    ? validContacts
+                    : data.contacts.slice(0, 1), // Keep at least one empty contact wrapper
+        }
+
+        onSubmit(submissionData)
     }
 
     const handleCancel = () => {
@@ -118,202 +146,108 @@ export default function ProspectusForm({
                         noValidate
                     >
                         {/* ── Company Details (reused from Leads) ── */}
-                        <CompanyDetailsForm control={form.control} />
+                        <CompanyDetailsForm
+                            control={control}
+                            hideServiceTypeAsterisk={true}
+                        />
 
-                        {/* ── Contact Person Details ── */}
-                        <div className="space-y-6 rounded-lg border border-gray-100 shadow-sm bg-white p-6">
-                            <div className="border-b pb-2">
-                                <h3 className="text-xl font-semibold text-gray-900">
-                                    {t("contactDetails")}
-                                </h3>
-                                <p className="text-sm text-gray-500">
-                                    {t("prospectusContactDescription")}
-                                </p>
-                            </div>
-
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <FormInput
-                                    control={form.control}
-                                    name="name"
-                                    label={t("name")}
-                                />
-                                <FormInput
-                                    control={form.control}
-                                    name="email"
-                                    label={t("email")}
-                                    type="email"
-                                    placeholder={t("emailPlaceholder")}
-                                />
-
-                                {/* Phone fields - inline to avoid prefix issues */}
-                                <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-[140px_1fr_100px] gap-4">
-                                    <CountryCodeSelect
-                                        control={form.control}
-                                        name="phoneCountryCode"
-                                        label={t("countryCode")}
-                                        placeholder="+966"
-                                    />
-                                    <FormField
-                                        control={form.control}
-                                        name="phoneNumber"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>
-                                                    {t("phone")}
-                                                </FormLabel>
-                                                <FormControl>
-                                                    <Input
-                                                        {...field}
-                                                        dir="ltr"
-                                                        placeholder="123456789"
-                                                    />
-                                                </FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
-                                    <FormField
-                                        control={form.control}
-                                        name="phoneExtension"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>
-                                                    {t("phoneExt") || "Ext."}
-                                                </FormLabel>
-                                                <FormControl>
-                                                    <Input
-                                                        {...field}
-                                                        dir="ltr"
-                                                        placeholder="101"
-                                                        className="text-center"
-                                                    />
-                                                </FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
+                        {/* ── Contact Persons Details ── */}
+                        {fields.length > 0 && (
+                            <div className="space-y-6">
+                                <div className="border-b pb-2 flex justify-between items-center">
+                                    <div>
+                                        <h3 className="text-xl font-semibold text-gray-900">
+                                            {t("contactPersons")}
+                                        </h3>
+                                        <p className="text-sm text-gray-500">
+                                            {t("prospectusContactDescription")}
+                                        </p>
+                                    </div>
                                 </div>
 
-                                <FormInput
-                                    control={form.control}
-                                    name="department"
-                                    label={t("department")}
-                                    placeholder={t("departmentPlaceholder")}
-                                />
-
-                                <FormSelect
-                                    control={form.control}
-                                    name="status"
-                                    label={t("status")}
-                                    placeholder={t("selectStatus")}
-                                    options={PROSPECTUS_STATUS_OPTIONS.map(
-                                        (opt) => ({
-                                            ...opt,
-                                            label: t(opt.label),
-                                        }),
-                                    )}
-                                />
-
-                                <FormInput
-                                    control={form.control}
-                                    name="source"
-                                    label={t("source")}
-                                    placeholder={t("sourcePlaceholder")}
-                                />
-
-                                <FormDatePicker
-                                    control={form.control}
-                                    name="followUp"
-                                    label={t("followUp")}
-                                    minDate={new Date()}
-                                />
-
-                                <FormField
-                                    control={form.control}
-                                    name="priority"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>
-                                                {t("priority")}
-                                            </FormLabel>
-                                            <FormControl>
-                                                <input
-                                                    {...field}
-                                                    type="number"
-                                                    min="0"
-                                                    className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-                                                    onChange={(e) =>
-                                                        field.onChange(
-                                                            parseInt(
-                                                                e.target
-                                                                    .value,
-                                                            ) || 0,
-                                                        )
-                                                    }
-                                                />
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-
-                                {/* Remarks — full width */}
-                                <div className="md:col-span-2">
-                                    <FormField
-                                        control={form.control}
-                                        name="remarks"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>
-                                                    {t("remarks")}
-                                                </FormLabel>
-                                                <FormControl>
-                                                    <Textarea
-                                                        {...field}
-                                                        placeholder={t(
-                                                            "remarksPlaceholder",
-                                                        )}
-                                                        rows={3}
-                                                    />
-                                                </FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )}
-                                    />
+                                <div className="space-y-4">
+                                    {fields.map((field, index) => (
+                                        <ContactPersonForm
+                                            key={field.id}
+                                            ref={(el) =>
+                                                setContactRef(el, index)
+                                            }
+                                            control={control}
+                                            index={index}
+                                            onRemove={() => remove(index)}
+                                            showRemoveButton={
+                                                !isEditMode
+                                                    ? index > 0
+                                                    : !field._id
+                                            }
+                                            totalContacts={fields.length}
+                                            disabled={
+                                                preventIdsScroll ||
+                                                (hasRestrictedEdit &&
+                                                    index !==
+                                                        editableContactIndex &&
+                                                    field._id)
+                                            }
+                                            isHighlighted={
+                                                !preventIdsScroll &&
+                                                hasRestrictedEdit &&
+                                                index === editableContactIndex
+                                            }
+                                            isEditMode={isEditMode}
+                                            statusOptions={
+                                                PROSPECTUS_STATUS_OPTIONS
+                                            }
+                                        />
+                                    ))}
                                 </div>
-
-                                {/* Beneficiary section */}
-                                <BeneficiarySection
-                                    control={form.control}
-                                    namePrefix="beneficiary"
-                                />
                             </div>
-                        </div>
+                        )}
 
                         {/* ── Action Buttons ── */}
-                        <div className="flex gap-2 justify-end border-t pt-6">
-                            <Button
-                                type="button"
-                                variant="outline"
-                                onClick={handleCancel}
-                            >
-                                {t("cancel")}
-                            </Button>
-                            <Button
-                                type="submit"
-                                disabled={isSubmitDisabled}
-                                className="min-w-[120px]"
-                                title={
-                                    isEditMode && !isDirty
-                                        ? t("noChangesToSave")
-                                        : undefined
-                                }
-                            >
-                                {loading && (
-                                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                )}
-                                {submitLabel || t("saveProspectus")}
-                            </Button>
+                        <div className="flex flex-col gap-4 sm:flex-row sm:justify-between border-t pt-6">
+                            <div className="order-2 sm:order-1">
+                                <Button
+                                    type="button"
+                                    variant="secondary"
+                                    disabled={preventIdsScroll}
+                                    onClick={() => {
+                                        const nextPriority = fields.length + 1
+                                        append({
+                                            ...DEFAULT_CONTACT_VALUES,
+                                            priority: nextPriority,
+                                        })
+                                    }}
+                                    className="w-full sm:w-auto"
+                                >
+                                    <UserPlus className="mr-2 h-4 w-4" />
+                                    {t("addContactPerson") || "Add Contact"}
+                                </Button>
+                            </div>
+
+                            <div className="flex gap-2 justify-end order-1 sm:order-2">
+                                <Button
+                                    type="button"
+                                    variant="outline"
+                                    onClick={handleCancel}
+                                >
+                                    {t("cancel")}
+                                </Button>
+                                <Button
+                                    type="submit"
+                                    disabled={isSubmitDisabled}
+                                    className="min-w-[120px]"
+                                    title={
+                                        isEditMode && !isDirty
+                                            ? t("noChangesToSave")
+                                            : undefined
+                                    }
+                                >
+                                    {loading && (
+                                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                    )}
+                                    {submitLabel || t("saveProspectus")}
+                                </Button>
+                            </div>
                         </div>
                     </form>
                 </Form>

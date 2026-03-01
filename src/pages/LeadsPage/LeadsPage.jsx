@@ -632,7 +632,8 @@ export default function LeadsPage() {
                                         {isSuperAdminUser && (
                                             <TableCell className="hidden md:table-cell text-black text-sm">
                                                 {lead.createdBy &&
-                                                typeof lead.createdBy === "object"
+                                                typeof lead.createdBy ===
+                                                    "object"
                                                     ? `${lead.createdBy.firstName} ${lead.createdBy.lastName}`
                                                     : "-"}
                                             </TableCell>

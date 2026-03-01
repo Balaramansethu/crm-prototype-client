@@ -36,6 +36,7 @@ const ContactPersonForm = forwardRef(function ContactPersonForm(
         disabled = false,
         isHighlighted = false,
         isEditMode = false,
+        statusOptions = null,
     },
     ref,
 ) {
@@ -54,22 +55,25 @@ const ContactPersonForm = forwardRef(function ContactPersonForm(
     const isDropped = status === "dropped"
 
     // Use different status options based on mode
-    let statusOptions = isEditMode
-        ? LEAD_STATUS_OPTIONS_EDIT
-        : LEAD_STATUS_OPTIONS
+    let finalStatusOptions =
+        statusOptions ||
+        (isEditMode ? LEAD_STATUS_OPTIONS_EDIT : LEAD_STATUS_OPTIONS)
 
     // Dynamic addition of current status if it matches an outcome but not in list
-    if (status && !statusOptions.find((opt) => opt.value === status)) {
+    if (status && !finalStatusOptions.find((opt) => opt.value === status)) {
         const outcomeDef = CALL_OUTCOME_OPTIONS.find(
             (opt) => opt.value === status,
         )
         if (outcomeDef) {
-            statusOptions = [
-                ...statusOptions,
+            finalStatusOptions = [
+                ...finalStatusOptions,
                 { ...outcomeDef, label: outcomeDef.label },
             ]
         } else {
-            statusOptions = [...statusOptions, { value: status, label: status }]
+            finalStatusOptions = [
+                ...finalStatusOptions,
+                { value: status, label: status },
+            ]
         }
     }
 
@@ -183,7 +187,7 @@ const ContactPersonForm = forwardRef(function ContactPersonForm(
                     name={`contacts.${index}.status`}
                     label={t("status")}
                     placeholder={t("selectStatus")}
-                    options={statusOptions.map((opt) => ({
+                    options={finalStatusOptions.map((opt) => ({
                         ...opt,
                         label: t(opt.label),
                     }))}

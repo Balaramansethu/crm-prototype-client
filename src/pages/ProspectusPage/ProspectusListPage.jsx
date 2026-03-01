@@ -78,7 +78,6 @@ export default function ProspectusListPage() {
     const [sort, setSort] = useState("createdAt")
     const [order, setOrder] = useState("desc")
     const [companySearch, setCompanySearch] = useState("")
-    const [contactSearch, setContactSearch] = useState("")
     const [status, setStatus] = useState("")
     const [serviceTypes, setServiceTypes] = useState([])
     const [followUp, setFollowUp] = useState()
@@ -91,7 +90,6 @@ export default function ProspectusListPage() {
         user?.role === "SUPER_ADMIN" || user?.role === "super_admin"
 
     const debouncedCompany = useDebounce(companySearch, 500)
-    const debouncedContact = useDebounce(contactSearch, 500)
     const debouncedOwner = useDebounce(ownerSearch, 500)
 
     // Delete dialog state
@@ -129,7 +127,6 @@ export default function ProspectusListPage() {
         sort,
         order,
         company: debouncedCompany,
-        contact: debouncedContact,
         owner: isSuperAdmin ? debouncedOwner : undefined,
         status: status === "all" ? "" : status,
         ...(serviceTypes.length > 0 && { serviceType: serviceTypes }),
@@ -140,10 +137,7 @@ export default function ProspectusListPage() {
     const info = data?.info || { total: 0, totalPages: 1 }
 
     // Flatten for table
-    const rows = useMemo(
-        () => flattenProspectusGroups(rawGroups),
-        [rawGroups],
-    )
+    const rows = useMemo(() => flattenProspectusGroups(rawGroups), [rawGroups])
 
     // Handlers
     const handleSort = (field) => {
@@ -166,7 +160,6 @@ export default function ProspectusListPage() {
 
     const clearFilters = () => {
         setCompanySearch("")
-        setContactSearch("")
         setStatus("")
         setServiceTypes([])
         setFollowUp(undefined)
@@ -186,7 +179,6 @@ export default function ProspectusListPage() {
 
     const hasActiveFilters =
         companySearch ||
-        contactSearch ||
         (status && status !== "all") ||
         serviceTypes.length > 0 ||
         followUp
@@ -250,7 +242,6 @@ export default function ProspectusListPage() {
                                     {
                                         [
                                             companySearch,
-                                            contactSearch,
                                             status && status !== "all",
                                             serviceTypes.length > 0,
                                             followUp,
@@ -285,19 +276,6 @@ export default function ProspectusListPage() {
                                 value={companySearch}
                                 onChange={(e) =>
                                     setCompanySearch(e.target.value)
-                                }
-                                className="pl-9 h-9 text-sm bg-muted/50 focus:bg-background transition-colors text-black placeholder:text-gray-500"
-                            />
-                        </div>
-
-                        {/* Contact Search */}
-                        <div className="relative flex-1 min-w-[140px] max-w-full md:max-w-[240px]">
-                            <User className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500 pointer-events-none" />
-                            <Input
-                                placeholder={t("filterByContact")}
-                                value={contactSearch}
-                                onChange={(e) =>
-                                    setContactSearch(e.target.value)
                                 }
                                 className="pl-9 h-9 text-sm bg-muted/50 focus:bg-background transition-colors text-black placeholder:text-gray-500"
                             />
@@ -568,12 +546,9 @@ export default function ProspectusListPage() {
                                         className="hover:bg-muted/30 text-black cursor-pointer"
                                         onClick={() =>
                                             !row.isCompanyOnly &&
-                                            navigate(
-                                                `/prospectus/${row._id}`,
-                                                {
-                                                    state: { fromPage: page },
-                                                },
-                                            )
+                                            navigate(`/prospectus/${row._id}`, {
+                                                state: { fromPage: page },
+                                            })
                                         }
                                     >
                                         <TableCell className="font-bold text-black pl-4">
@@ -607,17 +582,13 @@ export default function ProspectusListPage() {
                                         </TableCell>
                                         <TableCell>
                                             <StatusBadge
-                                                status={
-                                                    row.status || "new"
-                                                }
+                                                status={row.status || "new"}
                                             />
                                         </TableCell>
                                         <TableCell className="hidden md:table-cell text-sm text-black">
                                             {row.followUp
                                                 ? format(
-                                                      new Date(
-                                                          row.followUp,
-                                                      ),
+                                                      new Date(row.followUp),
                                                       "dd-MM-yyyy",
                                                   )
                                                 : "-"}
@@ -625,21 +596,18 @@ export default function ProspectusListPage() {
                                         {isSuperAdmin && (
                                             <TableCell className="hidden md:table-cell text-black text-sm">
                                                 {row.createdBy &&
-                                                typeof row.createdBy === "object"
+                                                typeof row.createdBy ===
+                                                    "object"
                                                     ? `${row.createdBy.firstName} ${row.createdBy.lastName}`
                                                     : "-"}
                                             </TableCell>
                                         )}
                                         <TableCell
-                                            onClick={(e) =>
-                                                e.stopPropagation()
-                                            }
+                                            onClick={(e) => e.stopPropagation()}
                                         >
                                             {!row.isCompanyOnly && (
                                                 <DropdownMenu
-                                                    dir={
-                                                        isRTL ? "rtl" : "ltr"
-                                                    }
+                                                    dir={isRTL ? "rtl" : "ltr"}
                                                 >
                                                     <DropdownMenuTrigger
                                                         asChild
@@ -661,16 +629,19 @@ export default function ProspectusListPage() {
                                                                 : "end"
                                                         }
                                                     >
-                                                        <DropdownMenuItem
-                                                            onClick={() =>
-                                                                navigate(
-                                                                    `/prospectus/edit/${row._id}`,
-                                                                )
-                                                            }
-                                                        >
-                                                            <Edit className="mr-2 h-4 w-4" />
-                                                            {t("edit")}
-                                                        </DropdownMenuItem>
+                                                        {row.status?.toLowerCase() !==
+                                                            "qualified" && (
+                                                            <DropdownMenuItem
+                                                                onClick={() =>
+                                                                    navigate(
+                                                                        `/prospectus/edit/${row._id}`,
+                                                                    )
+                                                                }
+                                                            >
+                                                                <Edit className="mr-2 h-4 w-4" />
+                                                                {t("edit")}
+                                                            </DropdownMenuItem>
+                                                        )}
                                                         {user.role !==
                                                             "employee" && (
                                                             <DropdownMenuItem

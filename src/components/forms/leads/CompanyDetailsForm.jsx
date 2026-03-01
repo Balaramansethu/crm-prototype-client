@@ -14,6 +14,7 @@ export default function CompanyDetailsForm({
     control,
     disabled = false,
     isHighlighted = false,
+    hideServiceTypeAsterisk = false,
 }) {
     const { t } = useTranslation()
 
@@ -70,7 +71,11 @@ export default function CompanyDetailsForm({
                 <FormSelect
                     control={control}
                     name="companyDetails.serviceType"
-                    label={`${t("serviceType")} *`}
+                    label={
+                        hideServiceTypeAsterisk
+                            ? t("serviceType")
+                            : `${t("serviceType")} *`
+                    }
                     placeholder={t("selectServiceType")}
                     options={SERVICE_TYPE_OPTIONS.map((opt) => ({
                         ...opt,

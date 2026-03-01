@@ -46,14 +46,7 @@ const buildPhone = (countryCode, number, extension) => {
 const buildAddress = (address) => {
     if (!address) return undefined
     const result = {}
-    const fields = [
-        "door",
-        "street",
-        "area",
-        "city",
-        "pincode",
-        "shortAddress",
-    ]
+    const fields = ["door", "street", "area", "city", "pincode", "shortAddress"]
     fields.forEach((f) => {
         if (address[f]) result[f] = address[f]
     })
@@ -129,24 +122,29 @@ export const flattenProspectusGroups = (companyGroups = []) => {
         const prospectuses = group.prospectuses || []
 
         if (prospectuses.length > 0) {
-            prospectuses.forEach((prospectus, index) => {
-                flattened.push({
-                    _id: prospectus._id,
-                    companyId: company._id,
-                    company,
-                    // Merge contact data with prospectus-level fields for easy access
-                    contact: prospectus.contact || null,
-                    status: prospectus.status,
-                    source: prospectus.source,
-                    followUp: prospectus.followUp,
-                    priority: prospectus.priority,
-                    benificiary: prospectus.benificiary,
-                    convertedToLead: prospectus.convertedToLead,
-                    createdBy: prospectus.createdBy,
-                    createdAt: prospectus.createdAt,
-                    prospectIndex: index,
-                    isCompanyOnly: !prospectus.contact,
-                })
+            // Sort by priority to find primary contact
+            const sorted = [...prospectuses].sort(
+                (a, b) => (a.priority || 99) - (b.priority || 99),
+            )
+            const firstProp = sorted[0]
+
+            flattened.push({
+                _id: firstProp._id || company._id,
+                companyId: company._id,
+                company,
+                // Merge contact data with prospectus-level fields for easy access
+                contact: firstProp.contact || null,
+                status: firstProp.status,
+                source: firstProp.source,
+                followUp: firstProp.followUp,
+                priority: firstProp.priority,
+                benificiary: firstProp.benificiary,
+                convertedToLead: firstProp.convertedToLead,
+                createdBy: firstProp.createdBy,
+                createdAt: firstProp.createdAt || company.createdAt,
+                prospectIndex: 0,
+                isCompanyOnly: !firstProp.contact,
+                prospectusesCount: prospectuses.length,
             })
         } else {
             // Company with no prospectuses – show company-only row
@@ -158,6 +156,7 @@ export const flattenProspectusGroups = (companyGroups = []) => {
                 status: null,
                 prospectIndex: 0,
                 isCompanyOnly: true,
+                prospectusesCount: 0,
             })
         }
     })
@@ -199,10 +198,49 @@ export const extractFormDefaults = (data) => {
     if (!data) return null
 
     const company = data.company || {}
-    const contact = data.contact || {}
+    let allContacts = []
+
+    // 1. Extract root prospectus
+    let rootProp = null
+    if (data.contact) {
+        rootProp = { ...data, contact: data.contact }
+    } else if (data.name) {
+        rootProp = {
+            ...data,
+            contact: {
+                name: data.name,
+                email: data.email,
+                phone: data.phone,
+                department: data.department,
+                remarks: data.remarks,
+            },
+        }
+    }
+
+    if (rootProp) {
+        allContacts.push(rootProp)
+    } else if (data.prospectuses && data.prospectuses.length > 0) {
+        allContacts = [...data.prospectuses]
+    }
+
+    // 2. Extract nested prospectuses
+    if (company.prospectuses && company.prospectuses.length > 0) {
+        company.prospectuses.forEach((p) => {
+            if (!allContacts.some((c) => c._id === p._id)) {
+                allContacts.push(p)
+            }
+        })
+    }
+
+    // Sort array identically to detail view
+    allContacts.sort((a, b) => (a.priority || 99) - (b.priority || 99))
+
+    // Fallback if completely empty
+    if (allContacts.length === 0) {
+        allContacts = [{ contact: {}, priority: 0, status: "new" }]
+    }
+
     const companyPhone = normalizePhone(company.phone)
-    const contactPhone = normalizePhone(contact.phone)
-    const benPhone = normalizePhone(data.benificiary?.phone)
 
     return {
         companyDetails: {
@@ -223,21 +261,26 @@ export const extractFormDefaults = (data) => {
                 shortAddress: company.address?.shortAddress || "",
             },
         },
-        // Contact fields (from nested `contact` object)
-        name: contact.name || "",
-        email: contact.email || "",
-        ...contactPhone,
-        department: contact.department || "",
-        remarks: contact.remarks || "",
-        // Prospectus-level fields (at root)
-        status: data.status || "new",
-        source: data.source || "",
-        followUp: data.followUp ? new Date(data.followUp) : undefined,
-        priority: data.priority ?? 0,
-        beneficiary: {
-            name: data.benificiary?.name || "",
-            ...benPhone,
-        },
+        contacts: allContacts.map((c) => {
+            const contactPhone = normalizePhone(c.contact?.phone)
+            const benPhone = normalizePhone(c.benificiary?.phone)
+            return {
+                _id: c._id,
+                name: c.contact?.name || "",
+                email: c.contact?.email || "",
+                ...contactPhone,
+                department: c.contact?.department || "",
+                remarks: c.contact?.remarks || "",
+                status: c.status || "new",
+                source: c.source || "",
+                followUp: c.followUp ? new Date(c.followUp) : undefined,
+                priority: c.priority ?? 0,
+                beneficiary: {
+                    name: c.benificiary?.name || "",
+                    ...benPhone,
+                },
+            }
+        }),
     }
 }
 
@@ -246,10 +289,10 @@ export const extractFormDefaults = (data) => {
 /**
  * Transforms form data to API payload for CREATE.
  *
- * Output shape: { company: {...}, leads: [{ contact: { name, phone, email, department, remarks }, status, source, ... }] }
+ * Output shape: { company: {...}, prospectuses: [{ name, email, phone, department, remarks, status, source, ... }] }
  */
 export const transformProspectusPayload = (formData) => {
-    const { companyDetails, beneficiary, ...contactFields } = formData
+    const { companyDetails, contacts = [] } = formData
 
     const companyPayload = cleanObject({
         name: companyDetails.name,
@@ -267,28 +310,26 @@ export const transformProspectusPayload = (formData) => {
 
     const payload = { company: companyPayload }
 
-    // Build leads array — each lead has nested contact object + lead-level fields
-    const lead = cleanObject({
-        contact: {
-            name: contactFields.name || undefined,
-            phone: buildPhone(
-                contactFields.phoneCountryCode,
-                contactFields.phoneNumber,
-                contactFields.phoneExtension,
-            ),
-            email: contactFields.email || undefined,
-            department: contactFields.department || undefined,
-            remarks: contactFields.remarks || undefined,
-        },
-        status: contactFields.status || "new",
-        source: contactFields.source || undefined,
-        followUp: formatDate(contactFields.followUp),
-        priority: contactFields.priority ?? 0,
-        benificiary: buildBeneficiary(beneficiary),
-    })
-
-    if (lead) {
-        payload.leads = [lead]
+    // Build prospectuses array from form contacts
+    if (contacts.length > 0) {
+        payload.prospectuses = contacts.map((contactField) =>
+            cleanObject({
+                name: contactField.name || undefined,
+                phone: buildPhone(
+                    contactField.phoneCountryCode,
+                    contactField.phoneNumber,
+                    contactField.phoneExtension,
+                ),
+                email: contactField.email || undefined,
+                department: contactField.department || undefined,
+                remarks: contactField.remarks || undefined,
+                status: contactField.status || "new",
+                source: contactField.source || undefined,
+                followUp: formatDate(contactField.followUp),
+                priority: contactField.priority ?? 0,
+                benificiary: buildBeneficiary(contactField.beneficiary),
+            }),
+        )
     }
 
     return payload
@@ -296,20 +337,29 @@ export const transformProspectusPayload = (formData) => {
 
 /**
  * Transforms form data for UPDATE (PATCH).
- * Contact fields go inside a `contact` object; lead-level fields at root.
+ * Contact fields are flat at root level, same as CREATE.
  *
- * PATCH payload: { company, contact: { name, phone, ... }, status, source, ... }
+ * PATCH payload: { company, name, phone, email, department, remarks, status, source, ... }
  */
-export const transformProspectusUpdatePayload = (formData, originalData) => {
+export const transformProspectusUpdatePayload = (
+    formData,
+    originalData,
+    editableContactIndex = null,
+) => {
     const payload = {}
-    const { companyDetails, beneficiary, ...contactFields } = formData
+    const { companyDetails, contacts = [] } = formData
     const origCompany = originalData?.companyDetails || {}
-    const origContact = originalData || {}
+
+    // Determine which contact is actively being edited
+    const contactIndex =
+        editableContactIndex !== null ? editableContactIndex : 0
+    const activeContact = contacts[contactIndex] || {}
+    const origContact = originalData?.contacts?.[contactIndex] || {}
 
     // ── Company changes ──
     const companyChanges = {}
     if (companyDetails.name !== origCompany.name) {
-        companyChanges.name = companyDetails.name
+        companyChanges.name = companyDetails.name?.trim() || undefined
     }
     if (companyDetails.phoneNumber !== origCompany.phoneNumber) {
         companyChanges.phone = buildPhone(
@@ -319,22 +369,23 @@ export const transformProspectusUpdatePayload = (formData, originalData) => {
         )
     }
     if ((companyDetails.email || "") !== (origCompany.email || "")) {
-        companyChanges.email = companyDetails.email || undefined
+        companyChanges.email = companyDetails.email?.trim() || undefined
     }
     if ((companyDetails.website || "") !== (origCompany.website || "")) {
-        companyChanges.website = companyDetails.website || undefined
+        companyChanges.website = companyDetails.website?.trim() || undefined
     }
     if (
         (companyDetails.socialProfile || "") !==
         (origCompany.socialProfile || "")
     ) {
         companyChanges.socialProfile =
-            companyDetails.socialProfile || undefined
+            companyDetails.socialProfile?.trim() || undefined
     }
     if (
         (companyDetails.serviceType || "") !== (origCompany.serviceType || "")
     ) {
-        companyChanges.serviceType = companyDetails.serviceType || undefined
+        companyChanges.serviceType =
+            companyDetails.serviceType?.trim() || undefined
     }
     if (
         JSON.stringify(companyDetails.address) !==
@@ -346,47 +397,76 @@ export const transformProspectusUpdatePayload = (formData, originalData) => {
         payload.company = companyChanges
     }
 
-    // ── Contact fields (nested inside `contact` object) ──
-    const contactChanges = {}
-    if ((contactFields.name || "") !== (origContact.name || ""))
-        contactChanges.name = contactFields.name
-    if ((contactFields.email || "") !== (origContact.email || ""))
-        contactChanges.email = contactFields.email
-    if ((contactFields.department || "") !== (origContact.department || ""))
-        contactChanges.department = contactFields.department
-    if ((contactFields.remarks || "") !== (origContact.remarks || ""))
-        contactChanges.remarks = contactFields.remarks
-    if (contactFields.phoneNumber !== origContact.phoneNumber) {
-        contactChanges.phone = buildPhone(
-            contactFields.phoneCountryCode,
-            contactFields.phoneNumber,
-            contactFields.phoneExtension,
+    // ── Active Contact level fields ──
+    if ((activeContact.name || "") !== (origContact.name || "")) {
+        payload.name = activeContact.name?.trim() || undefined
+    }
+    if ((activeContact.email || "") !== (origContact.email || "")) {
+        payload.email = activeContact.email?.trim() || undefined
+    }
+    if ((activeContact.department || "") !== (origContact.department || "")) {
+        payload.department = activeContact.department?.trim() || undefined
+    }
+    if ((activeContact.remarks || "") !== (origContact.remarks || "")) {
+        payload.remarks = activeContact.remarks?.trim() || undefined
+    }
+    if (activeContact.phoneNumber !== origContact.phoneNumber) {
+        payload.phone = buildPhone(
+            activeContact.phoneCountryCode,
+            activeContact.phoneNumber,
+            activeContact.phoneExtension,
         )
     }
-    if (Object.keys(contactChanges).length > 0) {
-        payload.contact = contactChanges
+
+    // ── Prospectus-level metadata changes ──
+    if (activeContact.status !== origContact.status) {
+        payload.status = activeContact.status || "new"
+    }
+    if ((activeContact.source || "") !== (origContact.source || "")) {
+        payload.source = activeContact.source?.trim() || undefined
+    }
+    if (
+        formatDate(activeContact.followUp) !== formatDate(origContact.followUp)
+    ) {
+        payload.followUp = formatDate(activeContact.followUp)
     }
 
-    // ── Lead-level changes (at root) ──
-    if (contactFields.status !== origContact.status)
-        payload.status = contactFields.status
-    if ((contactFields.source || "") !== (origContact.source || ""))
-        payload.source = contactFields.source
+    // Send priority if changed or if this is the only element updating priority structure
     if (
-        formatDate(contactFields.followUp) !==
-        formatDate(origContact.followUp)
+        activeContact.priority !== origContact.priority ||
+        contacts.length > 1
     ) {
-        payload.followUp = formatDate(contactFields.followUp)
+        payload.priority = activeContact.priority || contactIndex + 1
     }
-    if (contactFields.priority !== origContact.priority)
-        payload.priority = contactFields.priority
 
     // Beneficiary comparison
     const origBen = origContact.beneficiary || {}
-    if (
-        JSON.stringify(beneficiary) !== JSON.stringify(origBen)
-    ) {
-        payload.benificiary = buildBeneficiary(beneficiary)
+    if (JSON.stringify(activeContact.beneficiary) !== JSON.stringify(origBen)) {
+        payload.benificiary = buildBeneficiary(activeContact.beneficiary)
+    }
+
+    // ── Handle new contacts added during edit ──
+    const newContacts =
+        contacts?.filter((ct) => !ct._id && ct.name?.trim()) || []
+    if (newContacts.length > 0) {
+        payload.prospectuses = newContacts.map((ct, idx) => {
+            return cleanObject({
+                name: ct.name?.trim() || undefined,
+                phone: buildPhone(
+                    ct.phoneCountryCode,
+                    ct.phoneNumber,
+                    ct.phoneExtension,
+                ),
+                email: ct.email?.trim() || undefined,
+                department: ct.department?.trim() || undefined,
+                remarks: ct.remarks?.trim() || undefined,
+                status: ct.status || "new",
+                source: ct.source?.trim() || undefined,
+                followUp: formatDate(ct.followUp),
+                priority: ct.priority || contacts.length + idx + 1,
+                benificiary: buildBeneficiary(ct.beneficiary),
+            })
+        })
     }
 
     return payload

@@ -331,7 +331,9 @@ export default function OpportunityForm({
                                                     <SelectItem
                                                         key={company._id}
                                                         value={company._id}
-                                                        disabled={company.isArchived}
+                                                        disabled={
+                                                            company.isArchived
+                                                        }
                                                         className={
                                                             company.isArchived
                                                                 ? "text-muted-foreground opacity-70 data-[disabled]:pointer-events-auto data-[disabled]:cursor-not-allowed"

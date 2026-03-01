@@ -34,9 +34,7 @@ const validateCompanyDetails = (company, setError, t) => {
             message: t("companyRequired"),
         })
         isValid = false
-    } else if (
-        !validateLength(company.name, FIELD_LIMITS.COMPANY_NAME)
-    ) {
+    } else if (!validateLength(company.name, FIELD_LIMITS.COMPANY_NAME)) {
         setError("companyDetails.name", {
             type: "manual",
             message: t("companyRequired"),
@@ -60,7 +58,10 @@ const validateCompanyDetails = (company, setError, t) => {
     }
 
     // Optional format checks
-    if (company.phoneExtension && !validatePhoneExtension(company.phoneExtension)) {
+    if (
+        company.phoneExtension &&
+        !validatePhoneExtension(company.phoneExtension)
+    ) {
         setError("companyDetails.phoneExtension", {
             type: "manual",
             message: t("invalidFormat"),
@@ -121,11 +122,15 @@ const validateCompanyDetails = (company, setError, t) => {
  * Validates the contact (prospect) fields.
  * All optional — validate format only when provided.
  */
-const validateContact = (data, setError, t) => {
+const validateContact = (data, setError, t, index) => {
     let isValid = true
+    const prefix = `contacts.${index}.`
 
-    if (data.name?.trim() && !validateLength(data.name, FIELD_LIMITS.CONTACT_NAME)) {
-        setError("name", {
+    if (
+        data.name?.trim() &&
+        !validateLength(data.name, FIELD_LIMITS.CONTACT_NAME)
+    ) {
+        setError(`${prefix}name`, {
             type: "manual",
             message: t("invalidFormat"),
         })
@@ -133,7 +138,7 @@ const validateContact = (data, setError, t) => {
     }
 
     if (data.email?.trim() && !validateEmail(data.email)) {
-        setError("email", {
+        setError(`${prefix}email`, {
             type: "manual",
             message: t("emailInvalid"),
         })
@@ -141,7 +146,7 @@ const validateContact = (data, setError, t) => {
     }
 
     if (data.phoneNumber?.trim() && !validatePhoneNumber(data.phoneNumber)) {
-        setError("phoneNumber", {
+        setError(`${prefix}phoneNumber`, {
             type: "manual",
             message: t("invalidFormat"),
         })
@@ -152,7 +157,7 @@ const validateContact = (data, setError, t) => {
         data.phoneExtension?.trim() &&
         !validatePhoneExtension(data.phoneExtension)
     ) {
-        setError("phoneExtension", {
+        setError(`${prefix}phoneExtension`, {
             type: "manual",
             message: t("invalidFormat"),
         })
@@ -162,7 +167,7 @@ const validateContact = (data, setError, t) => {
     // Beneficiary validations
     const ben = data.beneficiary || {}
     if (ben.phoneNumber?.trim() && !validatePhoneNumber(ben.phoneNumber)) {
-        setError("beneficiary.phoneNumber", {
+        setError(`${prefix}beneficiary.phoneNumber`, {
             type: "manual",
             message: t("invalidFormat"),
         })
@@ -176,7 +181,20 @@ const validateContact = (data, setError, t) => {
  * Full form validation entry point.
  */
 export const validateProspectusForm = (data, setError, t) => {
-    const companyValid = validateCompanyDetails(data.companyDetails, setError, t)
-    const contactValid = validateContact(data, setError, t)
-    return companyValid && contactValid
+    const companyValid = validateCompanyDetails(
+        data.companyDetails,
+        setError,
+        t,
+    )
+
+    let contactsValid = true
+    if (data.contacts && Array.isArray(data.contacts)) {
+        data.contacts.forEach((contact, index) => {
+            if (!validateContact(contact, setError, t, index)) {
+                contactsValid = false
+            }
+        })
+    }
+
+    return companyValid && contactsValid
 }
