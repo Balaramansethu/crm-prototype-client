@@ -11,6 +11,17 @@ export async function fetchArchivedLeads(params = {}) {
     }
 }
 
+export async function fetchArchivedProspectuses(params = {}) {
+    try {
+        const response = await axiosPrivateInstance.get("/archive/prospectus", {
+            params,
+        })
+        return response.data
+    } catch (error) {
+        throw error
+    }
+}
+
 export async function fetchDroppedArchivedLeads(params = {}) {
     try {
         const response = await axiosPrivateInstance.get(

@@ -5,6 +5,7 @@ import {
     useDroppedArchivedLeads,
     useArchivedCallLogs,
     useArchivedPipelines,
+    useArchivedProspectuses,
 } from "@/hooks/useArchivedData"
 import {
     Table,
@@ -751,6 +752,139 @@ function ArchivedPipelinesTable({ page, setPage }) {
     )
 }
 
+function ArchivedProspectusesTable({ page, setPage }) {
+    const { t, i18n } = useTranslation()
+    const isRTL = i18n.dir() === "rtl"
+    // Use the archived prospectuses hook
+    const { data, isLoading, isError } = useArchivedProspectuses({ page, limit: 10 })
+
+    const { prospectuses, info } = useMemo(() => {
+        if (!data) return { prospectuses: [], info: {} }
+
+        // Data shape mirrors `archivedLeads`.
+        const rawItems = data.prospectuses || data.prospectus || data.leads || data.data || (Array.isArray(data) ? data : [])
+        const flattened = []
+
+        rawItems.forEach((item) => {
+            const company = item.company || {}
+            
+            const contactLeads = item.prospectuses || item.prospectus || item.leads || item.contacts || []
+            
+            if (contactLeads.length > 0) {
+                contactLeads.forEach((contactItem) => {
+                    flattened.push({
+                        ...contactItem,
+                        companyName: company.name || "-",
+                    })
+                })
+            } else {
+                flattened.push({
+                    ...item,
+                    companyName: company.name || "-",
+                })
+            }
+        })
+
+        return {
+            prospectuses: flattened,
+            info: data.info || { total: 0, totalPages: 1 },
+        }
+    }, [data])
+
+    if (isLoading) {
+        return (
+            <div className="flex flex-col items-center justify-center h-64 gap-2 text-gray-500">
+                <Loader2 className="h-6 w-6 animate-spin" />
+                <span className="text-sm">
+                    {t("loadingArchivedData", "Loading archived data...")}
+                </span>
+            </div>
+        )
+    }
+
+    if (isError) {
+        return (
+            <div className="flex h-64 items-center justify-center text-red-600 font-bold">
+                {t("failedToLoadData", "Failed to load data.")}
+            </div>
+        )
+    }
+
+    if (prospectuses.length === 0) {
+        return (
+            <div className="flex h-64 items-center justify-center text-gray-500">
+                {t("noArchivedData", "No archived records found.")}
+            </div>
+        )
+    }
+
+    return (
+        <>
+            <Table>
+                <TableHeader className="bg-muted/30">
+                    <TableRow>
+                        <TableHead className="text-xs font-bold uppercase tracking-wider text-black pl-4">
+                            {t("company")}
+                        </TableHead>
+                        <TableHead className="text-xs font-bold uppercase tracking-wider text-black">
+                            {t("contact")}
+                        </TableHead>
+                        <TableHead className="text-xs font-bold uppercase tracking-wider text-black">
+                            {t("deletedBy")}
+                        </TableHead>
+                        <TableHead className="text-xs font-bold uppercase tracking-wider text-black">
+                            {t("deletedByRole")}
+                        </TableHead>
+                        <TableHead className="text-xs font-bold uppercase tracking-wider text-black">
+                            {t("deletedAt")}
+                        </TableHead>
+                    </TableRow>
+                </TableHeader>
+                <TableBody>
+                    {prospectuses.map((item, idx) => (
+                        <TableRow key={item._id || idx} className="hover:bg-muted/30">
+                            <TableCell className="font-medium text-black pl-4">
+                                {item.companyName}
+                            </TableCell>
+                            <TableCell className="text-black">
+                                {item.name || item.contact?.name || "-"}
+                            </TableCell>
+                            <TableCell className="text-black">
+                                {item.deleted?.by
+                                    ? `${item.deleted.by.firstName || ""} ${item.deleted.by.lastName || ""}`.trim()
+                                    : "-"}
+                            </TableCell>
+                            <TableCell>
+                                {item.deleted?.by?.role ? (
+                                    <RoleBadge role={item.deleted.by.role} />
+                                ) : (
+                                    "-"
+                                )}
+                            </TableCell>
+                            <TableCell className="text-black">
+                                {item.deleted?.at
+                                    ? format(
+                                          new Date(item.deleted.at),
+                                          "dd-MM-yyyy HH:mm"
+                                      )
+                                    : "-"}
+                            </TableCell>
+                        </TableRow>
+                    ))}
+                </TableBody>
+            </Table>
+            <Pagination
+                page={page}
+                setPage={setPage}
+                info={info}
+                t={t}
+                isRTL={isRTL}
+                type={t("prospectus")}
+            />
+        </>
+    )
+}
+
 // Main Page Component
 export default function ArchivedDataPage() {
     const { t } = useTranslation()
@@ -761,12 +895,14 @@ export default function ArchivedDataPage() {
     const [droppedLeadsPage, setDroppedLeadsPage] = useState(1)
     const [callLogsPage, setCallLogsPage] = useState(1)
     const [pipelinesPage, setPipelinesPage] = useState(1)
+    const [prospectusPage, setProspectusPage] = useState(1)
 
     const tabs = [
         { id: "leads", label: t("leads") },
         { id: "dropped", label: t("dropped") },
         { id: "callLogs", label: t("callLogs") },
         { id: "pipeline", label: t("pipeline") },
+        { id: "prospectus", label: t("prospectus") },
     ]
 
     return (
@@ -819,6 +955,12 @@ export default function ArchivedDataPage() {
                             <ArchivedPipelinesTable
                                 page={pipelinesPage}
                                 setPage={setPipelinesPage}
+                            />
+                        )}
+                        {activeTab === "prospectus" && (
+                            <ArchivedProspectusesTable
+                                page={prospectusPage}
+                                setPage={setProspectusPage}
                             />
                         )}
                     </div>

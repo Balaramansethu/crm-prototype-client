@@ -4,6 +4,7 @@ import {
     fetchDroppedArchivedLeads,
     fetchArchivedCallLogs,
     fetchArchivedPipelines,
+    fetchArchivedProspectuses,
 } from "@/service/archiveService"
 
 export const useArchivedLeads = (params = {}) => {
@@ -61,6 +62,17 @@ export const useArchivedPipelines = (params = {}) => {
         queryKey: ["archivedPipelines", params],
         queryFn: async () => {
             const response = await fetchArchivedPipelines(params)
+            return response.data
+        },
+        keepPreviousData: true,
+    })
+}
+
+export const useArchivedProspectuses = (params = {}) => {
+    return useQuery({
+        queryKey: ["archivedProspectuses", params],
+        queryFn: async () => {
+            const response = await fetchArchivedProspectuses(params)
             return response.data
         },
         keepPreviousData: true,
