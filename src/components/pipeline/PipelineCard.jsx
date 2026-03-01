@@ -50,7 +50,7 @@ export default function PipelineCard({
     const isMeetingStage = pipeline.opportunityStage === "meeting"
 
     const formatCurrency = (value) => {
-        if (!value || value === 0) return "$ 0"
+        if (!value || value === 0) return null
         return `SAR ${value.toLocaleString()}`
     }
 
@@ -133,9 +133,11 @@ export default function PipelineCard({
                 </div>
 
                 {/* Amount */}
-                <p className="text-sm font-medium text-slate-700 mb-1">
-                    {formatCurrency(expectedRevenue)}
-                </p>
+                {expectedRevenue > 0 && (
+                    <p className="text-sm font-medium text-slate-700 mb-1">
+                        {formatCurrency(expectedRevenue)}
+                    </p>
+                )}
 
                 {/* Next Step */}
                 {pipeline.nextStep && (

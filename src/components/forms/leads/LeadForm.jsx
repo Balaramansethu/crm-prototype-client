@@ -341,6 +341,7 @@ export default function LeadForm({
                                                 index === editableContactIndex
                                             }
                                             isEditMode={isEditMode}
+                                            initialStatus={field.status}
                                         />
                                     ))}
                                 </div>

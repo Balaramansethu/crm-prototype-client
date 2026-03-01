@@ -37,6 +37,7 @@ const ContactPersonForm = forwardRef(function ContactPersonForm(
         isHighlighted = false,
         isEditMode = false,
         statusOptions = null,
+        initialStatus = null,
     },
     ref,
 ) {
@@ -75,6 +76,11 @@ const ContactPersonForm = forwardRef(function ContactPersonForm(
                 { value: status, label: status },
             ]
         }
+    }
+
+    // Prevent reverting to 'new' if initially 'qualified'
+    if (initialStatus?.toLowerCase() === "qualified") {
+        finalStatusOptions = finalStatusOptions.filter((opt) => opt.value?.toLowerCase() !== "new")
     }
 
     return (
