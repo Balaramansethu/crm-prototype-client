@@ -80,7 +80,9 @@ const ContactPersonForm = forwardRef(function ContactPersonForm(
 
     // Prevent reverting to 'new' if initially 'qualified'
     if (initialStatus?.toLowerCase() === "qualified") {
-        finalStatusOptions = finalStatusOptions.filter((opt) => opt.value?.toLowerCase() !== "new")
+        finalStatusOptions = finalStatusOptions.filter(
+            (opt) => opt.value?.toLowerCase() !== "new",
+        )
     }
 
     return (

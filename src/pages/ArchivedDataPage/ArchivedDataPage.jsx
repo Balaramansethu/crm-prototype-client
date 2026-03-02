@@ -756,20 +756,33 @@ function ArchivedProspectusesTable({ page, setPage }) {
     const { t, i18n } = useTranslation()
     const isRTL = i18n.dir() === "rtl"
     // Use the archived prospectuses hook
-    const { data, isLoading, isError } = useArchivedProspectuses({ page, limit: 10 })
+    const { data, isLoading, isError } = useArchivedProspectuses({
+        page,
+        limit: 10,
+    })
 
     const { prospectuses, info } = useMemo(() => {
         if (!data) return { prospectuses: [], info: {} }
 
         // Data shape mirrors `archivedLeads`.
-        const rawItems = data.prospectuses || data.prospectus || data.leads || data.data || (Array.isArray(data) ? data : [])
+        const rawItems =
+            data.prospectuses ||
+            data.prospectus ||
+            data.leads ||
+            data.data ||
+            (Array.isArray(data) ? data : [])
         const flattened = []
 
         rawItems.forEach((item) => {
             const company = item.company || {}
-            
-            const contactLeads = item.prospectuses || item.prospectus || item.leads || item.contacts || []
-            
+
+            const contactLeads =
+                item.prospectuses ||
+                item.prospectus ||
+                item.leads ||
+                item.contacts ||
+                []
+
             if (contactLeads.length > 0) {
                 contactLeads.forEach((contactItem) => {
                     flattened.push({
@@ -842,7 +855,10 @@ function ArchivedProspectusesTable({ page, setPage }) {
                 </TableHeader>
                 <TableBody>
                     {prospectuses.map((item, idx) => (
-                        <TableRow key={item._id || idx} className="hover:bg-muted/30">
+                        <TableRow
+                            key={item._id || idx}
+                            className="hover:bg-muted/30"
+                        >
                             <TableCell className="font-medium text-black pl-4">
                                 {item.companyName}
                             </TableCell>
@@ -865,7 +881,7 @@ function ArchivedProspectusesTable({ page, setPage }) {
                                 {item.deleted?.at
                                     ? format(
                                           new Date(item.deleted.at),
-                                          "dd-MM-yyyy HH:mm"
+                                          "dd-MM-yyyy HH:mm",
                                       )
                                     : "-"}
                             </TableCell>

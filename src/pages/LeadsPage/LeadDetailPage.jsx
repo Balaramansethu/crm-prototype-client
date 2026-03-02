@@ -68,7 +68,9 @@ export default function LeadDetailPage() {
     // The lead clicked from the grid (matched by URL :id) is the main contact
     // Fallback to the first lead
     const mainLead =
-        allSortedLeads.find((lead) => lead._id === id) || allSortedLeads[0] || null
+        allSortedLeads.find((lead) => lead._id === id) ||
+        allSortedLeads[0] ||
+        null
 
     const mainContact = mainLead
         ? {
@@ -88,7 +90,10 @@ export default function LeadDetailPage() {
 
     // Other contacts = valid contacts except the main one
     const otherContacts = allSortedLeads.filter(
-        (lead) => lead._id !== mainLead?._id && lead.contact?.name && lead.contact.name.trim(),
+        (lead) =>
+            lead._id !== mainLead?._id &&
+            lead.contact?.name &&
+            lead.contact.name.trim(),
     )
 
     const breadcrumbs = [
