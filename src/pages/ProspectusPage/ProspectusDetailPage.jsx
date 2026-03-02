@@ -178,12 +178,14 @@ export default function ProspectusDetailPage() {
                 if (errorCode === "4701" || location.state?.isCompanyOnly) {
                     try {
                         // Fetch all companies (grouped data)
-                        const response = await fetchProspectuses({ limit: 1000 })
+                        const response = await fetchProspectuses({
+                            limit: 1000,
+                        })
                         const companyGroups = response.data.companyGroups || []
 
                         // Find the matching company
                         const companyGroup = companyGroups.find(
-                            (group) => group.company._id === id
+                            (group) => group.company._id === id,
                         )
 
                         if (companyGroup) {

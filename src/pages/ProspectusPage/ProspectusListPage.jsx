@@ -559,7 +559,8 @@ export default function ProspectusListPage() {
                                             navigate(`/prospectus/${row._id}`, {
                                                 state: {
                                                     fromPage: page,
-                                                    isCompanyOnly: row.isCompanyOnly,
+                                                    isCompanyOnly:
+                                                        row.isCompanyOnly,
                                                 },
                                             })
                                         }
@@ -650,7 +651,8 @@ export default function ProspectusListPage() {
                                                             {t("edit")}
                                                         </DropdownMenuItem>
                                                     )}
-                                                    {user.role !== "employee" && (
+                                                    {user.role !==
+                                                        "employee" && (
                                                         <DropdownMenuItem
                                                             onClick={() =>
                                                                 handleDeleteClick(
