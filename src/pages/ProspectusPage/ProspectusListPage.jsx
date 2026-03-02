@@ -556,9 +556,11 @@ export default function ProspectusListPage() {
                                         key={`${row.companyId}-${row.prospectIndex}`}
                                         className="hover:bg-muted/30 text-black cursor-pointer"
                                         onClick={() =>
-                                            !row.isCompanyOnly &&
                                             navigate(`/prospectus/${row._id}`, {
-                                                state: { fromPage: page },
+                                                state: {
+                                                    fromPage: page,
+                                                    isCompanyOnly: row.isCompanyOnly,
+                                                },
                                             })
                                         }
                                     >
@@ -616,60 +618,53 @@ export default function ProspectusListPage() {
                                         <TableCell
                                             onClick={(e) => e.stopPropagation()}
                                         >
-                                            {!row.isCompanyOnly && (
-                                                <DropdownMenu
-                                                    dir={isRTL ? "rtl" : "ltr"}
+                                            <DropdownMenu
+                                                dir={isRTL ? "rtl" : "ltr"}
+                                            >
+                                                <DropdownMenuTrigger asChild>
+                                                    <Button
+                                                        variant="ghost"
+                                                        className="h-8 w-8 p-0"
+                                                    >
+                                                        <span className="sr-only">
+                                                            {t("openMenu")}
+                                                        </span>
+                                                        <MoreHorizontal className="h-4 w-4" />
+                                                    </Button>
+                                                </DropdownMenuTrigger>
+                                                <DropdownMenuContent
+                                                    align={
+                                                        isRTL ? "start" : "end"
+                                                    }
                                                 >
-                                                    <DropdownMenuTrigger
-                                                        asChild
-                                                    >
-                                                        <Button
-                                                            variant="ghost"
-                                                            className="h-8 w-8 p-0"
+                                                    {row.status?.toLowerCase() !==
+                                                        "qualified" && (
+                                                        <DropdownMenuItem
+                                                            onClick={() =>
+                                                                navigate(
+                                                                    `/prospectus/edit/${row._id}`,
+                                                                )
+                                                            }
                                                         >
-                                                            <span className="sr-only">
-                                                                {t("openMenu")}
-                                                            </span>
-                                                            <MoreHorizontal className="h-4 w-4" />
-                                                        </Button>
-                                                    </DropdownMenuTrigger>
-                                                    <DropdownMenuContent
-                                                        align={
-                                                            isRTL
-                                                                ? "start"
-                                                                : "end"
-                                                        }
-                                                    >
-                                                        {row.status?.toLowerCase() !==
-                                                            "qualified" && (
-                                                            <DropdownMenuItem
-                                                                onClick={() =>
-                                                                    navigate(
-                                                                        `/prospectus/edit/${row._id}`,
-                                                                    )
-                                                                }
-                                                            >
-                                                                <Edit className="mr-2 h-4 w-4" />
-                                                                {t("edit")}
-                                                            </DropdownMenuItem>
-                                                        )}
-                                                        {user.role !==
-                                                            "employee" && (
-                                                            <DropdownMenuItem
-                                                                onClick={() =>
-                                                                    handleDeleteClick(
-                                                                        row._id,
-                                                                    )
-                                                                }
-                                                                className="text-primary focus:text-primary"
-                                                            >
-                                                                <Archive className="mr-2 h-4 w-4" />
-                                                                {t("archive")}
-                                                            </DropdownMenuItem>
-                                                        )}
-                                                    </DropdownMenuContent>
-                                                </DropdownMenu>
-                                            )}
+                                                            <Edit className="mr-2 h-4 w-4" />
+                                                            {t("edit")}
+                                                        </DropdownMenuItem>
+                                                    )}
+                                                    {user.role !== "employee" && (
+                                                        <DropdownMenuItem
+                                                            onClick={() =>
+                                                                handleDeleteClick(
+                                                                    row._id,
+                                                                )
+                                                            }
+                                                            className="text-primary focus:text-primary"
+                                                        >
+                                                            <Archive className="mr-2 h-4 w-4" />
+                                                            {t("archive")}
+                                                        </DropdownMenuItem>
+                                                    )}
+                                                </DropdownMenuContent>
+                                            </DropdownMenu>
                                         </TableCell>
                                     </TableRow>
                                 ))

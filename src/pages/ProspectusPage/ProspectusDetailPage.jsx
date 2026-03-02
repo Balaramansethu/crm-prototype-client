@@ -19,7 +19,10 @@ import {
     StatusBadge,
     DetailPageSkeleton,
 } from "@/components/common"
-import { getProspectusById } from "@/service/prospectusService"
+import {
+    getProspectusById,
+    fetchProspectuses,
+} from "@/service/prospectusService"
 import { formatPhoneDisplay } from "@/utils/leadTransformers"
 import { enumToTranslationKey, cn } from "@/lib/utils"
 import { useUserStore } from "@/store/userStore"
@@ -154,12 +157,48 @@ export default function ProspectusDetailPage() {
     // Remaining contacts
     const otherContacts = sortedProps.filter((p) => p._id !== mainProp?._id)
 
+    // Check if this is a company-only record (no contacts)
+    const isCompanyOnly = !mainContact && sortedProps.length === 0
+
     useEffect(() => {
         const fetchData = async () => {
             try {
+                // Try regular prospectus fetch first
                 const response = await getProspectusById(id)
                 setData(response.data)
             } catch (error) {
+                // If 4701 (not found), it might be a company-only record
+                const errorCode = error?.response?.data?.errorCode
+                if (errorCode === "4701" || location.state?.isCompanyOnly) {
+                    try {
+                        // Fetch all companies (grouped data)
+                        const response = await fetchProspectuses({ limit: 1000 })
+                        const companyGroups = response.data.companyGroups || []
+
+                        // Find the matching company
+                        const companyGroup = companyGroups.find(
+                            (group) => group.company._id === id
+                        )
+
+                        if (companyGroup) {
+                            // Format the data to match expected structure
+                            setData({
+                                _id: companyGroup.company._id,
+                                company: companyGroup.company,
+                                prospectuses: [],
+                                createdAt: companyGroup.company.createdAt,
+                                updatedAt: companyGroup.company.updatedAt,
+                                createdBy: companyGroup.company.createdBy,
+                            })
+                            setLoading(false)
+                            return
+                        }
+                    } catch (fallbackError) {
+                        console.error("Fallback fetch failed:", fallbackError)
+                    }
+                }
+
+                // If all else fails, show error
                 console.error(error)
                 toast.error(t("failedToLoadProspectus"))
                 navigate("/prospectus")
@@ -168,7 +207,7 @@ export default function ProspectusDetailPage() {
             }
         }
         if (id) fetchData()
-    }, [id, navigate, t])
+    }, [id, navigate, t, location.state?.isCompanyOnly])
 
     const formatAddress = (address) => {
         if (!address) return "-"
@@ -282,7 +321,9 @@ export default function ProspectusDetailPage() {
                                     size="sm"
                                     onClick={() =>
                                         navigate(
-                                            `/prospectus/edit/${mainContact?._id || id}?focus=company`,
+                                            isCompanyOnly
+                                                ? `/prospectus/edit/${data._id}?focus=company`
+                                                : `/prospectus/edit/${mainContact?._id || id}?focus=company`,
                                         )
                                     }
                                     title={t("edit")}
@@ -357,7 +398,7 @@ export default function ProspectusDetailPage() {
                     </Card>
 
                     {/* Main Contact Card */}
-                    {mainContact && (
+                    {mainContact ? (
                         <Card>
                             <CardHeader className="pb-3">
                                 <div className="flex items-center justify-between">
@@ -436,6 +477,45 @@ export default function ProspectusDetailPage() {
                                         />
                                     </>
                                 )}
+                            </CardContent>
+                        </Card>
+                    ) : (
+                        <Card className="border-dashed">
+                            <CardHeader className="pb-3">
+                                <div className="flex items-center justify-between">
+                                    <div className="flex items-center gap-2">
+                                        <div className="flex h-9 w-9 items-center justify-center rounded-full bg-muted">
+                                            <User className="h-5 w-5 text-muted-foreground" />
+                                        </div>
+                                        <CardTitle className="text-lg text-muted-foreground">
+                                            {t("contactPerson")}
+                                        </CardTitle>
+                                    </div>
+                                    <Button
+                                        variant="outline"
+                                        size="sm"
+                                        onClick={() =>
+                                            navigate(
+                                                `/prospectus/edit/${data._id}`,
+                                            )
+                                        }
+                                    >
+                                        <User className="h-4 w-4 mr-2" />
+                                        {t("addContact") || "Add Contact"}
+                                    </Button>
+                                </div>
+                            </CardHeader>
+                            <CardContent className="flex flex-col items-center justify-center py-8 text-center">
+                                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-muted mb-3">
+                                    <Users className="h-6 w-6 text-muted-foreground" />
+                                </div>
+                                <p className="text-sm font-medium text-muted-foreground mb-1">
+                                    {t("noContactsYet") || "No contacts added yet"}
+                                </p>
+                                <p className="text-xs text-muted-foreground max-w-sm">
+                                    {t("noContactsDescription") ||
+                                        "This company has no contact persons. Click 'Add Contact' to add one."}
+                                </p>
                             </CardContent>
                         </Card>
                     )}

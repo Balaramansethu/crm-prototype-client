@@ -35,7 +35,7 @@ export default function BulkUploadInstructions() {
                     {t("instructions") || "Instructions"}
                 </Button>
             </DialogTrigger>
-            <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+            <DialogContent className="max-w-4xl max-h-[90vh] overflow-hidden flex flex-col">
                 <DialogHeader>
                     <DialogTitle className="flex items-center gap-2 text-xl">
                         <FileSpreadsheet className="h-5 w-5" />
@@ -48,7 +48,8 @@ export default function BulkUploadInstructions() {
                     </DialogDescription>
                 </DialogHeader>
 
-                <div className="space-y-6 py-4">
+                <div className="overflow-y-auto pr-2 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-rose-50 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-thumb]:bg-rose-700 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:hover:bg-rose-800 dark:[&::-webkit-scrollbar-track]:bg-rose-950/20 dark:[&::-webkit-scrollbar-thumb]:bg-rose-900 dark:[&::-webkit-scrollbar-thumb]:hover:bg-rose-800">
+                    <div className="space-y-6 py-4">
                     {/* ═══════════ OVERVIEW ═══════════ */}
                     <div>
                         <h3 className="text-lg font-semibold flex items-center gap-2 mb-3">
@@ -614,6 +615,7 @@ export default function BulkUploadInstructions() {
                         <Button onClick={() => setOpen(false)}>
                             {t("gotIt") || "Got It!"}
                         </Button>
+                    </div>
                     </div>
                 </div>
             </DialogContent>
