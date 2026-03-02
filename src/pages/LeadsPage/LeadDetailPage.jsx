@@ -60,15 +60,16 @@ export default function LeadDetailPage() {
     const company = leadData?.company || {}
     const allLeads = leadData?.leads || []
 
-    // Sort leads by priority (ascending — 1 is highest priority)
-    const sortedLeads = [...allLeads]
-        .filter((lead) => lead.contact?.name && lead.contact.name.trim())
-        .sort((a, b) => (a.priority || 99) - (b.priority || 99))
+    // First, sort all leads by priority
+    const allSortedLeads = [...allLeads].sort(
+        (a, b) => (a.priority || 99) - (b.priority || 99),
+    )
 
     // The lead clicked from the grid (matched by URL :id) is the main contact
-    // Fallback to the first (highest priority) lead
+    // Fallback to the first lead
     const mainLead =
-        sortedLeads.find((lead) => lead._id === id) || sortedLeads[0] || null
+        allSortedLeads.find((lead) => lead._id === id) || allSortedLeads[0] || null
+
     const mainContact = mainLead
         ? {
               _id: mainLead._id,
@@ -85,9 +86,9 @@ export default function LeadDetailPage() {
           }
         : null
 
-    // Other contacts = all leads except the main one
-    const otherContacts = sortedLeads.filter(
-        (lead) => lead._id !== mainLead?._id,
+    // Other contacts = valid contacts except the main one
+    const otherContacts = allSortedLeads.filter(
+        (lead) => lead._id !== mainLead?._id && lead.contact?.name && lead.contact.name.trim(),
     )
 
     const breadcrumbs = [

@@ -127,10 +127,10 @@ export default function ProspectusDetailPage() {
         }
     })
 
-    // Sort valid contacts by priority (ascending — 1 is highest priority)
-    const sortedProps = [...normalizedProspectuses]
-        .filter((p) => p.contact?.name && p.contact.name.trim())
-        .sort((a, b) => (a.priority || 99) - (b.priority || 99))
+    // First, sort all prospectuses by priority
+    const sortedProps = [...normalizedProspectuses].sort(
+        (a, b) => (a.priority || 99) - (b.priority || 99),
+    )
 
     // The prospectus clicked from the grid (matched by URL :id) or fallback to first
     const mainProp =
