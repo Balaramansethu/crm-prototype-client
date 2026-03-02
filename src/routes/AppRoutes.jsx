@@ -28,6 +28,7 @@ import ProspectusListPage from "@/pages/ProspectusPage/ProspectusListPage"
 import CreateProspectusPage from "@/pages/ProspectusPage/CreateProspectusPage"
 import EditProspectusPage from "@/pages/ProspectusPage/EditProspectusPage"
 import ProspectusDetailPage from "@/pages/ProspectusPage/ProspectusDetailPage"
+import BulkUploadProspectusPage from "@/pages/ProspectusPage/BulkUploadProspectusPage"
 import ArchivedDataPage from "@/pages/ArchivedDataPage/ArchivedDataPage"
 import NotFoundPage from "@/pages/NotFoundPage/NotFoundPage"
 import Unauthorized from "@/components/unauthorized"
@@ -109,6 +110,7 @@ export default function AppRoutes() {
                     >
                         <Route index element={<ProspectusListPage />} />
                         <Route path="new" element={<CreateProspectusPage />} />
+                        <Route path="bulk-upload" element={<BulkUploadProspectusPage />} />
                         <Route path=":id" element={<ProspectusDetailPage />} />
                         <Route
                             path="edit/:id"

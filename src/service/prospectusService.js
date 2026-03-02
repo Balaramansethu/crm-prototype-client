@@ -102,3 +102,44 @@ export async function restoreProspectus(id) {
         throw error
     }
 }
+
+/**
+ * Submit bulk prospectuses creation.
+ * Payload format: Array of { company, prospectuses }
+ *
+ * @param {Array<Object>} bulkData - Array of company+prospectuses objects
+ * @returns {Promise<Object>} Response with success/error details
+ *
+ * Error codes:
+ * - 1001 (HTTP 400): Validation error (missing/invalid fields)
+ * - 4703 (HTTP 409): Company duplicate (name or phone conflict)
+ * - 4702 (HTTP 409): Contact duplicate (email or phone conflict)
+ */
+export async function submitBulkProspectuses(bulkData) {
+    try {
+        const response = await axiosPrivateInstance.post(
+            "/prospectus/bulk",
+            bulkData,
+        )
+
+        return {
+            success: true,
+            data: response.data.data,
+            message: response.data.message,
+        }
+    } catch (error) {
+        if (!error.response) {
+            // Network error
+            throw error
+        }
+
+        const { errorCode, message } = error.response.data || {}
+
+        return {
+            success: false,
+            errorCode,
+            errorMessage: message || "Unknown server error",
+            status: error.response.status,
+        }
+    }
+}

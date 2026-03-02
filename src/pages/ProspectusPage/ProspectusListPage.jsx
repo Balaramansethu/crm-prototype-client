@@ -57,6 +57,7 @@ import {
     Calendar,
     User,
     SlidersHorizontal,
+    Upload,
 } from "lucide-react"
 import DatePicker from "react-datepicker"
 import "react-datepicker/dist/react-datepicker.css"
@@ -214,13 +215,23 @@ export default function ProspectusListPage() {
                         {t("prospectus")}
                     </h1>
                 </div>
-                <Button
-                    onClick={() => navigate("/prospectus/new")}
-                    className="shadow-sm w-full sm:w-auto"
-                >
-                    <Plus className="h-4 w-4" />
-                    {t("createProspectus")}
-                </Button>
+                <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+                    <Button
+                        onClick={() => navigate("/prospectus/bulk-upload")}
+                        variant="outline"
+                        className="shadow-sm w-full sm:w-auto"
+                    >
+                        <Upload className="h-4 w-4" />
+                        {t("bulkUpload") || "Bulk Upload"}
+                    </Button>
+                    <Button
+                        onClick={() => navigate("/prospectus/new")}
+                        className="shadow-sm w-full sm:w-auto"
+                    >
+                        <Plus className="h-4 w-4" />
+                        {t("createProspectus")}
+                    </Button>
+                </div>
             </div>
 
             {/* Main Content Card */}

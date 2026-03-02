@@ -170,9 +170,18 @@ export default function FileDropzone({
                         <p className="font-medium text-foreground">
                             {label || "Click or drag & drop to upload"}
                         </p>
-                        <p className="text-xs text-muted-foreground">
-                            PDF, DOC, DOCX (max {maxSize}MB)
-                        </p>
+                        {acceptedTypes.length > 0 && (
+                            <p className="text-xs text-muted-foreground">
+                                {acceptedTypes.includes("text/csv")
+                                    ? `CSV (max ${maxSize}MB)`
+                                    : `PDF, DOC, DOCX (max ${maxSize}MB)`}
+                            </p>
+                        )}
+                        {acceptedTypes.length === 0 && (
+                            <p className="text-xs text-muted-foreground">
+                                Max {maxSize}MB
+                            </p>
+                        )}
                     </div>
                 </div>
             </div>
