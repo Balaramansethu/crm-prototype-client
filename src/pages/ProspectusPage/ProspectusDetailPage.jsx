@@ -139,20 +139,26 @@ export default function ProspectusDetailPage() {
     const mainProp =
         sortedProps.find((p) => p._id === id) || sortedProps[0] || null
 
-    const mainContact = mainProp
-        ? {
-              _id: mainProp._id,
-              name: mainProp.contact?.name,
-              email: mainProp.contact?.email,
-              phone: mainProp.contact?.phone,
-              department: mainProp.contact?.department,
-              remarks: mainProp.contact?.remarks,
-              status: mainProp.status,
-              source: mainProp.source,
-              followUp: mainProp.followUp,
-              priority: mainProp.priority,
-          }
-        : null
+    // Only create mainContact if contact has actual data (name or phone)
+    const hasContactData =
+        mainProp?.contact?.name ||
+        mainProp?.contact?.phone?.number ||
+        mainProp?.contact?.email
+    const mainContact =
+        mainProp && hasContactData
+            ? {
+                  _id: mainProp._id,
+                  name: mainProp.contact?.name,
+                  email: mainProp.contact?.email,
+                  phone: mainProp.contact?.phone,
+                  department: mainProp.contact?.department,
+                  remarks: mainProp.contact?.remarks,
+                  status: mainProp.status,
+                  source: mainProp.source,
+                  followUp: mainProp.followUp,
+                  priority: mainProp.priority,
+              }
+            : null
 
     // Remaining contacts
     const otherContacts = sortedProps.filter((p) => p._id !== mainProp?._id)
@@ -398,7 +404,7 @@ export default function ProspectusDetailPage() {
                     </Card>
 
                     {/* Main Contact Card */}
-                    {mainContact ? (
+                    {mainContact && (
                         <Card>
                             <CardHeader className="pb-3">
                                 <div className="flex items-center justify-between">
@@ -477,45 +483,6 @@ export default function ProspectusDetailPage() {
                                         />
                                     </>
                                 )}
-                            </CardContent>
-                        </Card>
-                    ) : (
-                        <Card className="border-dashed">
-                            <CardHeader className="pb-3">
-                                <div className="flex items-center justify-between">
-                                    <div className="flex items-center gap-2">
-                                        <div className="flex h-9 w-9 items-center justify-center rounded-full bg-muted">
-                                            <User className="h-5 w-5 text-muted-foreground" />
-                                        </div>
-                                        <CardTitle className="text-lg text-muted-foreground">
-                                            {t("contactPerson")}
-                                        </CardTitle>
-                                    </div>
-                                    <Button
-                                        variant="outline"
-                                        size="sm"
-                                        onClick={() =>
-                                            navigate(
-                                                `/prospectus/edit/${data._id}`,
-                                            )
-                                        }
-                                    >
-                                        <User className="h-4 w-4 mr-2" />
-                                        {t("addContact") || "Add Contact"}
-                                    </Button>
-                                </div>
-                            </CardHeader>
-                            <CardContent className="flex flex-col items-center justify-center py-8 text-center">
-                                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-muted mb-3">
-                                    <Users className="h-6 w-6 text-muted-foreground" />
-                                </div>
-                                <p className="text-sm font-medium text-muted-foreground mb-1">
-                                    {t("noContactsYet") || "No contacts added yet"}
-                                </p>
-                                <p className="text-xs text-muted-foreground max-w-sm">
-                                    {t("noContactsDescription") ||
-                                        "This company has no contact persons. Click 'Add Contact' to add one."}
-                                </p>
                             </CardContent>
                         </Card>
                     )}
