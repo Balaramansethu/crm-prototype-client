@@ -2,7 +2,13 @@ import { useState } from "react"
 import { useTranslation } from "react-i18next"
 import { useNavigate } from "react-router-dom"
 import { toast } from "sonner"
-import { Download, Upload, Loader2, CheckCircle2, AlertCircle } from "lucide-react"
+import {
+    Download,
+    Upload,
+    Loader2,
+    CheckCircle2,
+    AlertCircle,
+} from "lucide-react"
 import { Stepper } from "@/components/ui/stepper"
 import { Button } from "@/components/ui/button"
 import {
@@ -41,9 +47,18 @@ export default function BulkUploadProspectusPage() {
     const [isDownloadingTemplate, setIsDownloadingTemplate] = useState(false)
 
     const steps = [
-        { label: t("chooseFile") || "Choose File", description: t("uploadCSVFile") || "Upload CSV" },
-        { label: t("reviewErrors") || "Review Errors", description: t("fixAnyIssues") || "Fix Issues" },
-        { label: t("submitData") || "Submit Data", description: t("confirmUpload") || "Confirm Upload" },
+        {
+            label: t("chooseFile") || "Choose File",
+            description: t("uploadCSVFile") || "Upload CSV",
+        },
+        {
+            label: t("reviewErrors") || "Review Errors",
+            description: t("fixAnyIssues") || "Fix Issues",
+        },
+        {
+            label: t("submitData") || "Submit Data",
+            description: t("confirmUpload") || "Confirm Upload",
+        },
     ]
 
     // ────────────────────────────────────────────────────────────
@@ -53,10 +68,15 @@ export default function BulkUploadProspectusPage() {
         setIsDownloadingTemplate(true)
         try {
             downloadProspectusTemplate()
-            toast.success(t("templateDownloadedSuccessfully") || "Template downloaded successfully")
+            toast.success(
+                t("templateDownloadedSuccessfully") ||
+                    "Template downloaded successfully",
+            )
         } catch (error) {
             console.error("Template download error:", error)
-            toast.error(t("failedToDownloadTemplate") || "Failed to download template")
+            toast.error(
+                t("failedToDownloadTemplate") || "Failed to download template",
+            )
         } finally {
             setIsDownloadingTemplate(false)
         }
@@ -95,8 +115,9 @@ export default function BulkUploadProspectusPage() {
                 setValidationErrors(validation.errors)
                 setCurrentStep(2)
                 toast.warning(
-                    t("foundValidationErrors", { count: validation.errors.length }) ||
-                        `Found ${validation.errors.length} validation errors`,
+                    t("foundValidationErrors", {
+                        count: validation.errors.length,
+                    }) || `Found ${validation.errors.length} validation errors`,
                 )
             } else {
                 // All valid, transform to backend format
@@ -105,7 +126,8 @@ export default function BulkUploadProspectusPage() {
                 setValidationErrors([])
                 setCurrentStep(3)
                 toast.success(
-                    t("allRecordsValid") || "All records are valid! Ready to submit.",
+                    t("allRecordsValid") ||
+                        "All records are valid! Ready to submit.",
                 )
             }
         } catch (error) {
@@ -134,18 +156,18 @@ export default function BulkUploadProspectusPage() {
             const header =
                 backendErrors.length > 0
                     ? "SERVER ERRORS - Prospectus Bulk Upload\n" +
-                      "=" .repeat(50) +
+                      "=".repeat(50) +
                       "\n\n" +
                       "These errors occurred when attempting to create records in the system.\n" +
                       "Please fix the issues below and re-upload your CSV file.\n\n" +
-                      "=" .repeat(50) +
+                      "=".repeat(50) +
                       "\n\n"
                     : "VALIDATION ERRORS - Prospectus Bulk Upload\n" +
-                      "=" .repeat(50) +
+                      "=".repeat(50) +
                       "\n\n" +
                       "These errors were found during validation of your CSV file.\n" +
                       "Please fix the issues below and re-upload.\n\n" +
-                      "=" .repeat(50) +
+                      "=".repeat(50) +
                       "\n\n"
 
             const errorContent = errorsToDownload.join("\n")
@@ -272,10 +294,9 @@ export default function BulkUploadProspectusPage() {
                 errors.push(
                     `❌ Validation Error: ${errorMessage || "Invalid data in file"}`,
                 )
-                toast.error(
-                    t("validationError") || "Validation error",
-                    { duration: 6000 },
-                )
+                toast.error(t("validationError") || "Validation error", {
+                    duration: 6000,
+                })
                 break
             default:
                 errors.push(
@@ -293,10 +314,10 @@ export default function BulkUploadProspectusPage() {
             errors.push(
                 "   1. Check if the company/contact already exists in the system",
             )
+            errors.push("   2. Remove duplicate entries from your CSV file")
             errors.push(
-                "   2. Remove duplicate entries from your CSV file",
+                "   3. Or update the existing record instead of creating a new one",
             )
-            errors.push("   3. Or update the existing record instead of creating a new one")
         } else if (errorCode === "1001") {
             errors.push("")
             errors.push("💡 How to fix:")
@@ -335,287 +356,327 @@ export default function BulkUploadProspectusPage() {
                 {/* Stepper */}
                 <Stepper currentStep={currentStep} steps={steps} />
 
-            {/* Main Content Card */}
-            <div className="flex flex-col rounded-xl border bg-card text-card-foreground shadow-sm p-6 min-w-0">
-                {/* ──────────── STEP 1: Choose & Upload File ──────────── */}
-                {currentStep === 1 && (
-                    <div className="space-y-6">
-                        <div>
-                            <h2 className="text-lg font-semibold mb-2">
-                                {t("chooseYourCSVFile") || "Choose Your CSV File"}
-                            </h2>
-                            <p className="text-sm text-muted-foreground">
-                                {t("downloadTemplateAndUpload") ||
-                                    "Download the template, fill it with data, and upload it here"}
-                            </p>
-                        </div>
+                {/* Main Content Card */}
+                <div className="flex flex-col rounded-xl border bg-card text-card-foreground shadow-sm p-6 min-w-0">
+                    {/* ──────────── STEP 1: Choose & Upload File ──────────── */}
+                    {currentStep === 1 && (
+                        <div className="space-y-6">
+                            <div>
+                                <h2 className="text-lg font-semibold mb-2">
+                                    {t("chooseYourCSVFile") ||
+                                        "Choose Your CSV File"}
+                                </h2>
+                                <p className="text-sm text-muted-foreground">
+                                    {t("downloadTemplateAndUpload") ||
+                                        "Download the template, fill it with data, and upload it here"}
+                                </p>
+                            </div>
 
-                        {/* Download Template & Instructions Buttons */}
-                        <div className="flex flex-col sm:flex-row gap-3">
-                            <Button
-                                variant="outline"
-                                onClick={handleDownloadTemplate}
-                                disabled={isDownloadingTemplate}
-                                className="w-full sm:w-auto"
-                            >
-                                {isDownloadingTemplate ? (
-                                    <Loader2 className="h-4 w-4 animate-spin" />
-                                ) : (
-                                    <Download className="h-4 w-4" />
-                                )}
-                                {t("downloadTemplate") || "Download Template"}
-                            </Button>
-                            <BulkUploadInstructions />
-                        </div>
-
-                        {/* File Upload Dropzone */}
-                        <div>
-                            <FileDropzone
-                                file={uploadedFile}
-                                onFileSelect={setUploadedFile}
-                                acceptedTypes={["text/csv", "application/vnd.ms-excel"]}
-                                maxSize={10}
-                                label={
-                                    t("clickOrDragCSVFile") ||
-                                    "Click or drag CSV file to upload"
-                                }
-                            />
-                        </div>
-
-                        {/* Upload Button */}
-                        <div className="flex gap-3 justify-end">
-                            <Button
-                                variant="outline"
-                                onClick={() => navigate("/prospectus")}
-                            >
-                                {t("cancel")}
-                            </Button>
-                            <Button
-                                onClick={handleFileUpload}
-                                disabled={!uploadedFile || isProcessing}
-                            >
-                                {isProcessing ? (
-                                    <Loader2 className="h-4 w-4 animate-spin" />
-                                ) : (
-                                    <Upload className="h-4 w-4" />
-                                )}
-                                {t("uploadAndValidate") || "Upload & Validate"}
-                            </Button>
-                        </div>
-                    </div>
-                )}
-
-                {/* ──────────── STEP 2: Validation/Backend Errors ──────────── */}
-                {currentStep === 2 && (
-                    <div className="space-y-6">
-                        <div>
-                            <h2 className="text-lg font-semibold mb-2 flex items-center gap-2">
-                                <AlertCircle className="h-5 w-5 text-destructive" />
-                                {backendErrors.length > 0
-                                    ? t("serverErrorsFound") || "Server Errors Found"
-                                    : t("validationErrorsFound") || "Validation Errors Found"}
-                            </h2>
-                            <p className="text-sm text-muted-foreground">
-                                {backendErrors.length > 0
-                                    ? t("fixBackendErrorsAndReupload") ||
-                                      "Fix the server errors below and re-upload your corrected CSV file"
-                                    : t("fixErrorsAndReupload") ||
-                                      "Fix the validation errors below in your CSV file and re-upload"}
-                            </p>
-                        </div>
-
-                        {/* Summary Alert */}
-                        <Alert variant="destructive">
-                            <AlertDescription>
-                                <div className="flex flex-col gap-1 text-sm">
-                                    <p>
-                                        <strong>{t("totalErrors") || "Total Errors"}:</strong>{" "}
-                                        {backendErrors.length > 0
-                                            ? backendErrors.length
-                                            : validationErrors.length}
-                                    </p>
-                                    {backendErrors.length > 0 && (
-                                        <p className="text-xs mt-2 font-medium">
-                                            ⚠️ {t("backendErrorWarning") ||
-                                                "These errors came from the server after attempting to create records"}
-                                        </p>
+                            {/* Download Template & Instructions Buttons */}
+                            <div className="flex flex-col sm:flex-row gap-3">
+                                <Button
+                                    variant="outline"
+                                    onClick={handleDownloadTemplate}
+                                    disabled={isDownloadingTemplate}
+                                    className="w-full sm:w-auto"
+                                >
+                                    {isDownloadingTemplate ? (
+                                        <Loader2 className="h-4 w-4 animate-spin" />
+                                    ) : (
+                                        <Download className="h-4 w-4" />
                                     )}
-                                    <p className="text-xs mt-2">
-                                        {t("pleaseFixAllErrors") ||
-                                            "Please fix all errors before uploading again"}
-                                    </p>
-                                </div>
-                            </AlertDescription>
-                        </Alert>
+                                    {t("downloadTemplate") ||
+                                        "Download Template"}
+                                </Button>
+                                <BulkUploadInstructions />
+                            </div>
 
-                        {/* Errors List */}
-                        <div className="border rounded-lg p-4 max-h-[400px] overflow-y-auto bg-muted/30">
-                            <ul className="space-y-2">
-                                {(backendErrors.length > 0
-                                    ? backendErrors
-                                    : validationErrors
-                                ).map((error, index) => (
-                                    <li
-                                        key={index}
-                                        className="text-sm flex items-start gap-2"
-                                    >
-                                        {error.trim() === "" ? (
-                                            <span className="w-full">&nbsp;</span>
-                                        ) : error.startsWith("💡") || error.startsWith("   ") ? (
-                                            <span className="text-muted-foreground whitespace-pre">
-                                                {error}
-                                            </span>
-                                        ) : (
-                                            <>
-                                                <span className="text-destructive font-bold">
-                                                    •
-                                                </span>
-                                                <span className="text-destructive">{error}</span>
-                                            </>
-                                        )}
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
+                            {/* File Upload Dropzone */}
+                            <div>
+                                <FileDropzone
+                                    file={uploadedFile}
+                                    onFileSelect={setUploadedFile}
+                                    acceptedTypes={[
+                                        "text/csv",
+                                        "application/vnd.ms-excel",
+                                    ]}
+                                    maxSize={10}
+                                    label={
+                                        t("clickOrDragCSVFile") ||
+                                        "Click or drag CSV file to upload"
+                                    }
+                                />
+                            </div>
 
-                        {/* Actions */}
-                        <div className="flex flex-col sm:flex-row gap-3 justify-between">
-                            <Button
-                                variant="outline"
-                                onClick={handleDownloadErrors}
-                            >
-                                <Download className="h-4 w-4" />
-                                {t("downloadErrors") || "Download Errors"}
-                            </Button>
-                            <div className="flex gap-3">
+                            {/* Upload Button */}
+                            <div className="flex gap-3 justify-end">
                                 <Button
                                     variant="outline"
                                     onClick={() => navigate("/prospectus")}
                                 >
                                     {t("cancel")}
                                 </Button>
-                                <Button onClick={handleReUpload}>
-                                    {t("reUploadFile") || "Re-upload File"}
+                                <Button
+                                    onClick={handleFileUpload}
+                                    disabled={!uploadedFile || isProcessing}
+                                >
+                                    {isProcessing ? (
+                                        <Loader2 className="h-4 w-4 animate-spin" />
+                                    ) : (
+                                        <Upload className="h-4 w-4" />
+                                    )}
+                                    {t("uploadAndValidate") ||
+                                        "Upload & Validate"}
                                 </Button>
                             </div>
                         </div>
-                    </div>
-                )}
+                    )}
 
-                {/* ──────────── STEP 3: Submit Valid Data ──────────── */}
-                {currentStep === 3 && (
-                    <div className="space-y-6">
-                        <div>
-                            <h2 className="text-lg font-semibold mb-2 flex items-center gap-2">
-                                <CheckCircle2 className="h-5 w-5 text-green-600" />
-                                {t("readyToSubmit") || "Ready to Submit"}
-                            </h2>
-                            <p className="text-sm text-muted-foreground">
-                                {t("reviewSummaryAndSubmit") ||
-                                    "Review the summary below and submit to create prospectus records"}
-                            </p>
-                        </div>
+                    {/* ──────────── STEP 2: Validation/Backend Errors ──────────── */}
+                    {currentStep === 2 && (
+                        <div className="space-y-6">
+                            <div>
+                                <h2 className="text-lg font-semibold mb-2 flex items-center gap-2">
+                                    <AlertCircle className="h-5 w-5 text-destructive" />
+                                    {backendErrors.length > 0
+                                        ? t("serverErrorsFound") ||
+                                          "Server Errors Found"
+                                        : t("validationErrorsFound") ||
+                                          "Validation Errors Found"}
+                                </h2>
+                                <p className="text-sm text-muted-foreground">
+                                    {backendErrors.length > 0
+                                        ? t("fixBackendErrorsAndReupload") ||
+                                          "Fix the server errors below and re-upload your corrected CSV file"
+                                        : t("fixErrorsAndReupload") ||
+                                          "Fix the validation errors below in your CSV file and re-upload"}
+                                </p>
+                            </div>
 
-                        {/* Summary */}
-                        <Alert>
-                            <AlertDescription>
-                                <div className="flex flex-col gap-2 text-sm">
-                                    <p>
-                                        <strong>
-                                            {t("totalCompanies") || "Total Companies"}:
-                                        </strong>{" "}
-                                        {backendPayload?.length || 0}
-                                    </p>
-                                    <p>
-                                        <strong>
-                                            {t("totalContacts") || "Total Contacts"}:
-                                        </strong>{" "}
-                                        {backendPayload?.reduce(
-                                            (sum, item) =>
-                                                sum + item.prospectuses.length,
-                                            0,
-                                        ) || 0}
-                                    </p>
+                            {/* Summary Alert */}
+                            <Alert variant="destructive">
+                                <AlertDescription>
+                                    <div className="flex flex-col gap-1 text-sm">
+                                        <p>
+                                            <strong>
+                                                {t("totalErrors") ||
+                                                    "Total Errors"}
+                                                :
+                                            </strong>{" "}
+                                            {backendErrors.length > 0
+                                                ? backendErrors.length
+                                                : validationErrors.length}
+                                        </p>
+                                        {backendErrors.length > 0 && (
+                                            <p className="text-xs mt-2 font-medium">
+                                                ⚠️{" "}
+                                                {t("backendErrorWarning") ||
+                                                    "These errors came from the server after attempting to create records"}
+                                            </p>
+                                        )}
+                                        <p className="text-xs mt-2">
+                                            {t("pleaseFixAllErrors") ||
+                                                "Please fix all errors before uploading again"}
+                                        </p>
+                                    </div>
+                                </AlertDescription>
+                            </Alert>
+
+                            {/* Errors List */}
+                            <div className="border rounded-lg p-4 max-h-[400px] overflow-y-auto bg-muted/30">
+                                <ul className="space-y-2">
+                                    {(backendErrors.length > 0
+                                        ? backendErrors
+                                        : validationErrors
+                                    ).map((error, index) => (
+                                        <li
+                                            key={index}
+                                            className="text-sm flex items-start gap-2"
+                                        >
+                                            {error.trim() === "" ? (
+                                                <span className="w-full">
+                                                    &nbsp;
+                                                </span>
+                                            ) : error.startsWith("💡") ||
+                                              error.startsWith("   ") ? (
+                                                <span className="text-muted-foreground whitespace-pre">
+                                                    {error}
+                                                </span>
+                                            ) : (
+                                                <>
+                                                    <span className="text-destructive font-bold">
+                                                        •
+                                                    </span>
+                                                    <span className="text-destructive">
+                                                        {error}
+                                                    </span>
+                                                </>
+                                            )}
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+
+                            {/* Actions */}
+                            <div className="flex flex-col sm:flex-row gap-3 justify-between">
+                                <Button
+                                    variant="outline"
+                                    onClick={handleDownloadErrors}
+                                >
+                                    <Download className="h-4 w-4" />
+                                    {t("downloadErrors") || "Download Errors"}
+                                </Button>
+                                <div className="flex gap-3">
+                                    <Button
+                                        variant="outline"
+                                        onClick={() => navigate("/prospectus")}
+                                    >
+                                        {t("cancel")}
+                                    </Button>
+                                    <Button onClick={handleReUpload}>
+                                        {t("reUploadFile") || "Re-upload File"}
+                                    </Button>
                                 </div>
-                            </AlertDescription>
-                        </Alert>
+                            </div>
+                        </div>
+                    )}
 
-                        {/* Preview Table */}
-                        <div className="border rounded-lg overflow-x-auto max-h-[400px] overflow-y-auto">
-                            <Table>
-                                <TableHeader className="sticky top-0 bg-muted/30">
-                                    <TableRow>
-                                        <TableHead className="w-[60px]">
-                                            {t("row") || "#"}
-                                        </TableHead>
-                                        <TableHead>{t("company") || "Company"}</TableHead>
-                                        <TableHead>
-                                            {t("companyPhone") || "Company Phone"}
-                                        </TableHead>
-                                        <TableHead>
-                                            {t("contacts") || "Contacts"}
-                                        </TableHead>
-                                    </TableRow>
-                                </TableHeader>
-                                <TableBody>
-                                    {!backendPayload || backendPayload.length === 0 ? (
+                    {/* ──────────── STEP 3: Submit Valid Data ──────────── */}
+                    {currentStep === 3 && (
+                        <div className="space-y-6">
+                            <div>
+                                <h2 className="text-lg font-semibold mb-2 flex items-center gap-2">
+                                    <CheckCircle2 className="h-5 w-5 text-green-600" />
+                                    {t("readyToSubmit") || "Ready to Submit"}
+                                </h2>
+                                <p className="text-sm text-muted-foreground">
+                                    {t("reviewSummaryAndSubmit") ||
+                                        "Review the summary below and submit to create prospectus records"}
+                                </p>
+                            </div>
+
+                            {/* Summary */}
+                            <Alert>
+                                <AlertDescription>
+                                    <div className="flex flex-col gap-2 text-sm">
+                                        <p>
+                                            <strong>
+                                                {t("totalCompanies") ||
+                                                    "Total Companies"}
+                                                :
+                                            </strong>{" "}
+                                            {backendPayload?.length || 0}
+                                        </p>
+                                        <p>
+                                            <strong>
+                                                {t("totalContacts") ||
+                                                    "Total Contacts"}
+                                                :
+                                            </strong>{" "}
+                                            {backendPayload?.reduce(
+                                                (sum, item) =>
+                                                    sum +
+                                                    item.prospectuses.length,
+                                                0,
+                                            ) || 0}
+                                        </p>
+                                    </div>
+                                </AlertDescription>
+                            </Alert>
+
+                            {/* Preview Table */}
+                            <div className="border rounded-lg overflow-x-auto max-h-[400px] overflow-y-auto">
+                                <Table>
+                                    <TableHeader className="sticky top-0 bg-muted/30">
                                         <TableRow>
-                                            <TableCell
-                                                colSpan={4}
-                                                className="text-center text-muted-foreground"
-                                            >
-                                                {t("noData") || "No data"}
-                                            </TableCell>
+                                            <TableHead className="w-[60px]">
+                                                {t("row") || "#"}
+                                            </TableHead>
+                                            <TableHead>
+                                                {t("company") || "Company"}
+                                            </TableHead>
+                                            <TableHead>
+                                                {t("companyPhone") ||
+                                                    "Company Phone"}
+                                            </TableHead>
+                                            <TableHead>
+                                                {t("contacts") || "Contacts"}
+                                            </TableHead>
                                         </TableRow>
-                                    ) : (
-                                        backendPayload.map((item, index) => (
-                                            <TableRow key={index}>
-                                                <TableCell className="font-medium">
-                                                    {index + 1}
-                                                </TableCell>
-                                                <TableCell>
-                                                    {item.company.name || "-"}
-                                                </TableCell>
-                                                <TableCell>
-                                                    {item.company.phone?.number || "-"}
-                                                </TableCell>
-                                                <TableCell>
-                                                    {item.prospectuses.length} contact(s)
+                                    </TableHeader>
+                                    <TableBody>
+                                        {!backendPayload ||
+                                        backendPayload.length === 0 ? (
+                                            <TableRow>
+                                                <TableCell
+                                                    colSpan={4}
+                                                    className="text-center text-muted-foreground"
+                                                >
+                                                    {t("noData") || "No data"}
                                                 </TableCell>
                                             </TableRow>
-                                        ))
-                                    )}
-                                </TableBody>
-                            </Table>
-                        </div>
+                                        ) : (
+                                            backendPayload.map(
+                                                (item, index) => (
+                                                    <TableRow key={index}>
+                                                        <TableCell className="font-medium">
+                                                            {index + 1}
+                                                        </TableCell>
+                                                        <TableCell>
+                                                            {item.company
+                                                                .name || "-"}
+                                                        </TableCell>
+                                                        <TableCell>
+                                                            {item.company.phone
+                                                                ?.number || "-"}
+                                                        </TableCell>
+                                                        <TableCell>
+                                                            {
+                                                                item
+                                                                    .prospectuses
+                                                                    .length
+                                                            }{" "}
+                                                            contact(s)
+                                                        </TableCell>
+                                                    </TableRow>
+                                                ),
+                                            )
+                                        )}
+                                    </TableBody>
+                                </Table>
+                            </div>
 
-                        {/* Actions */}
-                        <div className="flex gap-3 justify-end">
-                            <Button
-                                variant="outline"
-                                onClick={() => navigate("/prospectus")}
-                            >
-                                {t("cancel")}
-                            </Button>
-                            <Button variant="outline" onClick={handleReUpload}>
-                                {t("startOver") || "Start Over"}
-                            </Button>
-                            <Button
-                                onClick={handleSubmit}
-                                disabled={
-                                    !backendPayload ||
-                                    backendPayload.length === 0 ||
-                                    isSubmitting
-                                }
-                            >
-                                {isSubmitting && (
-                                    <Loader2 className="h-4 w-4 animate-spin" />
-                                )}
-                                {t("submitBulkUpload") || "Submit Bulk Upload"}
-                            </Button>
+                            {/* Actions */}
+                            <div className="flex gap-3 justify-end">
+                                <Button
+                                    variant="outline"
+                                    onClick={() => navigate("/prospectus")}
+                                >
+                                    {t("cancel")}
+                                </Button>
+                                <Button
+                                    variant="outline"
+                                    onClick={handleReUpload}
+                                >
+                                    {t("startOver") || "Start Over"}
+                                </Button>
+                                <Button
+                                    onClick={handleSubmit}
+                                    disabled={
+                                        !backendPayload ||
+                                        backendPayload.length === 0 ||
+                                        isSubmitting
+                                    }
+                                >
+                                    {isSubmitting && (
+                                        <Loader2 className="h-4 w-4 animate-spin" />
+                                    )}
+                                    {t("submitBulkUpload") ||
+                                        "Submit Bulk Upload"}
+                                </Button>
+                            </div>
                         </div>
-                    </div>
-                )}
+                    )}
                 </div>
             </div>
         </div>

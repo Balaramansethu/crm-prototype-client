@@ -39,7 +39,8 @@ export default function BulkUploadInstructions() {
                 <DialogHeader>
                     <DialogTitle className="flex items-center gap-2 text-xl">
                         <FileSpreadsheet className="h-5 w-5" />
-                        {t("bulkUploadInstructions") || "Bulk Upload Instructions"}
+                        {t("bulkUploadInstructions") ||
+                            "Bulk Upload Instructions"}
                     </DialogTitle>
                     <DialogDescription>
                         {t("bulkUploadInstructionsDesc") ||
@@ -66,51 +67,158 @@ export default function BulkUploadInstructions() {
                     <div>
                         <h3 className="text-lg font-semibold flex items-center gap-2 mb-3">
                             <CheckCheck className="h-5 w-5 text-blue-600" />
-                            {t("formatFlexibility") || "Smart Format Auto-Detection"}
+                            {t("formatFlexibility") ||
+                                "Smart Format Auto-Detection"}
                         </h3>
                         <div className="space-y-3 rounded-lg border bg-blue-50 p-4">
                             <p className="text-sm font-medium text-blue-900">
-                                ✨ {t("autoFormatting") || "The system automatically handles multiple formats - Excel auto-formatting is fully supported!"}
+                                ✨{" "}
+                                {t("autoFormatting") ||
+                                    "The system automatically handles multiple formats - Excel auto-formatting is fully supported!"}
                             </p>
 
                             {/* Date Formats */}
                             <div className="mt-3">
                                 <p className="text-sm font-semibold text-blue-900 mb-1">
-                                    📅 {t("dateFormats") || "Date Formats (all work!)"}
+                                    📅{" "}
+                                    {t("dateFormats") ||
+                                        "Date Formats (all work!)"}
                                 </p>
                                 <div className="text-xs text-blue-800 space-y-1 ml-4">
-                                    <p>• <code className="bg-white px-1 rounded">2026-03-15</code> (4-digit year, ISO format)</p>
-                                    <p>• <code className="bg-white px-1 rounded">26-03-15</code> (2-digit year, YY-MM-DD)</p>
-                                    <p>• <code className="bg-white px-1 rounded">15-03-26</code> (2-digit year, DD-MM-YY) ← Most common Excel format</p>
-                                    <p>• <code className="bg-white px-1 rounded">15/03/26</code> (with slashes)</p>
-                                    <p>• <code className="bg-white px-1 rounded">15-03-2026</code> (4-digit year, DD-MM-YYYY)</p>
-                                    <p className="text-blue-700 font-medium mt-2">💡 2-digit years (00-99) = 2000-2099 (e.g., 26 = 2026)</p>
+                                    <p>
+                                        •{" "}
+                                        <code className="bg-white px-1 rounded">
+                                            2026-03-15
+                                        </code>{" "}
+                                        (4-digit year, ISO format)
+                                    </p>
+                                    <p>
+                                        •{" "}
+                                        <code className="bg-white px-1 rounded">
+                                            26-03-15
+                                        </code>{" "}
+                                        (2-digit year, YY-MM-DD)
+                                    </p>
+                                    <p>
+                                        •{" "}
+                                        <code className="bg-white px-1 rounded">
+                                            15-03-26
+                                        </code>{" "}
+                                        (2-digit year, DD-MM-YY) ← Most common
+                                        Excel format
+                                    </p>
+                                    <p>
+                                        •{" "}
+                                        <code className="bg-white px-1 rounded">
+                                            15/03/26
+                                        </code>{" "}
+                                        (with slashes)
+                                    </p>
+                                    <p>
+                                        •{" "}
+                                        <code className="bg-white px-1 rounded">
+                                            15-03-2026
+                                        </code>{" "}
+                                        (4-digit year, DD-MM-YYYY)
+                                    </p>
+                                    <p className="text-blue-700 font-medium mt-2">
+                                        💡 2-digit years (00-99) = 2000-2099
+                                        (e.g., 26 = 2026)
+                                    </p>
                                 </div>
                             </div>
 
                             {/* Phone Country Codes */}
                             <div className="mt-3">
                                 <p className="text-sm font-semibold text-blue-900 mb-1">
-                                    📞 {t("phoneCountryCodes") || "Phone Country Codes (auto-formatted)"}
+                                    📞{" "}
+                                    {t("phoneCountryCodes") ||
+                                        "Phone Country Codes (auto-formatted)"}
                                 </p>
                                 <div className="text-xs text-blue-800 space-y-1 ml-4">
-                                    <p>• <code className="bg-white px-1 rounded">966</code> → Auto-formatted to <code className="bg-white px-1 rounded">+966</code></p>
-                                    <p>• <code className="bg-white px-1 rounded">+966</code> → Kept as <code className="bg-white px-1 rounded">+966</code></p>
-                                    <p>• <code className="bg-white px-1 rounded">+ 966</code> or <code className="bg-white px-1 rounded"> 966 </code> → Cleaned to <code className="bg-white px-1 rounded">+966</code></p>
-                                    <p className="text-blue-700 font-medium mt-2">💡 Just type the numbers - the + is added automatically!</p>
+                                    <p>
+                                        •{" "}
+                                        <code className="bg-white px-1 rounded">
+                                            966
+                                        </code>{" "}
+                                        → Auto-formatted to{" "}
+                                        <code className="bg-white px-1 rounded">
+                                            +966
+                                        </code>
+                                    </p>
+                                    <p>
+                                        •{" "}
+                                        <code className="bg-white px-1 rounded">
+                                            +966
+                                        </code>{" "}
+                                        → Kept as{" "}
+                                        <code className="bg-white px-1 rounded">
+                                            +966
+                                        </code>
+                                    </p>
+                                    <p>
+                                        •{" "}
+                                        <code className="bg-white px-1 rounded">
+                                            + 966
+                                        </code>{" "}
+                                        or{" "}
+                                        <code className="bg-white px-1 rounded">
+                                            {" "}
+                                            966{" "}
+                                        </code>{" "}
+                                        → Cleaned to{" "}
+                                        <code className="bg-white px-1 rounded">
+                                            +966
+                                        </code>
+                                    </p>
+                                    <p className="text-blue-700 font-medium mt-2">
+                                        💡 Just type the numbers - the + is
+                                        added automatically!
+                                    </p>
                                 </div>
                             </div>
 
                             {/* Short Address */}
                             <div className="mt-3">
                                 <p className="text-sm font-semibold text-blue-900 mb-1">
-                                    📍 {t("shortAddressFormat") || "Short Address Format"}
+                                    📍{" "}
+                                    {t("shortAddressFormat") ||
+                                        "Short Address Format"}
                                 </p>
                                 <div className="text-xs text-blue-800 space-y-1 ml-4">
-                                    <p>• Must be: <strong>4 uppercase letters + 4 digits</strong></p>
-                                    <p>• <code className="bg-white px-1 rounded">RYDH1234</code> ✓ Correct</p>
-                                    <p>• <code className="bg-white px-1 rounded">rydh1234</code> → Auto-converted to <code className="bg-white px-1 rounded">RYDH1234</code></p>
-                                    <p>• <code className="bg-white px-1 rounded">RYDH 1234</code> → Spaces removed, becomes <code className="bg-white px-1 rounded">RYDH1234</code></p>
+                                    <p>
+                                        • Must be:{" "}
+                                        <strong>
+                                            4 uppercase letters + 4 digits
+                                        </strong>
+                                    </p>
+                                    <p>
+                                        •{" "}
+                                        <code className="bg-white px-1 rounded">
+                                            RYDH1234
+                                        </code>{" "}
+                                        ✓ Correct
+                                    </p>
+                                    <p>
+                                        •{" "}
+                                        <code className="bg-white px-1 rounded">
+                                            rydh1234
+                                        </code>{" "}
+                                        → Auto-converted to{" "}
+                                        <code className="bg-white px-1 rounded">
+                                            RYDH1234
+                                        </code>
+                                    </p>
+                                    <p>
+                                        •{" "}
+                                        <code className="bg-white px-1 rounded">
+                                            RYDH 1234
+                                        </code>{" "}
+                                        → Spaces removed, becomes{" "}
+                                        <code className="bg-white px-1 rounded">
+                                            RYDH1234
+                                        </code>
+                                    </p>
                                 </div>
                             </div>
                         </div>
@@ -131,7 +239,8 @@ export default function BulkUploadInstructions() {
                                 </div>
                                 <div className="flex-1">
                                     <p className="font-medium mb-1">
-                                        {t("downloadTemplateStep") || "Download the CSV Template"}
+                                        {t("downloadTemplateStep") ||
+                                            "Download the CSV Template"}
                                     </p>
                                     <p className="text-sm text-muted-foreground">
                                         {t("downloadTemplateStepDesc") ||
@@ -147,7 +256,8 @@ export default function BulkUploadInstructions() {
                                 </div>
                                 <div className="flex-1">
                                     <p className="font-medium mb-1">
-                                        {t("fillDataStep") || "Fill in Your Data"}
+                                        {t("fillDataStep") ||
+                                            "Fill in Your Data"}
                                     </p>
                                     <p className="text-sm text-muted-foreground">
                                         {t("fillDataStepDesc") ||
@@ -179,7 +289,8 @@ export default function BulkUploadInstructions() {
                                 </div>
                                 <div className="flex-1">
                                     <p className="font-medium mb-1">
-                                        {t("uploadFileStep") || "Upload Your File"}
+                                        {t("uploadFileStep") ||
+                                            "Upload Your File"}
                                     </p>
                                     <p className="text-sm text-muted-foreground">
                                         {t("uploadFileStepDesc") ||
@@ -212,7 +323,8 @@ export default function BulkUploadInstructions() {
                     <div>
                         <h3 className="text-lg font-semibold flex items-center gap-2 mb-3">
                             <Users className="h-5 w-5 text-green-600" />
-                            {t("addingMultipleContacts") || "Adding Multiple Contacts"}
+                            {t("addingMultipleContacts") ||
+                                "Adding Multiple Contacts"}
                         </h3>
                         <Alert className="mb-3">
                             <AlertDescription className="text-sm">
@@ -250,22 +362,34 @@ export default function BulkUploadInstructions() {
                                         <tr className="border-b bg-blue-50">
                                             <td className="p-2">Acme Corp</td>
                                             <td className="p-2">501234567</td>
-                                            <td className="p-2 font-medium">John Doe</td>
-                                            <td className="p-2">john@acme.com</td>
+                                            <td className="p-2 font-medium">
+                                                John Doe
+                                            </td>
+                                            <td className="p-2">
+                                                john@acme.com
+                                            </td>
                                             <td className="p-2">new</td>
                                         </tr>
                                         <tr className="border-b bg-blue-50">
                                             <td className="p-2">Acme Corp</td>
                                             <td className="p-2">501234567</td>
-                                            <td className="p-2 font-medium">Jane Smith</td>
-                                            <td className="p-2">jane@acme.com</td>
+                                            <td className="p-2 font-medium">
+                                                Jane Smith
+                                            </td>
+                                            <td className="p-2">
+                                                jane@acme.com
+                                            </td>
                                             <td className="p-2">qualified</td>
                                         </tr>
                                         <tr className="bg-blue-50">
                                             <td className="p-2">Acme Corp</td>
                                             <td className="p-2">501234567</td>
-                                            <td className="p-2 font-medium">Bob Wilson</td>
-                                            <td className="p-2">bob@acme.com</td>
+                                            <td className="p-2 font-medium">
+                                                Bob Wilson
+                                            </td>
+                                            <td className="p-2">
+                                                bob@acme.com
+                                            </td>
                                             <td className="p-2">new</td>
                                         </tr>
                                     </tbody>
@@ -365,7 +489,8 @@ export default function BulkUploadInstructions() {
                                     Company Name
                                 </p>
                                 <p className="text-xs text-red-700">
-                                    {t("companyNameReq") || "2-100 characters, must be unique"}
+                                    {t("companyNameReq") ||
+                                        "2-100 characters, must be unique"}
                                 </p>
                             </div>
                             <div className="rounded-lg border bg-red-50 p-3">
@@ -379,7 +504,8 @@ export default function BulkUploadInstructions() {
                             </div>
                         </div>
                         <p className="text-xs text-muted-foreground mt-2">
-                            {t("allOtherFieldsOptional") || "All other fields are optional"}
+                            {t("allOtherFieldsOptional") ||
+                                "All other fields are optional"}
                         </p>
                     </div>
 
@@ -393,37 +519,55 @@ export default function BulkUploadInstructions() {
                         <div className="space-y-2">
                             <Alert variant="destructive">
                                 <AlertDescription className="text-sm">
-                                    <strong>{t("mistake1Title") || "Wrong:"}</strong>{" "}
+                                    <strong>
+                                        {t("mistake1Title") || "Wrong:"}
+                                    </strong>{" "}
                                     {t("mistake1") ||
                                         "Saving as Excel (.xlsx) instead of CSV (.csv)"}
                                 </AlertDescription>
                             </Alert>
                             <Alert variant="destructive">
                                 <AlertDescription className="text-sm">
-                                    <strong>{t("mistake2Title") || "Wrong:"}</strong>{" "}
+                                    <strong>
+                                        {t("mistake2Title") || "Wrong:"}
+                                    </strong>{" "}
                                     {t("mistake2") ||
                                         "Text dates like 'March 15, 2025' or '15th Mar'"}
                                     <br />
-                                    <strong>{t("correctLabel") || "Correct:"}</strong> 2025-03-15, 25-03-15, 15-03-25, 15/03/25 (all work!)
+                                    <strong>
+                                        {t("correctLabel") || "Correct:"}
+                                    </strong>{" "}
+                                    2025-03-15, 25-03-15, 15-03-25, 15/03/25
+                                    (all work!)
                                 </AlertDescription>
                             </Alert>
                             <Alert variant="destructive">
                                 <AlertDescription className="text-sm">
-                                    <strong>{t("mistake3Title") || "Wrong:"}</strong>{" "}
+                                    <strong>
+                                        {t("mistake3Title") || "Wrong:"}
+                                    </strong>{" "}
                                     {t("mistake3") ||
                                         "Phone with spaces: 50 123 4567"}
                                     <br />
-                                    <strong>{t("correctLabel") || "Correct:"}</strong> 501234567
+                                    <strong>
+                                        {t("correctLabel") || "Correct:"}
+                                    </strong>{" "}
+                                    501234567
                                 </AlertDescription>
                             </Alert>
                             <Alert variant="destructive">
                                 <AlertDescription className="text-sm">
-                                    <strong>{t("mistake4Title") || "Wrong:"}</strong>{" "}
+                                    <strong>
+                                        {t("mistake4Title") || "Wrong:"}
+                                    </strong>{" "}
                                     {t("mistake4") ||
                                         "Changing column header names"}
                                     <br />
-                                    <strong>{t("correctLabel") || "Correct:"}</strong>{" "}
-                                    {t("keepHeadersUnchanged") || "Keep headers exactly as in template"}
+                                    <strong>
+                                        {t("correctLabel") || "Correct:"}
+                                    </strong>{" "}
+                                    {t("keepHeadersUnchanged") ||
+                                        "Keep headers exactly as in template"}
                                 </AlertDescription>
                             </Alert>
                         </div>

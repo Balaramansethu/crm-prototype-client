@@ -46,7 +46,8 @@ export function Stepper({ currentStep, steps = [], className }) {
                                         className={cn(
                                             "text-xs font-medium transition-colors",
                                             isActive && "text-foreground",
-                                            !isActive && "text-muted-foreground",
+                                            !isActive &&
+                                                "text-muted-foreground",
                                         )}
                                     >
                                         {step.label}

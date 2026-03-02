@@ -283,7 +283,8 @@ export const TEMPLATE_FIELD_DESCRIPTIONS = {
     addressPincode: "Optional. Postal/ZIP code",
     addressLatitude: "Optional. Decimal number (e.g., 24.7136)",
     addressLongitude: "Optional. Decimal number (e.g., 46.6753)",
-    addressShortAddress: "Optional. 4 uppercase letters + 4 digits (e.g., RYDH1234)",
+    addressShortAddress:
+        "Optional. 4 uppercase letters + 4 digits (e.g., RYDH1234)",
 
     // Contact Person Details
     contactName: "Optional. Name of the contact person",

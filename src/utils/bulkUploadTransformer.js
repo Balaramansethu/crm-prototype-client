@@ -211,7 +211,9 @@ function buildAddress(row) {
 
     // Short Address: Format as 4 uppercase letters + 4 digits
     if (row["Address Short Address"]?.trim()) {
-        const formatted = formatShortAddress(row["Address Short Address"].trim())
+        const formatted = formatShortAddress(
+            row["Address Short Address"].trim(),
+        )
         if (formatted) {
             address.shortAddress = formatted
         }
@@ -299,7 +301,9 @@ function parseDate(dateString) {
     }
 
     // Try DD-MM-YY or DD/MM/YY (2-digit year, European format - MOST COMMON in Excel)
-    const europeanShortMatch = trimmed.match(/^(\d{1,2})[\/-](\d{1,2})[\/-](\d{2})$/)
+    const europeanShortMatch = trimmed.match(
+        /^(\d{1,2})[\/-](\d{1,2})[\/-](\d{2})$/,
+    )
     if (europeanShortMatch) {
         const day = parseInt(europeanShortMatch[1])
         const month = parseInt(europeanShortMatch[2])
@@ -395,7 +399,9 @@ function parseDate(dateString) {
     if (!isNaN(excelSerial) && excelSerial > 0) {
         // Excel serial date: days since 1900-01-01 (with some quirks)
         const excelEpoch = new Date(1899, 11, 30) // Excel's epoch (accounting for the 1900 leap year bug)
-        const date = new Date(excelEpoch.getTime() + excelSerial * 24 * 60 * 60 * 1000)
+        const date = new Date(
+            excelEpoch.getTime() + excelSerial * 24 * 60 * 60 * 1000,
+        )
         if (isValidDate(date)) {
             return date.toISOString()
         }
@@ -512,9 +518,7 @@ export function validateCSVRows(rows) {
         // Validate status enum
         if (row["Status"]?.trim()) {
             const validStatuses = ["new", "qualified"]
-            if (
-                !validStatuses.includes(row["Status"].trim().toLowerCase())
-            ) {
+            if (!validStatuses.includes(row["Status"].trim().toLowerCase())) {
                 errors.push(
                     `Row ${rowNumber}: Status must be "new" or "qualified"`,
                 )
@@ -549,7 +553,9 @@ export function validateCSVRows(rows) {
                 /^\d+$/, // Excel serial number
             ]
 
-            const matchesFormat = dateFormats.some(regex => regex.test(row["Follow Up Date"].trim()))
+            const matchesFormat = dateFormats.some((regex) =>
+                regex.test(row["Follow Up Date"].trim()),
+            )
 
             if (!matchesFormat) {
                 errors.push(

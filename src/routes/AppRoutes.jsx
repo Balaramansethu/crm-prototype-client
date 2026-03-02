@@ -110,7 +110,10 @@ export default function AppRoutes() {
                     >
                         <Route index element={<ProspectusListPage />} />
                         <Route path="new" element={<CreateProspectusPage />} />
-                        <Route path="bulk-upload" element={<BulkUploadProspectusPage />} />
+                        <Route
+                            path="bulk-upload"
+                            element={<BulkUploadProspectusPage />}
+                        />
                         <Route path=":id" element={<ProspectusDetailPage />} />
                         <Route
                             path="edit/:id"
