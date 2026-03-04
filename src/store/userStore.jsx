@@ -12,6 +12,7 @@ export const useUserStore = create(
             clearUser: () => {
                 set({ user: null, isSessionExpired: false })
                 sessionStorage.removeItem("crm-user")
+                localStorage.removeItem("user")
             },
         }),
         {

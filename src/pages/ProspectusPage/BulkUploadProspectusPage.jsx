@@ -22,7 +22,10 @@ import {
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import FileDropzone from "@/components/ui/file-dropzone"
 import { PageHeader, BulkUploadInstructions } from "@/components/common"
-import { submitBulkProspectuses } from "@/service/prospectusService"
+import {
+    submitBulkProspectuses,
+    bulkValidateProspectuses,
+} from "@/service/prospectusService"
 import { downloadProspectusTemplate } from "@/utils/prospectusTemplateGenerator"
 import { parseCSV, readFileAsText } from "@/utils/csvParser"
 import {
@@ -40,6 +43,7 @@ export default function BulkUploadProspectusPage() {
     const [uploadedFile, setUploadedFile] = useState(null)
     const [parsedRows, setParsedRows] = useState([])
     const [validationErrors, setValidationErrors] = useState([])
+    const [backendValidationErrors, setBackendValidationErrors] = useState([])
     const [backendErrors, setBackendErrors] = useState([])
     const [backendPayload, setBackendPayload] = useState(null)
     const [isProcessing, setIsProcessing] = useState(false)
@@ -107,23 +111,53 @@ export default function BulkUploadProspectusPage() {
 
             setParsedRows(rows)
 
-            // Validate rows
-            const validation = validateCSVRows(rows)
+            // Client-side validation (commented out to test backend validation)
+            // const validation = validateCSVRows(rows)
+            // if (!validation.valid) {
+            //     setValidationErrors(validation.errors)
+            //     setBackendValidationErrors([])
+            //     setCurrentStep(2)
+            //     toast.warning(
+            //         t("foundValidationErrors", {
+            //             count: validation.errors.length,
+            //         }) || `Found ${validation.errors.length} validation errors`,
+            //     )
+            //     return
+            // }
 
-            if (!validation.valid) {
-                // Has validation errors
-                setValidationErrors(validation.errors)
+            // Transform to backend payload format
+            const payload = transformCSVToBackendPayload(rows)
+
+            // Backend validation
+            const validationResult = await bulkValidateProspectuses(payload)
+
+            if (!validationResult.success) {
+                toast.error(
+                    validationResult.errorMessage ||
+                        t("failedToValidateBatch") ||
+                        "Failed to validate batch",
+                )
+                return
+            }
+
+            const invalidRows = validationResult.data.filter(
+                (row) => row.status === "invalid",
+            )
+
+            if (invalidRows.length > 0) {
+                setBackendValidationErrors(validationResult.data)
+                setValidationErrors([])
                 setCurrentStep(2)
                 toast.warning(
-                    t("foundValidationErrors", {
-                        count: validation.errors.length,
-                    }) || `Found ${validation.errors.length} validation errors`,
+                    t("foundBackendValidationErrors", {
+                        count: invalidRows.length,
+                    }) ||
+                        `${invalidRows.length} row(s) failed server validation. Please fix and re-upload.`,
                 )
             } else {
-                // All valid, transform to backend format
-                const payload = transformCSVToBackendPayload(rows)
                 setBackendPayload(payload)
                 setValidationErrors([])
+                setBackendValidationErrors([])
                 setCurrentStep(3)
                 toast.success(
                     t("allRecordsValid") ||
@@ -146,45 +180,62 @@ export default function BulkUploadProspectusPage() {
     // STEP 2: Download Validation/Backend Errors as TXT
     // ────────────────────────────────────────────────────────────
     const handleDownloadErrors = () => {
-        const errorsToDownload =
-            backendErrors.length > 0 ? backendErrors : validationErrors
+        let header = ""
+        let errorContent = ""
+        let filename = ""
 
-        if (!errorsToDownload || errorsToDownload.length === 0) return
+        if (backendValidationErrors.length > 0) {
+            header =
+                "SERVER VALIDATION ERRORS - Prospectus Bulk Upload\n" +
+                "=".repeat(50) +
+                "\n\n" +
+                "These errors were found during server-side validation.\n" +
+                "Please fix the issues below and re-upload your CSV file.\n\n" +
+                "=".repeat(50) +
+                "\n\n"
+            errorContent = backendValidationErrors
+                .filter((r) => r.status === "invalid")
+                .map(
+                    (r) =>
+                        `Row ${r.index + 1}:\n` +
+                        r.errors.map((e) => `  • ${e}`).join("\n"),
+                )
+                .join("\n\n")
+            filename = "prospectus_server_validation_errors.txt"
+        } else if (backendErrors.length > 0) {
+            header =
+                "SERVER ERRORS - Prospectus Bulk Upload\n" +
+                "=".repeat(50) +
+                "\n\n" +
+                "These errors occurred when attempting to create records in the system.\n" +
+                "Please fix the issues below and re-upload your CSV file.\n\n" +
+                "=".repeat(50) +
+                "\n\n"
+            errorContent = backendErrors.join("\n")
+            filename = "prospectus_server_errors.txt"
+        } else {
+            header =
+                "VALIDATION ERRORS - Prospectus Bulk Upload\n" +
+                "=".repeat(50) +
+                "\n\n" +
+                "These errors were found during validation of your CSV file.\n" +
+                "Please fix the issues below and re-upload.\n\n" +
+                "=".repeat(50) +
+                "\n\n"
+            errorContent = validationErrors.join("\n")
+            filename = "prospectus_validation_errors.txt"
+        }
+
+        if (!errorContent) return
 
         try {
-            // Create text content with errors
-            const header =
-                backendErrors.length > 0
-                    ? "SERVER ERRORS - Prospectus Bulk Upload\n" +
-                      "=".repeat(50) +
-                      "\n\n" +
-                      "These errors occurred when attempting to create records in the system.\n" +
-                      "Please fix the issues below and re-upload your CSV file.\n\n" +
-                      "=".repeat(50) +
-                      "\n\n"
-                    : "VALIDATION ERRORS - Prospectus Bulk Upload\n" +
-                      "=".repeat(50) +
-                      "\n\n" +
-                      "These errors were found during validation of your CSV file.\n" +
-                      "Please fix the issues below and re-upload.\n\n" +
-                      "=".repeat(50) +
-                      "\n\n"
-
-            const errorContent = errorsToDownload.join("\n")
             const BOM = "\uFEFF"
-            const fullContent = BOM + header + errorContent
-
-            // Create and download blob
-            const blob = new Blob([fullContent], {
+            const blob = new Blob([BOM + header + errorContent], {
                 type: "text/plain;charset=utf-8;",
             })
             const url = window.URL.createObjectURL(blob)
             const link = document.createElement("a")
             link.href = url
-            const filename =
-                backendErrors.length > 0
-                    ? "prospectus_server_errors.txt"
-                    : "prospectus_validation_errors.txt"
             link.download = filename
             document.body.appendChild(link)
             link.click()
@@ -207,6 +258,7 @@ export default function BulkUploadProspectusPage() {
         setUploadedFile(null)
         setParsedRows([])
         setValidationErrors([])
+        setBackendValidationErrors([])
         setBackendErrors([])
         setBackendPayload(null)
         setCurrentStep(1)
@@ -425,8 +477,10 @@ export default function BulkUploadProspectusPage() {
                                     ) : (
                                         <Upload className="h-4 w-4" />
                                     )}
-                                    {t("uploadAndValidate") ||
-                                        "Upload & Validate"}
+                                    {isProcessing
+                                        ? t("validating") || "Validating..."
+                                        : t("uploadAndValidate") ||
+                                          "Upload & Validate"}
                                 </Button>
                             </div>
                         </div>
@@ -438,18 +492,26 @@ export default function BulkUploadProspectusPage() {
                             <div>
                                 <h2 className="text-lg font-semibold mb-2 flex items-center gap-2">
                                     <AlertCircle className="h-5 w-5 text-destructive" />
-                                    {backendErrors.length > 0
-                                        ? t("serverErrorsFound") ||
-                                          "Server Errors Found"
-                                        : t("validationErrorsFound") ||
-                                          "Validation Errors Found"}
+                                    {backendValidationErrors.length > 0
+                                        ? t("serverValidationErrorsFound") ||
+                                          "Server Validation Errors Found"
+                                        : backendErrors.length > 0
+                                          ? t("serverErrorsFound") ||
+                                            "Server Errors Found"
+                                          : t("validationErrorsFound") ||
+                                            "Validation Errors Found"}
                                 </h2>
                                 <p className="text-sm text-muted-foreground">
-                                    {backendErrors.length > 0
-                                        ? t("fixBackendErrorsAndReupload") ||
-                                          "Fix the server errors below and re-upload your corrected CSV file"
-                                        : t("fixErrorsAndReupload") ||
-                                          "Fix the validation errors below in your CSV file and re-upload"}
+                                    {backendValidationErrors.length > 0
+                                        ? t(
+                                              "fixServerValidationErrorsAndReupload",
+                                          ) ||
+                                          "Fix the errors below in your CSV file and re-upload"
+                                        : backendErrors.length > 0
+                                          ? t("fixBackendErrorsAndReupload") ||
+                                            "Fix the server errors below and re-upload your corrected CSV file"
+                                          : t("fixErrorsAndReupload") ||
+                                            "Fix the validation errors below in your CSV file and re-upload"}
                                 </p>
                             </div>
 
@@ -463,10 +525,24 @@ export default function BulkUploadProspectusPage() {
                                                     "Total Errors"}
                                                 :
                                             </strong>{" "}
-                                            {backendErrors.length > 0
-                                                ? backendErrors.length
-                                                : validationErrors.length}
+                                            {backendValidationErrors.length > 0
+                                                ? backendValidationErrors.filter(
+                                                      (r) =>
+                                                          r.status === "invalid",
+                                                  ).length
+                                                : backendErrors.length > 0
+                                                  ? backendErrors.length
+                                                  : validationErrors.length}
                                         </p>
+                                        {backendValidationErrors.length > 0 && (
+                                            <p className="text-xs mt-2 font-medium">
+                                                ⚠️{" "}
+                                                {t(
+                                                    "serverValidationErrorWarning",
+                                                ) ||
+                                                    "These errors were detected by the server during pre-validation"}
+                                            </p>
+                                        )}
                                         {backendErrors.length > 0 && (
                                             <p className="text-xs mt-2 font-medium">
                                                 ⚠️{" "}
@@ -484,37 +560,65 @@ export default function BulkUploadProspectusPage() {
 
                             {/* Errors List */}
                             <div className="border rounded-lg p-4 max-h-[400px] overflow-y-auto bg-muted/30">
-                                <ul className="space-y-2">
-                                    {(backendErrors.length > 0
-                                        ? backendErrors
-                                        : validationErrors
-                                    ).map((error, index) => (
-                                        <li
-                                            key={index}
-                                            className="text-sm flex items-start gap-2"
-                                        >
-                                            {error.trim() === "" ? (
-                                                <span className="w-full">
-                                                    &nbsp;
-                                                </span>
-                                            ) : error.startsWith("💡") ||
-                                              error.startsWith("   ") ? (
-                                                <span className="text-muted-foreground whitespace-pre">
-                                                    {error}
-                                                </span>
-                                            ) : (
-                                                <>
-                                                    <span className="text-destructive font-bold">
-                                                        •
+                                {backendValidationErrors.length > 0 ? (
+                                    <div className="space-y-4">
+                                        {backendValidationErrors
+                                            .filter(
+                                                (r) => r.status === "invalid",
+                                            )
+                                            .map((row) => (
+                                                <div key={row.index}>
+                                                    <p className="text-sm font-semibold text-destructive mb-1">
+                                                        Row {row.index + 1}
+                                                    </p>
+                                                    <ul className="list-disc pl-5 space-y-0.5">
+                                                        {row.errors.map(
+                                                            (err, i) => (
+                                                                <li
+                                                                    key={i}
+                                                                    className="text-sm text-destructive"
+                                                                >
+                                                                    {err}
+                                                                </li>
+                                                            ),
+                                                        )}
+                                                    </ul>
+                                                </div>
+                                            ))}
+                                    </div>
+                                ) : (
+                                    <ul className="space-y-2">
+                                        {(backendErrors.length > 0
+                                            ? backendErrors
+                                            : validationErrors
+                                        ).map((error, index) => (
+                                            <li
+                                                key={index}
+                                                className="text-sm flex items-start gap-2"
+                                            >
+                                                {error.trim() === "" ? (
+                                                    <span className="w-full">
+                                                        &nbsp;
                                                     </span>
-                                                    <span className="text-destructive">
+                                                ) : error.startsWith("💡") ||
+                                                  error.startsWith("   ") ? (
+                                                    <span className="text-muted-foreground whitespace-pre">
                                                         {error}
                                                     </span>
-                                                </>
-                                            )}
-                                        </li>
-                                    ))}
-                                </ul>
+                                                ) : (
+                                                    <>
+                                                        <span className="text-destructive font-bold">
+                                                            •
+                                                        </span>
+                                                        <span className="text-destructive">
+                                                            {error}
+                                                        </span>
+                                                    </>
+                                                )}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                )}
                             </div>
 
                             {/* Actions */}

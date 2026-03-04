@@ -104,6 +104,33 @@ export async function restoreProspectus(id) {
 }
 
 /**
+ * Validate bulk prospectuses before creation.
+ * Always returns HTTP 200 with per-row results.
+ *
+ * @param {Array<Object>} bulkData - Array of company+prospectuses objects
+ * @returns {Promise<Object>} { success, data: [{index, status, errors?}] }
+ */
+export async function bulkValidateProspectuses(bulkData) {
+    try {
+        const response = await axiosPrivateInstance.post(
+            "/prospectus/bulk/validate",
+            bulkData,
+        )
+        return {
+            success: true,
+            data: response.data.data,
+        }
+    } catch (error) {
+        if (!error.response) throw error
+        const { message } = error.response.data || {}
+        return {
+            success: false,
+            errorMessage: message || "Failed to validate batch",
+        }
+    }
+}
+
+/**
  * Submit bulk prospectuses creation.
  * Payload format: Array of { company, prospectuses }
  *

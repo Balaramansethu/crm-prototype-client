@@ -25,8 +25,12 @@ axiosPrivateInstance.interceptors.response.use(
     async (error) => {
         const originalReq = error.config
 
-        if (error.response?.data?.errorCode === "2006") {
-            // Trigger global session expired state
+        if (
+            error.response?.data?.errorCode === "2001" ||
+            error.response?.data?.errorCode === "2006"
+        ) {
+            // Force logout — clears both sessionStorage and localStorage
+            useUserStore.getState().clearUser()
             useUserStore.getState().setSessionExpired(true)
             return Promise.reject(error)
         } else if (
