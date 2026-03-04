@@ -528,7 +528,8 @@ export default function BulkUploadProspectusPage() {
                                             {backendValidationErrors.length > 0
                                                 ? backendValidationErrors.filter(
                                                       (r) =>
-                                                          r.status === "invalid",
+                                                          r.status ===
+                                                          "invalid",
                                                   ).length
                                                 : backendErrors.length > 0
                                                   ? backendErrors.length
