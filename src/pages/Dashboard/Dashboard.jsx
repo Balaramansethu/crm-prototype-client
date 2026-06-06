@@ -74,23 +74,6 @@ export default function DashboardPage() {
                 : user.role === "super_admin"
                   ? "border-purple-200"
                   : ""
-
-        return (
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-2 mt-4">
-                {cards.map((card, index) => (
-                    <Card key={index} className={borderColor}>
-                        <CardHeader>
-                            <CardTitle>{t(card.title) || card.title}</CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            <CardDescription className="text-base">
-                                {t(card.description) || card.description}
-                            </CardDescription>
-                        </CardContent>
-                    </Card>
-                ))}
-            </div>
-        )
     }
 
     return (
@@ -107,10 +90,6 @@ export default function DashboardPage() {
                         <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
                     </div>
                 )}
-
-                <div className="animate-fadeIn mt-4 px-4 lg:px-6">
-                    {!loading && dashboardData && renderCards()}
-                </div>
             </div>
         </div>
     )
