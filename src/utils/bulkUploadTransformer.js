@@ -287,22 +287,27 @@ function parseDate(dateString) {
         return year
     }
 
-    // Try YYYY-MM-DD format first (ISO, unambiguous)
-    const isoMatch = trimmed.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/)
+    // Try YYYY-MM-DD or YYYY/MM/DD format first (ISO, unambiguous)
+    const isoMatch = trimmed.match(/^(\d{4})[/-](\d{1,2})[/-](\d{1,2})$/)
     if (isoMatch) {
-        const date = new Date(
-            parseInt(isoMatch[1]),
-            parseInt(isoMatch[2]) - 1,
-            parseInt(isoMatch[3]),
-        )
-        if (isValidDate(date)) {
+        const year = parseInt(isoMatch[1])
+        const month = parseInt(isoMatch[2])
+        const day = parseInt(isoMatch[3])
+        const date = new Date(year, month - 1, day)
+        if (
+            isValidDate(date) &&
+            date.getFullYear() === year &&
+            date.getMonth() === month - 1 &&
+            date.getDate() === day
+        ) {
             return date.toISOString()
         }
+        return null
     }
 
-    // Try DD-MM-YY or DD/MM/YY (2-digit year, European format - MOST COMMON in Excel)
+    // Try DD-MM-YY, DD/MM/YY, or DD.MM.YY (2-digit year, European format - MOST COMMON in Excel)
     const europeanShortMatch = trimmed.match(
-        /^(\d{1,2})[\/-](\d{1,2})[\/-](\d{2})$/,
+        /^(\d{1,2})[-/.](\d{1,2})[-/.](\d{2})$/,
     )
     if (europeanShortMatch) {
         const day = parseInt(europeanShortMatch[1])
@@ -348,8 +353,8 @@ function parseDate(dateString) {
         }
     }
 
-    // Try DD-MM-YYYY or DD/MM/YYYY (4-digit year, European format)
-    const europeanMatch = trimmed.match(/^(\d{1,2})[\/-](\d{1,2})[\/-](\d{4})$/)
+    // Try DD-MM-YYYY, DD/MM/YYYY, or DD.MM.YYYY (4-digit year, European format)
+    const europeanMatch = trimmed.match(/^(\d{1,2})[-/.](\d{1,2})[-/.](\d{4})$/)
     if (europeanMatch) {
         const day = parseInt(europeanMatch[1])
         const month = parseInt(europeanMatch[2])
@@ -395,7 +400,8 @@ function parseDate(dateString) {
     }
 
     // Check if it's an Excel serial number (e.g., 44927 for 2023-01-01)
-    const excelSerial = parseFloat(trimmed)
+    // Only treat purely numeric strings as serial numbers to avoid misinterpreting date strings
+    const excelSerial = /^\d+(\.\d+)?$/.test(trimmed) ? parseFloat(trimmed) : NaN
     if (!isNaN(excelSerial) && excelSerial > 0) {
         // Excel serial date: days since 1900-01-01 (with some quirks)
         const excelEpoch = new Date(1899, 11, 30) // Excel's epoch (accounting for the 1900 leap year bug)
@@ -540,35 +546,13 @@ export function validateCSVRows(rows) {
             }
         }
 
-        // Validate date format (accept multiple formats)
+        // Validate date using parseDate as the single source of truth
         if (row["Follow Up Date"]?.trim()) {
-            // Check if it's a valid date in any common format
-            const dateFormats = [
-                /^\d{4}-\d{1,2}-\d{1,2}$/, // YYYY-MM-DD
-                /^\d{2}-\d{1,2}-\d{1,2}$/, // YY-MM-DD
-                /^\d{1,2}-\d{1,2}-\d{4}$/, // DD-MM-YYYY or MM-DD-YYYY
-                /^\d{1,2}-\d{1,2}-\d{2}$/, // DD-MM-YY or MM-DD-YY
-                /^\d{1,2}\/\d{1,2}\/\d{4}$/, // DD/MM/YYYY or MM/DD/YYYY
-                /^\d{1,2}\/\d{1,2}\/\d{2}$/, // DD/MM/YY or MM/DD/YY
-                /^\d+$/, // Excel serial number
-            ]
-
-            const matchesFormat = dateFormats.some((regex) =>
-                regex.test(row["Follow Up Date"].trim()),
-            )
-
-            if (!matchesFormat) {
+            const parsed = parseDate(row["Follow Up Date"])
+            if (!parsed) {
                 errors.push(
-                    `Row ${rowNumber}: Follow Up Date must be a valid date format`,
+                    `Row ${rowNumber}: Follow Up Date "${row["Follow Up Date"]}" is not a valid date`,
                 )
-            } else {
-                // Validate that it parses to a valid date
-                const parsed = parseDate(row["Follow Up Date"])
-                if (!parsed) {
-                    errors.push(
-                        `Row ${rowNumber}: Follow Up Date "${row["Follow Up Date"]}" is not a valid date`,
-                    )
-                }
             }
         }
 
