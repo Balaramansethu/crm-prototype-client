@@ -6,8 +6,6 @@
  * - company: { name, phone, address, email, website, socialProfile, serviceType }
  * - leads: [{ contact: { name, phone, email, department, remarks }, status, source, followUp, priority, benificiary }]
  */
-import { format } from "date-fns"
-
 /**
  * Builds phone object if data exists.
  * Now includes countryCode field for the new API structure.
@@ -92,7 +90,7 @@ const formatDate = (date) => {
     if (!date) return undefined
     const dateObj = date instanceof Date ? date : new Date(date)
     if (isNaN(dateObj.getTime())) return undefined
-    return format(dateObj, "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+    return dateObj.toISOString()
 }
 
 /**
